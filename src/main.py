@@ -1,5 +1,5 @@
-from mahjong import Game, Deck
+from mahjong.game import Game
 
 if __name__ == "__main__":
-    game = Game(Deck.shuffled_deck())
+    game = Game()
     game.display_info()

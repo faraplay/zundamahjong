@@ -17,8 +17,11 @@ class InvalidMoveException(Exception):
 
 
 class Game:
-    def __init__(self, deck: Deck):
-        self._deck = deck
+    def __init__(self, tiles: list[int] | None = None):
+        if tiles is None:
+            self._deck = Deck.shuffled_deck()
+        else:
+            self._deck = Deck(tiles)
         self._discard_pool = DiscardPool()
         self._hands = tuple(Hand(self._deck) for _ in range(4))
         for tile_count in [4, 4, 4, 1]:
@@ -35,6 +38,9 @@ class Game:
             hand.sort()
 
         self._status = Status.PLAY
+
+    def get_hand(self, player: int):
+        return self._hands[player].tiles
 
     def display_info(self):
         print(f"Current player: {self._current_player}, Status: {self._status}")
