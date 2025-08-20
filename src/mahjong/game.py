@@ -70,6 +70,36 @@ class Game:
             )
         print("Discards:", self._discard_pool.tiles)
 
+    def allowed_actions(self, player: int):
+        hand = self._hands[player]
+        actions = set()
+        if self._status == Status.PLAY:
+            if self._current_player == player:
+                for index in range(len(hand.tiles)):
+                    actions.add((Action.DISCARD, index))
+                for tile in set(hand.tiles):
+                    if hand.can_add_kan(tile):
+                        actions.add((Action.ADD_KAN, tile))
+                    if hand.can_closed_kan(tile):
+                        actions.add((Action.CLOSED_KAN, tile))
+            else:
+                actions.add(Action.NOTHING)
+        elif self._status == Status.DISCARDED:
+            actions.add(Action.NOTHING)
+            last_tile = self._discard_pool.peek()
+            if (self._current_player + 1) % 4 == player:
+                if hand.can_chi_a(last_tile):
+                    actions.add(Action.CHI_A)
+                if hand.can_chi_b(last_tile):
+                    actions.add(Action.CHI_B)
+                if hand.can_chi_c(last_tile):
+                    actions.add(Action.CHI_C)
+            if hand.can_pon(last_tile):
+                actions.add(Action.PON)
+            if hand.can_open_kan(last_tile):
+                actions.add(Action.OPEN_KAN)
+        return actions
+
     def draw(self, player: int):
         if (self._current_player + 1) % 4 != player or self._status != Status.DISCARDED:
             raise InvalidMoveException()
