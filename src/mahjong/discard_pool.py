@@ -1,4 +1,5 @@
 from collections import deque
+from collections.abc import Sequence
 
 from .tile import Tile
 
@@ -8,8 +9,8 @@ class DiscardPool:
         self._tiles: deque[Tile] = deque()
 
     @property
-    def tiles(self):
-        return tuple(self._tiles)
+    def tiles(self) -> Sequence[Tile]:
+        return self._tiles
 
     def append(self, tile: Tile):
         self._tiles.append(tile)

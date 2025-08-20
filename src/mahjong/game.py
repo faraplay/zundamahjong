@@ -66,9 +66,12 @@ class Game:
     def get_hand(self, player: int):
         return self._hands[player].tiles
 
+    def get_calls(self, player: int):
+        return self._hands[player].calls
+
     @property
     def discard_pool(self):
-        return tuple(self._discard_pool.tiles)
+        return self._discard_pool.tiles
 
     def display_info(self):
         print(f"Current player: {self._current_player}, Status: {self._status}")

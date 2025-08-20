@@ -1,6 +1,7 @@
+from collections.abc import Sequence
+
 from .tile import Tile, is_flower, is_number
 from .deck import Deck
-from .discard_pool import DiscardPool
 from .call import CallType, Call
 
 
@@ -11,12 +12,12 @@ class Hand:
         self._calls: list[Call] = []
 
     @property
-    def tiles(self):
-        return tuple(self._tiles)
+    def tiles(self) -> Sequence[Tile]:
+        return self._tiles
 
     @property
-    def calls(self):
-        return tuple(self._calls)
+    def calls(self) -> Sequence[Call]:
+        return self._calls
 
     def sort(self):
         self._tiles.sort()

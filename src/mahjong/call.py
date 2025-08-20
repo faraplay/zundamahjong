@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import NamedTuple
 
 from .tile import Tile
 
@@ -12,20 +13,11 @@ class CallType(Enum):
     FLOWER = 6
 
 
-class Call:
-    def __init__(self, call_type: CallType, tiles: list[Tile]):
-        self._call_type = call_type
-        self._tiles = tiles
-
-    @property
-    def call_type(self):
-        return self._call_type
-
-    @property
-    def tiles(self):
-        return tuple(self._tiles)
+class Call(NamedTuple):
+    call_type: CallType
+    tiles: list[Tile]
 
     def add_kan(self):
-        assert self._call_type == CallType.PON
-        self._call_type = CallType.ADD_KAN
-        self._tiles.append(self._tiles[0])
+        assert self.call_type == CallType.PON
+        self.call_type = CallType.ADD_KAN
+        self.tiles.append(self.tiles[0])
