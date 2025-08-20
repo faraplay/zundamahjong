@@ -38,6 +38,7 @@ class Hand:
     def discard(self, tile: Tile):
         assert self.can_discard(tile)
         self._tiles.remove(tile)
+        self.sort()
 
     def can_chi_a(self, tile: Tile):
         return (
@@ -90,6 +91,7 @@ class Hand:
         self._tiles.remove(tile)
         self._tiles.remove(tile)
         self._calls.append(Call(CallType.OPEN_KAN, [tile, tile, tile, tile]))
+        self.sort()
         self._draw_from_back()
 
     def can_add_kan(self, tile: Tile):
@@ -102,6 +104,7 @@ class Hand:
         self._tiles.remove(tile)
         call = next(call for call in self._calls if call.tiles == (tile, tile, tile))
         call.add_kan()
+        self.sort()
         self._draw_from_back()
 
     def can_closed_kan(self, tile: Tile):
@@ -114,6 +117,7 @@ class Hand:
         self._tiles.remove(tile)
         self._tiles.remove(tile)
         self._calls.append(Call(CallType.CLOSED_KAN, [tile, tile, tile, tile]))
+        self.sort()
         self._draw_from_back()
 
     def has_flowers(self):
