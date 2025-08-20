@@ -106,10 +106,11 @@ class Game:
                     actions.add(Action(ActionType.CHI_B, last_tile))
                 if hand.can_chi_c(last_tile):
                     actions.add(Action(ActionType.CHI_C, last_tile))
-            if hand.can_pon(last_tile):
-                actions.add(Action(ActionType.PON, last_tile))
-            if hand.can_open_kan(last_tile):
-                actions.add(Action(ActionType.OPEN_KAN, last_tile))
+            if self._current_player != player:
+                if hand.can_pon(last_tile):
+                    actions.add(Action(ActionType.PON, last_tile))
+                if hand.can_open_kan(last_tile):
+                    actions.add(Action(ActionType.OPEN_KAN, last_tile))
         return actions
 
     def draw(self, player: int):
