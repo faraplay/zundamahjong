@@ -29,7 +29,7 @@ class GameTest(unittest.TestCase):
 
     def test_discard(self):
         game = Game(test_deck)
-        game.discard(0, 10)
+        game.discard(0, 17)
         self.assertEqual(game.discard_pool, (17,))
 
     def test_can_chi_abc(self):
@@ -43,7 +43,7 @@ class GameTest(unittest.TestCase):
 
     def test_can_nothing(self):
         game = Game(test_deck)
-        game.discard(0, 10)
+        game.discard(0, 17)
         self.assertEqual(game.discard_pool, (17,))
         self.assertSetEqual(
             game.allowed_actions(1),

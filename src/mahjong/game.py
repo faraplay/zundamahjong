@@ -75,9 +75,8 @@ class Game:
         actions = set()
         if self._status == Status.PLAY:
             if self._current_player == player:
-                for index in range(len(hand.tiles)):
-                    actions.add((Action.DISCARD, index))
                 for tile in set(hand.tiles):
+                    actions.add((Action.DISCARD, tile))
                     if hand.can_add_kan(tile):
                         actions.add((Action.ADD_KAN, tile))
                     if hand.can_closed_kan(tile):
@@ -101,16 +100,24 @@ class Game:
         return actions
 
     def draw(self, player: int):
-        if (self._current_player + 1) % 4 != player or self._status != Status.DISCARDED:
+        if not (
+            (self._current_player + 1) % 4 == player
+            and self._status == Status.DISCARDED
+        ):
             raise InvalidMoveException()
         self._hands[player].draw()
         self._current_player = player
         self._status = Status.PLAY
 
-    def discard(self, player: int, tile_index: int):
-        if player != self._current_player or self._status != Status.PLAY:
+    def discard(self, player: int, tile: int):
+        if not (
+            player == self._current_player
+            and self._status == Status.PLAY
+            and self._hands[player].can_discard(tile)
+        ):
             raise InvalidMoveException()
-        self._hands[player].discard(tile_index, self._discard_pool)
+        self._hands[player].discard(tile)
+        self._discard_pool.append(tile)
         self._status = Status.DISCARDED
 
     def chi_a(self, player: int):

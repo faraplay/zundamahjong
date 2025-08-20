@@ -31,9 +31,12 @@ class Hand:
     def _draw_from_back(self):
         self._tiles.append(self._deck.popleft())
 
-    def discard(self, tile_index: int, discard_pool: DiscardPool):
-        assert tile_index >= 0 and tile_index < len(self._tiles)
-        discard_pool.append(self._tiles.pop(tile_index))
+    def can_discard(self, tile: Tile):
+        return tile in self._tiles
+
+    def discard(self, tile: Tile):
+        assert self.can_discard(tile)
+        self._tiles.remove(tile)
 
     def can_chi_a(self, tile: Tile):
         return (
