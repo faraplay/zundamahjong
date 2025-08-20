@@ -1,6 +1,6 @@
 import unittest
 
-from src.mahjong.game import Game, Action
+from src.mahjong.game import Game, Action, ActionType
 
 from tests.test_deck import test_deck
 
@@ -38,7 +38,12 @@ class GameTest(unittest.TestCase):
         self.assertEqual(game.discard_pool, (5,))
         self.assertSetEqual(
             game.allowed_actions(1),
-            {Action.NOTHING, Action.CHI_A, Action.CHI_B, Action.CHI_C},
+            {
+                Action(ActionType.NOTHING, 0),
+                Action(ActionType.CHI_A, 5),
+                Action(ActionType.CHI_B, 5),
+                Action(ActionType.CHI_C, 5),
+            },
         )
 
     def test_can_nothing(self):
@@ -47,7 +52,7 @@ class GameTest(unittest.TestCase):
         self.assertEqual(game.discard_pool, (17,))
         self.assertSetEqual(
             game.allowed_actions(1),
-            {Action.NOTHING},
+            {Action(ActionType.NOTHING, 0)},
         )
 
     def test_can_pon_kan(self):
@@ -56,5 +61,10 @@ class GameTest(unittest.TestCase):
         self.assertEqual(game.discard_pool, (9,))
         self.assertSetEqual(
             game.allowed_actions(1),
-            {Action.NOTHING, Action.CHI_C, Action.PON, Action.OPEN_KAN},
+            {
+                Action(ActionType.NOTHING, 0),
+                Action(ActionType.CHI_C, 9),
+                Action(ActionType.PON, 9),
+                Action(ActionType.OPEN_KAN, 9),
+            },
         )

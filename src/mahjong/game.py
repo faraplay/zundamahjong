@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import NamedTuple
 
 from .tile import Tile
 from .deck import Deck
@@ -12,7 +13,7 @@ class Status(Enum):
     DISCARDED = 2  # Options: draw, chi, pon, open kan, ron
 
 
-class Action(Enum):
+class ActionType(Enum):
     NOTHING = 0
     DISCARD = 1
     CHI_A = 2
@@ -26,8 +27,17 @@ class Action(Enum):
     TSUMO = 10
 
 
+class Action(NamedTuple):
+    action_type: ActionType
+    tile: Tile
+
+
 class InvalidMoveException(Exception):
     pass
+
+
+def previous_player(player: int):
+    return (player - 1) % 4
 
 
 class Game:
@@ -72,36 +82,36 @@ class Game:
 
     def allowed_actions(self, player: int):
         hand = self._hands[player]
-        actions = set()
+        actions: set[Action] = set()
         if self._status == Status.PLAY:
             if self._current_player == player:
                 for tile in set(hand.tiles):
-                    actions.add((Action.DISCARD, tile))
+                    actions.add(Action(ActionType.DISCARD, tile))
                     if hand.can_add_kan(tile):
-                        actions.add((Action.ADD_KAN, tile))
+                        actions.add(Action(ActionType.ADD_KAN, tile))
                     if hand.can_closed_kan(tile):
-                        actions.add((Action.CLOSED_KAN, tile))
+                        actions.add(Action(ActionType.CLOSED_KAN, tile))
             else:
-                actions.add(Action.NOTHING)
+                actions.add(Action(ActionType.NOTHING, 0))
         elif self._status == Status.DISCARDED:
-            actions.add(Action.NOTHING)
+            actions.add(Action(ActionType.NOTHING, 0))
             last_tile = self._discard_pool.peek()
-            if (self._current_player + 1) % 4 == player:
+            if self._current_player == previous_player(player):
                 if hand.can_chi_a(last_tile):
-                    actions.add(Action.CHI_A)
+                    actions.add(Action(ActionType.CHI_A, last_tile))
                 if hand.can_chi_b(last_tile):
-                    actions.add(Action.CHI_B)
+                    actions.add(Action(ActionType.CHI_B, last_tile))
                 if hand.can_chi_c(last_tile):
-                    actions.add(Action.CHI_C)
+                    actions.add(Action(ActionType.CHI_C, last_tile))
             if hand.can_pon(last_tile):
-                actions.add(Action.PON)
+                actions.add(Action(ActionType.PON, last_tile))
             if hand.can_open_kan(last_tile):
-                actions.add(Action.OPEN_KAN)
+                actions.add(Action(ActionType.OPEN_KAN, last_tile))
         return actions
 
     def draw(self, player: int):
         if not (
-            (self._current_player + 1) % 4 == player
+            self._current_player == previous_player(player)
             and self._status == Status.DISCARDED
         ):
             raise InvalidMoveException()
@@ -111,7 +121,7 @@ class Game:
 
     def discard(self, player: int, tile: int):
         if not (
-            player == self._current_player
+            self._current_player == player
             and self._status == Status.PLAY
             and self._hands[player].can_discard(tile)
         ):
@@ -123,7 +133,7 @@ class Game:
     def chi_a(self, player: int):
         tile = self._discard_pool.peek()
         if not (
-            (self._current_player + 1) % 4 == player
+            self._current_player == previous_player(player)
             and self._status == Status.DISCARDED
             and tile != 0
             and self._hands[player].can_chi_a(tile)
@@ -137,7 +147,7 @@ class Game:
     def chi_b(self, player: int):
         tile = self._discard_pool.peek()
         if not (
-            (self._current_player + 1) % 4 == player
+            self._current_player == previous_player(player)
             and self._status == Status.DISCARDED
             and tile != 0
             and self._hands[player].can_chi_b(tile)
@@ -151,7 +161,7 @@ class Game:
     def chi_c(self, player: int):
         tile = self._discard_pool.peek()
         if not (
-            (self._current_player + 1) % 4 == player
+            self._current_player == previous_player(player)
             and self._status == Status.DISCARDED
             and tile != 0
             and self._hands[player].can_chi_c(tile)
@@ -165,7 +175,7 @@ class Game:
     def pon(self, player: int):
         tile = self._discard_pool.peek()
         if not (
-            player != self._current_player
+            self._current_player != player
             and self._status == Status.DISCARDED
             and tile != 0
             and self._hands[player].can_pon(tile)
@@ -179,7 +189,7 @@ class Game:
     def open_kan(self, player: int):
         tile = self._discard_pool.peek()
         if not (
-            player != self._current_player
+            self._current_player != player
             and self._status == Status.DISCARDED
             and tile != 0
             and self._hands[player].can_open_kan(tile)
@@ -192,7 +202,7 @@ class Game:
 
     def add_kan(self, player: int, tile: Tile):
         if not (
-            player == self._current_player
+            self._current_player == player
             and self._status == Status.PLAY
             and self._hands[player].can_add_kan(tile)
         ):
@@ -201,7 +211,7 @@ class Game:
 
     def closed_kan(self, player: int, tile: Tile):
         if not (
-            player == self._current_player
+            self._current_player == player
             and self._status == Status.PLAY
             and self._hands[player].can_closed_kan(tile)
         ):
