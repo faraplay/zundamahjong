@@ -16,8 +16,3 @@ class CallType(Enum):
 class Call(NamedTuple):
     call_type: CallType
     tiles: list[Tile]
-
-    def add_kan(self):
-        assert self.call_type == CallType.PON
-        self.call_type = CallType.ADD_KAN
-        self.tiles.append(self.tiles[0])

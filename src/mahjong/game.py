@@ -206,7 +206,7 @@ class Game:
         ):
             raise InvalidMoveException()
         self._discard_pool.pop()
-        hand.kan(tile)
+        hand.open_kan(tile)
         self._current_player = player
         self._status = Status.PLAY
 

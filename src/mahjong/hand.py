@@ -95,15 +95,15 @@ class Hand:
         self._draw_from_back()
 
     def can_add_kan(self, tile: Tile):
-        return tile in self._tiles and any(
-            call.tiles == (tile, tile, tile) for call in self._calls
-        )
+        pon_call = Call(CallType.PON, [tile, tile, tile])
+        return tile in self._tiles and pon_call in self._calls
 
     def add_kan(self, tile: Tile):
         assert self.can_add_kan(tile)
+        pon_call = Call(CallType.PON, [tile, tile, tile])
         self._tiles.remove(tile)
-        call = next(call for call in self._calls if call.tiles == (tile, tile, tile))
-        call.add_kan()
+        pon_index = self._calls.index(pon_call)
+        self._calls[pon_index] = Call(CallType.ADD_KAN, [tile, tile, tile, tile])
         self.sort()
         self._draw_from_back()
 
