@@ -12,6 +12,20 @@ class Status(Enum):
     DISCARDED = 2  # Options: draw, chi, pon, open kan, ron
 
 
+class Action(Enum):
+    NOTHING = 0
+    DISCARD = 1
+    CHI_A = 2
+    CHI_B = 3
+    CHI_C = 4
+    PON = 5
+    OPEN_KAN = 6
+    ADD_KAN = 7
+    CLOSED_KAN = 8
+    RON = 9
+    TSUMO = 10
+
+
 class InvalidMoveException(Exception):
     pass
 
@@ -41,6 +55,10 @@ class Game:
 
     def get_hand(self, player: int):
         return self._hands[player].tiles
+
+    @property
+    def discard_pool(self):
+        return tuple(self._discard_pool.tiles)
 
     def display_info(self):
         print(f"Current player: {self._current_player}, Status: {self._status}")
