@@ -12,6 +12,7 @@ class CallType(Enum):
     ADD_KAN = 4
     CLOSED_KAN = 5
     FLOWER = 6
+    THIRTEEN_ORPHANS = 7
 
 
 class Call(NamedTuple):
