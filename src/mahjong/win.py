@@ -33,6 +33,8 @@ def standard_formed_hand_possibilities(tiles: Sequence[Tile]):
         return []
     formed_hands: list[list[Call]] = [[]]
     for index, suit in enumerate(suits):
+        if len(formed_hands) == 0:
+            return formed_hands
         if index < 3:
             if len(suit) % 3 == 2:
                 suit_formed_hands = split_suit_into_3melds_and_pair(suit)
@@ -94,7 +96,7 @@ def split_suit_into_3melds(tiles: Sequence[Tile]) -> list[list[Call]]:
             [Call(CallType.PON, [tile, tile, tile])] + formed_hand
             for formed_hand in split_suit_into_3melds(remaining_tiles)
         )
-    if (tile + 1) in tiles and (tile + 2) in tiles:
+    try:
         remaining_tiles = tiles[1:]
         remaining_tiles.remove(tile + 1)
         remaining_tiles.remove(tile + 2)
@@ -102,12 +104,15 @@ def split_suit_into_3melds(tiles: Sequence[Tile]) -> list[list[Call]]:
             [Call(CallType.CHI, [tile, tile + 1, tile + 2])] + formed_hand
             for formed_hand in split_suit_into_3melds(remaining_tiles)
         )
+    except ValueError:
+        pass
     return formed_hands
 
 
 def split_suit_into_3melds_and_pair(tiles: Sequence[Tile]) -> list[list[Call]]:
     assert len(tiles) % 3 == 2
     assert tiles == sorted(tiles)
+    tile_sum = sum(tiles)
     formed_hands: list[list[Call]] = []
     for index, tile in enumerate(tiles):
         if index > 0 and tiles[index - 1] == tile:
@@ -115,6 +120,8 @@ def split_suit_into_3melds_and_pair(tiles: Sequence[Tile]) -> list[list[Call]]:
         if index == len(tiles) - 1:
             continue
         if tiles[index + 1] != tile:
+            continue
+        if (tile_sum - 2 * tile) % 3 != 0:
             continue
         remaining_tiles = tiles[:index] + tiles[index + 2 :]
         formed_hands.extend(
