@@ -5,6 +5,7 @@ from .tile import Tile
 
 
 class CallType(Enum):
+    PAIR = 0
     CHI = 1
     PON = 2
     OPEN_KAN = 3
