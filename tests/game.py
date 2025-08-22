@@ -1,6 +1,7 @@
 import unittest
 
-from src.mahjong.game import Game, Action, ActionType
+from src.mahjong.game import Game
+from src.mahjong.action import Action, ActionType
 from src.mahjong.call import Call, CallType
 
 from tests.test_deck import test_deck

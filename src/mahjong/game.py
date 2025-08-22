@@ -4,13 +4,14 @@ from .tile import Tile
 from .deck import Deck
 from .discard_pool import DiscardPool
 from .hand import Hand
-from .action import Action, ActionType, ActionSet
+from .action import ActionType, ActionSet
 
 
 class Status(Enum):
     DRAWING = 0  # at start of game
     PLAY = 1  # Options: discard, added kan, closed kan, flower, tsumo
-    DISCARDED = 2  # Options: draw, chi, pon, open kan, ron
+    CALLED_PLAY = 2  # Options: discard
+    DISCARDED = 3  # Options: draw, chi, pon, open kan, ron
 
 
 class InvalidMoveException(Exception):
@@ -77,6 +78,13 @@ class Game:
                         actions.add(ActionType.CLOSED_KAN, tile)
             else:
                 actions = ActionSet()
+        elif self._status == Status.CALLED_PLAY:
+            if self._current_player == player:
+                actions = ActionSet(ActionType.DISCARD, hand.tiles[-1])
+                for tile in set(hand.tiles):
+                    actions.add(ActionType.DISCARD, tile)
+            else:
+                actions = ActionSet()
         elif self._status == Status.DISCARDED:
             if self._current_player == previous_player(player):
                 actions = ActionSet(ActionType.DRAW)
@@ -112,7 +120,7 @@ class Game:
         hand = self._hands[player]
         if not (
             self._current_player == player
-            and self._status == Status.PLAY
+            and (self._status == Status.PLAY or self._status == Status.CALLED_PLAY)
             and hand.can_discard(tile)
         ):
             raise InvalidMoveException()
@@ -133,7 +141,7 @@ class Game:
         self._discard_pool.pop()
         hand.chi_a(tile)
         self._current_player = player
-        self._status = Status.PLAY
+        self._status = Status.CALLED_PLAY
 
     def chi_b(self, player: int):
         tile = self._discard_pool.peek()
@@ -148,7 +156,7 @@ class Game:
         self._discard_pool.pop()
         hand.chi_b(tile)
         self._current_player = player
-        self._status = Status.PLAY
+        self._status = Status.CALLED_PLAY
 
     def chi_c(self, player: int):
         tile = self._discard_pool.peek()
@@ -163,7 +171,7 @@ class Game:
         self._discard_pool.pop()
         hand.chi_c(tile)
         self._current_player = player
-        self._status = Status.PLAY
+        self._status = Status.CALLED_PLAY
 
     def pon(self, player: int):
         tile = self._discard_pool.peek()
@@ -178,7 +186,7 @@ class Game:
         self._discard_pool.pop()
         hand.pon(tile)
         self._current_player = player
-        self._status = Status.PLAY
+        self._status = Status.CALLED_PLAY
 
     def open_kan(self, player: int):
         tile = self._discard_pool.peek()
@@ -193,7 +201,7 @@ class Game:
         self._discard_pool.pop()
         hand.open_kan(tile)
         self._current_player = player
-        self._status = Status.PLAY
+        self._status = Status.CALLED_PLAY
 
     def add_kan(self, player: int, tile: Tile):
         hand = self._hands[player]
