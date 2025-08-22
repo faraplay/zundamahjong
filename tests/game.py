@@ -153,6 +153,9 @@ class GameTest(unittest.TestCase):
             game.get_hand(1), [1, 1, 2, 4, 5, 6, 7, 8, 9, 9, 9, 17, 21]
         )
 
+
+class AllowedActionTest(unittest.TestCase):
+
     def test_wrong_turn_nothing(self):
         game = Game(test_deck)
         self.assertSetEqual(game.allowed_actions(1), {Action(ActionType.NOTHING, 0)})
@@ -188,25 +191,25 @@ class GameTest(unittest.TestCase):
         game.discard(0, 21)
         self.assertSetEqual(game.allowed_actions(0), {Action(ActionType.NOTHING, 0)})
 
+    def test_can_draw(self):
+        game = Game(test_deck)
+        game.discard(0, 17)
+        self.assertSetEqual(
+            game.allowed_actions(1),
+            {Action(ActionType.DRAW, 0)},
+        )
+
     def test_can_chi_abc(self):
         game = Game(test_deck)
         game.discard(0, 5)
         self.assertSetEqual(
             game.allowed_actions(1),
             {
-                Action(ActionType.NOTHING, 0),
+                Action(ActionType.DRAW, 0),
                 Action(ActionType.CHI_A, 5),
                 Action(ActionType.CHI_B, 5),
                 Action(ActionType.CHI_C, 5),
             },
-        )
-
-    def test_can_nothing(self):
-        game = Game(test_deck)
-        game.discard(0, 17)
-        self.assertSetEqual(
-            game.allowed_actions(1),
-            {Action(ActionType.NOTHING, 0)},
         )
 
     def test_can_pon_kan(self):
@@ -215,7 +218,7 @@ class GameTest(unittest.TestCase):
         self.assertSetEqual(
             game.allowed_actions(1),
             {
-                Action(ActionType.NOTHING, 0),
+                Action(ActionType.DRAW, 0),
                 Action(ActionType.CHI_C, 9),
                 Action(ActionType.PON, 9),
                 Action(ActionType.OPEN_KAN, 9),

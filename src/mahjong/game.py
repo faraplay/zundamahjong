@@ -15,16 +15,17 @@ class Status(Enum):
 
 class ActionType(Enum):
     NOTHING = 0
-    DISCARD = 1
-    CHI_A = 2
-    CHI_B = 3
-    CHI_C = 4
-    PON = 5
-    OPEN_KAN = 6
-    ADD_KAN = 7
-    CLOSED_KAN = 8
-    RON = 9
-    TSUMO = 10
+    DRAW = 1
+    DISCARD = 2
+    CHI_A = 3
+    CHI_B = 4
+    CHI_C = 5
+    PON = 6
+    OPEN_KAN = 7
+    ADD_KAN = 8
+    CLOSED_KAN = 9
+    RON = 10
+    TSUMO = 11
 
 
 class Action(NamedTuple):
@@ -97,7 +98,10 @@ class Game:
             else:
                 actions.add(Action(ActionType.NOTHING, 0))
         elif self._status == Status.DISCARDED:
-            actions.add(Action(ActionType.NOTHING, 0))
+            if self._current_player == previous_player(player):
+                actions.add(Action(ActionType.DRAW, 0))
+            else:
+                actions.add(Action(ActionType.NOTHING, 0))
             last_tile = self._discard_pool.peek()
             if self._current_player == previous_player(player):
                 if hand.can_chi_a(last_tile):
