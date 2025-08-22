@@ -61,7 +61,7 @@ def split_suit_into_pons_and_pair(tiles: Sequence[Tile]) -> list[list[Call]]:
         return [
             [
                 (Call(CallType.PON, tile) if count == 3 else Call(CallType.PAIR, tile))
-                for (tile, count) in tile_counts.items
+                for (tile, count) in tile_counts.items()
             ]
         ]
     else:
@@ -100,7 +100,9 @@ def split_suit_into_3melds_and_pair(tiles: Sequence[Tile]) -> list[list[Call]]:
     for index, tile in enumerate(tiles):
         if index > 0 and tiles[index - 1] == tile:
             continue
-        if index < len(tiles) - 1 and tiles[index + 1] != tile:
+        if index == len(tiles) - 1:
+            continue
+        if tiles[index + 1] != tile:
             continue
         remaining_tiles = tiles[:index] + tiles[index + 2 :]
         formed_hands.extend(
