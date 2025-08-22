@@ -156,16 +156,39 @@ class GameTest(unittest.TestCase):
 
 class AllowedActionTest(unittest.TestCase):
 
+    def test_play_default_actions(self):
+        game = Game(test_deck)
+        self.assertEqual(
+            game.allowed_actions(0).default, Action(ActionType.DISCARD, 21)
+        )
+        self.assertEqual(game.allowed_actions(1).default, Action(ActionType.NOTHING, 0))
+        self.assertEqual(game.allowed_actions(2).default, Action(ActionType.NOTHING, 0))
+        self.assertEqual(game.allowed_actions(3).default, Action(ActionType.NOTHING, 0))
+
+    def test_discarded_default_actions(self):
+        game = Game(test_deck)
+        game.discard(0, 9)
+        self.assertEqual(game.allowed_actions(0).default, Action(ActionType.NOTHING, 0))
+        self.assertEqual(game.allowed_actions(1).default, Action(ActionType.DRAW, 0))
+        self.assertEqual(game.allowed_actions(2).default, Action(ActionType.NOTHING, 0))
+        self.assertEqual(game.allowed_actions(3).default, Action(ActionType.NOTHING, 0))
+
     def test_wrong_turn_nothing(self):
         game = Game(test_deck)
-        self.assertSetEqual(game.allowed_actions(1), {Action(ActionType.NOTHING, 0)})
-        self.assertSetEqual(game.allowed_actions(2), {Action(ActionType.NOTHING, 0)})
-        self.assertSetEqual(game.allowed_actions(3), {Action(ActionType.NOTHING, 0)})
+        self.assertSetEqual(
+            game.allowed_actions(1).actions, {Action(ActionType.NOTHING, 0)}
+        )
+        self.assertSetEqual(
+            game.allowed_actions(2).actions, {Action(ActionType.NOTHING, 0)}
+        )
+        self.assertSetEqual(
+            game.allowed_actions(3).actions, {Action(ActionType.NOTHING, 0)}
+        )
 
     def test_turn_discard_actions(self):
         game = Game(test_deck)
         self.assertSetEqual(
-            game.allowed_actions(0),
+            game.allowed_actions(0).actions,
             {
                 Action(ActionType.DISCARD, 1),
                 Action(ActionType.DISCARD, 2),
@@ -184,18 +207,22 @@ class AllowedActionTest(unittest.TestCase):
     def test_discard_self_cannot_chi(self):
         game = Game(test_deck)
         game.discard(0, 1)
-        self.assertSetEqual(game.allowed_actions(0), {Action(ActionType.NOTHING, 0)})
+        self.assertSetEqual(
+            game.allowed_actions(0).actions, {Action(ActionType.NOTHING, 0)}
+        )
 
     def test_discard_self_cannot_pon(self):
         game = Game(test_deck)
         game.discard(0, 21)
-        self.assertSetEqual(game.allowed_actions(0), {Action(ActionType.NOTHING, 0)})
+        self.assertSetEqual(
+            game.allowed_actions(0).actions, {Action(ActionType.NOTHING, 0)}
+        )
 
     def test_can_draw(self):
         game = Game(test_deck)
         game.discard(0, 17)
         self.assertSetEqual(
-            game.allowed_actions(1),
+            game.allowed_actions(1).actions,
             {Action(ActionType.DRAW, 0)},
         )
 
@@ -203,7 +230,7 @@ class AllowedActionTest(unittest.TestCase):
         game = Game(test_deck)
         game.discard(0, 5)
         self.assertSetEqual(
-            game.allowed_actions(1),
+            game.allowed_actions(1).actions,
             {
                 Action(ActionType.DRAW, 0),
                 Action(ActionType.CHI_A, 5),
@@ -216,7 +243,7 @@ class AllowedActionTest(unittest.TestCase):
         game = Game(test_deck)
         game.discard(0, 9)
         self.assertSetEqual(
-            game.allowed_actions(1),
+            game.allowed_actions(1).actions,
             {
                 Action(ActionType.DRAW, 0),
                 Action(ActionType.CHI_C, 9),
@@ -230,7 +257,7 @@ class AllowedActionTest(unittest.TestCase):
         game.discard(0, 9)
         game.chi_c(1)
         self.assertSetEqual(
-            game.allowed_actions(1),
+            game.allowed_actions(1).actions,
             {
                 Action(ActionType.DISCARD, 1),
                 Action(ActionType.DISCARD, 2),
@@ -249,7 +276,7 @@ class AllowedActionTest(unittest.TestCase):
         game.discard(0, 9)
         game.pon(1)
         self.assertSetEqual(
-            game.allowed_actions(1),
+            game.allowed_actions(1).actions,
             {
                 Action(ActionType.DISCARD, 1),
                 Action(ActionType.DISCARD, 2),

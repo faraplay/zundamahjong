@@ -1,36 +1,16 @@
 from enum import Enum
-from typing import NamedTuple
 
 from .tile import Tile
 from .deck import Deck
 from .discard_pool import DiscardPool
 from .hand import Hand
+from .action import Action, ActionType, ActionSet
 
 
 class Status(Enum):
     DRAWING = 0  # at start of game
     PLAY = 1  # Options: discard, added kan, closed kan, flower, tsumo
     DISCARDED = 2  # Options: draw, chi, pon, open kan, ron
-
-
-class ActionType(Enum):
-    NOTHING = 0
-    DRAW = 1
-    DISCARD = 2
-    CHI_A = 3
-    CHI_B = 4
-    CHI_C = 5
-    PON = 6
-    OPEN_KAN = 7
-    ADD_KAN = 8
-    CLOSED_KAN = 9
-    RON = 10
-    TSUMO = 11
-
-
-class Action(NamedTuple):
-    action_type: ActionType
-    tile: Tile
 
 
 class InvalidMoveException(Exception):
@@ -86,35 +66,35 @@ class Game:
 
     def allowed_actions(self, player: int):
         hand = self._hands[player]
-        actions: set[Action] = set()
         if self._status == Status.PLAY:
             if self._current_player == player:
+                actions = ActionSet(ActionType.DISCARD, hand.tiles[-1])
                 for tile in set(hand.tiles):
-                    actions.add(Action(ActionType.DISCARD, tile))
+                    actions.add(ActionType.DISCARD, tile)
                     if hand.can_add_kan(tile):
-                        actions.add(Action(ActionType.ADD_KAN, tile))
+                        actions.add(ActionType.ADD_KAN, tile)
                     if hand.can_closed_kan(tile):
-                        actions.add(Action(ActionType.CLOSED_KAN, tile))
+                        actions.add(ActionType.CLOSED_KAN, tile)
             else:
-                actions.add(Action(ActionType.NOTHING, 0))
+                actions = ActionSet()
         elif self._status == Status.DISCARDED:
             if self._current_player == previous_player(player):
-                actions.add(Action(ActionType.DRAW, 0))
+                actions = ActionSet(ActionType.DRAW)
             else:
-                actions.add(Action(ActionType.NOTHING, 0))
+                actions = ActionSet()
             last_tile = self._discard_pool.peek()
             if self._current_player == previous_player(player):
                 if hand.can_chi_a(last_tile):
-                    actions.add(Action(ActionType.CHI_A, last_tile))
+                    actions.add(ActionType.CHI_A, last_tile)
                 if hand.can_chi_b(last_tile):
-                    actions.add(Action(ActionType.CHI_B, last_tile))
+                    actions.add(ActionType.CHI_B, last_tile)
                 if hand.can_chi_c(last_tile):
-                    actions.add(Action(ActionType.CHI_C, last_tile))
+                    actions.add(ActionType.CHI_C, last_tile)
             if self._current_player != player:
                 if hand.can_pon(last_tile):
-                    actions.add(Action(ActionType.PON, last_tile))
+                    actions.add(ActionType.PON, last_tile)
                 if hand.can_open_kan(last_tile):
-                    actions.add(Action(ActionType.OPEN_KAN, last_tile))
+                    actions.add(ActionType.OPEN_KAN, last_tile)
         return actions
 
     def draw(self, player: int):
