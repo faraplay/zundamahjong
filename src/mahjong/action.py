@@ -16,8 +16,9 @@ class ActionType(IntEnum):
     OPEN_KAN = 7
     ADD_KAN = 8
     CLOSED_KAN = 9
-    RON = 10
-    TSUMO = 11
+    FLOWER = 10
+    RON = 11
+    TSUMO = 12
 
 
 class Action(NamedTuple):

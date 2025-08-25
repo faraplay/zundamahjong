@@ -1,10 +1,10 @@
 import unittest
 
-from src.mahjong.game import Game, GameStatus
+from src.mahjong.game import Game, GameOptions, GameStatus
 from src.mahjong.action import Action, ActionType
 from src.mahjong.call import Call, CallType
 
-from tests.test_deck import test_deck, test_deck2
+from tests.test_deck import test_deck, test_deck2, test_deck3
 
 
 class GameTest(unittest.TestCase):
@@ -227,3 +227,16 @@ class GameTest(unittest.TestCase):
             win_info.hand, [11, 11, 11, 12, 12, 12, 14, 15, 31, 31, 32, 32, 32, 13]
         )
         self.assertCountEqual(win_info.calls, [])
+
+    def test_manual_flower_start(self):
+        game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
+        self.assertEqual(game.status, GameStatus.START)
+        self.assertSetEqual(
+            game.allowed_actions(0),
+            {
+                Action(ActionType.NOTHING),
+                Action(ActionType.FLOWER, 41),
+                Action(ActionType.FLOWER, 43),
+            },
+        )
+        self.assertSetEqual(game.allowed_actions(1), {Action(ActionType.NOTHING)})

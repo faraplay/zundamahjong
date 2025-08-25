@@ -10,7 +10,7 @@ from .win_info import WinInfo
 
 
 class GameStatus(Enum):
-    START = 0  # at start of game
+    START = 0  # Options: nothing, flower
     PLAY = 1  # Options: discard, added kan, closed kan, flower, tsumo
     CALLED_PLAY = 2  # Options: discard
     ADD_KAN_AFTER = 3  # Options: nothing, ron (chankan)
@@ -20,7 +20,7 @@ class GameStatus(Enum):
 
 
 class GameOptions(NamedTuple):
-    auto_replace_flowers = True
+    auto_replace_flowers: bool = True
 
 
 class InvalidMoveException(Exception):
