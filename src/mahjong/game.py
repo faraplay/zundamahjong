@@ -48,10 +48,12 @@ class Game:
 
         self._flower_pass_count = 0
         if self._options.auto_replace_flowers:
-            while any(hand.has_flowers() for hand in self._hands):
-                for hand in self._hands:
-                    hand.restore_flowers()
-            self._status = GameStatus.PLAY
+            while self._status == GameStatus.START:
+                player = self._current_player
+                flowers = self._hands[player].flowers_in_hand()
+                for tile in flowers:
+                    self.do_action(player, Action(ActionType.FLOWER, tile))
+                self.do_action(player, Action(ActionType.NOTHING))
 
     def get_hand(self, player: int):
         return self._hands[player].tiles
@@ -101,7 +103,7 @@ class Game:
     def next_player(self, player: int):
         return (player + 1) % 4
 
-    def _allowed_actions_start(self, player, hand, last_tile):
+    def _allowed_actions_start(self, player: int, hand: Hand, last_tile: Tile):
         actions = ActionSet()
         if self._current_player == player:
             for tile in hand.tiles:
@@ -109,47 +111,53 @@ class Game:
                     actions.add(ActionType.FLOWER, tile)
         return actions
 
-    def _allowed_actions_play(self, player, hand, last_tile):
+    def _allowed_actions_play(self, player: int, hand: Hand, last_tile: Tile):
+        if self._current_player == player:
+            flowers = hand.flowers_in_hand()
+            if self._options.auto_replace_flowers and len(flowers) > 0:
+                return ActionSet(ActionType.FLOWER, flowers[0])
+            else:
+                actions = ActionSet(ActionType.DISCARD, hand.tiles[-1])
+                for tile in set(hand.tiles):
+                    actions.add(ActionType.DISCARD, tile)
+                    if hand.can_add_kan(tile):
+                        actions.add(ActionType.ADD_KAN, tile)
+                    if hand.can_closed_kan(tile):
+                        actions.add(ActionType.CLOSED_KAN, tile)
+                    if is_flower(tile):
+                        actions.add(ActionType.FLOWER, tile)
+                if hand.can_tsumo():
+                    actions.add(ActionType.TSUMO)
+                return actions
+        else:
+            return ActionSet()
+
+    def _allowed_actions_called_play(self, player: int, hand: Hand, last_tile: Tile):
         if self._current_player == player:
             actions = ActionSet(ActionType.DISCARD, hand.tiles[-1])
             for tile in set(hand.tiles):
                 actions.add(ActionType.DISCARD, tile)
-                if hand.can_add_kan(tile):
-                    actions.add(ActionType.ADD_KAN, tile)
-                if hand.can_closed_kan(tile):
-                    actions.add(ActionType.CLOSED_KAN, tile)
-                if is_flower(tile):
-                    actions.add(ActionType.FLOWER, tile)
-            if hand.can_tsumo():
-                actions.add(ActionType.TSUMO)
         else:
             actions = ActionSet()
         return actions
 
-    def _allowed_actions_called_play(self, player, hand, last_tile):
-        if self._current_player == player:
-            actions = ActionSet(ActionType.DISCARD, hand.tiles[-1])
-            for tile in set(hand.tiles):
-                actions.add(ActionType.DISCARD, tile)
-        else:
-            actions = ActionSet()
-        return actions
-
-    def _allowed_actions_add_kan_after(self, player, hand, last_tile):
+    def _allowed_actions_add_kan_after(self, player: int, hand: Hand, last_tile: Tile):
         actions = ActionSet()
         if self._current_player != player:
             if hand.can_ron(last_tile):
                 actions.add(ActionType.RON)
         return actions
 
-    def _allowed_actions_closed_kan_after(self, player, hand, last_tile):
+    def _allowed_actions_closed_kan_after(
+        self, player: int, hand: Hand, last_tile: Tile
+    ):
         actions = ActionSet()
         if self._current_player != player:
             if hand.can_ron(last_tile):
                 actions.add(ActionType.RON)
         return actions
 
-    def _allowed_actions_discarded(self, player, hand, last_tile):
+    def _allowed_actions_discarded(self, player: int, hand: Hand, last_tile: Tile):
         if self._current_player == self.previous_player(player):
             actions = ActionSet(ActionType.DRAW)
         else:

@@ -127,6 +127,9 @@ class Hand:
     def can_tsumo(self):
         return is_winning(self._tiles)
 
+    def flowers_in_hand(self):
+        return [tile for tile in self._tiles if is_flower(tile)]
+
     def flower(self, tile: Tile):
         assert is_flower(tile)
         assert tile in self._tiles
@@ -134,16 +137,3 @@ class Hand:
         self._calls.append(Call(CallType.FLOWER, [tile]))
         self.sort()
         self._draw_from_back()
-
-    def has_flowers(self):
-        return any(is_flower(tile) for tile in self._tiles)
-
-    def restore_flowers(self):
-        flower_count = 0
-        for tile in self._tiles:
-            if is_flower(tile):
-                flower_count += 1
-                self._calls.append(Call(CallType.FLOWER, [tile]))
-        self._tiles = [tile for tile in self._tiles if not is_flower(tile)]
-        for _ in range(flower_count):
-            self._draw_from_back()
