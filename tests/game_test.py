@@ -4,7 +4,7 @@ from src.mahjong.game import Game, GameOptions, GameStatus
 from src.mahjong.action import Action, ActionType
 from src.mahjong.call import Call, CallType
 
-from tests.decks import test_deck, test_deck2, test_deck3
+from tests.decks import *
 
 
 class GameTest(unittest.TestCase):
@@ -369,3 +369,59 @@ class GameTest(unittest.TestCase):
         self.assertCountEqual(
             game.get_hand(2), [3, 3, 3, 3, 7, 7, 7, 7, 9, 13, 13, 13, 13, 46]
         )
+
+    def test_deck4_start_hands(self):
+        game = Game(test_deck4)
+        self.assertCountEqual(
+            game.get_hand(0), [13, 1, 1, 1, 4, 4, 4, 4, 7, 7, 7, 7, 31, 32]
+        )
+        self.assertCountEqual(
+            game.get_hand(1), [11, 12, 2, 2, 5, 5, 5, 5, 8, 8, 8, 8, 31]
+        )
+        self.assertCountEqual(
+            game.get_hand(2), [13, 13, 3, 3, 6, 6, 6, 6, 9, 9, 9, 9, 31]
+        )
+        self.assertCountEqual(
+            game.get_hand(3), [21, 21, 21, 21, 22, 22, 22, 22, 23, 23, 23, 23, 13]
+        )
+
+    def test_priority(self):
+        game = Game(test_deck4)
+        game.do_action(0, Action(ActionType.DISCARD, 13))
+        actions = [
+            Action(ActionType.NOTHING),
+            Action(ActionType.CHI_C),
+            Action(ActionType.PON),
+            Action(ActionType.RON),
+        ]
+        player, action = game.get_priority_action(actions)
+        self.assertEqual(player, 3)
+        self.assertEqual(action, Action(ActionType.RON))
+
+    def test_priority_bad_action(self):
+        game = Game(test_deck4)
+        game.do_action(0, Action(ActionType.DISCARD, 13))
+        actions = [
+            Action(ActionType.NOTHING),
+            Action(ActionType.CHI_C),
+            Action(ActionType.RON),
+            Action(ActionType.NOTHING),
+        ]
+        player, action = game.get_priority_action(actions)
+        self.assertEqual(player, 1)
+        self.assertEqual(action, Action(ActionType.CHI_C))
+
+    def test_priority_current_player(self):
+        game = Game(test_deck4)
+        game.do_action(0, Action(ActionType.DISCARD, 13))
+        game.do_action(1, Action(ActionType.DRAW))
+        game.do_action(1, Action(ActionType.CLOSED_KAN, 5))
+        actions = [
+            Action(ActionType.NOTHING),
+            Action(ActionType.NOTHING),
+            Action(ActionType.NOTHING),
+            Action(ActionType.NOTHING),
+        ]
+        player, action = game.get_priority_action(actions)
+        self.assertEqual(player, 1)
+        self.assertEqual(action, Action(ActionType.NOTHING))

@@ -109,6 +109,30 @@ class Game:
         self._do_action_funcs[action.action_type](self, player, action.tile)
         self._history.append((player, action))
 
+    def get_priority_action(self, actions: Sequence[Action]):
+        if len(actions) != self._options.player_count:
+            raise Exception("Incorrect number of elements in actions")
+        valid_actions: list[Action] = []
+        for player, action in enumerate(actions):
+            allowed_actions = self.allowed_actions(player)
+            if action in allowed_actions.actions:
+                valid_action = action
+            else:
+                valid_action = allowed_actions.default
+            valid_actions.append(valid_action)
+
+        best_action_player, best_action = (
+            self._current_player,
+            valid_actions[self._current_player],
+        )
+        for index in range(1, self._options.player_count):
+            player = (self._current_player + index) % self._options.player_count
+            action = valid_actions[player]
+            if action.action_type > best_action.action_type:
+                best_action_player, best_action = player, action
+
+        return best_action_player, best_action
+
     def _previous_player(self, player: int):
         return (player - 1) % self._options.player_count
 
