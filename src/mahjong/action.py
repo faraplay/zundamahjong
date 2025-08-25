@@ -38,5 +38,5 @@ class ActionSet:
     def actions(self) -> Set[Action]:
         return self._actions
 
-    def add(self, action_type: ActionType, tile: Tile):
+    def add(self, action_type: ActionType, tile: Tile = 0):
         self._actions.add(Action(action_type, tile))

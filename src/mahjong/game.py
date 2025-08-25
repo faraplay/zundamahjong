@@ -92,7 +92,7 @@ class Game:
                     if hand.can_closed_kan(tile):
                         actions.add(ActionType.CLOSED_KAN, tile)
                 if hand.can_tsumo():
-                    actions.add(ActionType.TSUMO, 0)
+                    actions.add(ActionType.TSUMO)
             else:
                 actions = ActionSet()
         elif self._status == GameStatus.CALLED_PLAY:
@@ -110,18 +110,18 @@ class Game:
             last_tile = self._discard_pool.peek()
             if self._current_player == previous_player(player):
                 if hand.can_chi_a(last_tile):
-                    actions.add(ActionType.CHI_A, last_tile)
+                    actions.add(ActionType.CHI_A)
                 if hand.can_chi_b(last_tile):
-                    actions.add(ActionType.CHI_B, last_tile)
+                    actions.add(ActionType.CHI_B)
                 if hand.can_chi_c(last_tile):
-                    actions.add(ActionType.CHI_C, last_tile)
+                    actions.add(ActionType.CHI_C)
             if self._current_player != player:
                 if hand.can_pon(last_tile):
-                    actions.add(ActionType.PON, last_tile)
+                    actions.add(ActionType.PON)
                 if hand.can_open_kan(last_tile):
-                    actions.add(ActionType.OPEN_KAN, last_tile)
+                    actions.add(ActionType.OPEN_KAN)
                 if hand.can_ron(last_tile):
-                    actions.add(ActionType.RON, last_tile)
+                    actions.add(ActionType.RON)
         return actions
 
     def draw(self, player: int):

@@ -305,9 +305,9 @@ class AllowedActionTest(unittest.TestCase):
             game.allowed_actions(1).actions,
             {
                 Action(ActionType.DRAW, 0),
-                Action(ActionType.CHI_A, 5),
-                Action(ActionType.CHI_B, 5),
-                Action(ActionType.CHI_C, 5),
+                Action(ActionType.CHI_A, 0),
+                Action(ActionType.CHI_B, 0),
+                Action(ActionType.CHI_C, 0),
             },
         )
 
@@ -318,9 +318,9 @@ class AllowedActionTest(unittest.TestCase):
             game.allowed_actions(1).actions,
             {
                 Action(ActionType.DRAW, 0),
-                Action(ActionType.CHI_C, 9),
-                Action(ActionType.PON, 9),
-                Action(ActionType.OPEN_KAN, 9),
+                Action(ActionType.CHI_C, 0),
+                Action(ActionType.PON, 0),
+                Action(ActionType.OPEN_KAN, 0),
             },
         )
 
@@ -369,7 +369,7 @@ class AllowedActionTest(unittest.TestCase):
         game.discard(0, 13)
         self.assertSetEqual(
             game.allowed_actions(2).actions,
-            {Action(ActionType.NOTHING, 0), Action(ActionType.RON, 13)},
+            {Action(ActionType.NOTHING, 0), Action(ActionType.RON, 0)},
         )
 
     def test_can_tsumo(self):
@@ -414,5 +414,5 @@ class AllowedActionTest(unittest.TestCase):
         game.add_kan(1, 13)
         self.assertSetEqual(
             game.allowed_actions(2).actions,
-            {Action(ActionType.NOTHING, 0), Action(ActionType.RON, 13)},
+            {Action(ActionType.NOTHING, 0), Action(ActionType.RON, 0)},
         )
