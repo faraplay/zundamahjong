@@ -3,6 +3,7 @@ from collections.abc import Sequence
 from .tile import Tile, is_flower, is_number
 from .deck import Deck
 from .call import CallType, Call
+from .form_hand import is_winning
 
 
 class Hand:
@@ -119,6 +120,12 @@ class Hand:
         self._calls.append(Call(CallType.CLOSED_KAN, [tile, tile, tile, tile]))
         self.sort()
         self._draw_from_back()
+
+    def can_ron(self, tile: Tile):
+        return is_winning(self._tiles + [tile])
+
+    def can_tsumo(self):
+        return is_winning(self._tiles)
 
     def has_flowers(self):
         return any(is_flower(tile) for tile in self._tiles)

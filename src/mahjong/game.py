@@ -85,6 +85,8 @@ class Game:
                         actions.add(ActionType.ADD_KAN, tile)
                     if hand.can_closed_kan(tile):
                         actions.add(ActionType.CLOSED_KAN, tile)
+                if hand.can_tsumo():
+                    actions.add(ActionType.TSUMO, 0)
             else:
                 actions = ActionSet()
         elif self._status == GameStatus.CALLED_PLAY:
@@ -112,6 +114,8 @@ class Game:
                     actions.add(ActionType.PON, last_tile)
                 if hand.can_open_kan(last_tile):
                     actions.add(ActionType.OPEN_KAN, last_tile)
+                if hand.can_ron(last_tile):
+                    actions.add(ActionType.RON, last_tile)
         return actions
 
     def draw(self, player: int):

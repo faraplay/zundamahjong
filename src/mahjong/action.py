@@ -1,11 +1,11 @@
-from enum import Enum
+from enum import IntEnum
 from typing import NamedTuple
 from collections.abc import Set
 
 from .tile import Tile
 
 
-class ActionType(Enum):
+class ActionType(IntEnum):
     NOTHING = 0
     DRAW = 1
     DISCARD = 2

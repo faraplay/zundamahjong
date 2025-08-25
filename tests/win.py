@@ -1,6 +1,6 @@
 import unittest
 
-from src.mahjong.win import is_winning, formed_hand_possibilities
+from src.mahjong.form_hand import is_winning, formed_hand_possibilities
 
 
 class WinTest(unittest.TestCase):
