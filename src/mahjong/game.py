@@ -4,7 +4,7 @@ from .tile import Tile
 from .deck import Deck
 from .discard_pool import DiscardPool
 from .hand import Hand
-from .action import ActionType, ActionSet
+from .action import Action, ActionType, ActionSet
 from .win_info import WinInfo
 
 
@@ -84,59 +84,79 @@ class Game:
         print("Discards:", self._discard_pool.tiles)
 
     def allowed_actions(self, player: int):
-        hand = self._hands[player]
-        match self._status:
-            case GameStatus.PLAY:
-                if self._current_player == player:
-                    actions = ActionSet(ActionType.DISCARD, hand.tiles[-1])
-                    for tile in set(hand.tiles):
-                        actions.add(ActionType.DISCARD, tile)
-                        if hand.can_add_kan(tile):
-                            actions.add(ActionType.ADD_KAN, tile)
-                        if hand.can_closed_kan(tile):
-                            actions.add(ActionType.CLOSED_KAN, tile)
-                    if hand.can_tsumo():
-                        actions.add(ActionType.TSUMO)
-                else:
-                    actions = ActionSet()
-            case GameStatus.CALLED_PLAY:
-                if self._current_player == player:
-                    actions = ActionSet(ActionType.DISCARD, hand.tiles[-1])
-                    for tile in set(hand.tiles):
-                        actions.add(ActionType.DISCARD, tile)
-                else:
-                    actions = ActionSet()
-            case GameStatus.ADD_KAN_AFTER:
-                actions = ActionSet()
-                if self._current_player != player:
-                    if hand.can_ron(self._last_tile):
-                        actions.add(ActionType.RON)
-            case GameStatus.CLOSED_KAN_AFTER:
-                actions = ActionSet()
-                if self._current_player != player:
-                    if hand.can_ron(self._last_tile):
-                        actions.add(ActionType.RON)
-            case GameStatus.DISCARDED:
-                if self._current_player == previous_player(player):
-                    actions = ActionSet(ActionType.DRAW)
-                else:
-                    actions = ActionSet()
-                last_tile = self._last_tile
-                if self._current_player == previous_player(player):
-                    if hand.can_chi_a(last_tile):
-                        actions.add(ActionType.CHI_A)
-                    if hand.can_chi_b(last_tile):
-                        actions.add(ActionType.CHI_B)
-                    if hand.can_chi_c(last_tile):
-                        actions.add(ActionType.CHI_C)
-                if self._current_player != player:
-                    if hand.can_pon(last_tile):
-                        actions.add(ActionType.PON)
-                    if hand.can_open_kan(last_tile):
-                        actions.add(ActionType.OPEN_KAN)
-                    if hand.can_ron(last_tile):
-                        actions.add(ActionType.RON)
+        return self._allowed_actions_funcs[self._status](
+            self, player, self._hands[player], self._last_tile
+        )
+
+    def do(self, player: int, action: Action):
+        pass
+
+    def _allowed_actions_play(self, player, hand, last_tile):
+        if self._current_player == player:
+            actions = ActionSet(ActionType.DISCARD, hand.tiles[-1])
+            for tile in set(hand.tiles):
+                actions.add(ActionType.DISCARD, tile)
+                if hand.can_add_kan(tile):
+                    actions.add(ActionType.ADD_KAN, tile)
+                if hand.can_closed_kan(tile):
+                    actions.add(ActionType.CLOSED_KAN, tile)
+            if hand.can_tsumo():
+                actions.add(ActionType.TSUMO)
+        else:
+            actions = ActionSet()
         return actions
+
+    def _allowed_actions_called_play(self, player, hand, last_tile):
+        if self._current_player == player:
+            actions = ActionSet(ActionType.DISCARD, hand.tiles[-1])
+            for tile in set(hand.tiles):
+                actions.add(ActionType.DISCARD, tile)
+        else:
+            actions = ActionSet()
+        return actions
+
+    def _allowed_actions_add_kan_after(self, player, hand, last_tile):
+        actions = ActionSet()
+        if self._current_player != player:
+            if hand.can_ron(last_tile):
+                actions.add(ActionType.RON)
+        return actions
+
+    def _allowed_actions_closed_kan_after(self, player, hand, last_tile):
+        actions = ActionSet()
+        if self._current_player != player:
+            if hand.can_ron(last_tile):
+                actions.add(ActionType.RON)
+        return actions
+
+    def _allowed_actions_discarded(self, player, hand, last_tile):
+        if self._current_player == previous_player(player):
+            actions = ActionSet(ActionType.DRAW)
+        else:
+            actions = ActionSet()
+        if self._current_player == previous_player(player):
+            if hand.can_chi_a(last_tile):
+                actions.add(ActionType.CHI_A)
+            if hand.can_chi_b(last_tile):
+                actions.add(ActionType.CHI_B)
+            if hand.can_chi_c(last_tile):
+                actions.add(ActionType.CHI_C)
+        if self._current_player != player:
+            if hand.can_pon(last_tile):
+                actions.add(ActionType.PON)
+            if hand.can_open_kan(last_tile):
+                actions.add(ActionType.OPEN_KAN)
+            if hand.can_ron(last_tile):
+                actions.add(ActionType.RON)
+        return actions
+
+    _allowed_actions_funcs = {
+        GameStatus.PLAY: _allowed_actions_play,
+        GameStatus.CALLED_PLAY: _allowed_actions_called_play,
+        GameStatus.ADD_KAN_AFTER: _allowed_actions_add_kan_after,
+        GameStatus.CLOSED_KAN_AFTER: _allowed_actions_closed_kan_after,
+        GameStatus.DISCARDED: _allowed_actions_discarded,
+    }
 
     def nothing(self, player: int):
         if (
@@ -279,7 +299,7 @@ class Game:
         self._last_tile = tile
 
     def ron(self, player: int):
-        tile = self._last_tile
+        last_tile = self._last_tile
         hand = self._hands[player]
         if not (
             self._current_player != player
@@ -289,11 +309,14 @@ class Game:
                 GameStatus.ADD_KAN_AFTER,
                 GameStatus.CLOSED_KAN_AFTER,
             }
-            and hand.can_ron(tile)
+            and hand.can_ron(last_tile)
         ):
             raise InvalidMoveException()
         self._win_info = WinInfo(
-            player, self._current_player, list(hand.tiles) + [tile], list(hand.calls)
+            player,
+            self._current_player,
+            list(hand.tiles) + [last_tile],
+            list(hand.calls),
         )
         self._status = GameStatus.END
 
