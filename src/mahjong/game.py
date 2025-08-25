@@ -1,4 +1,5 @@
 from enum import Enum
+from typing import NamedTuple
 
 from .tile import Tile
 from .deck import Deck
@@ -18,6 +19,10 @@ class GameStatus(Enum):
     END = 6
 
 
+class GameOptions(NamedTuple):
+    auto_replace_flowers = True
+
+
 class InvalidMoveException(Exception):
     pass
 
@@ -27,20 +32,23 @@ def previous_player(player: int):
 
 
 class Game:
-    def __init__(self, tiles: list[int] | None = None):
-        if tiles is None:
-            self._deck = Deck.shuffled_deck()
-        else:
-            self._deck = Deck(tiles)
+    def __init__(
+        self, tiles: list[int] | None = None, options: GameOptions = GameOptions()
+    ):
+        self._options = options
+        self._deck = Deck(tiles) if tiles is not None else Deck.shuffled_deck()
         self._discard_pool = DiscardPool()
-        self._last_tile: Tile = 0
-        self._win_info = None
         self._hands = tuple(Hand(self._deck) for _ in range(4))
         for tile_count in [4, 4, 4, 1]:
             for hand in self._hands:
                 hand.add_to_hand(tile_count)
+        self._hands[0].draw()
+
         self._current_player = 0
-        self._hands[self._current_player].draw()
+        self._status = GameStatus.START
+        self._last_tile: Tile = 0
+
+        self._win_info = None
 
         while any(hand.has_flowers() for hand in self._hands):
             for hand in self._hands:
