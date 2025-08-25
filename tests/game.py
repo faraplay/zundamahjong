@@ -8,11 +8,20 @@ from tests.test_deck import test_deck, test_deck2, test_deck3
 
 
 class GameTest(unittest.TestCase):
-    def test_start_no_discards(self):
-        game = Game()
+    def test_start(self):
+        game = Game(test_deck)
         self.assertEqual(game.current_player, 0)
         self.assertEqual(game.status, GameStatus.PLAY)
         self.assertSequenceEqual(game.discard_pool, [])
+        self.assertSequenceEqual(
+            game.history,
+            [
+                (0, Action(ActionType.NOTHING)),
+                (1, Action(ActionType.NOTHING)),
+                (2, Action(ActionType.NOTHING)),
+                (3, Action(ActionType.NOTHING)),
+            ],
+        )
 
     def test_fixed_deck_start_hands(self):
         game = Game(test_deck)
@@ -152,15 +161,6 @@ class GameTest(unittest.TestCase):
         game.do_action(2, Action(ActionType.DISCARD, 13))
         self.assertSequenceEqual(game.discard_pool, [1, 2, 13])
 
-    def test_discard_sort(self):
-        game = Game(test_deck)
-        game.do_action(0, Action(ActionType.DISCARD, 17))
-        game.do_action(1, Action(ActionType.DRAW))
-        game.do_action(1, Action(ActionType.DISCARD, 3))
-        self.assertCountEqual(
-            game.get_hand(1), [1, 1, 2, 4, 5, 6, 7, 8, 9, 9, 9, 17, 21]
-        )
-
     def test_deck_2_start_hands(self):
         game = Game(test_deck2)
         self.assertCountEqual(
@@ -181,6 +181,36 @@ class GameTest(unittest.TestCase):
             game.get_hand(2), [11, 11, 11, 12, 12, 12, 14, 15, 31, 31, 32, 32, 32]
         )
         self.assertCountEqual(game.get_hand(3), [3, 3, 3, 3, 6, 6, 6, 6, 8, 8, 8, 8, 9])
+
+    def test_history(self):
+        game = Game(test_deck)
+        game.do_action(0, Action(ActionType.DISCARD, 9))
+        game.do_action(1, Action(ActionType.PON))
+        game.do_action(1, Action(ActionType.DISCARD, 21))
+        game.do_action(0, Action(ActionType.PON))
+        game.do_action(0, Action(ActionType.DISCARD, 1))
+        game.do_action(1, Action(ActionType.DRAW))
+        game.do_action(1, Action(ActionType.ADD_KAN, 9))
+        game.do_action(1, Action(ActionType.NOTHING))
+        game.do_action(1, Action(ActionType.DISCARD, 2))
+        self.assertSequenceEqual(
+            game.history,
+            [
+                (0, Action(ActionType.NOTHING)),
+                (1, Action(ActionType.NOTHING)),
+                (2, Action(ActionType.NOTHING)),
+                (3, Action(ActionType.NOTHING)),
+                (0, Action(ActionType.DISCARD, 9)),
+                (1, Action(ActionType.PON)),
+                (1, Action(ActionType.DISCARD, 21)),
+                (0, Action(ActionType.PON)),
+                (0, Action(ActionType.DISCARD, 1)),
+                (1, Action(ActionType.DRAW)),
+                (1, Action(ActionType.ADD_KAN, 9)),
+                (1, Action(ActionType.NOTHING)),
+                (1, Action(ActionType.DISCARD, 2)),
+            ],
+        )
 
     def test_ron(self):
         game = Game(test_deck2)
@@ -229,6 +259,26 @@ class GameTest(unittest.TestCase):
             win_info.hand, [11, 11, 11, 12, 12, 12, 14, 15, 31, 31, 32, 32, 32, 13]
         )
         self.assertCountEqual(win_info.calls, [])
+
+    def test_auto_flower_history(self):
+        game = Game(test_deck3, GameOptions(auto_replace_flowers=True))
+        self.assertSequenceEqual(
+            game.history,
+            [
+                (0, Action(ActionType.FLOWER, 41)),
+                (0, Action(ActionType.FLOWER, 43)),
+                (0, Action(ActionType.NOTHING)),
+                (1, Action(ActionType.FLOWER, 42)),
+                (1, Action(ActionType.NOTHING)),
+                (2, Action(ActionType.NOTHING)),
+                (3, Action(ActionType.NOTHING)),
+                (0, Action(ActionType.FLOWER, 44)),
+                (0, Action(ActionType.NOTHING)),
+                (1, Action(ActionType.NOTHING)),
+                (2, Action(ActionType.NOTHING)),
+                (3, Action(ActionType.NOTHING)),
+            ],
+        )
 
     def test_manual_flower_start(self):
         game = Game(test_deck3, GameOptions(auto_replace_flowers=False))

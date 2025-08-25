@@ -1,3 +1,5 @@
+from collections import deque
+from collections.abc import Sequence
 from enum import Enum
 from typing import NamedTuple
 
@@ -43,7 +45,7 @@ class Game:
         self._current_player = 0
         self._status = GameStatus.START
         self._last_tile: Tile = 0
-
+        self._history: deque[tuple[int, Action]] = deque()
         self._win_info = None
 
         self._flower_pass_count = 0
@@ -74,6 +76,10 @@ class Game:
         return self._discard_pool.tiles
 
     @property
+    def history(self) -> Sequence[tuple[int, Action]]:
+        return self._history
+
+    @property
     def win_info(self):
         return self._win_info
 
@@ -96,6 +102,7 @@ class Game:
         if action not in self.allowed_actions(player).actions:
             raise InvalidMoveException()
         self._do_action_funcs[action.action_type](self, player, action.tile)
+        self._history.append((player, action))
 
     def previous_player(self, player: int):
         return (player - 1) % 4
