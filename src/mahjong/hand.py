@@ -127,6 +127,14 @@ class Hand:
     def can_tsumo(self):
         return is_winning(self._tiles)
 
+    def flower(self, tile: Tile):
+        assert is_flower(tile)
+        assert tile in self._tiles
+        self._tiles.remove(tile)
+        self._calls.append(Call(CallType.FLOWER, [tile]))
+        self.sort()
+        self._draw_from_back()
+
     def has_flowers(self):
         return any(is_flower(tile) for tile in self._tiles)
 

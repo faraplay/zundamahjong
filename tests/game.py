@@ -317,5 +317,5 @@ class GameTest(unittest.TestCase):
         game.do_action(2, Action(ActionType.FLOWER, 45))
         self.assertCountEqual(game.get_calls(2), [Call(CallType.FLOWER, [45])])
         self.assertCountEqual(
-            game.get_hand(2), [3, 3, 3, 3, 7, 7, 7, 7, 13, 13, 13, 13, 46]
+            game.get_hand(2), [3, 3, 3, 3, 7, 7, 7, 7, 9, 13, 13, 13, 13, 46]
         )

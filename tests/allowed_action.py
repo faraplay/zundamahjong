@@ -9,9 +9,7 @@ from tests.test_deck import test_deck, test_deck2, test_deck3
 class AllowedActionTest(unittest.TestCase):
     def test_play_default_actions(self):
         game = Game(test_deck)
-        self.assertEqual(
-            game.allowed_actions(0).default, Action(ActionType.DISCARD, 21)
-        )
+        self.assertEqual(game.allowed_actions(0).default, Action(ActionType.DISCARD, 1))
         self.assertEqual(game.allowed_actions(1).default, Action(ActionType.NOTHING))
         self.assertEqual(game.allowed_actions(2).default, Action(ActionType.NOTHING))
         self.assertEqual(game.allowed_actions(3).default, Action(ActionType.NOTHING))
@@ -236,6 +234,7 @@ class AllowedActionTest(unittest.TestCase):
             {
                 Action(ActionType.DISCARD, 3),
                 Action(ActionType.DISCARD, 7),
+                Action(ActionType.DISCARD, 9),
                 Action(ActionType.DISCARD, 13),
                 Action(ActionType.DISCARD, 45),
                 Action(ActionType.CLOSED_KAN, 3),

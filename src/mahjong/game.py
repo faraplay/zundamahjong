@@ -1,7 +1,7 @@
 from enum import Enum
 from typing import NamedTuple
 
-from .tile import Tile
+from .tile import Tile, is_flower
 from .deck import Deck
 from .discard_pool import DiscardPool
 from .hand import Hand
@@ -27,10 +27,6 @@ class InvalidMoveException(Exception):
     pass
 
 
-def previous_player(player: int):
-    return (player - 1) % 4
-
-
 class Game:
     def __init__(
         self, tiles: list[int] | None = None, options: GameOptions = GameOptions()
@@ -50,14 +46,12 @@ class Game:
 
         self._win_info = None
 
-        while any(hand.has_flowers() for hand in self._hands):
-            for hand in self._hands:
-                hand.restore_flowers()
-
-        for hand in self._hands:
-            hand.sort()
-
-        self._status = GameStatus.PLAY
+        self._flower_pass_count = 0
+        if self._options.auto_replace_flowers:
+            while any(hand.has_flowers() for hand in self._hands):
+                for hand in self._hands:
+                    hand.restore_flowers()
+            self._status = GameStatus.PLAY
 
     def get_hand(self, player: int):
         return self._hands[player].tiles
@@ -101,6 +95,20 @@ class Game:
             raise InvalidMoveException()
         self._do_action_funcs[action.action_type](self, player, action.tile)
 
+    def previous_player(self, player: int):
+        return (player - 1) % 4
+
+    def next_player(self, player: int):
+        return (player + 1) % 4
+
+    def _allowed_actions_start(self, player, hand, last_tile):
+        actions = ActionSet()
+        if self._current_player == player:
+            for tile in hand.tiles:
+                if is_flower(tile):
+                    actions.add(ActionType.FLOWER, tile)
+        return actions
+
     def _allowed_actions_play(self, player, hand, last_tile):
         if self._current_player == player:
             actions = ActionSet(ActionType.DISCARD, hand.tiles[-1])
@@ -110,6 +118,8 @@ class Game:
                     actions.add(ActionType.ADD_KAN, tile)
                 if hand.can_closed_kan(tile):
                     actions.add(ActionType.CLOSED_KAN, tile)
+                if is_flower(tile):
+                    actions.add(ActionType.FLOWER, tile)
             if hand.can_tsumo():
                 actions.add(ActionType.TSUMO)
         else:
@@ -140,11 +150,11 @@ class Game:
         return actions
 
     def _allowed_actions_discarded(self, player, hand, last_tile):
-        if self._current_player == previous_player(player):
+        if self._current_player == self.previous_player(player):
             actions = ActionSet(ActionType.DRAW)
         else:
             actions = ActionSet()
-        if self._current_player == previous_player(player):
+        if self._current_player == self.previous_player(player):
             if hand.can_chi_a(last_tile):
                 actions.add(ActionType.CHI_A)
             if hand.can_chi_b(last_tile):
@@ -161,6 +171,7 @@ class Game:
         return actions
 
     _allowed_actions_funcs = {
+        GameStatus.START: _allowed_actions_start,
         GameStatus.PLAY: _allowed_actions_play,
         GameStatus.CALLED_PLAY: _allowed_actions_called_play,
         GameStatus.ADD_KAN_AFTER: _allowed_actions_add_kan_after,
@@ -169,12 +180,17 @@ class Game:
     }
 
     def _nothing(self, player: int, tile: Tile):
-        if (
-            self._status == GameStatus.ADD_KAN_AFTER
-            or self._status == GameStatus.CLOSED_KAN_AFTER
-        ):
-            self._status = GameStatus.PLAY
-            self._last_tile = 0
+        match self._status:
+            case GameStatus.START:
+                self._flower_pass_count += 1
+                if self._flower_pass_count >= 4:
+                    self._current_player = 0
+                    self._status = GameStatus.PLAY
+                else:
+                    self._current_player = self.next_player(self._current_player)
+            case GameStatus.ADD_KAN_AFTER | GameStatus.CLOSED_KAN_AFTER:
+                self._status = GameStatus.PLAY
+                self._last_tile = 0
 
     def _draw(self, player: int, tile: Tile):
         self._hands[player].draw()
@@ -233,6 +249,10 @@ class Game:
         self._status = GameStatus.CLOSED_KAN_AFTER
         self._last_tile = tile
 
+    def _flower(self, player: int, tile: Tile):
+        self._hands[player].flower(tile)
+        self._flower_pass_count = 0
+
     def _ron(self, player: int, tile: Tile):
         hand = self._hands[player]
         self._win_info = WinInfo(
@@ -259,6 +279,7 @@ class Game:
         ActionType.OPEN_KAN: _open_kan,
         ActionType.ADD_KAN: _add_kan,
         ActionType.CLOSED_KAN: _closed_kan,
+        ActionType.FLOWER: _flower,
         ActionType.RON: _ron,
         ActionType.TSUMO: _tsumo,
     }
