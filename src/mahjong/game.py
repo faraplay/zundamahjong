@@ -169,83 +169,68 @@ class Game:
             self._last_tile = 0
 
     def _draw(self, player: int, tile: Tile):
-        hand = self._hands[player]
-        hand.draw()
+        self._hands[player].draw()
         self._current_player = player
         self._status = GameStatus.PLAY
         self._last_tile = 0
 
     def _discard(self, player: int, tile: Tile):
-        hand = self._hands[player]
-        hand.discard(tile)
+        self._hands[player].discard(tile)
         self._discard_pool.append(tile)
         self._status = GameStatus.DISCARDED
         self._last_tile = tile
 
     def _chi_a(self, player: int, tile: Tile):
-        last_tile = self._last_tile
-        hand = self._hands[player]
         self._discard_pool.pop()
-        hand.chi_a(last_tile)
+        self._hands[player].chi_a(self._last_tile)
         self._current_player = player
         self._status = GameStatus.CALLED_PLAY
         self._last_tile = 0
 
     def _chi_b(self, player: int, tile: Tile):
-        last_tile = self._last_tile
-        hand = self._hands[player]
         self._discard_pool.pop()
-        hand.chi_b(last_tile)
+        self._hands[player].chi_b(self._last_tile)
         self._current_player = player
         self._status = GameStatus.CALLED_PLAY
         self._last_tile = 0
 
     def _chi_c(self, player: int, tile: Tile):
-        last_tile = self._last_tile
-        hand = self._hands[player]
         self._discard_pool.pop()
-        hand.chi_c(last_tile)
+        self._hands[player].chi_c(self._last_tile)
         self._current_player = player
         self._status = GameStatus.CALLED_PLAY
         self._last_tile = 0
 
     def _pon(self, player: int, tile: Tile):
-        last_tile = self._last_tile
-        hand = self._hands[player]
         self._discard_pool.pop()
-        hand.pon(last_tile)
+        self._hands[player].pon(self._last_tile)
         self._current_player = player
         self._status = GameStatus.CALLED_PLAY
         self._last_tile = 0
 
     def _open_kan(self, player: int, tile: Tile):
-        last_tile = self._last_tile
-        hand = self._hands[player]
         self._discard_pool.pop()
-        hand.open_kan(last_tile)
+        self._hands[player].open_kan(self._last_tile)
         self._current_player = player
         self._status = GameStatus.CALLED_PLAY
         self._last_tile = 0
 
     def _add_kan(self, player: int, tile: Tile):
-        hand = self._hands[player]
-        hand.add_kan(tile)
+        self._hands[player].add_kan(tile)
         self._status = GameStatus.ADD_KAN_AFTER
         self._last_tile = tile
 
     def _closed_kan(self, player: int, tile: Tile):
-        hand = self._hands[player]
-        hand.closed_kan(tile)
+        self._hands[player].closed_kan(tile)
         self._status = GameStatus.CLOSED_KAN_AFTER
         self._last_tile = tile
 
     def _ron(self, player: int, tile: Tile):
-        last_tile = self._last_tile
         hand = self._hands[player]
         self._win_info = WinInfo(
             player,
             self._current_player,
-            list(hand.tiles) + [last_tile],
+            list(hand.tiles) + [self._last_tile],
             list(hand.calls),
         )
         self._status = GameStatus.END
