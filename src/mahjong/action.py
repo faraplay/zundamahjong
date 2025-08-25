@@ -22,7 +22,7 @@ class ActionType(IntEnum):
 
 class Action(NamedTuple):
     action_type: ActionType
-    tile: Tile
+    tile: Tile = 0
 
 
 class ActionSet:
