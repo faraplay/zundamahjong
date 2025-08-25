@@ -23,6 +23,7 @@ class GameStatus(Enum):
 
 class GameOptions(NamedTuple):
     auto_replace_flowers: bool = True
+    player_count: int = 4
 
 
 class InvalidMoveException(Exception):
@@ -36,7 +37,7 @@ class Game:
         self._options = options
         self._deck = Deck(tiles) if tiles is not None else Deck.shuffled_deck()
         self._discard_pool = DiscardPool()
-        self._hands = tuple(Hand(self._deck) for _ in range(4))
+        self._hands = tuple(Hand(self._deck) for _ in range(self._options.player_count))
         for tile_count in [4, 4, 4, 1]:
             for hand in self._hands:
                 hand.add_to_hand(tile_count)
@@ -104,11 +105,11 @@ class Game:
         self._do_action_funcs[action.action_type](self, player, action.tile)
         self._history.append((player, action))
 
-    def previous_player(self, player: int):
-        return (player - 1) % 4
+    def _previous_player(self, player: int):
+        return (player - 1) % self._options.player_count
 
-    def next_player(self, player: int):
-        return (player + 1) % 4
+    def _next_player(self, player: int):
+        return (player + 1) % self._options.player_count
 
     def _allowed_actions_start(self, player: int, hand: Hand, last_tile: Tile):
         actions = ActionSet()
@@ -165,11 +166,11 @@ class Game:
         return actions
 
     def _allowed_actions_discarded(self, player: int, hand: Hand, last_tile: Tile):
-        if self._current_player == self.previous_player(player):
+        if self._current_player == self._previous_player(player):
             actions = ActionSet(ActionType.DRAW)
         else:
             actions = ActionSet()
-        if self._current_player == self.previous_player(player):
+        if self._current_player == self._previous_player(player):
             if hand.can_chi_a(last_tile):
                 actions.add(ActionType.CHI_A)
             if hand.can_chi_b(last_tile):
@@ -198,11 +199,11 @@ class Game:
         match self._status:
             case GameStatus.START:
                 self._flower_pass_count += 1
-                if self._flower_pass_count >= 4:
+                if self._flower_pass_count >= self._options.player_count:
                     self._current_player = 0
                     self._status = GameStatus.PLAY
                 else:
-                    self._current_player = self.next_player(self._current_player)
+                    self._current_player = self._next_player(self._current_player)
             case GameStatus.ADD_KAN_AFTER | GameStatus.CLOSED_KAN_AFTER:
                 self._status = GameStatus.PLAY
                 self._last_tile = 0
