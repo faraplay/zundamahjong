@@ -5,6 +5,7 @@ from .deck import Deck
 from .discard_pool import DiscardPool
 from .hand import Hand
 from .action import ActionType, ActionSet
+from .win_info import WinInfo
 
 
 class GameStatus(Enum):
@@ -30,6 +31,7 @@ class Game:
         else:
             self._deck = Deck(tiles)
         self._discard_pool = DiscardPool()
+        self._win_info = None
         self._hands = tuple(Hand(self._deck) for _ in range(4))
         for tile_count in [4, 4, 4, 1]:
             for hand in self._hands:
@@ -63,6 +65,10 @@ class Game:
     @property
     def discard_pool(self):
         return self._discard_pool.tiles
+
+    @property
+    def win_info(self):
+        return self._win_info
 
     def display_info(self):
         print(f"Current player: {self._current_player}, Status: {self._status}")
@@ -238,3 +244,28 @@ class Game:
         ):
             raise InvalidMoveException()
         hand.closed_kan(tile)
+
+    def ron(self, player: int):
+        tile = self._discard_pool.peek()
+        hand = self._hands[player]
+        if not (
+            self._current_player != player
+            and self._status == GameStatus.DISCARDED
+            and hand.can_ron(tile)
+        ):
+            raise InvalidMoveException()
+        self._win_info = WinInfo(
+            player, self._current_player, list(hand.tiles) + [tile], list(hand.calls)
+        )
+        self._status = GameStatus.END
+
+    def tsumo(self, player: int):
+        hand = self._hands[player]
+        if not (
+            self._current_player == player
+            and self._status == GameStatus.PLAY
+            and hand.can_tsumo()
+        ):
+            raise InvalidMoveException()
+        self._win_info = WinInfo(player, -1, list(hand.tiles), list(hand.calls))
+        self._status = GameStatus.END

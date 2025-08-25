@@ -182,7 +182,7 @@ class GameTest(unittest.TestCase):
         game.discard(0, 13)
         game.ron(2)
         self.assertEqual(game.status, GameStatus.END)
-        win_info = game.win_info()
+        win_info = game.win_info
         self.assertEqual(win_info.win_player, 2)
         self.assertEqual(win_info.lose_player, 0)
         self.assertSequenceEqual(
@@ -198,9 +198,9 @@ class GameTest(unittest.TestCase):
         game.draw(2)
         game.tsumo(2)
         self.assertEqual(game.status, GameStatus.END)
-        win_info = game.win_info()
+        win_info = game.win_info
         self.assertEqual(win_info.win_player, 2)
-        self.assertEqual(win_info.lose_player, None)
+        self.assertEqual(win_info.lose_player, -1)
         self.assertSequenceEqual(
             win_info.hand, [11, 11, 11, 12, 12, 12, 14, 15, 31, 31, 32, 32, 32, 16]
         )
@@ -217,7 +217,7 @@ class GameTest(unittest.TestCase):
         game.add_kan(1, 13)
         game.ron(2)
         self.assertEqual(game.status, GameStatus.END)
-        win_info = game.win_info()
+        win_info = game.win_info
         self.assertEqual(win_info.win_player, 2)
         self.assertEqual(win_info.lose_player, 1)
         self.assertSequenceEqual(
