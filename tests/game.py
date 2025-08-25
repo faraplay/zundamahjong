@@ -57,7 +57,8 @@ class GameTest(unittest.TestCase):
         game.chi_a(1)
         self.assertSequenceEqual(game.get_hand(1), [1, 2, 3, 4, 5, 8, 9, 9, 9, 17, 21])
         self.assertSequenceEqual(game.get_calls(1), [Call(CallType.CHI, [5, 6, 7])])
-        self.assertSequenceEqual(game.discard_pool, [])
+        game.discard(1, 2)
+        self.assertSequenceEqual(game.discard_pool, [2])
 
     def test_chi_b(self):
         game = Game(test_deck)
@@ -65,7 +66,8 @@ class GameTest(unittest.TestCase):
         game.chi_b(1)
         self.assertSequenceEqual(game.get_hand(1), [1, 2, 3, 5, 7, 8, 9, 9, 9, 17, 21])
         self.assertSequenceEqual(game.get_calls(1), [Call(CallType.CHI, [4, 5, 6])])
-        self.assertSequenceEqual(game.discard_pool, [])
+        game.discard(1, 2)
+        self.assertSequenceEqual(game.discard_pool, [2])
 
     def test_chi_c(self):
         game = Game(test_deck)
@@ -73,7 +75,8 @@ class GameTest(unittest.TestCase):
         game.chi_c(1)
         self.assertSequenceEqual(game.get_hand(1), [1, 2, 5, 6, 7, 8, 9, 9, 9, 17, 21])
         self.assertSequenceEqual(game.get_calls(1), [Call(CallType.CHI, [3, 4, 5])])
-        self.assertSequenceEqual(game.discard_pool, [])
+        game.discard(1, 2)
+        self.assertSequenceEqual(game.discard_pool, [2])
 
     def test_pon(self):
         game = Game(test_deck)
@@ -81,7 +84,8 @@ class GameTest(unittest.TestCase):
         game.pon(1)
         self.assertSequenceEqual(game.get_hand(1), [1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 21])
         self.assertSequenceEqual(game.get_calls(1), [Call(CallType.PON, [9, 9, 9])])
-        self.assertSequenceEqual(game.discard_pool, [])
+        game.discard(1, 2)
+        self.assertSequenceEqual(game.discard_pool, [2])
 
     def test_pon_change_turn(self):
         game = Game(test_deck)
@@ -91,7 +95,8 @@ class GameTest(unittest.TestCase):
         game.pon(0)
         self.assertSequenceEqual(game.get_hand(0), [1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 21])
         self.assertSequenceEqual(game.get_calls(0), [Call(CallType.PON, [21, 21, 21])])
-        self.assertSequenceEqual(game.discard_pool, [1])
+        game.discard(0, 2)
+        self.assertSequenceEqual(game.discard_pool, [1, 2])
 
     def test_open_kan(self):
         game = Game(test_deck)
@@ -101,7 +106,8 @@ class GameTest(unittest.TestCase):
         self.assertSequenceEqual(
             game.get_calls(1), [Call(CallType.OPEN_KAN, [9, 9, 9, 9])]
         )
-        self.assertSequenceEqual(game.discard_pool, [])
+        game.discard(1, 2)
+        self.assertSequenceEqual(game.discard_pool, [2])
 
     def test_open_kan_change_turn(self):
         game = Game(test_deck)
@@ -113,7 +119,8 @@ class GameTest(unittest.TestCase):
         self.assertSequenceEqual(
             game.get_calls(0), [Call(CallType.OPEN_KAN, [21, 21, 21, 21])]
         )
-        self.assertSequenceEqual(game.discard_pool, [1])
+        game.discard(0, 2)
+        self.assertSequenceEqual(game.discard_pool, [1, 2])
 
     def test_add_kan(self):
         game = Game(test_deck)
@@ -128,7 +135,9 @@ class GameTest(unittest.TestCase):
         self.assertSequenceEqual(
             game.get_calls(1), [Call(CallType.ADD_KAN, [9, 9, 9, 9])]
         )
-        self.assertSequenceEqual(game.discard_pool, [1])
+        game.nothing(1)
+        game.discard(1, 2)
+        self.assertSequenceEqual(game.discard_pool, [1, 2])
 
     def test_closed_kan(self):
         game = Game(test_deck)
@@ -143,7 +152,9 @@ class GameTest(unittest.TestCase):
         self.assertSequenceEqual(
             game.get_calls(2), [Call(CallType.CLOSED_KAN, [11, 11, 11, 11])]
         )
-        self.assertSequenceEqual(game.discard_pool, [1, 2])
+        game.nothing(2)
+        game.discard(2, 13)
+        self.assertSequenceEqual(game.discard_pool, [1, 2, 13])
 
     def test_discard_sort(self):
         game = Game(test_deck)
