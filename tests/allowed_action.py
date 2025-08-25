@@ -1,9 +1,9 @@
 import unittest
 
 from src.mahjong.action import Action, ActionType
-from src.mahjong.game import Game
+from src.mahjong.game import Game, GameOptions
 
-from tests.test_deck import test_deck, test_deck2
+from tests.test_deck import test_deck, test_deck2, test_deck3
 
 
 class AllowedActionTest(unittest.TestCase):
@@ -194,4 +194,66 @@ class AllowedActionTest(unittest.TestCase):
         self.assertSetEqual(
             game.allowed_actions(2).actions,
             {Action(ActionType.NOTHING), Action(ActionType.RON)},
+        )
+
+    def test_start_flowers(self):
+        game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
+        self.assertSetEqual(
+            game.allowed_actions(0).actions,
+            {
+                Action(ActionType.NOTHING),
+                Action(ActionType.FLOWER, 41),
+                Action(ActionType.FLOWER, 43),
+            },
+        )
+
+    def test_start_wrong_player_flowers(self):
+        game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
+        self.assertSetEqual(
+            game.allowed_actions(1).actions, {Action(ActionType.NOTHING)}
+        )
+
+    def test_manual_can_flower(self):
+        game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
+        game.do_action(0, Action(ActionType.FLOWER, 41))
+        game.do_action(0, Action(ActionType.FLOWER, 43))
+        game.do_action(0, Action(ActionType.NOTHING))
+        game.do_action(1, Action(ActionType.FLOWER, 42))
+        game.do_action(1, Action(ActionType.NOTHING))
+        game.do_action(2, Action(ActionType.NOTHING))
+        game.do_action(3, Action(ActionType.NOTHING))
+        game.do_action(0, Action(ActionType.FLOWER, 44))
+        game.do_action(0, Action(ActionType.NOTHING))
+        game.do_action(1, Action(ActionType.NOTHING))
+        game.do_action(2, Action(ActionType.NOTHING))
+        game.do_action(3, Action(ActionType.NOTHING))
+        game.do_action(0, Action(ActionType.DISCARD, 1))
+        game.do_action(1, Action(ActionType.DRAW))
+        game.do_action(1, Action(ActionType.DISCARD, 2))
+        game.do_action(2, Action(ActionType.DRAW))
+        self.assertSetEqual(
+            game.allowed_actions(2).actions,
+            {
+                Action(ActionType.DISCARD, 3),
+                Action(ActionType.DISCARD, 7),
+                Action(ActionType.DISCARD, 13),
+                Action(ActionType.DISCARD, 45),
+                Action(ActionType.CLOSED_KAN, 3),
+                Action(ActionType.CLOSED_KAN, 7),
+                Action(ActionType.CLOSED_KAN, 13),
+                Action(ActionType.FLOWER, 45),
+            },
+        )
+
+    def test_auto_must_flower(self):
+        game = Game(test_deck3, GameOptions(auto_replace_flowers=True))
+        game.do_action(0, Action(ActionType.DISCARD, 1))
+        game.do_action(1, Action(ActionType.DRAW))
+        game.do_action(1, Action(ActionType.DISCARD, 2))
+        game.do_action(2, Action(ActionType.DRAW))
+        self.assertSetEqual(
+            game.allowed_actions(2).actions,
+            {
+                Action(ActionType.FLOWER, 45),
+            },
         )

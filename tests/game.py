@@ -10,6 +10,8 @@ from tests.test_deck import test_deck, test_deck2, test_deck3
 class GameTest(unittest.TestCase):
     def test_start_no_discards(self):
         game = Game()
+        self.assertEqual(game.current_player, 0)
+        self.assertEqual(game.status, GameStatus.PLAY)
         self.assertSequenceEqual(game.discard_pool, [])
 
     def test_fixed_deck_start_hands(self):
@@ -231,12 +233,89 @@ class GameTest(unittest.TestCase):
     def test_manual_flower_start(self):
         game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
         self.assertEqual(game.status, GameStatus.START)
-        self.assertSetEqual(
-            game.allowed_actions(0),
-            {
-                Action(ActionType.NOTHING),
-                Action(ActionType.FLOWER, 41),
-                Action(ActionType.FLOWER, 43),
-            },
+
+    def test_start_flower_call(self):
+        game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
+        game.do_action(0, Action(ActionType.FLOWER, 41))
+        self.assertCountEqual(game.get_calls(0), [Call(CallType.FLOWER, [41])])
+
+    def test_start_flower_calls(self):
+        game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
+        game.do_action(0, Action(ActionType.FLOWER, 41))
+        game.do_action(0, Action(ActionType.FLOWER, 43))
+        game.do_action(0, Action(ActionType.FLOWER, 44))
+        self.assertCountEqual(
+            game.get_calls(0),
+            [
+                Call(CallType.FLOWER, [41]),
+                Call(CallType.FLOWER, [43]),
+                Call(CallType.FLOWER, [44]),
+            ],
         )
-        self.assertSetEqual(game.allowed_actions(1), {Action(ActionType.NOTHING)})
+
+    def test_start_flower_next_player(self):
+        game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
+        game.do_action(0, Action(ActionType.FLOWER, 41))
+        game.do_action(0, Action(ActionType.FLOWER, 43))
+        game.do_action(0, Action(ActionType.FLOWER, 44))
+        game.do_action(0, Action(ActionType.NOTHING))
+        game.do_action(1, Action(ActionType.FLOWER, 42))
+        self.assertCountEqual(
+            game.get_hand(1), [2, 2, 2, 2, 6, 6, 6, 6, 12, 12, 12, 12, 35]
+        )
+        self.assertCountEqual(game.get_calls(1), [Call(CallType.FLOWER, [42])])
+
+    def test_start_flower_pass_all(self):
+        game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
+        game.do_action(0, Action(ActionType.FLOWER, 41))
+        game.do_action(0, Action(ActionType.FLOWER, 43))
+        game.do_action(0, Action(ActionType.FLOWER, 44))
+        game.do_action(0, Action(ActionType.NOTHING))
+        game.do_action(1, Action(ActionType.FLOWER, 42))
+        game.do_action(1, Action(ActionType.NOTHING))
+        game.do_action(2, Action(ActionType.NOTHING))
+        game.do_action(3, Action(ActionType.NOTHING))
+        game.do_action(0, Action(ActionType.NOTHING))
+        self.assertEqual(game.current_player, 0)
+        self.assertEqual(game.status, GameStatus.PLAY)
+
+    def test_start_flower_loop_pass_all(self):
+        game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
+        game.do_action(0, Action(ActionType.FLOWER, 41))
+        game.do_action(0, Action(ActionType.FLOWER, 43))
+        game.do_action(0, Action(ActionType.NOTHING))
+        game.do_action(1, Action(ActionType.FLOWER, 42))
+        game.do_action(1, Action(ActionType.NOTHING))
+        game.do_action(2, Action(ActionType.NOTHING))
+        game.do_action(3, Action(ActionType.NOTHING))
+        game.do_action(0, Action(ActionType.FLOWER, 44))
+        game.do_action(0, Action(ActionType.NOTHING))
+        game.do_action(1, Action(ActionType.NOTHING))
+        game.do_action(2, Action(ActionType.NOTHING))
+        game.do_action(3, Action(ActionType.NOTHING))
+        self.assertEqual(game.current_player, 0)
+        self.assertEqual(game.status, GameStatus.PLAY)
+
+    def test_draw_flower(self):
+        game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
+        game.do_action(0, Action(ActionType.FLOWER, 41))
+        game.do_action(0, Action(ActionType.FLOWER, 43))
+        game.do_action(0, Action(ActionType.NOTHING))
+        game.do_action(1, Action(ActionType.FLOWER, 42))
+        game.do_action(1, Action(ActionType.NOTHING))
+        game.do_action(2, Action(ActionType.NOTHING))
+        game.do_action(3, Action(ActionType.NOTHING))
+        game.do_action(0, Action(ActionType.FLOWER, 44))
+        game.do_action(0, Action(ActionType.NOTHING))
+        game.do_action(1, Action(ActionType.NOTHING))
+        game.do_action(2, Action(ActionType.NOTHING))
+        game.do_action(3, Action(ActionType.NOTHING))
+        game.do_action(0, Action(ActionType.DISCARD, 1))
+        game.do_action(1, Action(ActionType.DRAW))
+        game.do_action(1, Action(ActionType.DISCARD, 2))
+        game.do_action(2, Action(ActionType.DRAW))
+        game.do_action(2, Action(ActionType.FLOWER, 45))
+        self.assertCountEqual(game.get_calls(2), [Call(CallType.FLOWER, [45])])
+        self.assertCountEqual(
+            game.get_hand(2), [3, 3, 3, 3, 7, 7, 7, 7, 13, 13, 13, 13, 46]
+        )
