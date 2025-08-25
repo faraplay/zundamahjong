@@ -65,6 +65,10 @@ class Game:
         return self._hands[player].calls
 
     @property
+    def options(self):
+        return self._options
+
+    @property
     def current_player(self):
         return self._current_player
 
