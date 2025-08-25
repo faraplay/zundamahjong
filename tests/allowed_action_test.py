@@ -3,7 +3,7 @@ import unittest
 from src.mahjong.action import Action, ActionType
 from src.mahjong.game import Game, GameOptions
 
-from tests.test_deck import test_deck, test_deck2, test_deck3
+from tests.decks import test_deck, test_deck2, test_deck3
 
 
 class AllowedActionTest(unittest.TestCase):
