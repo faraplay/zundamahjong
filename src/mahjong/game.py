@@ -82,6 +82,7 @@ class Game:
     def discard_pool(self):
         return self._discard_pool.tiles
 
+    @property
     def wall_count(self):
         return len(self._deck.tiles)
 
@@ -94,7 +95,11 @@ class Game:
         return self._win_info
 
     def display_info(self):
-        print(f"Current player: {self._current_player}, Status: {self._status}")
+        print(
+            f"Current player: {self.current_player}, "
+            + f"Status: {self.status}, "
+            + f"Wall count: {self.wall_count}"
+        )
         for player, hand in enumerate(self._hands):
             print(
                 f"Player {player}: ",
@@ -219,6 +224,13 @@ class Game:
                 actions.add(ActionType.RON)
         return actions
 
+    def _allowed_actions_last_discarded(self, player: int, hand: Hand, last_tile: Tile):
+        actions = ActionSet()
+        if self._current_player != player:
+            if hand.can_ron(last_tile):
+                actions.add(ActionType.RON)
+        return actions
+
     _allowed_actions_funcs = {
         GameStatus.START: _allowed_actions_start,
         GameStatus.PLAY: _allowed_actions_play,
@@ -226,6 +238,7 @@ class Game:
         GameStatus.ADD_KAN_AFTER: _allowed_actions_add_kan_after,
         GameStatus.CLOSED_KAN_AFTER: _allowed_actions_closed_kan_after,
         GameStatus.DISCARDED: _allowed_actions_discarded,
+        GameStatus.LAST_DISCARDED: _allowed_actions_last_discarded,
     }
 
     def _nothing(self, player: int, tile: Tile):
@@ -240,6 +253,8 @@ class Game:
             case GameStatus.ADD_KAN_AFTER | GameStatus.CLOSED_KAN_AFTER:
                 self._status = GameStatus.PLAY
                 self._last_tile = 0
+            case GameStatus.LAST_DISCARDED:
+                self._status = GameStatus.END
 
     def _draw(self, player: int, tile: Tile):
         self._hands[player].draw()
@@ -250,7 +265,10 @@ class Game:
     def _discard(self, player: int, tile: Tile):
         self._hands[player].discard(tile)
         self._discard_pool.append(tile)
-        self._status = GameStatus.DISCARDED
+        if self.wall_count > self._options.end_wall_count:
+            self._status = GameStatus.DISCARDED
+        else:
+            self._status = GameStatus.LAST_DISCARDED
         self._last_tile = tile
 
     def _chi_a(self, player: int, tile: Tile):

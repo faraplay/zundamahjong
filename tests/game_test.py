@@ -434,3 +434,17 @@ class GameTest(unittest.TestCase):
             game.do_action(player, action)
         self.assertEqual(game.wall_count, 14)
         self.assertIsNone(game.win_info)
+
+    def test_houtei(self):
+        game = Game(test_deck4, GameOptions(end_wall_count=14))
+        game.do_action(0, Action(ActionType.CLOSED_KAN, 4))
+        while game.wall_count > 14:
+            actions = [game.allowed_actions(player).default for player in range(4)]
+            player, action = game.get_priority_action(actions)
+            game.do_action(player, action)
+        self.assertEqual(game.current_player, 0)
+        self.assertEqual(game.status, GameStatus.PLAY)
+        game.do_action(0, Action(ActionType.DISCARD, 13))
+        self.assertEqual(game.status, GameStatus.LAST_DISCARDED)
+        game.do_action(3, Action(ActionType.RON))
+        self.assertIsNotNone(game.win_info)
