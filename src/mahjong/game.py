@@ -18,12 +18,14 @@ class GameStatus(Enum):
     ADD_KAN_AFTER = 3  # Options: nothing, ron (chankan)
     CLOSED_KAN_AFTER = 4  # Options: nothing, ron (chankan)
     DISCARDED = 5  # Options: draw, chi, pon, open kan, ron
-    END = 6
+    LAST_DISCARDED = 6  # Options: nothing, ron
+    END = 7
 
 
 class GameOptions(NamedTuple):
-    auto_replace_flowers: bool = True
     player_count: int = 4
+    auto_replace_flowers: bool = True
+    end_wall_count: int = 14
 
 
 class InvalidMoveException(Exception):
@@ -79,6 +81,9 @@ class Game:
     @property
     def discard_pool(self):
         return self._discard_pool.tiles
+
+    def wall_count(self):
+        return len(self._deck.tiles)
 
     @property
     def history(self) -> Sequence[tuple[int, Action]]:

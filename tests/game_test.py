@@ -425,3 +425,12 @@ class GameTest(unittest.TestCase):
         player, action = game.get_priority_action(actions)
         self.assertEqual(player, 1)
         self.assertEqual(action, Action(ActionType.NOTHING))
+
+    def test_use_all_tiles(self):
+        game = Game(test_deck4, GameOptions(end_wall_count=14))
+        while game.status != GameStatus.END:
+            actions = [game.allowed_actions(player).default for player in range(4)]
+            player, action = game.get_priority_action(actions)
+            game.do_action(player, action)
+        self.assertEqual(game.wall_count, 14)
+        self.assertIsNone(game.win_info)
