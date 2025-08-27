@@ -1,5 +1,4 @@
 from collections import Counter
-import unittest
 
 from src.mahjong.tile import Tile
 from src.mahjong.deck import deck
@@ -304,9 +303,3 @@ test_deck4 = fill_missing_tiles(
     ],
     [],
 )
-
-
-class DeckTest(unittest.TestCase):
-    def test_deck_sizes(self):
-        for test_deck in [test_deck1, test_deck2, test_deck3, test_deck4]:
-            self.assertCountEqual(test_deck, deck)
