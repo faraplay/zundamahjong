@@ -14,7 +14,36 @@
       </select>
       <button>Send</button>
     </form>
-    <ul id="history_list"></ul>
+    <div>
+      <p id="player_indicator">You are Player ?</p>
+      <div>
+        <h3>History</h3>
+        <ul id="history_list"></ul>
+      </div>
+      <div>
+        <h3>Discards</h3>
+        <div id="discard_pool"></div>
+      </div>
+      <div>
+        <h3>Calls</h3>
+        <ul id="calls_list">
+          <li>
+            <b>Player 0</b>
+          </li>
+          <li>
+            <b>Player 1</b>
+          </li>
+          <li>
+            <b>Player 2</b>
+          </li>
+          <li>
+            <b>Player 3</b>
+          </li>
+        </ul>
+      </div>
+    </div>
+    <h2>Your hand</h2>
+    <div id="hand"></div>
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
     <script src="mahjong.js"></script>
   </body>

@@ -23,13 +23,31 @@ def disconnect(reason):
 @socketio.on("set_player")
 def handle_set_player(data):
     print(f"Received message from {request.sid}: {data}")
-    emit(
-        "list_all",
-        [
+    try:
+        player = int(data)
+        if player not in range(4):
+            print("Invalid player number!", player)
+            return
+    except ValueError:
+        print("Received data is not an integer!", data)
+        return
+    info = {
+        "player": player,
+        "hand": list(game.get_hand(player)),
+        "history": [
             {"player": action[0], "action": action[1].model_dump()}
             for action in game.history
         ],
-    )
+        "discards": list(game.discard_pool),
+        "player_calls": [
+            {
+                "player": player,
+                "calls": [call.model_dump() for call in game.get_calls(player)],
+            }
+            for player in range(4)
+        ],
+    }
+    emit("all_info", info)
 
 
 def run_server():
