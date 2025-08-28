@@ -1,10 +1,10 @@
-from enum import Enum
-from typing import NamedTuple
+from enum import IntEnum
+from pydantic import BaseModel
 
 from .tile import Tile
 
 
-class CallType(Enum):
+class CallType(IntEnum):
     PAIR = 0
     CHI = 1
     PON = 2
@@ -15,6 +15,6 @@ class CallType(Enum):
     THIRTEEN_ORPHANS = 7
 
 
-class Call(NamedTuple):
+class Call(BaseModel):
     call_type: CallType
     tiles: list[Tile]

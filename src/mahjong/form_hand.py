@@ -58,7 +58,12 @@ def split_suit_into_pons(tiles: Sequence[Tile]) -> list[list[Call]]:
     tile_counts = dict((tile, tiles.count(tile)) for tile in set(tiles))
     assert all(count <= 4 for count in tile_counts.values())
     if all(count == 3 for count in tile_counts.values()):
-        return [[Call(CallType.PON, [tile, tile, tile]) for tile in tile_counts.keys()]]
+        return [
+            [
+                Call(call_type=CallType.PON, tiles=[tile, tile, tile])
+                for tile in tile_counts.keys()
+            ]
+        ]
     else:
         return []
 
@@ -71,9 +76,9 @@ def split_suit_into_pons_and_pair(tiles: Sequence[Tile]) -> list[list[Call]]:
         return [
             [
                 (
-                    Call(CallType.PON, [tile, tile, tile])
+                    Call(call_type=CallType.PON, tiles=[tile, tile, tile])
                     if count == 3
-                    else Call(CallType.PAIR, tile)
+                    else Call(call_type=CallType.PAIR, tiles=[tile, tile])
                 )
                 for (tile, count) in tile_counts.items()
             ]
@@ -93,7 +98,7 @@ def split_suit_into_3melds(tiles: Sequence[Tile]) -> list[list[Call]]:
     if tiles[2] == tile:
         remaining_tiles = tiles[3:]
         formed_hands.extend(
-            [Call(CallType.PON, [tile, tile, tile])] + formed_hand
+            [Call(call_type=CallType.PON, tiles=[tile, tile, tile])] + formed_hand
             for formed_hand in split_suit_into_3melds(remaining_tiles)
         )
     try:
@@ -101,7 +106,8 @@ def split_suit_into_3melds(tiles: Sequence[Tile]) -> list[list[Call]]:
         remaining_tiles.remove(tile + 1)
         remaining_tiles.remove(tile + 2)
         formed_hands.extend(
-            [Call(CallType.CHI, [tile, tile + 1, tile + 2])] + formed_hand
+            [Call(call_type=CallType.CHI, tiles=[tile, tile + 1, tile + 2])]
+            + formed_hand
             for formed_hand in split_suit_into_3melds(remaining_tiles)
         )
     except ValueError:
@@ -125,7 +131,7 @@ def split_suit_into_3melds_and_pair(tiles: Sequence[Tile]) -> list[list[Call]]:
             continue
         remaining_tiles = tiles[:index] + tiles[index + 2 :]
         formed_hands.extend(
-            [Call(CallType.PAIR, [tile, tile])] + formed_hand
+            [Call(call_type=CallType.PAIR, tiles=[tile, tile])] + formed_hand
             for formed_hand in split_suit_into_3melds(remaining_tiles)
         )
     return formed_hands
@@ -135,7 +141,12 @@ def form_seven_pairs(tiles: Sequence[Tile]) -> list[list[Call]]:
     assert len(tiles) == 14
     tile_counts = dict((tile, tiles.count(tile)) for tile in set(tiles))
     if all(count == 2 for count in tile_counts.values()):
-        return [[Call(CallType.PAIR, [tile, tile]) for tile in tile_counts.keys()]]
+        return [
+            [
+                Call(call_type=CallType.PAIR, tiles=[tile, tile])
+                for tile in tile_counts.keys()
+            ]
+        ]
     else:
         return []
 
@@ -151,7 +162,7 @@ def form_thirteen_orphans(tiles: Sequence[Tile]) -> list[list[Call]]:
             tiles_list.remove(tile)
         assert len(tiles_list) == 1
         if tiles_list[0] in orphans:
-            return [[Call(CallType.THIRTEEN_ORPHANS, list(tiles))]]
+            return [[Call(call_type=CallType.THIRTEEN_ORPHANS, tiles=list(tiles))]]
         else:
             return []
     except ValueError:

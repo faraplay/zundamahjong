@@ -63,7 +63,9 @@ class GameTest(unittest.TestCase):
         game.do_action(0, Action(action_type=ActionType.DISCARD, tile=5))
         game.do_action(1, Action(action_type=ActionType.CHI_A))
         self.assertCountEqual(game.get_hand(1), [1, 2, 3, 4, 5, 8, 9, 9, 9, 17, 21])
-        self.assertCountEqual(game.get_calls(1), [Call(CallType.CHI, [5, 6, 7])])
+        self.assertCountEqual(
+            game.get_calls(1), [Call(call_type=CallType.CHI, tiles=[5, 6, 7])]
+        )
         game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [2])
 
@@ -72,7 +74,9 @@ class GameTest(unittest.TestCase):
         game.do_action(0, Action(action_type=ActionType.DISCARD, tile=5))
         game.do_action(1, Action(action_type=ActionType.CHI_B))
         self.assertCountEqual(game.get_hand(1), [1, 2, 3, 5, 7, 8, 9, 9, 9, 17, 21])
-        self.assertCountEqual(game.get_calls(1), [Call(CallType.CHI, [4, 5, 6])])
+        self.assertCountEqual(
+            game.get_calls(1), [Call(call_type=CallType.CHI, tiles=[4, 5, 6])]
+        )
         game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [2])
 
@@ -81,7 +85,9 @@ class GameTest(unittest.TestCase):
         game.do_action(0, Action(action_type=ActionType.DISCARD, tile=5))
         game.do_action(1, Action(action_type=ActionType.CHI_C))
         self.assertCountEqual(game.get_hand(1), [1, 2, 5, 6, 7, 8, 9, 9, 9, 17, 21])
-        self.assertCountEqual(game.get_calls(1), [Call(CallType.CHI, [3, 4, 5])])
+        self.assertCountEqual(
+            game.get_calls(1), [Call(call_type=CallType.CHI, tiles=[3, 4, 5])]
+        )
         game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [2])
 
@@ -90,7 +96,9 @@ class GameTest(unittest.TestCase):
         game.do_action(0, Action(action_type=ActionType.DISCARD, tile=9))
         game.do_action(1, Action(action_type=ActionType.PON))
         self.assertCountEqual(game.get_hand(1), [1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 21])
-        self.assertCountEqual(game.get_calls(1), [Call(CallType.PON, [9, 9, 9])])
+        self.assertCountEqual(
+            game.get_calls(1), [Call(call_type=CallType.PON, tiles=[9, 9, 9])]
+        )
         game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [2])
 
@@ -101,7 +109,9 @@ class GameTest(unittest.TestCase):
         game.do_action(1, Action(action_type=ActionType.DISCARD, tile=21))
         game.do_action(0, Action(action_type=ActionType.PON))
         self.assertCountEqual(game.get_hand(0), [1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 21])
-        self.assertCountEqual(game.get_calls(0), [Call(CallType.PON, [21, 21, 21])])
+        self.assertCountEqual(
+            game.get_calls(0), [Call(call_type=CallType.PON, tiles=[21, 21, 21])]
+        )
         game.do_action(0, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [1, 2])
 
@@ -111,7 +121,7 @@ class GameTest(unittest.TestCase):
         game.do_action(1, Action(action_type=ActionType.OPEN_KAN))
         self.assertCountEqual(game.get_hand(1), [1, 2, 3, 4, 5, 6, 7, 8, 17, 21, 8])
         self.assertCountEqual(
-            game.get_calls(1), [Call(CallType.OPEN_KAN, [9, 9, 9, 9])]
+            game.get_calls(1), [Call(call_type=CallType.OPEN_KAN, tiles=[9, 9, 9, 9])]
         )
         game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [2])
@@ -124,7 +134,8 @@ class GameTest(unittest.TestCase):
         game.do_action(0, Action(action_type=ActionType.OPEN_KAN))
         self.assertCountEqual(game.get_hand(0), [1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 8])
         self.assertCountEqual(
-            game.get_calls(0), [Call(CallType.OPEN_KAN, [21, 21, 21, 21])]
+            game.get_calls(0),
+            [Call(call_type=CallType.OPEN_KAN, tiles=[21, 21, 21, 21])],
         )
         game.do_action(0, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [1, 2])
@@ -139,7 +150,9 @@ class GameTest(unittest.TestCase):
         game.do_action(1, Action(action_type=ActionType.DRAW))
         game.do_action(1, Action(action_type=ActionType.ADD_KAN, tile=9))
         self.assertCountEqual(game.get_hand(1), [1, 1, 2, 3, 4, 5, 6, 7, 8, 17, 8])
-        self.assertCountEqual(game.get_calls(1), [Call(CallType.ADD_KAN, [9, 9, 9, 9])])
+        self.assertCountEqual(
+            game.get_calls(1), [Call(call_type=CallType.ADD_KAN, tiles=[9, 9, 9, 9])]
+        )
         game.do_action(1, Action(action_type=ActionType.NOTHING))
         game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [1, 2])
@@ -155,7 +168,8 @@ class GameTest(unittest.TestCase):
             game.get_hand(2), [2, 13, 13, 13, 13, 15, 15, 15, 15, 17, 8]
         )
         self.assertCountEqual(
-            game.get_calls(2), [Call(CallType.CLOSED_KAN, [11, 11, 11, 11])]
+            game.get_calls(2),
+            [Call(call_type=CallType.CLOSED_KAN, tiles=[11, 11, 11, 11])],
         )
         game.do_action(2, Action(action_type=ActionType.NOTHING))
         game.do_action(2, Action(action_type=ActionType.DISCARD, tile=13))
@@ -168,14 +182,17 @@ class GameTest(unittest.TestCase):
         )
         self.assertCountEqual(
             game.get_calls(0),
-            [Call(CallType.FLOWER, [41]), Call(CallType.FLOWER, [43])],
+            [
+                Call(call_type=CallType.FLOWER, tiles=[41]),
+                Call(call_type=CallType.FLOWER, tiles=[43]),
+            ],
         )
         self.assertCountEqual(
             game.get_hand(1), [2, 2, 2, 2, 5, 5, 5, 5, 7, 13, 13, 13, 37]
         )
         self.assertCountEqual(
             game.get_calls(1),
-            [Call(CallType.FLOWER, [42])],
+            [Call(call_type=CallType.FLOWER, tiles=[42])],
         )
         self.assertCountEqual(
             game.get_hand(2), [11, 11, 11, 12, 12, 12, 14, 15, 31, 31, 32, 32, 32]
@@ -287,7 +304,9 @@ class GameTest(unittest.TestCase):
     def test_start_flower_call(self):
         game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
         game.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
-        self.assertCountEqual(game.get_calls(0), [Call(CallType.FLOWER, [41])])
+        self.assertCountEqual(
+            game.get_calls(0), [Call(call_type=CallType.FLOWER, tiles=[41])]
+        )
 
     def test_start_flower_calls(self):
         game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
@@ -297,9 +316,9 @@ class GameTest(unittest.TestCase):
         self.assertCountEqual(
             game.get_calls(0),
             [
-                Call(CallType.FLOWER, [41]),
-                Call(CallType.FLOWER, [43]),
-                Call(CallType.FLOWER, [44]),
+                Call(call_type=CallType.FLOWER, tiles=[41]),
+                Call(call_type=CallType.FLOWER, tiles=[43]),
+                Call(call_type=CallType.FLOWER, tiles=[44]),
             ],
         )
 
@@ -313,7 +332,9 @@ class GameTest(unittest.TestCase):
         self.assertCountEqual(
             game.get_hand(1), [2, 2, 2, 2, 6, 6, 6, 6, 12, 12, 12, 12, 35]
         )
-        self.assertCountEqual(game.get_calls(1), [Call(CallType.FLOWER, [42])])
+        self.assertCountEqual(
+            game.get_calls(1), [Call(call_type=CallType.FLOWER, tiles=[42])]
+        )
 
     def test_start_flower_pass_all(self):
         game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
@@ -365,7 +386,9 @@ class GameTest(unittest.TestCase):
         game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         game.do_action(2, Action(action_type=ActionType.DRAW))
         game.do_action(2, Action(action_type=ActionType.FLOWER, tile=45))
-        self.assertCountEqual(game.get_calls(2), [Call(CallType.FLOWER, [45])])
+        self.assertCountEqual(
+            game.get_calls(2), [Call(call_type=CallType.FLOWER, tiles=[45])]
+        )
         self.assertCountEqual(
             game.get_hand(2), [3, 3, 3, 3, 7, 7, 7, 7, 9, 13, 13, 13, 13, 46]
         )

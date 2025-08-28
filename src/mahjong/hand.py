@@ -50,7 +50,9 @@ class Hand:
         assert self.can_chi_a(tile)
         self._tiles.remove(tile + 1)
         self._tiles.remove(tile + 2)
-        self._calls.append(Call(CallType.CHI, [tile, tile + 1, tile + 2]))
+        self._calls.append(
+            Call(call_type=CallType.CHI, tiles=[tile, tile + 1, tile + 2])
+        )
 
     def can_chi_b(self, tile: Tile):
         return (
@@ -61,7 +63,9 @@ class Hand:
         assert self.can_chi_b(tile)
         self._tiles.remove(tile - 1)
         self._tiles.remove(tile + 1)
-        self._calls.append(Call(CallType.CHI, [tile - 1, tile, tile + 1]))
+        self._calls.append(
+            Call(call_type=CallType.CHI, tiles=[tile - 1, tile, tile + 1])
+        )
 
     def can_chi_c(self, tile: Tile):
         return (
@@ -72,7 +76,9 @@ class Hand:
         assert self.can_chi_c(tile)
         self._tiles.remove(tile - 2)
         self._tiles.remove(tile - 1)
-        self._calls.append(Call(CallType.CHI, [tile - 2, tile - 1, tile]))
+        self._calls.append(
+            Call(call_type=CallType.CHI, tiles=[tile - 2, tile - 1, tile])
+        )
 
     def can_pon(self, tile: Tile):
         return self._tiles.count(tile) >= 2
@@ -81,7 +87,7 @@ class Hand:
         assert self.can_pon(tile)
         self._tiles.remove(tile)
         self._tiles.remove(tile)
-        self._calls.append(Call(CallType.PON, [tile, tile, tile]))
+        self._calls.append(Call(call_type=CallType.PON, tiles=[tile, tile, tile]))
 
     def can_open_kan(self, tile: Tile):
         return self._tiles.count(tile) >= 3
@@ -91,20 +97,24 @@ class Hand:
         self._tiles.remove(tile)
         self._tiles.remove(tile)
         self._tiles.remove(tile)
-        self._calls.append(Call(CallType.OPEN_KAN, [tile, tile, tile, tile]))
+        self._calls.append(
+            Call(call_type=CallType.OPEN_KAN, tiles=[tile, tile, tile, tile])
+        )
         self.sort()
         self._draw_from_back()
 
     def can_add_kan(self, tile: Tile):
-        pon_call = Call(CallType.PON, [tile, tile, tile])
+        pon_call = Call(call_type=CallType.PON, tiles=[tile, tile, tile])
         return tile in self._tiles and pon_call in self._calls
 
     def add_kan(self, tile: Tile):
         assert self.can_add_kan(tile)
-        pon_call = Call(CallType.PON, [tile, tile, tile])
+        pon_call = Call(call_type=CallType.PON, tiles=[tile, tile, tile])
         self._tiles.remove(tile)
         pon_index = self._calls.index(pon_call)
-        self._calls[pon_index] = Call(CallType.ADD_KAN, [tile, tile, tile, tile])
+        self._calls[pon_index] = Call(
+            call_type=CallType.ADD_KAN, tiles=[tile, tile, tile, tile]
+        )
         self.sort()
         self._draw_from_back()
 
@@ -117,7 +127,9 @@ class Hand:
         self._tiles.remove(tile)
         self._tiles.remove(tile)
         self._tiles.remove(tile)
-        self._calls.append(Call(CallType.CLOSED_KAN, [tile, tile, tile, tile]))
+        self._calls.append(
+            Call(call_type=CallType.CLOSED_KAN, tiles=[tile, tile, tile, tile])
+        )
         self.sort()
         self._draw_from_back()
 
@@ -134,6 +146,6 @@ class Hand:
         assert is_flower(tile)
         assert tile in self._tiles
         self._tiles.remove(tile)
-        self._calls.append(Call(CallType.FLOWER, [tile]))
+        self._calls.append(Call(call_type=CallType.FLOWER, tiles=[tile]))
         self.sort()
         self._draw_from_back()
