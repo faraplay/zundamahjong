@@ -16,10 +16,10 @@ class GameTest(unittest.TestCase):
         self.assertSequenceEqual(
             game.history,
             [
-                (0, Action(ActionType.NOTHING)),
-                (1, Action(ActionType.NOTHING)),
-                (2, Action(ActionType.NOTHING)),
-                (3, Action(ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.NOTHING)),
+                (1, Action(action_type=ActionType.NOTHING)),
+                (2, Action(action_type=ActionType.NOTHING)),
+                (3, Action(action_type=ActionType.NOTHING)),
             ],
         )
 
@@ -40,125 +40,125 @@ class GameTest(unittest.TestCase):
 
     def test_discard_pool(self):
         game = Game(test_deck1)
-        game.do_action(0, Action(ActionType.DISCARD, 17))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=17))
         self.assertSequenceEqual(game.discard_pool, [17])
 
     def test_discard_hand(self):
         game = Game(test_deck1)
-        game.do_action(0, Action(ActionType.DISCARD, 17))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=17))
         self.assertCountEqual(
             game.get_hand(0), [1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 21, 21, 21]
         )
 
     def test_draw(self):
         game = Game(test_deck1)
-        game.do_action(0, Action(ActionType.DISCARD, 17))
-        game.do_action(1, Action(ActionType.DRAW))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=17))
+        game.do_action(1, Action(action_type=ActionType.DRAW))
         self.assertCountEqual(
             game.get_hand(1), [1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 17, 21, 1]
         )
 
     def test_chi_a(self):
         game = Game(test_deck1)
-        game.do_action(0, Action(ActionType.DISCARD, 5))
-        game.do_action(1, Action(ActionType.CHI_A))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=5))
+        game.do_action(1, Action(action_type=ActionType.CHI_A))
         self.assertCountEqual(game.get_hand(1), [1, 2, 3, 4, 5, 8, 9, 9, 9, 17, 21])
         self.assertCountEqual(game.get_calls(1), [Call(CallType.CHI, [5, 6, 7])])
-        game.do_action(1, Action(ActionType.DISCARD, 2))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [2])
 
     def test_chi_b(self):
         game = Game(test_deck1)
-        game.do_action(0, Action(ActionType.DISCARD, 5))
-        game.do_action(1, Action(ActionType.CHI_B))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=5))
+        game.do_action(1, Action(action_type=ActionType.CHI_B))
         self.assertCountEqual(game.get_hand(1), [1, 2, 3, 5, 7, 8, 9, 9, 9, 17, 21])
         self.assertCountEqual(game.get_calls(1), [Call(CallType.CHI, [4, 5, 6])])
-        game.do_action(1, Action(ActionType.DISCARD, 2))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [2])
 
     def test_chi_c(self):
         game = Game(test_deck1)
-        game.do_action(0, Action(ActionType.DISCARD, 5))
-        game.do_action(1, Action(ActionType.CHI_C))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=5))
+        game.do_action(1, Action(action_type=ActionType.CHI_C))
         self.assertCountEqual(game.get_hand(1), [1, 2, 5, 6, 7, 8, 9, 9, 9, 17, 21])
         self.assertCountEqual(game.get_calls(1), [Call(CallType.CHI, [3, 4, 5])])
-        game.do_action(1, Action(ActionType.DISCARD, 2))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [2])
 
     def test_pon(self):
         game = Game(test_deck1)
-        game.do_action(0, Action(ActionType.DISCARD, 9))
-        game.do_action(1, Action(ActionType.PON))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=9))
+        game.do_action(1, Action(action_type=ActionType.PON))
         self.assertCountEqual(game.get_hand(1), [1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 21])
         self.assertCountEqual(game.get_calls(1), [Call(CallType.PON, [9, 9, 9])])
-        game.do_action(1, Action(ActionType.DISCARD, 2))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [2])
 
     def test_pon_change_turn(self):
         game = Game(test_deck1)
-        game.do_action(0, Action(ActionType.DISCARD, 1))
-        game.do_action(1, Action(ActionType.DRAW))
-        game.do_action(1, Action(ActionType.DISCARD, 21))
-        game.do_action(0, Action(ActionType.PON))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
+        game.do_action(1, Action(action_type=ActionType.DRAW))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=21))
+        game.do_action(0, Action(action_type=ActionType.PON))
         self.assertCountEqual(game.get_hand(0), [1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 21])
         self.assertCountEqual(game.get_calls(0), [Call(CallType.PON, [21, 21, 21])])
-        game.do_action(0, Action(ActionType.DISCARD, 2))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [1, 2])
 
     def test_open_kan(self):
         game = Game(test_deck1)
-        game.do_action(0, Action(ActionType.DISCARD, 9))
-        game.do_action(1, Action(ActionType.OPEN_KAN))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=9))
+        game.do_action(1, Action(action_type=ActionType.OPEN_KAN))
         self.assertCountEqual(game.get_hand(1), [1, 2, 3, 4, 5, 6, 7, 8, 17, 21, 8])
         self.assertCountEqual(
             game.get_calls(1), [Call(CallType.OPEN_KAN, [9, 9, 9, 9])]
         )
-        game.do_action(1, Action(ActionType.DISCARD, 2))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [2])
 
     def test_open_kan_change_turn(self):
         game = Game(test_deck1)
-        game.do_action(0, Action(ActionType.DISCARD, 1))
-        game.do_action(1, Action(ActionType.DRAW))
-        game.do_action(1, Action(ActionType.DISCARD, 21))
-        game.do_action(0, Action(ActionType.OPEN_KAN))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
+        game.do_action(1, Action(action_type=ActionType.DRAW))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=21))
+        game.do_action(0, Action(action_type=ActionType.OPEN_KAN))
         self.assertCountEqual(game.get_hand(0), [1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 8])
         self.assertCountEqual(
             game.get_calls(0), [Call(CallType.OPEN_KAN, [21, 21, 21, 21])]
         )
-        game.do_action(0, Action(ActionType.DISCARD, 2))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [1, 2])
 
     def test_add_kan(self):
         game = Game(test_deck1)
-        game.do_action(0, Action(ActionType.DISCARD, 9))
-        game.do_action(1, Action(ActionType.PON))
-        game.do_action(1, Action(ActionType.DISCARD, 21))
-        game.do_action(0, Action(ActionType.PON))
-        game.do_action(0, Action(ActionType.DISCARD, 1))
-        game.do_action(1, Action(ActionType.DRAW))
-        game.do_action(1, Action(ActionType.ADD_KAN, 9))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=9))
+        game.do_action(1, Action(action_type=ActionType.PON))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=21))
+        game.do_action(0, Action(action_type=ActionType.PON))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
+        game.do_action(1, Action(action_type=ActionType.DRAW))
+        game.do_action(1, Action(action_type=ActionType.ADD_KAN, tile=9))
         self.assertCountEqual(game.get_hand(1), [1, 1, 2, 3, 4, 5, 6, 7, 8, 17, 8])
         self.assertCountEqual(game.get_calls(1), [Call(CallType.ADD_KAN, [9, 9, 9, 9])])
-        game.do_action(1, Action(ActionType.NOTHING))
-        game.do_action(1, Action(ActionType.DISCARD, 2))
+        game.do_action(1, Action(action_type=ActionType.NOTHING))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(game.discard_pool, [1, 2])
 
     def test_closed_kan(self):
         game = Game(test_deck1)
-        game.do_action(0, Action(ActionType.DISCARD, 1))
-        game.do_action(1, Action(ActionType.DRAW))
-        game.do_action(1, Action(ActionType.DISCARD, 2))
-        game.do_action(2, Action(ActionType.DRAW))
-        game.do_action(2, Action(ActionType.CLOSED_KAN, 11))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
+        game.do_action(1, Action(action_type=ActionType.DRAW))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
+        game.do_action(2, Action(action_type=ActionType.DRAW))
+        game.do_action(2, Action(action_type=ActionType.CLOSED_KAN, tile=11))
         self.assertCountEqual(
             game.get_hand(2), [2, 13, 13, 13, 13, 15, 15, 15, 15, 17, 8]
         )
         self.assertCountEqual(
             game.get_calls(2), [Call(CallType.CLOSED_KAN, [11, 11, 11, 11])]
         )
-        game.do_action(2, Action(ActionType.NOTHING))
-        game.do_action(2, Action(ActionType.DISCARD, 13))
+        game.do_action(2, Action(action_type=ActionType.NOTHING))
+        game.do_action(2, Action(action_type=ActionType.DISCARD, tile=13))
         self.assertSequenceEqual(game.discard_pool, [1, 2, 13])
 
     def test_deck_2_start_hands(self):
@@ -184,38 +184,38 @@ class GameTest(unittest.TestCase):
 
     def test_history(self):
         game = Game(test_deck1)
-        game.do_action(0, Action(ActionType.DISCARD, 9))
-        game.do_action(1, Action(ActionType.PON))
-        game.do_action(1, Action(ActionType.DISCARD, 21))
-        game.do_action(0, Action(ActionType.PON))
-        game.do_action(0, Action(ActionType.DISCARD, 1))
-        game.do_action(1, Action(ActionType.DRAW))
-        game.do_action(1, Action(ActionType.ADD_KAN, 9))
-        game.do_action(1, Action(ActionType.NOTHING))
-        game.do_action(1, Action(ActionType.DISCARD, 2))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=9))
+        game.do_action(1, Action(action_type=ActionType.PON))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=21))
+        game.do_action(0, Action(action_type=ActionType.PON))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
+        game.do_action(1, Action(action_type=ActionType.DRAW))
+        game.do_action(1, Action(action_type=ActionType.ADD_KAN, tile=9))
+        game.do_action(1, Action(action_type=ActionType.NOTHING))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(
             game.history,
             [
-                (0, Action(ActionType.NOTHING)),
-                (1, Action(ActionType.NOTHING)),
-                (2, Action(ActionType.NOTHING)),
-                (3, Action(ActionType.NOTHING)),
-                (0, Action(ActionType.DISCARD, 9)),
-                (1, Action(ActionType.PON)),
-                (1, Action(ActionType.DISCARD, 21)),
-                (0, Action(ActionType.PON)),
-                (0, Action(ActionType.DISCARD, 1)),
-                (1, Action(ActionType.DRAW)),
-                (1, Action(ActionType.ADD_KAN, 9)),
-                (1, Action(ActionType.NOTHING)),
-                (1, Action(ActionType.DISCARD, 2)),
+                (0, Action(action_type=ActionType.NOTHING)),
+                (1, Action(action_type=ActionType.NOTHING)),
+                (2, Action(action_type=ActionType.NOTHING)),
+                (3, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.DISCARD, tile=9)),
+                (1, Action(action_type=ActionType.PON)),
+                (1, Action(action_type=ActionType.DISCARD, tile=21)),
+                (0, Action(action_type=ActionType.PON)),
+                (0, Action(action_type=ActionType.DISCARD, tile=1)),
+                (1, Action(action_type=ActionType.DRAW)),
+                (1, Action(action_type=ActionType.ADD_KAN, tile=9)),
+                (1, Action(action_type=ActionType.NOTHING)),
+                (1, Action(action_type=ActionType.DISCARD, tile=2)),
             ],
         )
 
     def test_ron(self):
         game = Game(test_deck2)
-        game.do_action(0, Action(ActionType.DISCARD, 13))
-        game.do_action(2, Action(ActionType.RON))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        game.do_action(2, Action(action_type=ActionType.RON))
         self.assertEqual(game.status, GameStatus.END)
         win_info = game.win_info
         self.assertEqual(win_info.win_player, 2)
@@ -227,11 +227,11 @@ class GameTest(unittest.TestCase):
 
     def test_tsumo(self):
         game = Game(test_deck2)
-        game.do_action(0, Action(ActionType.DISCARD, 1))
-        game.do_action(1, Action(ActionType.DRAW))
-        game.do_action(1, Action(ActionType.DISCARD, 2))
-        game.do_action(2, Action(ActionType.DRAW))
-        game.do_action(2, Action(ActionType.TSUMO))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
+        game.do_action(1, Action(action_type=ActionType.DRAW))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
+        game.do_action(2, Action(action_type=ActionType.DRAW))
+        game.do_action(2, Action(action_type=ActionType.TSUMO))
         self.assertEqual(game.status, GameStatus.END)
         win_info = game.win_info
         self.assertEqual(win_info.win_player, 2)
@@ -243,14 +243,14 @@ class GameTest(unittest.TestCase):
 
     def test_chankan(self):
         game = Game(test_deck2)
-        game.do_action(0, Action(ActionType.DISCARD, 13))
-        game.do_action(1, Action(ActionType.PON))
-        game.do_action(1, Action(ActionType.DISCARD, 7))
-        game.do_action(0, Action(ActionType.OPEN_KAN))
-        game.do_action(0, Action(ActionType.DISCARD, 1))
-        game.do_action(1, Action(ActionType.DRAW))
-        game.do_action(1, Action(ActionType.ADD_KAN, 13))
-        game.do_action(2, Action(ActionType.RON))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        game.do_action(1, Action(action_type=ActionType.PON))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=7))
+        game.do_action(0, Action(action_type=ActionType.OPEN_KAN))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
+        game.do_action(1, Action(action_type=ActionType.DRAW))
+        game.do_action(1, Action(action_type=ActionType.ADD_KAN, tile=13))
+        game.do_action(2, Action(action_type=ActionType.RON))
         self.assertEqual(game.status, GameStatus.END)
         win_info = game.win_info
         self.assertEqual(win_info.win_player, 2)
@@ -265,18 +265,18 @@ class GameTest(unittest.TestCase):
         self.assertSequenceEqual(
             game.history,
             [
-                (0, Action(ActionType.FLOWER, 41)),
-                (0, Action(ActionType.FLOWER, 43)),
-                (0, Action(ActionType.NOTHING)),
-                (1, Action(ActionType.FLOWER, 42)),
-                (1, Action(ActionType.NOTHING)),
-                (2, Action(ActionType.NOTHING)),
-                (3, Action(ActionType.NOTHING)),
-                (0, Action(ActionType.FLOWER, 44)),
-                (0, Action(ActionType.NOTHING)),
-                (1, Action(ActionType.NOTHING)),
-                (2, Action(ActionType.NOTHING)),
-                (3, Action(ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.FLOWER, tile=41)),
+                (0, Action(action_type=ActionType.FLOWER, tile=43)),
+                (0, Action(action_type=ActionType.NOTHING)),
+                (1, Action(action_type=ActionType.FLOWER, tile=42)),
+                (1, Action(action_type=ActionType.NOTHING)),
+                (2, Action(action_type=ActionType.NOTHING)),
+                (3, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.FLOWER, tile=44)),
+                (0, Action(action_type=ActionType.NOTHING)),
+                (1, Action(action_type=ActionType.NOTHING)),
+                (2, Action(action_type=ActionType.NOTHING)),
+                (3, Action(action_type=ActionType.NOTHING)),
             ],
         )
 
@@ -286,14 +286,14 @@ class GameTest(unittest.TestCase):
 
     def test_start_flower_call(self):
         game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
-        game.do_action(0, Action(ActionType.FLOWER, 41))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
         self.assertCountEqual(game.get_calls(0), [Call(CallType.FLOWER, [41])])
 
     def test_start_flower_calls(self):
         game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
-        game.do_action(0, Action(ActionType.FLOWER, 41))
-        game.do_action(0, Action(ActionType.FLOWER, 43))
-        game.do_action(0, Action(ActionType.FLOWER, 44))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=44))
         self.assertCountEqual(
             game.get_calls(0),
             [
@@ -305,11 +305,11 @@ class GameTest(unittest.TestCase):
 
     def test_start_flower_next_player(self):
         game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
-        game.do_action(0, Action(ActionType.FLOWER, 41))
-        game.do_action(0, Action(ActionType.FLOWER, 43))
-        game.do_action(0, Action(ActionType.FLOWER, 44))
-        game.do_action(0, Action(ActionType.NOTHING))
-        game.do_action(1, Action(ActionType.FLOWER, 42))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=44))
+        game.do_action(0, Action(action_type=ActionType.NOTHING))
+        game.do_action(1, Action(action_type=ActionType.FLOWER, tile=42))
         self.assertCountEqual(
             game.get_hand(1), [2, 2, 2, 2, 6, 6, 6, 6, 12, 12, 12, 12, 35]
         )
@@ -317,54 +317,54 @@ class GameTest(unittest.TestCase):
 
     def test_start_flower_pass_all(self):
         game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
-        game.do_action(0, Action(ActionType.FLOWER, 41))
-        game.do_action(0, Action(ActionType.FLOWER, 43))
-        game.do_action(0, Action(ActionType.FLOWER, 44))
-        game.do_action(0, Action(ActionType.NOTHING))
-        game.do_action(1, Action(ActionType.FLOWER, 42))
-        game.do_action(1, Action(ActionType.NOTHING))
-        game.do_action(2, Action(ActionType.NOTHING))
-        game.do_action(3, Action(ActionType.NOTHING))
-        game.do_action(0, Action(ActionType.NOTHING))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=44))
+        game.do_action(0, Action(action_type=ActionType.NOTHING))
+        game.do_action(1, Action(action_type=ActionType.FLOWER, tile=42))
+        game.do_action(1, Action(action_type=ActionType.NOTHING))
+        game.do_action(2, Action(action_type=ActionType.NOTHING))
+        game.do_action(3, Action(action_type=ActionType.NOTHING))
+        game.do_action(0, Action(action_type=ActionType.NOTHING))
         self.assertEqual(game.current_player, 0)
         self.assertEqual(game.status, GameStatus.PLAY)
 
     def test_start_flower_loop_pass_all(self):
         game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
-        game.do_action(0, Action(ActionType.FLOWER, 41))
-        game.do_action(0, Action(ActionType.FLOWER, 43))
-        game.do_action(0, Action(ActionType.NOTHING))
-        game.do_action(1, Action(ActionType.FLOWER, 42))
-        game.do_action(1, Action(ActionType.NOTHING))
-        game.do_action(2, Action(ActionType.NOTHING))
-        game.do_action(3, Action(ActionType.NOTHING))
-        game.do_action(0, Action(ActionType.FLOWER, 44))
-        game.do_action(0, Action(ActionType.NOTHING))
-        game.do_action(1, Action(ActionType.NOTHING))
-        game.do_action(2, Action(ActionType.NOTHING))
-        game.do_action(3, Action(ActionType.NOTHING))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
+        game.do_action(0, Action(action_type=ActionType.NOTHING))
+        game.do_action(1, Action(action_type=ActionType.FLOWER, tile=42))
+        game.do_action(1, Action(action_type=ActionType.NOTHING))
+        game.do_action(2, Action(action_type=ActionType.NOTHING))
+        game.do_action(3, Action(action_type=ActionType.NOTHING))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=44))
+        game.do_action(0, Action(action_type=ActionType.NOTHING))
+        game.do_action(1, Action(action_type=ActionType.NOTHING))
+        game.do_action(2, Action(action_type=ActionType.NOTHING))
+        game.do_action(3, Action(action_type=ActionType.NOTHING))
         self.assertEqual(game.current_player, 0)
         self.assertEqual(game.status, GameStatus.PLAY)
 
     def test_draw_flower(self):
         game = Game(test_deck3, GameOptions(auto_replace_flowers=False))
-        game.do_action(0, Action(ActionType.FLOWER, 41))
-        game.do_action(0, Action(ActionType.FLOWER, 43))
-        game.do_action(0, Action(ActionType.NOTHING))
-        game.do_action(1, Action(ActionType.FLOWER, 42))
-        game.do_action(1, Action(ActionType.NOTHING))
-        game.do_action(2, Action(ActionType.NOTHING))
-        game.do_action(3, Action(ActionType.NOTHING))
-        game.do_action(0, Action(ActionType.FLOWER, 44))
-        game.do_action(0, Action(ActionType.NOTHING))
-        game.do_action(1, Action(ActionType.NOTHING))
-        game.do_action(2, Action(ActionType.NOTHING))
-        game.do_action(3, Action(ActionType.NOTHING))
-        game.do_action(0, Action(ActionType.DISCARD, 1))
-        game.do_action(1, Action(ActionType.DRAW))
-        game.do_action(1, Action(ActionType.DISCARD, 2))
-        game.do_action(2, Action(ActionType.DRAW))
-        game.do_action(2, Action(ActionType.FLOWER, 45))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
+        game.do_action(0, Action(action_type=ActionType.NOTHING))
+        game.do_action(1, Action(action_type=ActionType.FLOWER, tile=42))
+        game.do_action(1, Action(action_type=ActionType.NOTHING))
+        game.do_action(2, Action(action_type=ActionType.NOTHING))
+        game.do_action(3, Action(action_type=ActionType.NOTHING))
+        game.do_action(0, Action(action_type=ActionType.FLOWER, tile=44))
+        game.do_action(0, Action(action_type=ActionType.NOTHING))
+        game.do_action(1, Action(action_type=ActionType.NOTHING))
+        game.do_action(2, Action(action_type=ActionType.NOTHING))
+        game.do_action(3, Action(action_type=ActionType.NOTHING))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
+        game.do_action(1, Action(action_type=ActionType.DRAW))
+        game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
+        game.do_action(2, Action(action_type=ActionType.DRAW))
+        game.do_action(2, Action(action_type=ActionType.FLOWER, tile=45))
         self.assertCountEqual(game.get_calls(2), [Call(CallType.FLOWER, [45])])
         self.assertCountEqual(
             game.get_hand(2), [3, 3, 3, 3, 7, 7, 7, 7, 9, 13, 13, 13, 13, 46]
@@ -387,44 +387,44 @@ class GameTest(unittest.TestCase):
 
     def test_priority(self):
         game = Game(test_deck4)
-        game.do_action(0, Action(ActionType.DISCARD, 13))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
         actions = [
-            Action(ActionType.NOTHING),
-            Action(ActionType.CHI_C),
-            Action(ActionType.PON),
-            Action(ActionType.RON),
+            Action(action_type=ActionType.NOTHING),
+            Action(action_type=ActionType.CHI_C),
+            Action(action_type=ActionType.PON),
+            Action(action_type=ActionType.RON),
         ]
         player, action = game.get_priority_action(actions)
         self.assertEqual(player, 3)
-        self.assertEqual(action, Action(ActionType.RON))
+        self.assertEqual(action, Action(action_type=ActionType.RON))
 
     def test_priority_bad_action(self):
         game = Game(test_deck4)
-        game.do_action(0, Action(ActionType.DISCARD, 13))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
         actions = [
-            Action(ActionType.NOTHING),
-            Action(ActionType.CHI_C),
-            Action(ActionType.RON),
-            Action(ActionType.NOTHING),
+            Action(action_type=ActionType.NOTHING),
+            Action(action_type=ActionType.CHI_C),
+            Action(action_type=ActionType.RON),
+            Action(action_type=ActionType.NOTHING),
         ]
         player, action = game.get_priority_action(actions)
         self.assertEqual(player, 1)
-        self.assertEqual(action, Action(ActionType.CHI_C))
+        self.assertEqual(action, Action(action_type=ActionType.CHI_C))
 
     def test_priority_current_player(self):
         game = Game(test_deck4)
-        game.do_action(0, Action(ActionType.DISCARD, 13))
-        game.do_action(1, Action(ActionType.DRAW))
-        game.do_action(1, Action(ActionType.CLOSED_KAN, 5))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        game.do_action(1, Action(action_type=ActionType.DRAW))
+        game.do_action(1, Action(action_type=ActionType.CLOSED_KAN, tile=5))
         actions = [
-            Action(ActionType.NOTHING),
-            Action(ActionType.NOTHING),
-            Action(ActionType.NOTHING),
-            Action(ActionType.NOTHING),
+            Action(action_type=ActionType.NOTHING),
+            Action(action_type=ActionType.NOTHING),
+            Action(action_type=ActionType.NOTHING),
+            Action(action_type=ActionType.NOTHING),
         ]
         player, action = game.get_priority_action(actions)
         self.assertEqual(player, 1)
-        self.assertEqual(action, Action(ActionType.NOTHING))
+        self.assertEqual(action, Action(action_type=ActionType.NOTHING))
 
     def test_use_all_tiles(self):
         game = Game(test_deck4, GameOptions(end_wall_count=14))
@@ -437,14 +437,14 @@ class GameTest(unittest.TestCase):
 
     def test_houtei(self):
         game = Game(test_deck4, GameOptions(end_wall_count=14))
-        game.do_action(0, Action(ActionType.CLOSED_KAN, 4))
+        game.do_action(0, Action(action_type=ActionType.CLOSED_KAN, tile=4))
         while game.wall_count > 14:
             actions = [game.allowed_actions(player).default for player in range(4)]
             player, action = game.get_priority_action(actions)
             game.do_action(player, action)
         self.assertEqual(game.current_player, 0)
         self.assertEqual(game.status, GameStatus.PLAY)
-        game.do_action(0, Action(ActionType.DISCARD, 13))
+        game.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
         self.assertEqual(game.status, GameStatus.LAST_DISCARDED)
-        game.do_action(3, Action(ActionType.RON))
+        game.do_action(3, Action(action_type=ActionType.RON))
         self.assertIsNotNone(game.win_info)

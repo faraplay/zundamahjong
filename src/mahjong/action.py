@@ -1,6 +1,6 @@
 from enum import IntEnum
-from typing import NamedTuple
 from collections.abc import Set
+from pydantic import BaseModel
 
 from .tile import Tile
 
@@ -21,14 +21,14 @@ class ActionType(IntEnum):
     TSUMO = 12
 
 
-class Action(NamedTuple):
+class Action(BaseModel, frozen=True):
     action_type: ActionType
     tile: Tile = 0
 
 
 class ActionSet:
     def __init__(self, action_type: ActionType = ActionType.NOTHING, tile: Tile = 0):
-        self._default = Action(action_type, tile)
+        self._default = Action(action_type=action_type, tile=tile)
         self._actions = {self._default}
 
     @property
@@ -40,4 +40,4 @@ class ActionSet:
         return self._actions
 
     def add(self, action_type: ActionType, tile: Tile = 0):
-        self._actions.add(Action(action_type, tile))
+        self._actions.add(Action(action_type=action_type, tile=tile))

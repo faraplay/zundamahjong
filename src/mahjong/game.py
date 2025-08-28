@@ -57,8 +57,10 @@ class Game:
                 player = self._current_player
                 flowers = self._hands[player].flowers_in_hand()
                 for tile in flowers:
-                    self.do_action(player, Action(ActionType.FLOWER, tile))
-                self.do_action(player, Action(ActionType.NOTHING))
+                    self.do_action(
+                        player, Action(action_type=ActionType.FLOWER, tile=tile)
+                    )
+                self.do_action(player, Action(action_type=ActionType.NOTHING))
 
     def get_hand(self, player: int):
         return self._hands[player].tiles
