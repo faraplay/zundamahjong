@@ -32,10 +32,10 @@ socket.on('list_all', (history) => {
     console.log(history);
     for (const playeraction of history) {
         console.log(playeraction)
-        const player = playeraction[0];
-        const action = playeraction[1];
-        const action_type = action_types[action[0]];
-        const tile = action[1];
+        const player = playeraction["player"];
+        const action = playeraction["action"];
+        const action_type = action_types[action["action_type"]];
+        const tile = action["tile"];
         const item = document.createElement('li');
         item.textContent = `Player: ${player}, Action: ${action_type}` + 
         (tile != 0 ? `, Tile: ${tile}` : "");

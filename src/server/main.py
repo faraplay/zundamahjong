@@ -23,7 +23,13 @@ def disconnect(reason):
 @socketio.on("set_player")
 def handle_set_player(data):
     print(f"Received message from {request.sid}: {data}")
-    emit("list_all", list(game.history))
+    emit(
+        "list_all",
+        [
+            {"player": action[0], "action": action[1].model_dump()}
+            for action in game.history
+        ],
+    )
 
 
 def run_server():
