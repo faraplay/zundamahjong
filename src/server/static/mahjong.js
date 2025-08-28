@@ -28,6 +28,51 @@ const call_types = [
     "THIRTEEN_ORPHANS",
 ];
 
+const tile_images = {
+    1: "mahjongtiles/character/01.svg",
+    2: "mahjongtiles/character/02.svg",
+    3: "mahjongtiles/character/03.svg",
+    4: "mahjongtiles/character/04.svg",
+    5: "mahjongtiles/character/05.svg",
+    6: "mahjongtiles/character/06.svg",
+    7: "mahjongtiles/character/07.svg",
+    8: "mahjongtiles/character/08.svg",
+    9: "mahjongtiles/character/09.svg",
+    11: "mahjongtiles/dot/01.svg",
+    12: "mahjongtiles/dot/02.svg",
+    13: "mahjongtiles/dot/03.svg",
+    14: "mahjongtiles/dot/04.svg",
+    15: "mahjongtiles/dot/05.svg",
+    16: "mahjongtiles/dot/06.svg",
+    17: "mahjongtiles/dot/07.svg",
+    18: "mahjongtiles/dot/08.svg",
+    19: "mahjongtiles/dot/09.svg",
+    21: "mahjongtiles/bamboo/01.svg",
+    22: "mahjongtiles/bamboo/02-01.svg",
+    23: "mahjongtiles/bamboo/03-01.svg",
+    24: "mahjongtiles/bamboo/04-01.svg",
+    25: "mahjongtiles/bamboo/05-01.svg",
+    26: "mahjongtiles/bamboo/06-01.svg",
+    27: "mahjongtiles/bamboo/07-01.svg",
+    28: "mahjongtiles/bamboo/08-01.svg",
+    29: "mahjongtiles/bamboo/09-01.svg",
+    31: "mahjongtiles/wind/01.svg",
+    32: "mahjongtiles/wind/02.svg",
+    33: "mahjongtiles/wind/03.svg",
+    34: "mahjongtiles/wind/04.svg",
+    35: "mahjongtiles/dragon/03.svg",
+    36: "mahjongtiles/dragon/02.svg",
+    37: "mahjongtiles/dragon/01.svg",
+    41: "mahjongtiles/season/01.svg",
+    42: "mahjongtiles/season/02.svg",
+    43: "mahjongtiles/season/03.svg",
+    44: "mahjongtiles/season/04.svg",
+    45: "mahjongtiles/flower/01.svg",
+    46: "mahjongtiles/flower/02.svg",
+    47: "mahjongtiles/flower/03.svg",
+    48: "mahjongtiles/flower/04.svg",
+}
+
 const set_player_form = document.getElementById('set_player_form');
 const set_player_select = document.getElementById('set_player_select');
 
@@ -45,8 +90,9 @@ set_player_form.addEventListener('submit', (e) => {
 });
 
 function createTileElement(tile) {
-    const item = document.createElement('span');
-    item.textContent = tile;
+    const item = document.createElement('img');
+    item.src = tile_images[tile];
+    item.alt = tile;
     return item;
 }
 
