@@ -46,6 +46,9 @@ def handle_set_player(data):
             }
             for player in range(4)
         ],
+        "actions": [
+            action.model_dump() for action in game.allowed_actions(player).actions
+        ],
     }
     emit("all_info", info)
 
