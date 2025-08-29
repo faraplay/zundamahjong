@@ -4,7 +4,7 @@ from flask_socketio import SocketIO, emit
 from pydantic import ValidationError
 
 
-from ..mahjong.game import Game
+from ..mahjong.game import Game, GameStatus
 from ..mahjong.action import Action
 
 app = Flask(__name__)
@@ -17,6 +17,9 @@ submitted_actions = [None, None, None, None]
 
 
 def reset_submitted_actions():
+    if game.status == GameStatus.END:
+        submitted_actions[:] = [None, None, None, None]
+        return
     allowed_actions = [game.allowed_actions(player) for player in range(4)]
     submitted_actions[:] = [
         actions.default if len(actions.actions) == 1 else None
@@ -39,13 +42,25 @@ def try_execute_actions():
     resolve_actions()
     reset_submitted_actions()
     for sid, player in sid_players.items():
-        emit("all_info", get_info(player), to=sid)
+        emit_info(sid, player)
 
 
-def get_info(player: int):
+def get_win_info():
+    if game.win_info is not None:
+        return {
+            "win_player": game.win_info.win_player,
+            "hand": game.win_info.hand,
+            "calls": [call.model_dump() for call in game.win_info.calls],
+        }
+    else:
+        return None
+
+
+def get_game_info(player: int):
     return {
         "player": player,
         "hand": list(game.get_hand(player)),
+        "tiles_left": game.wall_count,
         "history": [
             {"player": action[0], "action": action[1].model_dump()}
             for action in game.history
@@ -65,6 +80,13 @@ def get_info(player: int):
     }
 
 
+def emit_info(sid: str, player: int):
+    if game.status != GameStatus.END:
+        emit("game_info", get_game_info(player), to=sid)
+    else:
+        emit("win_info", get_win_info(), to=sid)
+
+
 @socketio.on("connect")
 def connect(auth):
     print(f"Client connected: {request.sid},\nAuth: {auth}")
@@ -73,7 +95,7 @@ def connect(auth):
 @socketio.on("disconnect")
 def disconnect(reason):
     print(f"Client disconnected: {request.sid},\nReason: {reason}")
-    del sid_players[request.sid]
+    sid_players.pop(request.sid, None)
 
 
 @socketio.on("set_player")
@@ -88,7 +110,7 @@ def handle_set_player(data):
         print("Received data is not an integer!", data)
         return
     sid_players[request.sid] = player
-    emit("all_info", get_info(player))
+    emit_info(request.sid, player)
 
 
 @socketio.on("action")
@@ -110,5 +132,9 @@ def handle_action(data):
 
 
 def run_server():
+    while game.wall_count > 20:
+        actions = [game.allowed_actions(player).default for player in range(4)]
+        player, action = game.get_priority_action(actions)
+        game.do_action(player, action)
     reset_submitted_actions()
     socketio.run(app, debug=True)

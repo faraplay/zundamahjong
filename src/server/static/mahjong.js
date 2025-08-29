@@ -76,12 +76,19 @@ const tile_images = {
 const set_player_form = document.getElementById('set_player_form');
 const set_player_select = document.getElementById('set_player_select');
 
+const game_info_div = document.getElementById('game_info');
 const player_indicator = document.getElementById('player_indicator');
+const tiles_left_indicator = document.getElementById('tiles_left');
 const history_list = document.getElementById('history_list');
 const discard_pool = document.getElementById('discard_pool');
 const calls_list = document.getElementById('calls_list');
 const hand_div = document.getElementById('hand');
 const actions_div = document.getElementById('actions');
+
+const win_info_div = document.getElementById('win_info');
+const win_player_indicator = document.getElementById('win_player');
+const win_hand_div = document.getElementById('win_hand');
+const win_calls_div = document.getElementById('win_calls');
 
 set_player_form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -112,7 +119,7 @@ function createHistoryEntryElement(history_entry) {
 }
 
 function createCallElement(call) {
-    const call_item = document.createElement("div");
+    const call_item = document.createElement("span");
     const call_type_item = document.createElement("span");
     call_type_item.textContent = call_types[call.call_type];
     call_item.replaceChildren(
@@ -156,9 +163,12 @@ function disableActions() {
     }
 }
 
-socket.on('all_info', (info) => {
+socket.on('game_info', (info) => {
     console.log(info);
+    game_info_div.hidden = false;
+    win_info_div.hidden = true;
     player_indicator.textContent = `You are Player ${info.player}`;
+    tiles_left_indicator.textContent = `${info.tiles_left} tiles left`;
     history_list.replaceChildren(...info.history.map(createHistoryEntryElement));
     discard_pool.replaceChildren(...info.discards.map(createTileElement));
     calls_list.replaceChildren(...info.player_calls.map(createPlayerCallsElement));
@@ -168,6 +178,19 @@ socket.on('all_info', (info) => {
         disableActions();
     }
 });
+
+socket.on('win_info', (info) => {
+    console.log(info);
+    game_info_div.hidden = true;
+    win_info_div.hidden = false;
+    if (info) {
+        win_player_indicator.textContent = `Player ${info.win_player} wins!`;
+        win_hand_div.replaceChildren(...info.hand.map(createTileElement));
+        win_calls_div.replaceChildren(...info.calls.map(createCallElement));
+    } else {
+        win_player_indicator.textContent = "The game is a draw..."
+    }
+})
 
 socket.on('action_received', () => {
     console.log("action received");
