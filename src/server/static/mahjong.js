@@ -111,6 +111,22 @@ function createTileElement(tile) {
     return item;
 }
 
+function createHandTileElement(tile) {
+    const button = document.createElement('button');
+    const img_item = document.createElement('img');
+    img_item.src = tile_images[tile];
+    img_item.alt = tile;
+    button.appendChild(img_item);
+    button.addEventListener('click', (e) => {
+        e.preventDefault();
+        socket.emit('action', {
+            'action_type': 2,
+            'tile': tile
+        })
+    });
+    return button;
+}
+
 function createHistoryEntryElement(history_entry) {
     const action = history_entry.action;
     const action_type = action_types[action.action_type];
@@ -164,10 +180,17 @@ function createActionElement(action) {
     return action_item;
 }
 
+function disableHandDiscards() {
+    for (const button of hand_div.children) {
+        button.disabled = true;
+    }
+}
+
 function disableActions() {
     for (const button of actions_div.children) {
         button.disabled = true;
     }
+    disableHandDiscards()
 }
 
 socket.on('game_info', (info) => {
@@ -179,8 +202,13 @@ socket.on('game_info', (info) => {
     history_list.replaceChildren(...info.history.map(createHistoryEntryElement));
     discard_pool.replaceChildren(...info.discards.map(createTileElement));
     calls_list.replaceChildren(...info.player_calls.map(createPlayerCallsElement));
-    hand_div.replaceChildren(...info.hand.map(createTileElement));
-    actions_div.replaceChildren(...info.actions.map(createActionElement));
+    hand_div.replaceChildren(...info.hand.map(createHandTileElement));
+    actions_div.replaceChildren(...info.actions.filter((action) => {
+        return action.action_type != 2
+    }).map(createActionElement));
+    if (info.actions.every((action) => {return action.action_type != 2})) {
+        disableHandDiscards();
+    }
     if (info.action_selected) {
         disableActions();
     }
