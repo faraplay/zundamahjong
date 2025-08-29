@@ -62,6 +62,9 @@ class Game:
                     )
                 self.do_action(player, Action(action_type=ActionType.NOTHING))
 
+        for hand in self._hands:
+            hand.sort()
+
     def get_hand(self, player: int):
         return self._hands[player].tiles
 

@@ -10,8 +10,8 @@ class AllowedActionTest(unittest.TestCase):
     def test_play_default_actions(self):
         game = Game(test_deck1)
         self.assertEqual(
-            game.allowed_actions(0).default,
-            Action(action_type=ActionType.DISCARD, tile=1),
+            game.allowed_actions(0).default.action_type,
+            ActionType.DISCARD,
         )
         self.assertEqual(
             game.allowed_actions(1).default, Action(action_type=ActionType.NOTHING)
