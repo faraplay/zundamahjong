@@ -89,6 +89,7 @@ const win_info_div = document.getElementById('win_info');
 const win_player_indicator = document.getElementById('win_player');
 const win_hand_div = document.getElementById('win_hand');
 const win_calls_div = document.getElementById('win_calls');
+const new_game_button = document.getElementById('new_game');
 
 set_player_form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -96,6 +97,12 @@ set_player_form.addEventListener('submit', (e) => {
         socket.emit('set_player', set_player_select.value);
     }
 });
+
+new_game_button.addEventListener('click', (e) => {
+    e.preventDefault();
+    console.log("startinng new game");
+    socket.emit('new_game');
+})
 
 function createTileElement(tile) {
     const item = document.createElement('img');

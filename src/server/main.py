@@ -41,8 +41,7 @@ def try_execute_actions():
         return
     resolve_actions()
     reset_submitted_actions()
-    for sid, player in sid_players.items():
-        emit_info(sid, player)
+    emit_info_all()
 
 
 def get_win_info():
@@ -87,6 +86,11 @@ def emit_info(sid: str, player: int):
         emit("win_info", get_win_info(), to=sid)
 
 
+def emit_info_all():
+    for sid, player in sid_players.items():
+        emit_info(sid, player)
+
+
 @socketio.on("connect")
 def connect(auth):
     print(f"Client connected: {request.sid},\nAuth: {auth}")
@@ -96,6 +100,14 @@ def connect(auth):
 def disconnect(reason):
     print(f"Client disconnected: {request.sid},\nReason: {reason}")
     sid_players.pop(request.sid, None)
+
+
+@socketio.on("new_game")
+def start_new_game():
+    print("Starting new game...")
+    global game
+    game = Game()
+    emit_info_all()
 
 
 @socketio.on("set_player")
