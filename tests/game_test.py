@@ -20,6 +20,7 @@ class GameTest(unittest.TestCase):
                 (1, Action(action_type=ActionType.NOTHING)),
                 (2, Action(action_type=ActionType.NOTHING)),
                 (3, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.NOTHING)),
             ],
         )
 
@@ -217,6 +218,7 @@ class GameTest(unittest.TestCase):
                 (1, Action(action_type=ActionType.NOTHING)),
                 (2, Action(action_type=ActionType.NOTHING)),
                 (3, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.NOTHING)),
                 (0, Action(action_type=ActionType.DISCARD, tile=9)),
                 (1, Action(action_type=ActionType.PON)),
                 (1, Action(action_type=ActionType.DISCARD, tile=21)),
@@ -294,6 +296,26 @@ class GameTest(unittest.TestCase):
                 (1, Action(action_type=ActionType.NOTHING)),
                 (2, Action(action_type=ActionType.NOTHING)),
                 (3, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.NOTHING)),
+            ],
+        )
+
+    def test_auto_flower_one_person_draw_flower(self):
+        game = Game(test_deck5, GameOptions(auto_replace_flowers=True))
+        self.assertSequenceEqual(
+            game.history,
+            [
+                (0, Action(action_type=ActionType.FLOWER, tile=41)),
+                (0, Action(action_type=ActionType.NOTHING)),
+                (1, Action(action_type=ActionType.NOTHING)),
+                (2, Action(action_type=ActionType.NOTHING)),
+                (3, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.FLOWER, tile=42)),
+                (0, Action(action_type=ActionType.NOTHING)),
+                (1, Action(action_type=ActionType.NOTHING)),
+                (2, Action(action_type=ActionType.NOTHING)),
+                (3, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.NOTHING)),
             ],
         )
 
@@ -347,6 +369,7 @@ class GameTest(unittest.TestCase):
         game.do_action(2, Action(action_type=ActionType.NOTHING))
         game.do_action(3, Action(action_type=ActionType.NOTHING))
         game.do_action(0, Action(action_type=ActionType.NOTHING))
+        game.do_action(1, Action(action_type=ActionType.NOTHING))
         self.assertEqual(game.current_player, 0)
         self.assertEqual(game.status, GameStatus.PLAY)
 
@@ -364,6 +387,7 @@ class GameTest(unittest.TestCase):
         game.do_action(1, Action(action_type=ActionType.NOTHING))
         game.do_action(2, Action(action_type=ActionType.NOTHING))
         game.do_action(3, Action(action_type=ActionType.NOTHING))
+        game.do_action(0, Action(action_type=ActionType.NOTHING))
         self.assertEqual(game.current_player, 0)
         self.assertEqual(game.status, GameStatus.PLAY)
 
@@ -381,6 +405,7 @@ class GameTest(unittest.TestCase):
         game.do_action(1, Action(action_type=ActionType.NOTHING))
         game.do_action(2, Action(action_type=ActionType.NOTHING))
         game.do_action(3, Action(action_type=ActionType.NOTHING))
+        game.do_action(0, Action(action_type=ActionType.NOTHING))
         game.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
         game.do_action(1, Action(action_type=ActionType.DRAW))
         game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))

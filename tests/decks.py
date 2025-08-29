@@ -303,3 +303,5 @@ test_deck4 = fill_missing_tiles(
     ],
     [],
 )
+
+test_deck5 = fill_missing_tiles([41], [1, 42])

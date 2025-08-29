@@ -248,6 +248,7 @@ class AllowedActionTest(unittest.TestCase):
         game.do_action(1, Action(action_type=ActionType.NOTHING))
         game.do_action(2, Action(action_type=ActionType.NOTHING))
         game.do_action(3, Action(action_type=ActionType.NOTHING))
+        game.do_action(0, Action(action_type=ActionType.NOTHING))
         game.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
         game.do_action(1, Action(action_type=ActionType.DRAW))
         game.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))

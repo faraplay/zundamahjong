@@ -250,7 +250,7 @@ class Game:
         match self._status:
             case GameStatus.START:
                 self._flower_pass_count += 1
-                if self._flower_pass_count >= self._options.player_count:
+                if self._flower_pass_count >= self._options.player_count + 1:
                     self._current_player = 0
                     self._status = GameStatus.PLAY
                 else:
