@@ -150,6 +150,12 @@ function createActionElement(action) {
     return action_item;
 }
 
+function disableActions() {
+    for (const button of actions_div.children) {
+        button.disabled = true;
+    }
+}
+
 socket.on('all_info', (info) => {
     console.log(info);
     player_indicator.textContent = `You are Player ${info.player}`;
@@ -158,4 +164,12 @@ socket.on('all_info', (info) => {
     calls_list.replaceChildren(...info.player_calls.map(createPlayerCallsElement));
     hand_div.replaceChildren(...info.hand.map(createTileElement));
     actions_div.replaceChildren(...info.actions.map(createActionElement));
+    if (info.action_selected) {
+        disableActions();
+    }
 });
+
+socket.on('action_received', () => {
+    console.log("action received");
+    disableActions();
+})
