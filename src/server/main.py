@@ -107,6 +107,7 @@ def start_new_game():
     print("Starting new game...")
     global game
     game = Game()
+    reset_submitted_actions()
     emit_info_all()
 
 
@@ -144,9 +145,5 @@ def handle_action(data):
 
 
 def run_server():
-    while game.wall_count > 20:
-        actions = [game.allowed_actions(player).default for player in range(4)]
-        player, action = game.get_priority_action(actions)
-        game.do_action(player, action)
     reset_submitted_actions()
     socketio.run(app, debug=True)
