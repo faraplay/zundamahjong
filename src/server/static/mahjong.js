@@ -159,7 +159,7 @@ function createHistoryEntryElement(history_entry) {
 
 function createCallElement(call) {
     const call_item = document.createElement("span");
-    const call_type_item = document.createElement("span");
+    const call_type_item = document.createElement("h4");
     call_type_item.textContent = call_types[call.call_type];
     call_item.replaceChildren(
         call_type_item,
@@ -169,8 +169,9 @@ function createCallElement(call) {
 }
 
 function createPlayerCallsElement(player_calls) {
-    const player_item = document.createElement('li');
-    const player_item_title = document.createElement('b');
+    const player_item = document.createElement('div');
+    player_item.classList.add('player_calls');
+    const player_item_title = document.createElement('h4');
     player_item_title.textContent = `Player ${player_calls.player}`;
     player_item.replaceChildren(
         player_item_title,
@@ -247,7 +248,13 @@ socket.on('game_info', (info) => {
     tiles_left_indicator.textContent = `${info.tiles_left} tiles left`;
     history_list.replaceChildren(...info.history.map(createHistoryEntryElement));
     discard_pool.replaceChildren(...info.discards.map(createTileElement));
-    calls_list.replaceChildren(...info.player_calls.map(createPlayerCallsElement));
+
+    player_calls = info.player_calls.map(createPlayerCallsElement);
+    for (var i=0; i<4; ++i) {
+        player_calls[(info.player + i) % 4].classList.add(`player_calls_position_${i}`);
+    }
+    calls_list.replaceChildren(...player_calls);
+
     hand_div.replaceChildren(...info.hand.map(createHandTileElement));
     last_discard = info.discards.at(-1);
     actions_div.replaceChildren(...info.actions.filter((action) => {

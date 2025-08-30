@@ -2,6 +2,10 @@ body {
     background-color: lightgray;
 }
 
+h3, h4 {
+    display: none;
+}
+
 #game_info {
     width: 100vw;
     height: 56.25vw;
@@ -19,14 +23,16 @@ body {
 }
 
 .tile {
-    width: 3cqw;
-    height: 4cqw;
+    width: 2.1cqw;
+    height: 2.8cqw;
     border: 1px solid black;
     border-radius: 3px;
-    padding: 0.06cqw;
+    padding: 0.042cqw;
+    background-color: white;
 }
 
 #hand {
+    z-index: 1;
     width: 80cqw;
     height: calc(80cqw/14 * 5/3);
     position: absolute;
@@ -62,4 +68,64 @@ body {
 .hand_tile_button:hover > img {
     bottom: unset;
     top: 0;
+}
+
+#actions {
+    position: relative;
+    z-index: 1;
+}
+
+#table_view {
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    top: 0;
+    left: 0;
+    perspective: 100cqw;
+}
+
+#table {
+    width: 50cqw;
+    height: 50cqw;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    background-color: mediumaquamarine;
+    transform: translate3d(0cqw, -5cqw, 20cqw) rotateX(45deg);
+}
+
+.player_calls {
+    width: 90%;
+    height: 10%;
+    position: absolute;
+    bottom: 5%;
+    left: 5%;
+    right: 5%;
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: flex-end;
+    transform-origin: center -350%;
+}
+
+.player_calls_position_1 {
+    transform: rotate(-90deg);
+}
+
+.player_calls_position_2 {
+    transform: rotate(180deg);
+}
+
+.player_calls_position_3 {
+    transform: rotate(90deg);
+}
+
+#discard_pool {
+    width: 60%;
+    height: 60%;
+    position: absolute;
+    top: 20%;
+    left: 20%;
 }
