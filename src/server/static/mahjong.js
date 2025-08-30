@@ -248,7 +248,14 @@ socket.on('game_info', (info) => {
     player_indicator.textContent = `You are Player ${info.player}`;
     tiles_left_indicator.textContent = `${info.tiles_left} tiles left`;
     history_list.replaceChildren(...info.history.map(createHistoryEntryElement));
-    discard_pool.replaceChildren(...info.discards.map(createTileElement));
+
+    discard_items = info.discards.map(createTileElement);
+    for (var i=0; i<info.discards.length; ++i) {
+        const item = discard_items[i];
+        item.style.setProperty('--discard-tile-x-index', i % 15);
+        item.style.setProperty('--discard-tile-y-index', Math.floor(i / 15));
+    }
+    discard_pool.replaceChildren(...discard_items);
 
     player_calls = info.player_calls.map(createPlayerCallsElement);
     for (var i=0; i<4; ++i) {
