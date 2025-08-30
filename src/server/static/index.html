@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0">
+    <link href="style.css" rel="stylesheet" />
     <title>Mahjong</title>
   </head>
   <body>
@@ -14,46 +15,43 @@
       </select>
       <button>Send</button>
     </form>
-    <div>
-      <p id="player_indicator">Select a player...</p>
+    <p id="player_indicator">Select a player...</p>
+    <div id="game_info" hidden>
       <p id="tiles_left"></p>
-      <div id="game_info" hidden>
-        <h2>Your hand</h2>
-        <div id="hand"></div>
-        <h3>Actions</h3>
-        <div id="actions"></div>
-        <div>
-          <h3>History</h3>
-          <ul id="history_list"></ul>
-        </div>
-        <div>
-          <h3>Discards</h3>
-          <div id="discard_pool"></div>
-        </div>
-        <div>
-          <h3>Calls</h3>
-          <ul id="calls_list">
-            <li>
-              <b>Player 0</b>
-            </li>
-            <li>
-              <b>Player 1</b>
-            </li>
-            <li>
-              <b>Player 2</b>
-            </li>
-            <li>
-              <b>Player 3</b>
-            </li>
-          </ul>
-        </div>
+      <div id="hand"></div>
+      <h3>Actions</h3>
+      <div id="actions"></div>
+      <div>
+        <h3>Calls</h3>
+        <ul id="calls_list">
+          <li>
+            <b>Player 0</b>
+          </li>
+          <li>
+            <b>Player 1</b>
+          </li>
+          <li>
+            <b>Player 2</b>
+          </li>
+          <li>
+            <b>Player 3</b>
+          </li>
+        </ul>
       </div>
-      <div id="win_info" hidden>
-        <p id="win_player"></p>
-        <div id="win_hand"></div>
-        <div id="win_calls"></div>
-        <button id="new_game">Start new game</button>
+      <div>
+        <h3>Discards</h3>
+        <div id="discard_pool"></div>
       </div>
+      <div>
+        <h3>History</h3>
+        <ul id="history_list"></ul>
+      </div>
+    </div>
+    <div id="win_info" hidden>
+      <p id="win_player"></p>
+      <div id="win_hand"></div>
+      <div id="win_calls"></div>
+      <button id="new_game">Start new game</button>
     </div>
     <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
     <script src="mahjong.js"></script>

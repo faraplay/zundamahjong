@@ -120,6 +120,7 @@ new_game_button.addEventListener('click', (e) => {
 
 function createTileElement(tile) {
     const item = document.createElement('img');
+    item.classList.add('tile');
     item.src = tile_images[tile];
     item.alt = tile;
     return item;
@@ -127,6 +128,7 @@ function createTileElement(tile) {
 
 function createHandTileElement(tile) {
     const button = document.createElement('button');
+    button.classList.add('hand_tile_button');
     const img_item = document.createElement('img');
     img_item.src = tile_images[tile];
     img_item.alt = tile;

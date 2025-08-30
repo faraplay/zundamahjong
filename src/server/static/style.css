@@ -1,0 +1,65 @@
+body {
+    background-color: lightgray;
+}
+
+#game_info {
+    width: 100vw;
+    height: 56.25vw;
+    max-width: 177.778vh;
+    max-height: 100vh;
+    container-type: size;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+    overflow: hidden;
+    background-color: white;
+}
+
+.tile {
+    width: 3cqw;
+    height: 4cqw;
+    border: 1px solid black;
+    border-radius: 3px;
+    padding: 0.06cqw;
+}
+
+#hand {
+    width: 80cqw;
+    height: calc(80cqw/14 * 5/3);
+    position: absolute;
+    container-type: size;
+    left: 0;
+    right: 0;
+    bottom: 5%;
+    margin: auto;
+}
+
+.hand_tile_button {
+    width: calc(100% / 14);
+    height: 100%;
+    position: relative;
+    border: none;
+    padding: 0;
+    background-color: transparent;
+}
+
+.hand_tile_button > img {
+    width: calc(84cqw/14 - 4px);
+    height: calc((84cqw/14 - 4px) * 4/3);
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    margin: calc(2cqw/14);
+    border: 2px solid black;
+    border-radius: 6px;
+    padding: calc(6cqw/14);
+    background-color: white;
+}
+
+.hand_tile_button:hover > img {
+    bottom: unset;
+    top: 0;
+}
