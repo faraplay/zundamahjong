@@ -1,6 +1,20 @@
 
 const socket = io();
 
+const ACTION_NOTHING = 0;
+const ACTION_DRAW = 1;
+const ACTION_DISCARD = 2;
+const ACTION_CHI_A = 3;
+const ACTION_CHI_B = 4;
+const ACTION_CHI_C = 5;
+const ACTION_PON = 6;
+const ACTION_OPEN_KAN = 7;
+const ACTION_ADD_KAN = 8;
+const ACTION_CLOSED_KAN = 9;
+const ACTION_FLOWER = 10;
+const ACTION_RON = 11;
+const ACTION_TSUMO = 12;
+
 const action_types = [
     "NOTHING",
     "DRAW",
@@ -120,7 +134,7 @@ function createHandTileElement(tile) {
     button.addEventListener('click', (e) => {
         e.preventDefault();
         socket.emit('action', {
-            'action_type': 2,
+            'action_type': ACTION_DISCARD,
             'tile': tile
         })
     });
@@ -163,12 +177,42 @@ function createPlayerCallsElement(player_calls) {
     return player_item;
 }
 
-function createActionElement(action) {
+function createActionElement(action, last_discard) {
     const action_item = document.createElement('button');
     const action_text = action_types[action.action_type];
     action_item.textContent = action_text;
-    if (action.tile != 0) {
-        action_item.appendChild(createTileElement(action.tile))
+    
+    switch (action.action_type) {
+        case ACTION_CHI_A:
+            for (const tile of [last_discard, last_discard+1, last_discard+2]) {
+                action_item.appendChild(createTileElement(tile))
+            }
+            break;
+        case ACTION_CHI_B:
+            for (const tile of [last_discard-1, last_discard, last_discard+1]) {
+                action_item.appendChild(createTileElement(tile))
+            }
+            break;
+        case ACTION_CHI_C:
+            for (const tile of [last_discard-2, last_discard-1, last_discard]) {
+                action_item.appendChild(createTileElement(tile))
+            }
+            break;
+        case ACTION_PON:
+            for (const tile of [last_discard, last_discard, last_discard]) {
+                action_item.appendChild(createTileElement(tile))
+            }
+            break;
+        case ACTION_OPEN_KAN:
+            for (const tile of [last_discard, last_discard, last_discard, last_discard]) {
+                action_item.appendChild(createTileElement(tile))
+            }
+            break;
+        case ACTION_ADD_KAN:
+        case ACTION_CLOSED_KAN:
+        case ACTION_FLOWER:
+            action_item.appendChild(createTileElement(action.tile))
+            break;
     }
     action_item.addEventListener('click',
         (e) => {
@@ -203,10 +247,13 @@ socket.on('game_info', (info) => {
     discard_pool.replaceChildren(...info.discards.map(createTileElement));
     calls_list.replaceChildren(...info.player_calls.map(createPlayerCallsElement));
     hand_div.replaceChildren(...info.hand.map(createHandTileElement));
+    last_discard = info.discards.at(-1);
     actions_div.replaceChildren(...info.actions.filter((action) => {
-        return action.action_type != 2
-    }).map(createActionElement));
-    if (info.actions.every((action) => {return action.action_type != 2})) {
+        return action.action_type != ACTION_DISCARD
+    }).map((action) => {
+        return createActionElement(action, last_discard)
+    }));
+    if (info.actions.every((action) => {return action.action_type != ACTION_DISCARD})) {
         disableHandDiscards();
     }
     if (info.action_selected) {
