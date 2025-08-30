@@ -130,6 +130,7 @@ function createHandTileElement(tile) {
     const button = document.createElement('button');
     button.classList.add('hand_tile_button');
     const img_item = document.createElement('img');
+    img_item.classList.add('tile')
     img_item.src = tile_images[tile];
     img_item.alt = tile;
     button.appendChild(img_item);
