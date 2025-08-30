@@ -34,17 +34,16 @@ h3, h4 {
 }
 
 #hand {
-    --tile-width: calc(100cqw/14);
-    --tile-border-width: 2px;
     --hand-width: 75cqw;
+    --tile-width: calc(var(--hand-width)/14);
+    --tile-border-width: 2px;
     z-index: 1;
     width: var(--hand-width);
     height: calc(var(--hand-width)/14 * 5/3);
     position: absolute;
-    container-type: size;
     left: 0;
     right: 0;
-    bottom: 5%;
+    bottom: 2%;
     margin: auto;
 }
 
