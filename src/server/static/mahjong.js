@@ -31,6 +31,33 @@ const action_types = [
     "TSUMO"
 ];
 
+const action_supertypes = [
+    7,
+    7,
+    0,
+    1,
+    1,
+    1,
+    2,
+    3,
+    3,
+    3,
+    4,
+    5,
+    6
+];
+
+const action_supertype_strings = [
+    "",
+    "Chii",
+    "Pon",
+    "Kan",
+    "Flower",
+    "Ron",
+    "Tsumo",
+    "Pass"
+];
+
 const call_types = [
     "PAIR",
     "CHI",
@@ -98,6 +125,7 @@ const discard_pool = document.getElementById('discard_pool');
 const calls_list = document.getElementById('calls_list');
 const hand_div = document.getElementById('hand');
 const actions_div = document.getElementById('actions');
+const actions_disambiguation_div = document.getElementById('actions_disambiguation');
 
 const win_info_div = document.getElementById('win_info');
 const win_player_indicator = document.getElementById('win_player');
@@ -114,7 +142,6 @@ set_player_form.addEventListener('submit', (e) => {
 
 new_game_button.addEventListener('click', (e) => {
     e.preventDefault();
-    console.log("startinng new game");
     socket.emit('new_game');
 })
 
@@ -127,7 +154,7 @@ function createTileImageElement(tile) {
 }
 
 function createTileElement(tile) {
-    const item = document.createElement('div');
+    const item = document.createElement('span');
     item.classList.add('tile_div');
     item.appendChild(createTileImageElement(tile));
     return item;
@@ -227,11 +254,9 @@ function createPlayerCallsElement(player_calls) {
     return player_item;
 }
 
-function createActionElement(action, last_discard) {
+function createDisambiguationActionButtonElement(action, last_discard) {
     const action_item = document.createElement('button');
-    const action_text = action_types[action.action_type];
-    action_item.textContent = action_text;
-    
+    action_item.classList.add('disambig_action_button')
     switch (action.action_type) {
         case ACTION_CHI_A:
             for (const tile of [last_discard, last_discard+1, last_discard+2]) {
@@ -248,16 +273,6 @@ function createActionElement(action, last_discard) {
                 action_item.appendChild(createTileElement(tile))
             }
             break;
-        case ACTION_PON:
-            for (const tile of [last_discard, last_discard, last_discard]) {
-                action_item.appendChild(createTileElement(tile))
-            }
-            break;
-        case ACTION_OPEN_KAN:
-            for (const tile of [last_discard, last_discard, last_discard, last_discard]) {
-                action_item.appendChild(createTileElement(tile))
-            }
-            break;
         case ACTION_ADD_KAN:
         case ACTION_CLOSED_KAN:
         case ACTION_FLOWER:
@@ -267,11 +282,94 @@ function createActionElement(action, last_discard) {
     action_item.addEventListener('click',
         (e) => {
             e.preventDefault();
-            console.log("sending action", action)
             socket.emit('action', action)
         }
     )
     return action_item;
+}
+
+function createActionSupertypeElement(action_supertype) {
+    const action_supertype_item = document.createElement('button');
+    action_supertype_item.classList.add('action_button');
+    action_supertype_item.classList.add(`action_${action_supertype}`);
+    const supertype = action_supertype_strings[action_supertype];
+    action_supertype_item.dataset.text = supertype;
+    const text_item = document.createElement('div');
+    text_item.classList.add('action_button_text');
+    text_item.textContent = supertype;
+    action_supertype_item.appendChild(text_item);
+    return action_supertype_item;
+}
+
+function createActionDisambiguationElement(actions, last_discard) {
+    const disambig_item = document.createElement('div');
+    disambig_item.classList.add('hidden');
+    disambig_item.classList.add('disambig_div');
+    const text_item = document.createElement('div');
+    text_item.classList.add('disambig_text');
+    text_item.textContent = "Select an option";
+    disambig_item.appendChild(text_item);
+    if (actions[0].action_type <= ACTION_CHI_C) {
+        actions.sort((a,b) => b.action_type - a.action_type);
+    } else {
+        actions.sort((a,b) => a.tile - b.tile);
+    }
+    for (const action of actions) {
+        disambig_item.appendChild(
+            createDisambiguationActionButtonElement(action, last_discard)
+        );
+    }
+    return disambig_item;
+}
+
+function createAllActionElements(actions, last_discard) {
+    actions_div.replaceChildren();
+    actions_div.classList.remove('hidden');
+    actions_disambiguation_div.replaceChildren();
+    if (actions.length == 1) {
+        return;
+    }
+    const action_supertypes_dict = {};
+    for (const action of actions) {
+        const action_supertype = action_supertypes[action.action_type];
+        if (action_supertype == 0) {
+            continue;
+        }
+        if (!action_supertypes_dict[action_supertype]) {
+            action_supertypes_dict[action_supertype] = [];
+        }
+        action_supertypes_dict[action_supertype].push(action);
+    }
+
+    const keys = Object.keys(action_supertypes_dict).sort((a,b) => b-a);
+    for (const key of keys) {
+        const action_supertype_item = createActionSupertypeElement(key);
+        const supertype_actions = action_supertypes_dict[key];
+        if (supertype_actions.length > 1) {
+            const disambig_item =
+                createActionDisambiguationElement(supertype_actions, last_discard);
+            actions_disambiguation_div.appendChild(disambig_item);
+            action_supertype_item.addEventListener('click',
+                (e) => {
+                    e.preventDefault();
+                    actions_div.classList.add('hidden');
+                    disambig_item.classList.remove('hidden');
+                }
+            )
+        } else {
+            const action = supertype_actions[0];
+            action_supertype_item.addEventListener('click',
+                (e) => {
+                    e.preventDefault();
+                    socket.emit('action', action)
+                }
+            )
+        }
+        actions_div.appendChild(action_supertype_item);
+    }
+    // for (var i=7; i>=1; --i) {
+    //     actions_div.appendChild(createActionSupertypeElement(i));
+    // }
 }
 
 function disableHandDiscards() {
@@ -289,8 +387,8 @@ function disableActions() {
 
 socket.on('game_info', (info) => {
     console.log(info);
-    game_info_div.hidden = false;
-    win_info_div.hidden = true;
+    game_info_div.classList.remove('hidden');
+    win_info_div.classList.add('hidden');
     player_indicator.textContent = `You are Player ${info.player}`;
     tiles_left_indicator.textContent = `${info.tiles_left} tiles left`;
     history_list.replaceChildren(...info.history.map(createHistoryEntryElement));
@@ -311,15 +409,9 @@ socket.on('game_info', (info) => {
     calls_list.replaceChildren(...player_calls);
 
     hand_div.replaceChildren(...info.hand.map(createHandTileElement));
+
     last_discard = info.discards.at(-1);
-    actions_div.replaceChildren(...info.actions.filter((action) => {
-        return action.action_type != ACTION_DISCARD
-    }).map((action) => {
-        return createActionElement(action, last_discard)
-    }));
-    if (info.actions.every((action) => {return action.action_type != ACTION_DISCARD})) {
-        disableHandDiscards();
-    }
+    createAllActionElements(info.actions, last_discard);
     if (info.action_selected) {
         disableActions();
     }
@@ -327,8 +419,8 @@ socket.on('game_info', (info) => {
 
 socket.on('win_info', (info) => {
     console.log(info);
-    game_info_div.hidden = true;
-    win_info_div.hidden = false;
+    game_info_div.classList.add('hidden');
+    win_info_div.classList.remove('hidden');
     if (info) {
         win_player_indicator.textContent = `Player ${info.win_player} wins!`;
         win_hand_div.replaceChildren(...info.hand.map(createTileElement));
@@ -339,6 +431,5 @@ socket.on('win_info', (info) => {
 })
 
 socket.on('action_received', () => {
-    console.log("action received");
     disableActions();
 })

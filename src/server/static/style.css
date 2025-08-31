@@ -4,6 +4,10 @@
     --tile-side-darken-percent: 8%;
 }
 
+.hidden {
+    display: none !important;
+}
+
 body {
     background-color: lightgray;
 }
@@ -32,6 +36,8 @@ h3, h4 {
     --tile-height: calc(var(--tile-width) * 4/3);
     --tile-depth: calc(var(--tile-width) * 2/3);
     --tile-border-radius: calc(var(--tile-border-width) * 3);
+    width: var(--tile-width);
+    height: var(--tile-height);
 }
 
 .tile {
@@ -44,11 +50,6 @@ h3, h4 {
     border-radius: var(--tile-border-radius);
     padding: var(--tile-padding);
     background-color: white;
-}
-
-#actions {
-    position: relative;
-    z-index: 5;
 }
 
 #table_view {

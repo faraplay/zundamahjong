@@ -1,0 +1,154 @@
+#actions {
+    width: 60cqw;
+    position: absolute;
+    right: 15cqw;
+    bottom: 10cqw;
+    z-index: 1000;
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap-reverse;
+    align-items: flex-start;
+}
+
+#actions .action_button {
+    width: 15cqw;
+    height: 5cqw;
+    position: relative;
+    margin: 1.5cqw;
+    border: none;
+    background-color: transparent;
+    font-family: "Racing Sans One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+    font-size: 3.5cqw;
+    color: var(--text-inner-color);
+}
+
+#actions .action_button::before {
+    --plate-top-color: color-mix(in srgb, var(--text-inner-color) 40%, var(--plate-color));
+    --plate-bottom-color: color-mix(in srgb, var(--text-border-color) 40%, var(--plate-color));
+    content: "";
+    width: calc(100% - 1.5cqw);
+    height: 75%;
+    position: absolute;
+    left: 0%;
+    bottom: 0%;
+    background-image: linear-gradient(
+        var(--plate-top-color),
+        var(--plate-color) 30% 80%,
+        var(--plate-bottom-color));
+    border-right: 1.5cqw ridge var(--text-border-color);
+    transform: skewX(-12deg);
+}
+
+#actions .action_button:hover::before {
+    border-right: 1.5cqw solid var(--plate-top-color);
+}
+
+#actions .action_button:disabled::before {
+    background-image: linear-gradient(
+        var(--plate-top-color));
+    border-right: 1.5cqw solid var(--plate-top-color);
+}
+
+#actions .action_button_text {
+    position: absolute;
+    top: 0%;
+    left: 5%;
+    -webkit-text-stroke: 1cqw var(--text-border-color);
+}
+
+#actions .action_button:disabled .action_button_text {
+    -webkit-text-stroke: 1cqw var(--plate-color);
+}
+
+#actions .action_button::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0%;
+    left: 5%;
+}
+
+.action_1 {
+    --text-inner-color: rgb(210, 234, 222);
+    --text-border-color: rgb(31, 134, 71);
+    --plate-color: rgb(16, 212, 114);
+}
+
+.action_2 {
+    --text-inner-color: rgb(203, 226, 255);
+    --text-border-color: rgb(31, 77, 204);
+    --plate-color: rgb(61, 161, 243);
+}
+
+.action_3 {
+    --text-inner-color: rgb(226, 203, 244);
+    --text-border-color: rgb(120, 31, 179);
+    --plate-color: rgb(156, 43, 248);
+}
+
+.action_4 {
+    --text-inner-color: rgb(246, 226, 248);
+    --text-border-color: rgb(174, 91, 142);
+    --plate-color: rgb(230, 145, 169);
+}
+
+.action_5 {
+    --text-inner-color: rgb(255, 204, 182);
+    --text-border-color: rgb(181, 43, 0);
+    --plate-color: rgb(248, 95, 23);
+}
+
+.action_6 {
+    --text-inner-color: rgb(247, 195, 211);
+    --text-border-color: rgb(160, 0, 88);
+    --plate-color: rgb(223, 31, 130);
+}
+
+.action_7 {
+    --text-inner-color: rgb(225, 225, 225);
+    --text-border-color: rgb(53, 53, 53);
+    --plate-color: rgb(150,150,150);
+}
+
+#actions_disambiguation {
+    display: contents;
+}
+
+.disambig_div {
+    width: fit-content;
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 12cqw;
+    z-index: 1000;
+    margin: auto;
+    padding: 2cqw;
+    border-radius: 2cqw;
+    background-color: rgba(138, 132, 198, 60%);
+}
+
+.disambig_div .disambig_text {
+    width: fit-content;
+    margin-inline: auto;
+    margin-bottom: 2cqw;
+    font-family: sans-serif;
+    font-size: 3cqw;
+}
+
+.disambig_div .disambig_action_button {
+    margin: 1cqw;
+    border: 3px solid navy;
+    padding: 1.5cqw;
+    border-radius: 1cqw;
+    background-color: transparent;
+}
+
+.disambig_div .disambig_action_button:hover {
+    border: 3px solid green;
+}
+
+.disambig_div .tile_div {
+    --tile-width: 5cqw;
+    --tile-border-width: 1px;
+}
