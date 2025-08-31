@@ -392,8 +392,8 @@ function disableActions() {
 
 socket.on('game_info', (info) => {
     console.log(info);
-    game_info_div.classList.remove('hidden');
-    win_info_div.classList.add('hidden');
+    game_info_div.hidden = false;
+    win_info_div.hidden = true;
     player_indicator.textContent = `You are Player ${info.player}`;
     tiles_left_indicator.textContent = `${info.tiles_left} tiles left`;
     history_list.replaceChildren(...info.history.map(createHistoryEntryElement));
@@ -424,8 +424,8 @@ socket.on('game_info', (info) => {
 
 socket.on('win_info', (info) => {
     console.log(info);
-    game_info_div.classList.add('hidden');
-    win_info_div.classList.remove('hidden');
+    game_info_div.hidden = true;
+    win_info_div.hidden = false;
     if (info) {
         win_player_indicator.textContent = `Player ${info.win_player} wins!`;
         win_hand_div.replaceChildren(...info.hand.map(createTileElement));
