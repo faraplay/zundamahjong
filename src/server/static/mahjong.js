@@ -160,6 +160,7 @@ function createHistoryEntryElement(history_entry) {
 
 function createCallElement(call) {
     const call_item = document.createElement("span");
+    call_item.classList.add('call');
     const call_type_item = document.createElement("h4");
     call_type_item.textContent = call_types[call.call_type];
     call_item.replaceChildren(
@@ -169,15 +170,35 @@ function createCallElement(call) {
     return call_item
 }
 
+function createCallElementIndexed(call, startIndex) {
+    const call_item = document.createElement("span");
+    call_item.classList.add('call');
+    const call_type_item = document.createElement("h4");
+    call_type_item.textContent = call_types[call.call_type];
+    call_item.appendChild(call_type_item);
+    var index = startIndex + call.tiles.length - 1;
+    for (const tile of call.tiles) {
+        tile_item = createTileElement(tile);
+        tile_item.style.setProperty('--player-calls-tile-x-index', index);
+        --index;
+        call_item.appendChild(tile_item)
+    }
+    return call_item
+}
+
 function createPlayerCallsElement(player_calls) {
     const player_item = document.createElement('div');
     player_item.classList.add('player_calls');
     const player_item_title = document.createElement('h4');
     player_item_title.textContent = `Player ${player_calls.player}`;
-    player_item.replaceChildren(
-        player_item_title,
-        ...player_calls.calls.map(createCallElement)
-    );
+    player_item.appendChild(player_item_title);
+
+    var index = 0;
+    for (const call of player_calls.calls) {
+        call_item = createCallElementIndexed(call, index);
+        player_item.appendChild(call_item);
+        index += call.tiles.length;
+    }
     return player_item;
 }
 

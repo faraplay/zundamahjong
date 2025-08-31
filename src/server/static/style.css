@@ -81,8 +81,8 @@ h3, h4 {
     width: 100cqw;
     height: 100cqw;
     position: absolute;
-    top: calc(100cqw * (9 - 16)/(2*16));
     left: 0;
+    top: calc(100cqw * (9 - 16)/(2*16));
     perspective: 300cqw;
 }
 
@@ -90,41 +90,57 @@ h3, h4 {
     width: 100cqw;
     height: 100cqw;
     position: absolute;
-    top: 0;
-    bottom: 0;
     left: 0;
     right: 0;
+    top: 0;
+    bottom: 0;
     margin: auto;
     background-color: mediumaquamarine;
     transform: var(--table-transform);
 }
 
-.player_calls {
-    --player-calls-width: 50cqw;
-    --player-calls-height: calc(var(--tile-width) * 1.5);
-    --player-calls-bottom: 7.5cqw;
+#calls_list {
     --player-calls-right: 10cqw;
-    width: var(--player-calls-width);
-    height: var(--player-calls-height);
-    position: absolute;
-    bottom: var(--player-calls-bottom);
-    right: var(--player-calls-right);
-    display: flex;
-    flex-direction: row-reverse;
-    align-items: flex-end;
-    transform-origin: calc(var(--player-calls-width) + var(--player-calls-right) - 50cqw) calc(var(--player-calls-height) + var(--player-calls-bottom) - 50cqw);
+    --player-calls-bottom: 8cqw;
+    --player-calls-transform:
+        translateX(calc(100cqw - var(--player-calls-right)))
+        translateY(calc(100cqw - var(--player-calls-bottom)))
+        ;
+    display: contents;
+}
+
+.player_calls, .player_calls .call {
+    display: contents;
+}
+
+.player_calls_position_0 {
+    --player-calls-position-transform: rotate(0deg);
 }
 
 .player_calls_position_1 {
-    transform: rotate(-90deg);
+    --player-calls-position-transform: rotate(-90deg);
 }
 
 .player_calls_position_2 {
-    transform: rotate(180deg);
+    --player-calls-position-transform: rotate(-180deg);
 }
 
 .player_calls_position_3 {
-    transform: rotate(90deg);
+    --player-calls-position-transform: rotate(-270deg);
+}
+
+#calls_list .tile {
+    position: absolute;
+    right: 50cqw;
+    bottom: 50cqw;
+    transform-origin: right bottom;
+    transform:
+        var(--table-transform)
+        var(--player-calls-position-transform)
+        var(--player-calls-transform)
+        translateX(calc(-1 * var(--player-calls-tile-x-index) * var(--tile-width)))
+        translate(-50cqw,-50cqw)
+        ;
 }
 
 #discard_pool {
@@ -137,8 +153,8 @@ h3, h4 {
 
 #discard_pool .tile {
     position: absolute;
-    top: 50cqw;
     left: 50cqw;
+    top: 50cqw;
     transform-origin: left top;
     transform:
         var(--table-transform)
