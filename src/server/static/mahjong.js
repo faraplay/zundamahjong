@@ -164,7 +164,7 @@ function createTableTileElement(tile) {
     const item = createTileElement(tile);
     item.firstChild.classList.add('tile_face');
     for (const class_name of ['tile_left', 'tile_right', 'tile_top', 'tile_bottom']) {
-        const side_item = document.createElement('div');
+        const side_item = document.createElement('span');
         side_item.classList.add('tile_face');
         side_item.classList.add('tile_side');
         side_item.classList.add(class_name);
