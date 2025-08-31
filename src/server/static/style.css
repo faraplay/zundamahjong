@@ -1,6 +1,7 @@
 :root {
     --tile-back-color: purple;
     --tile-border-color: rgba(0,0,0,0.3);
+    --tile-side-darken-percent: 8%;
 }
 
 body {
@@ -30,7 +31,7 @@ h3, h4 {
 .tile_div {
     --tile-height: calc(var(--tile-width) * 4/3);
     --tile-depth: calc(var(--tile-width) * 2/3);
-    display: contents;
+    --tile-border-radius: calc(var(--tile-border-width) * 3);
 }
 
 .tile {
@@ -40,27 +41,32 @@ h3, h4 {
     width: var(--inner-tile-width);
     height: var(--inner-tile-height);
     border: var(--tile-border-width) solid var(--tile-border-color);
-    border-radius: calc(var(--tile-border-width) * 3);
+    border-radius: var(--tile-border-radius);
     padding: var(--tile-padding);
     background-color: white;
 }
 
 #hand {
     --hand-width: 75cqw;
-    --tile-width: calc(var(--hand-width)/14);
+    --tile-width: calc(var(--hand-width)/14.5);
     --tile-border-width: 2px;
     width: var(--hand-width);
-    height: calc(var(--hand-width)/14 * 5/3);
+    height: calc(var(--tile-width) * 1.8);
     position: absolute;
     left: 0;
     right: 0;
     bottom: 2%;
     z-index: 1000;
     margin: auto;
+    display: flex;
+}
+
+.hand_tile_button:nth-child(3n + 2):nth-last-child(1) {
+    margin-left: calc(var(--tile-width) / 2);
 }
 
 .hand_tile_button {
-    width: calc(100% / 14);
+    width: var(--tile-width);
     height: 100%;
     position: relative;
     border: none;
@@ -68,15 +74,60 @@ h3, h4 {
     background-color: transparent;
 }
 
-.hand_tile_button .tile {
+.hand_tile_button .tile_div {
+    --tile-border-radius: calc(var(--tile-width) * 0.1);
+    width: 100%;
+    height: calc(var(--tile-height) * 9/8);
     position: absolute;
     bottom: 0;
-    left: 0;
 }
 
-.hand_tile_button:hover .tile {
+.hand_tile_button:hover .tile_div {
     bottom: unset;
     top: 0;
+}
+
+#hand .tile_div .tile_back_layer,
+#hand .tile_div .tile_middle_layer {
+    width: 100%;
+    height: var(--tile-height);
+    position: absolute;
+    border-radius: var(--tile-border-radius);
+}
+
+#hand .tile_div .tile_back_layer {
+    bottom: calc(var(--tile-height) * 1/8);
+    background-color: color-mix(
+        in srgb,
+        var(--tile-back-color),
+        black var(--tile-side-darken-percent));
+}
+
+#hand .tile_div .tile_middle_layer {
+    bottom: calc(var(--tile-height) * 1/8 * 0.7);
+    background-color: color-mix(
+        in srgb,
+        white,
+        black var(--tile-side-darken-percent));
+}
+
+#hand .tile_div .tile {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    border-color: white;
+}
+
+#hand .tile_div::after {
+    --tile-border-width: 1px;
+    content: "";
+    width: calc(100% - 2*var(--tile-border-width));
+    height: calc(100% - 2*var(--tile-border-width));
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    border-radius: var(--tile-border-radius);
+    border: var(--tile-border-width) solid var(--tile-border-color);
 }
 
 #actions {
@@ -94,6 +145,10 @@ h3, h4 {
     left: 0;
     top: calc(100cqw * (9 - 16)/(2*16));
     perspective: 300cqw;
+}
+
+#table_view .tile_div {
+    display: contents;
 }
 
 #table_view .tile_face {
@@ -199,7 +254,7 @@ h3, h4 {
     height: calc(100% - 2*var(--tile-border-width));
     position: absolute;
     border: var(--tile-border-width) solid var(--tile-border-color);
-    background-color: rgba(0,0,0,5%);
+    background-color: rgba(0,0,0,var(--tile-side-darken-percent));
 }
 
 #table {

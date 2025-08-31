@@ -150,7 +150,15 @@ function createTableTileElement(tile) {
 function createHandTileElement(tile) {
     const button = document.createElement('button');
     button.classList.add('hand_tile_button');
-    button.appendChild(createTileElement(tile));
+    const tile_item = createTileElement(tile);
+    const tile_back_item = document.createElement('div');
+    tile_back_item.classList.add('tile_back_layer');
+    tile_item.appendChild(tile_back_item);
+    const tile_middle_item = document.createElement('div');
+    tile_middle_item.classList.add('tile_middle_layer');
+    tile_item.appendChild(tile_middle_item);
+    tile_item.appendChild(tile_item.firstChild);
+    button.appendChild(tile_item);
     button.addEventListener('click', (e) => {
         e.preventDefault();
         socket.emit('action', {
