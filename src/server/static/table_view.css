@@ -1,0 +1,134 @@
+#table_view {
+    --table-transform: translate3d(0cqw, -4cqw, 0cqw) rotateX(53deg);
+    --tile-width: 4cqw;
+    width: 100cqw;
+    height: 100cqw;
+    position: absolute;
+    left: 0;
+    top: calc(100cqw * (9 - 16)/(2*16));
+    perspective: 300cqw;
+}
+
+#table_view .tile_div {
+    display: contents;
+}
+
+#table_view .tile_face {
+    position: absolute;
+    left: 50cqw;
+    top: 50cqw;
+    z-index: var(--tile-z-index);
+    transform-origin: left top;
+    backface-visibility: hidden;
+}
+
+#table_view .tile {
+    transform:
+        var(--tile-transform)
+        translateZ(var(--tile-depth))
+        ;
+}
+
+#table_view .tile_side {
+    background-color: var(--tile-front-color);
+}
+
+#table_view .tile_left {
+    width: var(--tile-depth);
+    height: var(--tile-height);
+    transform:
+        var(--tile-transform)
+        rotateY(-90deg)
+        ;
+}
+
+#table_view .tile_left::before {
+    content: "";
+    width: 30%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    background-color: var(--tile-back-color);
+}
+
+#table_view .tile_right {
+    width: var(--tile-depth);
+    height: var(--tile-height);
+    transform:
+        var(--tile-transform)
+        translate3d(var(--tile-width), 0, var(--tile-depth))
+        rotateY(90deg)
+        ;
+}
+
+#table_view .tile_right::before {
+    content: "";
+    width: 30%;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    background-color: var(--tile-back-color);
+}
+
+#table_view .tile_top {
+    width: var(--tile-width);
+    height: var(--tile-depth);
+    transform:
+        var(--tile-transform)
+        rotateX(90deg)
+        ;
+}
+
+#table_view .tile_top::before {
+    content: "";
+    width: 100%;
+    height: 30%;
+    position: absolute;
+    top: 0;
+    background-color: var(--tile-back-color);
+}
+
+#table_view .tile_bottom {
+    width: var(--tile-width);
+    height: var(--tile-depth);
+    transform:
+        var(--tile-transform)
+        translate3d(0, var(--tile-height), var(--tile-depth))
+        rotateX(-90deg)
+        ;
+}
+
+#table_view .tile_bottom::before {
+    content: "";
+    width: 100%;
+    height: 30%;
+    position: absolute;
+    bottom: 0;
+    background-color: var(--tile-back-color);
+}
+
+#table_view .tile_left::after,
+#table_view .tile_right::after,
+#table_view .tile_top::after,
+#table_view .tile_bottom::after {
+    content: "";
+    width: calc(100% - 2*var(--tile-border-width));
+    height: calc(100% - 2*var(--tile-border-width));
+    position: absolute;
+    border: var(--tile-border-width) solid var(--tile-border-color);
+    background-color: rgba(0,0,0,var(--tile-side-darken-percent));
+}
+
+#table {
+    width: 100cqw;
+    height: 100cqw;
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    z-index: -1000;
+    margin: auto;
+    background-color: mediumaquamarine;
+    transform: var(--table-transform);
+}

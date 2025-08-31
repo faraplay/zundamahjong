@@ -6,8 +6,10 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap" rel="stylesheet">
     <link href="style.css" rel="stylesheet" />
+    <link href="straight_view.css" rel="stylesheet" />
     <link href="hand.css" rel="stylesheet" />
     <link href="actions.css" rel="stylesheet" />
+    <link href="table_view.css" rel="stylesheet" />
     <link href="player_calls.css" rel="stylesheet" />
     <link href="discard_pool.css" rel="stylesheet" />
     <title>Mahjong</title>
@@ -25,11 +27,13 @@
     <p id="player_indicator">Select a player...</p>
     <div id="game_info">
       <p id="tiles_left"></p>
-      <h3>Your hand</h3>
-      <div id="hand"></div>
-      <h3>Actions</h3>
-      <div id="actions"></div>
-      <div id="actions_disambiguation"></div>
+      <div id="straight_view">
+        <h3>Your hand</h3>
+        <div id="hand"></div>
+        <h3>Actions</h3>
+        <div id="actions"></div>
+        <div id="actions_disambiguation"></div>
+      </div>
       <div id="table_view">
         <div id="table"></div>
         <h3>Calls</h3>

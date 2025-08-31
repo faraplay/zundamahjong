@@ -174,9 +174,7 @@ function createTableTileElement(tile) {
     return item;
 }
 
-function createHandTileElement(tile) {
-    const button = document.createElement('button');
-    button.classList.add('hand_tile_button');
+function createStraightTileElement(tile) {
     const tile_item = createTileElement(tile);
     const tile_back_item = document.createElement('div');
     tile_back_item.classList.add('tile_back_layer');
@@ -185,6 +183,13 @@ function createHandTileElement(tile) {
     tile_middle_item.classList.add('tile_middle_layer');
     tile_item.appendChild(tile_middle_item);
     tile_item.appendChild(tile_item.firstChild);
+    return tile_item;
+}
+
+function createHandTileButtonElement(tile) {
+    const button = document.createElement('button');
+    button.classList.add('hand_tile_button');
+    const tile_item = createStraightTileElement(tile);
     button.appendChild(tile_item);
     button.addEventListener('click', (e) => {
         e.preventDefault();
@@ -260,23 +265,23 @@ function createDisambiguationActionButtonElement(action, last_discard) {
     switch (action.action_type) {
         case ACTION_CHI_A:
             for (const tile of [last_discard, last_discard+1, last_discard+2]) {
-                action_item.appendChild(createTileElement(tile))
+                action_item.appendChild(createStraightTileElement(tile))
             }
             break;
         case ACTION_CHI_B:
             for (const tile of [last_discard-1, last_discard, last_discard+1]) {
-                action_item.appendChild(createTileElement(tile))
+                action_item.appendChild(createStraightTileElement(tile))
             }
             break;
         case ACTION_CHI_C:
             for (const tile of [last_discard-2, last_discard-1, last_discard]) {
-                action_item.appendChild(createTileElement(tile))
+                action_item.appendChild(createStraightTileElement(tile))
             }
             break;
         case ACTION_ADD_KAN:
         case ACTION_CLOSED_KAN:
         case ACTION_FLOWER:
-            action_item.appendChild(createTileElement(action.tile))
+            action_item.appendChild(createStraightTileElement(action.tile))
             break;
     }
     action_item.addEventListener('click',
@@ -408,7 +413,7 @@ socket.on('game_info', (info) => {
     }
     calls_list.replaceChildren(...player_calls);
 
-    hand_div.replaceChildren(...info.hand.map(createHandTileElement));
+    hand_div.replaceChildren(...info.hand.map(createHandTileButtonElement));
 
     last_discard = info.discards.at(-1);
     createAllActionElements(info.actions, last_discard);

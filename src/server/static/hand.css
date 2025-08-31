@@ -1,8 +1,5 @@
 #hand {
-    --hand-width: 75cqw;
-    --tile-width: calc(var(--hand-width)/14.5);
-    --tile-border-width: 2px;
-    width: var(--hand-width);
+    width: calc(var(--tile-width) * 14.5);
     height: calc(var(--tile-width) * 1.8);
     position: absolute;
     left: 0;
@@ -26,58 +23,13 @@
     background-color: transparent;
 }
 
-.hand_tile_button .tile_div {
-    --tile-border-radius: calc(var(--tile-width) * 0.1);
-    width: 100%;
-    height: calc(var(--tile-height) * 9/8);
+#hand .hand_tile_button .tile_div {
     position: absolute;
+    left: 0;
     bottom: 0;
 }
 
-.hand_tile_button:hover .tile_div {
+#hand .hand_tile_button:hover .tile_div {
     bottom: unset;
     top: 0;
-}
-
-#hand .tile_div .tile_back_layer,
-#hand .tile_div .tile_middle_layer {
-    width: 100%;
-    height: var(--tile-height);
-    position: absolute;
-    border-radius: var(--tile-border-radius);
-}
-
-#hand .tile_div .tile_back_layer {
-    bottom: calc(var(--tile-height) * 1/8);
-    background-color: color-mix(
-        in srgb,
-        var(--tile-back-color),
-        black var(--tile-side-darken-percent));
-}
-
-#hand .tile_div .tile_middle_layer {
-    bottom: calc(var(--tile-height) * 1/8 * 0.7);
-    background-color: color-mix(
-        in srgb,
-        white,
-        black var(--tile-side-darken-percent));
-}
-
-#hand .tile_div .tile {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    border-color: white;
-}
-
-#hand .tile_div::after {
-    --tile-border-width: 1px;
-    content: "";
-    width: calc(100% - 2*var(--tile-border-width));
-    height: calc(100% - 2*var(--tile-border-width));
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    border-radius: var(--tile-border-radius);
-    border: var(--tile-border-width) solid var(--tile-border-color);
 }
