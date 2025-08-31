@@ -1,3 +1,8 @@
+:root {
+    --tile-back-color: purple;
+    --tile-border-color: rgba(0,0,0,0.3);
+}
+
 body {
     background-color: lightgray;
 }
@@ -22,14 +27,19 @@ h3, h4 {
     background-color: white;
 }
 
-.tile {
+.tile_div {
     --tile-height: calc(var(--tile-width) * 4/3);
+    --tile-depth: calc(var(--tile-width) * 2/3);
+    display: contents;
+}
+
+.tile {
     --tile-padding: calc(var(--tile-width) * 0.02);
     --inner-tile-width: calc(var(--tile-width) - 2*var(--tile-border-width) - 2*var(--tile-padding));
-    --inner-tile-height: calc(var(--inner-tile-width) * 4/3);
+    --inner-tile-height: calc(var(--tile-height) - 2*var(--tile-border-width) - 2*var(--tile-padding));
     width: var(--inner-tile-width);
     height: var(--inner-tile-height);
-    border: var(--tile-border-width) solid black;
+    border: var(--tile-border-width) solid var(--tile-border-color);
     border-radius: calc(var(--tile-border-width) * 3);
     padding: var(--tile-padding);
     background-color: white;
@@ -39,13 +49,13 @@ h3, h4 {
     --hand-width: 75cqw;
     --tile-width: calc(var(--hand-width)/14);
     --tile-border-width: 2px;
-    z-index: 1;
     width: var(--hand-width);
     height: calc(var(--hand-width)/14 * 5/3);
     position: absolute;
     left: 0;
     right: 0;
     bottom: 2%;
+    z-index: 1000;
     margin: auto;
 }
 
@@ -58,24 +68,24 @@ h3, h4 {
     background-color: transparent;
 }
 
-.hand_tile_button > .tile {
+.hand_tile_button .tile {
     position: absolute;
     bottom: 0;
     left: 0;
 }
 
-.hand_tile_button:hover > img {
+.hand_tile_button:hover .tile {
     bottom: unset;
     top: 0;
 }
 
 #actions {
     position: relative;
-    z-index: 1;
+    z-index: 5;
 }
 
 #table_view {
-    --table-transform: translate3d(0cqw, -4cqw, 0cqw) rotateX(50deg);
+    --table-transform: translate3d(0cqw, -4cqw, 0cqw) rotateX(53deg);
     --tile-width: 4cqw;
     --tile-border-width: 1px;
     width: 100cqw;
@@ -86,6 +96,112 @@ h3, h4 {
     perspective: 300cqw;
 }
 
+#table_view .tile_face {
+    position: absolute;
+    left: 50cqw;
+    top: 50cqw;
+    z-index: var(--tile-z-index);
+    transform-origin: left top;
+    backface-visibility: hidden;
+}
+
+#table_view .tile {
+    transform:
+        var(--tile-transform)
+        translateZ(var(--tile-depth))
+        ;
+}
+
+#table_view .tile_side {
+    background-color: white;
+}
+
+#table_view .tile_left {
+    width: var(--tile-depth);
+    height: var(--tile-height);
+    transform:
+        var(--tile-transform)
+        rotateY(-90deg)
+        ;
+}
+
+#table_view .tile_left::before {
+    content: "";
+    width: 30%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    background-color: var(--tile-back-color);
+}
+
+#table_view .tile_right {
+    width: var(--tile-depth);
+    height: var(--tile-height);
+    transform:
+        var(--tile-transform)
+        translate3d(var(--tile-width), 0, var(--tile-depth))
+        rotateY(90deg)
+        ;
+}
+
+#table_view .tile_right::before {
+    content: "";
+    width: 30%;
+    height: 100%;
+    position: absolute;
+    right: 0;
+    background-color: var(--tile-back-color);
+}
+
+#table_view .tile_top {
+    width: var(--tile-width);
+    height: var(--tile-depth);
+    transform:
+        var(--tile-transform)
+        rotateX(90deg)
+        ;
+}
+
+#table_view .tile_top::before {
+    content: "";
+    width: 100%;
+    height: 30%;
+    position: absolute;
+    top: 0;
+    background-color: var(--tile-back-color);
+}
+
+#table_view .tile_bottom {
+    width: var(--tile-width);
+    height: var(--tile-depth);
+    transform:
+        var(--tile-transform)
+        translate3d(0, var(--tile-height), var(--tile-depth))
+        rotateX(-90deg)
+        ;
+}
+
+#table_view .tile_bottom::before {
+    content: "";
+    width: 100%;
+    height: 30%;
+    position: absolute;
+    bottom: 0;
+    background-color: var(--tile-back-color);
+}
+
+#table_view .tile_left::after,
+#table_view .tile_right::after,
+#table_view .tile_top::after,
+#table_view .tile_bottom::after {
+    content: "";
+    width: calc(100% - 2*var(--tile-border-width));
+    height: calc(100% - 2*var(--tile-border-width));
+    position: absolute;
+    border: var(--tile-border-width) solid var(--tile-border-color);
+    background-color: rgba(0,0,0,5%);
+}
+
 #table {
     width: 100cqw;
     height: 100cqw;
@@ -94,6 +210,7 @@ h3, h4 {
     right: 0;
     top: 0;
     bottom: 0;
+    z-index: -1000;
     margin: auto;
     background-color: mediumaquamarine;
     transform: var(--table-transform);
@@ -102,6 +219,7 @@ h3, h4 {
 #calls_list {
     --player-calls-right: 10cqw;
     --player-calls-bottom: 8cqw;
+    --player-calls-center-index: 10;
     --player-calls-transform:
         translateX(calc(100cqw - var(--player-calls-right)))
         translateY(calc(100cqw - var(--player-calls-bottom)))
@@ -113,32 +231,41 @@ h3, h4 {
     display: contents;
 }
 
-.player_calls_position_0 {
+.player_calls.position_0 .tile_div {
     --player-calls-position-transform: rotate(0deg);
+    --tile-z-index:
+        min(
+        calc(var(--player-calls-tile-x-index) - var(--player-calls-center-index)),
+        calc(var(--player-calls-center-index) - var(--player-calls-tile-x-index))
+        );
 }
 
-.player_calls_position_1 {
+.player_calls.position_1 .tile_div {
     --player-calls-position-transform: rotate(-90deg);
+    --tile-z-index: calc(var(--player-calls-tile-x-index))
 }
 
-.player_calls_position_2 {
+.player_calls.position_2 .tile_div {
     --player-calls-position-transform: rotate(-180deg);
+    --tile-z-index:
+        min(
+        calc(var(--player-calls-tile-x-index) - var(--player-calls-center-index)),
+        calc(var(--player-calls-center-index) - var(--player-calls-tile-x-index))
+        );
 }
 
-.player_calls_position_3 {
+.player_calls.position_3 .tile_div {
     --player-calls-position-transform: rotate(-270deg);
+    --tile-z-index: calc(-1 * var(--player-calls-tile-x-index))
 }
 
-#calls_list .tile {
-    position: absolute;
-    right: 50cqw;
-    bottom: 50cqw;
-    transform-origin: right bottom;
-    transform:
+#calls_list .tile_div {
+    --tile-transform:
         var(--table-transform)
         var(--player-calls-position-transform)
         var(--player-calls-transform)
-        translateX(calc(-1 * var(--player-calls-tile-x-index) * var(--tile-width)))
+        translateX(calc((-1 - var(--player-calls-tile-x-index)) * var(--tile-width)))
+        translateY(calc(-1 * var(--tile-height)))
         translate(-50cqw,-50cqw)
         ;
 }
@@ -146,17 +273,19 @@ h3, h4 {
 #discard_pool {
     --discard-pool-left: 20cqw;
     --discard-pool-top: 20cqw;
+    --discard-pool-center-index: 7;
     --discard-pool-transform: 
         translate(var(--discard-pool-left), var(--discard-pool-top));
     display: contents;
 }
 
-#discard_pool .tile {
-    position: absolute;
-    left: 50cqw;
-    top: 50cqw;
-    transform-origin: left top;
-    transform:
+#discard_pool .tile_div {
+    --tile-z-index:
+        min(
+        calc(var(--discard-tile-x-index) - var(--discard-pool-center-index)),
+        calc(var(--discard-pool-center-index) - var(--discard-tile-x-index))
+        );
+    --tile-transform:
         var(--table-transform)
         var(--discard-pool-transform)
         translateX(calc(var(--discard-tile-x-index) * var(--tile-width)))

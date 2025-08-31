@@ -118,7 +118,7 @@ new_game_button.addEventListener('click', (e) => {
     socket.emit('new_game');
 })
 
-function createTileElement(tile) {
+function createTileImageElement(tile) {
     const item = document.createElement('img');
     item.classList.add('tile');
     item.src = tile_images[tile];
@@ -126,14 +126,31 @@ function createTileElement(tile) {
     return item;
 }
 
+function createTileElement(tile) {
+    const item = document.createElement('div');
+    item.classList.add('tile_div');
+    item.appendChild(createTileImageElement(tile));
+    return item;
+}
+
+function createTableTileElement(tile) {
+    const item = createTileElement(tile);
+    item.firstChild.classList.add('tile_face');
+    for (const class_name of ['tile_left', 'tile_right', 'tile_top', 'tile_bottom']) {
+        const side_item = document.createElement('div');
+        side_item.classList.add('tile_face');
+        side_item.classList.add('tile_side');
+        side_item.classList.add(class_name);
+        item.appendChild(side_item);
+    }
+    item.appendChild(item.firstChild)
+    return item;
+}
+
 function createHandTileElement(tile) {
     const button = document.createElement('button');
     button.classList.add('hand_tile_button');
-    const img_item = document.createElement('img');
-    img_item.classList.add('tile')
-    img_item.src = tile_images[tile];
-    img_item.alt = tile;
-    button.appendChild(img_item);
+    button.appendChild(createTileElement(tile));
     button.addEventListener('click', (e) => {
         e.preventDefault();
         socket.emit('action', {
@@ -178,7 +195,7 @@ function createCallElementIndexed(call, startIndex) {
     call_item.appendChild(call_type_item);
     var index = startIndex + call.tiles.length - 1;
     for (const tile of call.tiles) {
-        tile_item = createTileElement(tile);
+        tile_item = createTableTileElement(tile);
         tile_item.style.setProperty('--player-calls-tile-x-index', index);
         --index;
         call_item.appendChild(tile_item)
@@ -270,7 +287,7 @@ socket.on('game_info', (info) => {
     tiles_left_indicator.textContent = `${info.tiles_left} tiles left`;
     history_list.replaceChildren(...info.history.map(createHistoryEntryElement));
 
-    discard_items = info.discards.map(createTileElement);
+    discard_items = info.discards.map(createTableTileElement);
     for (var i=0; i<info.discards.length; ++i) {
         const item = discard_items[i];
         item.style.setProperty('--discard-tile-x-index', i % 15);
@@ -280,7 +297,8 @@ socket.on('game_info', (info) => {
 
     player_calls = info.player_calls.map(createPlayerCallsElement);
     for (var i=0; i<4; ++i) {
-        player_calls[(info.player + i) % 4].classList.add(`player_calls_position_${i}`);
+        player_calls[(info.player + i) % 4].classList.add('player_calls');
+        player_calls[(info.player + i) % 4].classList.add(`position_${i}`);
     }
     calls_list.replaceChildren(...player_calls);
 
