@@ -12,7 +12,7 @@ socketio = SocketIO(app)
 
 round = Round()
 
-sid_players: dict[str, int] = {}
+sid_seats: dict[str, int] = {}
 submitted_actions = [None, None, None, None]
 
 
@@ -20,7 +20,7 @@ def reset_submitted_actions():
     if round.status == RoundStatus.END:
         submitted_actions[:] = [None, None, None, None]
         return
-    allowed_actions = [round.allowed_actions(player) for player in range(4)]
+    allowed_actions = [round.allowed_actions(seat) for seat in range(4)]
     submitted_actions[:] = [
         actions.default if len(actions.actions) == 1 else None
         for actions in allowed_actions
@@ -31,8 +31,8 @@ def reset_submitted_actions():
 
 
 def resolve_actions():
-    player, action = round.get_priority_action(submitted_actions)
-    round.do_action(player, action)
+    seat, action = round.get_priority_action(submitted_actions)
+    round.do_action(seat, action)
     round.display_info()
 
 
@@ -47,7 +47,7 @@ def try_execute_actions():
 def get_win_info():
     if round.win_info is not None:
         return {
-            "win_player": round.win_info.win_player,
+            "win_seat": round.win_info.win_seat,
             "hand": round.win_info.hand,
             "calls": [call.model_dump() for call in round.win_info.calls],
         }
@@ -55,40 +55,40 @@ def get_win_info():
         return None
 
 
-def get_round_info(player: int):
+def get_round_info(seat: int):
     return {
-        "player": player,
-        "hand": list(round.get_hand(player)),
+        "seat": seat,
+        "hand": list(round.get_hand(seat)),
         "tiles_left": round.wall_count,
         "history": [
-            {"player": action[0], "action": action[1].model_dump()}
+            {"seat": action[0], "action": action[1].model_dump()}
             for action in round.history
         ],
         "discards": list(round.discard_pool),
-        "player_calls": [
+        "seat_calls": [
             {
-                "player": player,
-                "calls": [call.model_dump() for call in round.get_calls(player)],
+                "seat": seat,
+                "calls": [call.model_dump() for call in round.get_calls(seat)],
             }
-            for player in range(4)
+            for seat in range(4)
         ],
         "actions": [
-            action.model_dump() for action in round.allowed_actions(player).actions
+            action.model_dump() for action in round.allowed_actions(seat).actions
         ],
-        "action_selected": submitted_actions[player] is not None,
+        "action_selected": submitted_actions[seat] is not None,
     }
 
 
-def emit_info(sid: str, player: int):
+def emit_info(sid: str, seat: int):
     if round.status != RoundStatus.END:
-        emit("round_info", get_round_info(player), to=sid)
+        emit("round_info", get_round_info(seat), to=sid)
     else:
         emit("win_info", get_win_info(), to=sid)
 
 
 def emit_info_all():
-    for sid, player in sid_players.items():
-        emit_info(sid, player)
+    for sid, seat in sid_seats.items():
+        emit_info(sid, seat)
 
 
 @socketio.on("connect")
@@ -99,7 +99,7 @@ def connect(auth):
 @socketio.on("disconnect")
 def disconnect(reason):
     print(f"Client disconnected: {request.sid},\nReason: {reason}")
-    sid_players.pop(request.sid, None)
+    sid_seats.pop(request.sid, None)
 
 
 @socketio.on("new_round")
@@ -111,34 +111,34 @@ def start_new_round():
     emit_info_all()
 
 
-@socketio.on("set_player")
-def handle_set_player(data):
-    print(f"Received set_player from {request.sid}: {data}")
+@socketio.on("set_seat")
+def handle_set_seat(data):
+    print(f"Received set_seat from {request.sid}: {data}")
     try:
-        player = int(data)
-        if player not in range(4):
-            print("Invalid player number!", player)
+        seat = int(data)
+        if seat not in range(4):
+            print("Invalid seat number!", seat)
             return
     except ValueError:
         print("Received data is not an integer!", data)
         return
-    sid_players[request.sid] = player
-    emit_info(request.sid, player)
+    sid_seats[request.sid] = seat
+    emit_info(request.sid, seat)
 
 
 @socketio.on("action")
 def handle_action(data):
     print(f"Received action from {request.sid}: {data}")
     try:
-        player = sid_players[request.sid]
+        seat = sid_seats[request.sid]
     except KeyError:
-        print(f"sid {request.sid} does not have an associated player!")
+        print(f"sid {request.sid} does not have an associated seat!")
         return
     try:
         action = Action.model_validate(data)
     except ValidationError:
         print(f"Data could not be converted into Action object!")
-    submitted_actions[player] = action
+    submitted_actions[seat] = action
     print(submitted_actions)
     emit("action_received")
     try_execute_actions()

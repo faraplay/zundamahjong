@@ -5,7 +5,7 @@ from .call import Call
 
 
 class WinInfo(NamedTuple):
-    win_player: int
-    lose_player: int
+    win_seat: int
+    lose_seat: int
     hand: list[Tile]
     calls: list[Call]

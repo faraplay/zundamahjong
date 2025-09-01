@@ -114,11 +114,11 @@ const tile_images = {
     48: "mahjongtiles/flower/04.svg",
 }
 
-const set_player_form = document.getElementById('set_player_form');
-const set_player_select = document.getElementById('set_player_select');
+const set_seat_form = document.getElementById('set_seat_form');
+const set_seat_select = document.getElementById('set_seat_select');
 
 const round_info_div = document.getElementById('round_info');
-const player_indicator = document.getElementById('player_indicator');
+const seat_indicator = document.getElementById('seat_indicator');
 const tiles_left_indicator = document.getElementById('tiles_left');
 const history_list = document.getElementById('history_list');
 const discard_pool = document.getElementById('discard_pool');
@@ -128,15 +128,15 @@ const actions_div = document.getElementById('actions');
 const actions_disambiguation_div = document.getElementById('actions_disambiguation');
 
 const win_info_div = document.getElementById('win_info');
-const win_player_indicator = document.getElementById('win_player');
+const win_seat_indicator = document.getElementById('win_seat');
 const win_hand_div = document.getElementById('win_hand');
 const win_calls_div = document.getElementById('win_calls');
 const new_round_button = document.getElementById('new_round');
 
-set_player_form.addEventListener('submit', (e) => {
+set_seat_form.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (set_player_select.value) {
-        socket.emit('set_player', set_player_select.value);
+    if (set_seat_select.value) {
+        socket.emit('set_seat', set_seat_select.value);
     }
 });
 
@@ -207,7 +207,7 @@ function createHistoryEntryElement(history_entry) {
     const history_item = document.createElement('li');
     const history_text_item = document.createElement('span');
     history_text_item.textContent =
-        `Player: ${history_entry.player}, Action: ${action_type}`;
+        `Player: ${history_entry.seat}, Action: ${action_type}`;
     history_item.appendChild(history_text_item);
     if (action.tile != 0) {
         history_item.appendChild(createTileElement(action.tile))
@@ -236,27 +236,27 @@ function createCallElementIndexed(call, startIndex) {
     var index = startIndex + call.tiles.length - 1;
     for (const tile of call.tiles) {
         tile_item = createTableTileElement(tile);
-        tile_item.style.setProperty('--player-calls-tile-x-index', index);
+        tile_item.style.setProperty('--seat-calls-tile-x-index', index);
         --index;
         call_item.appendChild(tile_item)
     }
     return call_item
 }
 
-function createPlayerCallsElement(player_calls) {
-    const player_item = document.createElement('div');
-    player_item.classList.add('player_calls');
-    const player_item_title = document.createElement('h4');
-    player_item_title.textContent = `Player ${player_calls.player}`;
-    player_item.appendChild(player_item_title);
+function createPlayerCallsElement(seat_calls) {
+    const seat_item = document.createElement('div');
+    seat_item.classList.add('seat_calls');
+    const seat_item_title = document.createElement('h4');
+    seat_item_title.textContent = `Player ${seat_calls.seat}`;
+    seat_item.appendChild(seat_item_title);
 
     var index = 0;
-    for (const call of player_calls.calls) {
+    for (const call of seat_calls.calls) {
         call_item = createCallElementIndexed(call, index);
-        player_item.appendChild(call_item);
+        seat_item.appendChild(call_item);
         index += call.tiles.length;
     }
-    return player_item;
+    return seat_item;
 }
 
 function createDisambiguationActionButtonElement(action, last_discard) {
@@ -394,7 +394,7 @@ socket.on('round_info', (info) => {
     console.log(info);
     round_info_div.hidden = false;
     win_info_div.hidden = true;
-    player_indicator.textContent = `You are Player ${info.player}`;
+    seat_indicator.textContent = `You are Player ${info.seat}`;
     tiles_left_indicator.textContent = `${info.tiles_left} tiles left`;
     history_list.replaceChildren(...info.history.map(createHistoryEntryElement));
 
@@ -406,12 +406,12 @@ socket.on('round_info', (info) => {
     }
     discard_pool.replaceChildren(...discard_items);
 
-    player_calls = info.player_calls.map(createPlayerCallsElement);
+    seat_calls = info.seat_calls.map(createPlayerCallsElement);
     for (var i=0; i<4; ++i) {
-        player_calls[(info.player + i) % 4].classList.add('player_calls');
-        player_calls[(info.player + i) % 4].classList.add(`position_${i}`);
+        seat_calls[(info.seat + i) % 4].classList.add('seat_calls');
+        seat_calls[(info.seat + i) % 4].classList.add(`position_${i}`);
     }
-    calls_list.replaceChildren(...player_calls);
+    calls_list.replaceChildren(...seat_calls);
 
     hand_div.replaceChildren(...info.hand.map(createHandTileButtonElement));
 
@@ -427,11 +427,11 @@ socket.on('win_info', (info) => {
     round_info_div.hidden = true;
     win_info_div.hidden = false;
     if (info) {
-        win_player_indicator.textContent = `Player ${info.win_player} wins!`;
+        win_seat_indicator.textContent = `Player ${info.win_seat} wins!`;
         win_hand_div.replaceChildren(...info.hand.map(createTileElement));
         win_calls_div.replaceChildren(...info.calls.map(createCallElement));
     } else {
-        win_player_indicator.textContent = "The round is a draw..."
+        win_seat_indicator.textContent = "The round is a draw..."
     }
 })
 

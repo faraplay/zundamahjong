@@ -1,0 +1,53 @@
+#calls_list {
+    --seat-calls-right: 10cqw;
+    --seat-calls-bottom: 8cqw;
+    --seat-calls-center-index: 10;
+    --seat-calls-transform:
+        translateX(calc(100cqw - var(--seat-calls-right)))
+        translateY(calc(100cqw - var(--seat-calls-bottom)))
+        ;
+    display: contents;
+}
+
+.seat_calls, .seat_calls .call {
+    display: contents;
+}
+
+.seat_calls.position_0 .tile_div {
+    --seat-calls-position-transform: rotate(0deg);
+    --tile-z-index:
+        min(
+        calc(var(--seat-calls-tile-x-index) - var(--seat-calls-center-index)),
+        calc(var(--seat-calls-center-index) - var(--seat-calls-tile-x-index))
+        );
+}
+
+.seat_calls.position_1 .tile_div {
+    --seat-calls-position-transform: rotate(-90deg);
+    --tile-z-index: calc(var(--seat-calls-tile-x-index))
+}
+
+.seat_calls.position_2 .tile_div {
+    --seat-calls-position-transform: rotate(-180deg);
+    --tile-z-index:
+        min(
+        calc(var(--seat-calls-tile-x-index) - var(--seat-calls-center-index)),
+        calc(var(--seat-calls-center-index) - var(--seat-calls-tile-x-index))
+        );
+}
+
+.seat_calls.position_3 .tile_div {
+    --seat-calls-position-transform: rotate(-270deg);
+    --tile-z-index: calc(-1 * var(--seat-calls-tile-x-index))
+}
+
+#calls_list .tile_div {
+    --tile-transform:
+        var(--table-transform)
+        var(--seat-calls-position-transform)
+        var(--seat-calls-transform)
+        translateX(calc((-1 - var(--seat-calls-tile-x-index)) * var(--tile-width)))
+        translateY(calc(-1 * var(--tile-height)))
+        translate(-50cqw,-50cqw)
+        ;
+}

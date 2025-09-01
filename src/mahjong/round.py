@@ -23,7 +23,7 @@ class RoundStatus(Enum):
 
 
 class RoundOptions(NamedTuple):
-    player_count: int = 4
+    seat_count: int = 4
     auto_replace_flowers: bool = True
     end_wall_count: int = 14
 
@@ -39,13 +39,13 @@ class Round:
         self._options = options
         self._deck = Deck(tiles) if tiles is not None else Deck.shuffled_deck()
         self._discard_pool = DiscardPool()
-        self._hands = tuple(Hand(self._deck) for _ in range(self._options.player_count))
+        self._hands = tuple(Hand(self._deck) for _ in range(self._options.seat_count))
         for tile_count in [4, 4, 4, 1]:
             for hand in self._hands:
                 hand.add_to_hand(tile_count)
         self._hands[0].draw()
 
-        self._current_player = 0
+        self._current_seat = 0
         self._status = RoundStatus.START
         self._last_tile: Tile = 0
         self._history: deque[tuple[int, Action]] = deque()
@@ -54,30 +54,30 @@ class Round:
         self._flower_pass_count = 0
         if self._options.auto_replace_flowers:
             while self._status == RoundStatus.START:
-                player = self._current_player
-                flowers = self._hands[player].flowers_in_hand()
+                seat = self._current_seat
+                flowers = self._hands[seat].flowers_in_hand()
                 for tile in flowers:
                     self.do_action(
-                        player, Action(action_type=ActionType.FLOWER, tile=tile)
+                        seat, Action(action_type=ActionType.FLOWER, tile=tile)
                     )
-                self.do_action(player, Action(action_type=ActionType.NOTHING))
+                self.do_action(seat, Action(action_type=ActionType.NOTHING))
 
         for hand in self._hands:
             hand.sort()
 
-    def get_hand(self, player: int):
-        return self._hands[player].tiles
+    def get_hand(self, seat: int):
+        return self._hands[seat].tiles
 
-    def get_calls(self, player: int):
-        return self._hands[player].calls
+    def get_calls(self, seat: int):
+        return self._hands[seat].calls
 
     @property
     def options(self):
         return self._options
 
     @property
-    def current_player(self):
-        return self._current_player
+    def current_seat(self):
+        return self._current_seat
 
     @property
     def status(self):
@@ -101,69 +101,69 @@ class Round:
 
     def display_info(self):
         print(
-            f"Current player: {self.current_player}, "
+            f"Current seat: {self.current_seat}, "
             + f"Status: {self.status}, "
             + f"Wall count: {self.wall_count}"
         )
-        for player, hand in enumerate(self._hands):
+        for seat, hand in enumerate(self._hands):
             print(
-                f"Player {player}: ",
+                f"Seat {seat}: ",
                 hand.tiles,
                 [call.tiles for call in hand.calls],
             )
         print("Discards:", self._discard_pool.tiles)
 
-    def allowed_actions(self, player: int):
+    def allowed_actions(self, seat: int):
         return self._allowed_actions_funcs[self._status](
-            self, player, self._hands[player], self._last_tile
+            self, seat, self._hands[seat], self._last_tile
         )
 
-    def do_action(self, player: int, action: Action):
-        if action not in self.allowed_actions(player).actions:
+    def do_action(self, seat: int, action: Action):
+        if action not in self.allowed_actions(seat).actions:
             raise InvalidMoveException()
-        self._do_action_funcs[action.action_type](self, player, action.tile)
-        self._history.append((player, action))
+        self._do_action_funcs[action.action_type](self, seat, action.tile)
+        self._history.append((seat, action))
 
     def get_priority_action(self, actions: Sequence[Action]):
-        if len(actions) != self._options.player_count:
+        if len(actions) != self._options.seat_count:
             raise Exception("Incorrect number of elements in actions")
         valid_actions: list[Action] = []
-        for player, action in enumerate(actions):
-            allowed_actions = self.allowed_actions(player)
+        for seat, action in enumerate(actions):
+            allowed_actions = self.allowed_actions(seat)
             if action in allowed_actions.actions:
                 valid_action = action
             else:
                 valid_action = allowed_actions.default
             valid_actions.append(valid_action)
 
-        best_action_player, best_action = (
-            self._current_player,
-            valid_actions[self._current_player],
+        best_action_seat, best_action = (
+            self._current_seat,
+            valid_actions[self._current_seat],
         )
-        for index in range(1, self._options.player_count):
-            player = (self._current_player + index) % self._options.player_count
-            action = valid_actions[player]
+        for index in range(1, self._options.seat_count):
+            seat = (self._current_seat + index) % self._options.seat_count
+            action = valid_actions[seat]
             if action.action_type > best_action.action_type:
-                best_action_player, best_action = player, action
+                best_action_seat, best_action = seat, action
 
-        return best_action_player, best_action
+        return best_action_seat, best_action
 
-    def _previous_player(self, player: int):
-        return (player - 1) % self._options.player_count
+    def _previous_seat(self, seat: int):
+        return (seat - 1) % self._options.seat_count
 
-    def _next_player(self, player: int):
-        return (player + 1) % self._options.player_count
+    def _next_seat(self, seat: int):
+        return (seat + 1) % self._options.seat_count
 
-    def _allowed_actions_start(self, player: int, hand: Hand, last_tile: Tile):
+    def _allowed_actions_start(self, seat: int, hand: Hand, last_tile: Tile):
         actions = ActionSet()
-        if self._current_player == player:
+        if self._current_seat == seat:
             for tile in hand.tiles:
                 if is_flower(tile):
                     actions.add(ActionType.FLOWER, tile)
         return actions
 
-    def _allowed_actions_play(self, player: int, hand: Hand, last_tile: Tile):
-        if self._current_player == player:
+    def _allowed_actions_play(self, seat: int, hand: Hand, last_tile: Tile):
+        if self._current_seat == seat:
             flowers = hand.flowers_in_hand()
             if self._options.auto_replace_flowers and len(flowers) > 0:
                 return ActionSet(ActionType.FLOWER, flowers[0])
@@ -183,8 +183,8 @@ class Round:
         else:
             return ActionSet()
 
-    def _allowed_actions_called_play(self, player: int, hand: Hand, last_tile: Tile):
-        if self._current_player == player:
+    def _allowed_actions_called_play(self, seat: int, hand: Hand, last_tile: Tile):
+        if self._current_seat == seat:
             actions = ActionSet(ActionType.DISCARD, hand.tiles[-1])
             for tile in set(hand.tiles):
                 actions.add(ActionType.DISCARD, tile)
@@ -192,35 +192,33 @@ class Round:
             actions = ActionSet()
         return actions
 
-    def _allowed_actions_add_kan_after(self, player: int, hand: Hand, last_tile: Tile):
+    def _allowed_actions_add_kan_after(self, seat: int, hand: Hand, last_tile: Tile):
         actions = ActionSet()
-        if self._current_player != player:
+        if self._current_seat != seat:
             if hand.can_ron(last_tile):
                 actions.add(ActionType.RON)
         return actions
 
-    def _allowed_actions_closed_kan_after(
-        self, player: int, hand: Hand, last_tile: Tile
-    ):
+    def _allowed_actions_closed_kan_after(self, seat: int, hand: Hand, last_tile: Tile):
         actions = ActionSet()
-        if self._current_player != player:
+        if self._current_seat != seat:
             if hand.can_ron(last_tile):
                 actions.add(ActionType.RON)
         return actions
 
-    def _allowed_actions_discarded(self, player: int, hand: Hand, last_tile: Tile):
-        if self._current_player == self._previous_player(player):
+    def _allowed_actions_discarded(self, seat: int, hand: Hand, last_tile: Tile):
+        if self._current_seat == self._previous_seat(seat):
             actions = ActionSet(ActionType.DRAW)
         else:
             actions = ActionSet()
-        if self._current_player == self._previous_player(player):
+        if self._current_seat == self._previous_seat(seat):
             if hand.can_chi_a(last_tile):
                 actions.add(ActionType.CHI_A)
             if hand.can_chi_b(last_tile):
                 actions.add(ActionType.CHI_B)
             if hand.can_chi_c(last_tile):
                 actions.add(ActionType.CHI_C)
-        if self._current_player != player:
+        if self._current_seat != seat:
             if hand.can_pon(last_tile):
                 actions.add(ActionType.PON)
             if hand.can_open_kan(last_tile):
@@ -229,9 +227,9 @@ class Round:
                 actions.add(ActionType.RON)
         return actions
 
-    def _allowed_actions_last_discarded(self, player: int, hand: Hand, last_tile: Tile):
+    def _allowed_actions_last_discarded(self, seat: int, hand: Hand, last_tile: Tile):
         actions = ActionSet()
-        if self._current_player != player:
+        if self._current_seat != seat:
             if hand.can_ron(last_tile):
                 actions.add(ActionType.RON)
         return actions
@@ -246,29 +244,29 @@ class Round:
         RoundStatus.LAST_DISCARDED: _allowed_actions_last_discarded,
     }
 
-    def _nothing(self, player: int, tile: Tile):
+    def _nothing(self, seat: int, tile: Tile):
         match self._status:
             case RoundStatus.START:
                 self._flower_pass_count += 1
-                if self._flower_pass_count >= self._options.player_count + 1:
-                    self._current_player = 0
+                if self._flower_pass_count >= self._options.seat_count + 1:
+                    self._current_seat = 0
                     self._status = RoundStatus.PLAY
                 else:
-                    self._current_player = self._next_player(self._current_player)
+                    self._current_seat = self._next_seat(self._current_seat)
             case RoundStatus.ADD_KAN_AFTER | RoundStatus.CLOSED_KAN_AFTER:
                 self._status = RoundStatus.PLAY
                 self._last_tile = 0
             case RoundStatus.LAST_DISCARDED:
                 self._status = RoundStatus.END
 
-    def _draw(self, player: int, tile: Tile):
-        self._hands[player].draw()
-        self._current_player = player
+    def _draw(self, seat: int, tile: Tile):
+        self._hands[seat].draw()
+        self._current_seat = seat
         self._status = RoundStatus.PLAY
         self._last_tile = 0
 
-    def _discard(self, player: int, tile: Tile):
-        self._hands[player].discard(tile)
+    def _discard(self, seat: int, tile: Tile):
+        self._hands[seat].discard(tile)
         self._discard_pool.append(tile)
         if self.wall_count > self._options.end_wall_count:
             self._status = RoundStatus.DISCARDED
@@ -276,68 +274,68 @@ class Round:
             self._status = RoundStatus.LAST_DISCARDED
         self._last_tile = tile
 
-    def _chi_a(self, player: int, tile: Tile):
+    def _chi_a(self, seat: int, tile: Tile):
         self._discard_pool.pop()
-        self._hands[player].chi_a(self._last_tile)
-        self._current_player = player
+        self._hands[seat].chi_a(self._last_tile)
+        self._current_seat = seat
         self._status = RoundStatus.CALLED_PLAY
         self._last_tile = 0
 
-    def _chi_b(self, player: int, tile: Tile):
+    def _chi_b(self, seat: int, tile: Tile):
         self._discard_pool.pop()
-        self._hands[player].chi_b(self._last_tile)
-        self._current_player = player
+        self._hands[seat].chi_b(self._last_tile)
+        self._current_seat = seat
         self._status = RoundStatus.CALLED_PLAY
         self._last_tile = 0
 
-    def _chi_c(self, player: int, tile: Tile):
+    def _chi_c(self, seat: int, tile: Tile):
         self._discard_pool.pop()
-        self._hands[player].chi_c(self._last_tile)
-        self._current_player = player
+        self._hands[seat].chi_c(self._last_tile)
+        self._current_seat = seat
         self._status = RoundStatus.CALLED_PLAY
         self._last_tile = 0
 
-    def _pon(self, player: int, tile: Tile):
+    def _pon(self, seat: int, tile: Tile):
         self._discard_pool.pop()
-        self._hands[player].pon(self._last_tile)
-        self._current_player = player
+        self._hands[seat].pon(self._last_tile)
+        self._current_seat = seat
         self._status = RoundStatus.CALLED_PLAY
         self._last_tile = 0
 
-    def _open_kan(self, player: int, tile: Tile):
+    def _open_kan(self, seat: int, tile: Tile):
         self._discard_pool.pop()
-        self._hands[player].open_kan(self._last_tile)
-        self._current_player = player
+        self._hands[seat].open_kan(self._last_tile)
+        self._current_seat = seat
         self._status = RoundStatus.CALLED_PLAY
         self._last_tile = 0
 
-    def _add_kan(self, player: int, tile: Tile):
-        self._hands[player].add_kan(tile)
+    def _add_kan(self, seat: int, tile: Tile):
+        self._hands[seat].add_kan(tile)
         self._status = RoundStatus.ADD_KAN_AFTER
         self._last_tile = tile
 
-    def _closed_kan(self, player: int, tile: Tile):
-        self._hands[player].closed_kan(tile)
+    def _closed_kan(self, seat: int, tile: Tile):
+        self._hands[seat].closed_kan(tile)
         self._status = RoundStatus.CLOSED_KAN_AFTER
         self._last_tile = tile
 
-    def _flower(self, player: int, tile: Tile):
-        self._hands[player].flower(tile)
+    def _flower(self, seat: int, tile: Tile):
+        self._hands[seat].flower(tile)
         self._flower_pass_count = 0
 
-    def _ron(self, player: int, tile: Tile):
-        hand = self._hands[player]
+    def _ron(self, seat: int, tile: Tile):
+        hand = self._hands[seat]
         self._win_info = WinInfo(
-            player,
-            self._current_player,
+            seat,
+            self._current_seat,
             list(hand.tiles) + [self._last_tile],
             list(hand.calls),
         )
         self._status = RoundStatus.END
 
-    def _tsumo(self, player: int, tile: Tile):
-        hand = self._hands[player]
-        self._win_info = WinInfo(player, -1, list(hand.tiles), list(hand.calls))
+    def _tsumo(self, seat: int, tile: Tile):
+        hand = self._hands[seat]
+        self._win_info = WinInfo(seat, -1, list(hand.tiles), list(hand.calls))
         self._status = RoundStatus.END
 
     _do_action_funcs = {

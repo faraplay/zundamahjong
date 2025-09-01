@@ -10,13 +10,13 @@
     <link href="hand.css" rel="stylesheet" />
     <link href="actions.css" rel="stylesheet" />
     <link href="table_view.css" rel="stylesheet" />
-    <link href="player_calls.css" rel="stylesheet" />
+    <link href="seat_calls.css" rel="stylesheet" />
     <link href="discard_pool.css" rel="stylesheet" />
     <title>Mahjong</title>
   </head>
   <body>
-    <form id="set_player_form" action="">
-      <select id="set_player_select">
+    <form id="set_seat_form" action="">
+      <select id="set_seat_select">
         <option value="0">0</option>
         <option value="1">1</option>
         <option value="2">2</option>
@@ -24,7 +24,7 @@
       </select>
       <button>Send</button>
     </form>
-    <p id="player_indicator">Select a player...</p>
+    <p id="seat_indicator">Select a seat...</p>
     <div id="round_info">
       <p id="tiles_left"></p>
       <div id="straight_view">
@@ -38,16 +38,16 @@
         <div id="table"></div>
         <h3>Calls</h3>
         <div id="calls_list">
-          <div class="player_calls position_0">
+          <div class="seat_calls position_0">
             <h4>Player 0</h4>
           </div>
-          <div class="player_calls position_1">
+          <div class="seat_calls position_1">
             <h4>Player 1</h4>
           </div>
-          <div class="player_calls position_2">
+          <div class="seat_calls position_2">
             <h4>Player 2</h4>
           </div>
-          <div class="player_calls position_3">
+          <div class="seat_calls position_3">
             <h4>Player 3</h4>
           </div>
         </div>
@@ -60,7 +60,7 @@
       </div>
     </div>
     <div id="win_info" hidden>
-      <p id="win_player"></p>
+      <p id="win_seat"></p>
       <div id="win_hand"></div>
       <div id="win_calls"></div>
       <button id="new_round">Start new round</button>
