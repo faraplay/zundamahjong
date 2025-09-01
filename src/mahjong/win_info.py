@@ -3,7 +3,6 @@ from pydantic import BaseModel
 
 from .tile import Tile, is_number
 from .call import Call, CallType
-from .form_hand import formed_hand_possibilities
 
 
 class Win(BaseModel):
@@ -24,44 +23,12 @@ class YakuHan(BaseModel):
     han: int
 
 
-class Score(BaseModel):
-    yaku_hans: list[YakuHan]
-    han_total: int
-    score: int
-
-
-class WinScoreInfo(BaseModel):
-    win: Win
-    score: Score
-
-
 default_yaku_values = {Yaku.EYES: 1, Yaku.SEVEN_PAIRS: 3, Yaku.THIRTEEN_ORPHANS: 13}
 
 
-class ScoringHand:
-    def __init__(
-        self,
-        win: Win,
-        yaku_values: dict[Yaku, int] = default_yaku_values,
-    ):
+class YakuCalculator:
+    def __init__(self, win: Win, formed_hand: list[Call]):
         self._win = win
-        self._yaku_values = yaku_values
-
-    def get_score(self):
-        scores = [
-            ScoringFormedHand(self, formed_hand).get_score()
-            for formed_hand in formed_hand_possibilities(self._win.hand)
-        ]
-
-        def score_key(score: Score):
-            return (score.han_total, score.score)
-
-        return max(scores, key=score_key)
-
-
-class ScoringFormedHand:
-    def __init__(self, scoring_hand: ScoringHand, formed_hand: list[Call]):
-        self._scoring_hand = scoring_hand
         self._formed_hand = formed_hand
 
     def get_yakus(self):
@@ -70,16 +37,6 @@ class ScoringFormedHand:
             if is_yaku(self):
                 yakus.append(yaku)
         return yakus
-
-    def get_score(self):
-        yakus = self.get_yakus()
-        yaku_hans = [
-            YakuHan(yaku=yaku, han=self._scoring_hand._yaku_values[yaku])
-            for yaku in yakus
-        ]
-        han_total = sum(yaku_han.han for yaku_han in yaku_hans)
-        score = 2 ** min(han_total, 6)
-        return Score(yaku_hans=yaku_hans, han_total=han_total, score=score)
 
     def _is_seven_pairs(self):
         return len(self._formed_hand) == 7 and all(

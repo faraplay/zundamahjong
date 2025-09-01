@@ -1,5 +1,5 @@
 from collections import deque
-from collections.abc import Sequence
+from collections.abc import Sequence, Callable
 from enum import Enum
 
 from .tile import Tile, is_flower
@@ -28,10 +28,14 @@ class InvalidMoveException(Exception):
 
 class Round:
     def __init__(
-        self, tiles: list[int] | None = None, options: GameOptions = GameOptions()
+        self,
+        tiles: list[int] | None = None,
+        options: GameOptions = GameOptions(),
+        round_end_callback: Callable[[], None] = lambda: None,
     ):
         self._player_count = options.player_count
         self._options = options
+        self._end_callback = round_end_callback
         self._deck = Deck(tiles) if tiles is not None else Deck.shuffled_deck()
         self._discard_pool = DiscardPool()
         self._hands = tuple(Hand(self._deck) for _ in range(self._player_count))
@@ -118,6 +122,8 @@ class Round:
             raise InvalidMoveException()
         self._do_action_funcs[action.action_type](self, seat, action.tile)
         self._history.append((seat, action))
+        if self._status == RoundStatus.END:
+            self._end_callback()
 
     def get_priority_action(self, actions: Sequence[Action]):
         if len(actions) != self._player_count:
