@@ -8,7 +8,7 @@ from .deck import Deck
 from .discard_pool import DiscardPool
 from .hand import Hand
 from .action import Action, ActionType, ActionSet
-from .win_info import WinInfo
+from .win_info import Win
 
 
 class RoundStatus(Enum):
@@ -325,7 +325,7 @@ class Round:
 
     def _ron(self, seat: int, tile: Tile):
         hand = self._hands[seat]
-        self._win_info = WinInfo(
+        self._win_info = Win(
             win_seat=seat,
             lose_seat=self._current_seat,
             hand=list(hand.tiles) + [self._last_tile],
@@ -335,8 +335,8 @@ class Round:
 
     def _tsumo(self, seat: int, tile: Tile):
         hand = self._hands[seat]
-        self._win_info = WinInfo(
-            win_seat=seat, lose_seat=-1, hand=list(hand.tiles), calls=list(hand.calls)
+        self._win_info = Win(
+            win_seat=seat, lose_seat=None, hand=list(hand.tiles), calls=list(hand.calls)
         )
         self._status = RoundStatus.END
 

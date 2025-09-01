@@ -256,7 +256,7 @@ class RoundTest(unittest.TestCase):
         self.assertEqual(round.status, RoundStatus.END)
         win_info = round.win_info
         self.assertEqual(win_info.win_seat, 2)
-        self.assertEqual(win_info.lose_seat, -1)
+        self.assertEqual(win_info.lose_seat, None)
         self.assertCountEqual(
             win_info.hand, [11, 11, 11, 12, 12, 12, 14, 15, 31, 31, 32, 32, 32, 16]
         )
