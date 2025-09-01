@@ -326,16 +326,18 @@ class Round:
     def _ron(self, seat: int, tile: Tile):
         hand = self._hands[seat]
         self._win_info = WinInfo(
-            seat,
-            self._current_seat,
-            list(hand.tiles) + [self._last_tile],
-            list(hand.calls),
+            win_seat=seat,
+            lose_seat=self._current_seat,
+            hand=list(hand.tiles) + [self._last_tile],
+            calls=list(hand.calls),
         )
         self._status = RoundStatus.END
 
     def _tsumo(self, seat: int, tile: Tile):
         hand = self._hands[seat]
-        self._win_info = WinInfo(seat, -1, list(hand.tiles), list(hand.calls))
+        self._win_info = WinInfo(
+            win_seat=seat, lose_seat=-1, hand=list(hand.tiles), calls=list(hand.calls)
+        )
         self._status = RoundStatus.END
 
     _do_action_funcs = {

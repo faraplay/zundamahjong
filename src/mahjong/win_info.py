@@ -1,10 +1,10 @@
-from typing import NamedTuple
+from pydantic import BaseModel
 
 from .tile import Tile
 from .call import Call
 
 
-class WinInfo(NamedTuple):
+class WinInfo(BaseModel):
     win_seat: int
     lose_seat: int
     hand: list[Tile]
