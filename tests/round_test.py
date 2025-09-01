@@ -1,8 +1,9 @@
 import unittest
 
-from src.mahjong.round import Round, RoundOptions, RoundStatus
+from src.mahjong.round import Round, RoundStatus
 from src.mahjong.action import Action, ActionType
 from src.mahjong.call import Call, CallType
+from src.mahjong.game_options import GameOptions
 
 from tests.decks import *
 
@@ -282,7 +283,7 @@ class RoundTest(unittest.TestCase):
         self.assertCountEqual(win_info.calls, [])
 
     def test_auto_flower_history(self):
-        round = Round(test_deck3, RoundOptions(auto_replace_flowers=True))
+        round = Round(test_deck3, GameOptions(auto_replace_flowers=True))
         self.assertSequenceEqual(
             round.history,
             [
@@ -303,7 +304,7 @@ class RoundTest(unittest.TestCase):
         )
 
     def test_auto_flower_one_person_draw_flower(self):
-        round = Round(test_deck5, RoundOptions(auto_replace_flowers=True))
+        round = Round(test_deck5, GameOptions(auto_replace_flowers=True))
         self.assertSequenceEqual(
             round.history,
             [
@@ -322,18 +323,18 @@ class RoundTest(unittest.TestCase):
         )
 
     def test_manual_flower_start(self):
-        round = Round(test_deck3, RoundOptions(auto_replace_flowers=False))
+        round = Round(test_deck3, GameOptions(auto_replace_flowers=False))
         self.assertEqual(round.status, RoundStatus.START)
 
     def test_start_flower_call(self):
-        round = Round(test_deck3, RoundOptions(auto_replace_flowers=False))
+        round = Round(test_deck3, GameOptions(auto_replace_flowers=False))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
         self.assertCountEqual(
             round.get_calls(0), [Call(call_type=CallType.FLOWER, tiles=[41])]
         )
 
     def test_start_flower_calls(self):
-        round = Round(test_deck3, RoundOptions(auto_replace_flowers=False))
+        round = Round(test_deck3, GameOptions(auto_replace_flowers=False))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=44))
@@ -347,7 +348,7 @@ class RoundTest(unittest.TestCase):
         )
 
     def test_start_flower_next_seat(self):
-        round = Round(test_deck3, RoundOptions(auto_replace_flowers=False))
+        round = Round(test_deck3, GameOptions(auto_replace_flowers=False))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=44))
@@ -361,7 +362,7 @@ class RoundTest(unittest.TestCase):
         )
 
     def test_start_flower_pass_all(self):
-        round = Round(test_deck3, RoundOptions(auto_replace_flowers=False))
+        round = Round(test_deck3, GameOptions(auto_replace_flowers=False))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=44))
@@ -376,7 +377,7 @@ class RoundTest(unittest.TestCase):
         self.assertEqual(round.status, RoundStatus.PLAY)
 
     def test_start_flower_loop_pass_all(self):
-        round = Round(test_deck3, RoundOptions(auto_replace_flowers=False))
+        round = Round(test_deck3, GameOptions(auto_replace_flowers=False))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
         round.do_action(0, Action(action_type=ActionType.NOTHING))
@@ -394,7 +395,7 @@ class RoundTest(unittest.TestCase):
         self.assertEqual(round.status, RoundStatus.PLAY)
 
     def test_draw_flower(self):
-        round = Round(test_deck3, RoundOptions(auto_replace_flowers=False))
+        round = Round(test_deck3, GameOptions(auto_replace_flowers=False))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
         round.do_action(0, Action(action_type=ActionType.NOTHING))
@@ -477,7 +478,7 @@ class RoundTest(unittest.TestCase):
         self.assertEqual(action, Action(action_type=ActionType.NOTHING))
 
     def test_use_all_tiles(self):
-        round = Round(test_deck4, RoundOptions(end_wall_count=14))
+        round = Round(test_deck4, GameOptions(end_wall_count=14))
         while round.status != RoundStatus.END:
             actions = [round.allowed_actions(seat).default for seat in range(4)]
             seat, action = round.get_priority_action(actions)
@@ -486,7 +487,7 @@ class RoundTest(unittest.TestCase):
         self.assertIsNone(round.win_info)
 
     def test_houtei(self):
-        round = Round(test_deck4, RoundOptions(end_wall_count=14))
+        round = Round(test_deck4, GameOptions(end_wall_count=14))
         round.do_action(0, Action(action_type=ActionType.CLOSED_KAN, tile=4))
         while round.wall_count > 14:
             actions = [round.allowed_actions(seat).default for seat in range(4)]

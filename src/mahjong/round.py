@@ -1,7 +1,6 @@
 from collections import deque
 from collections.abc import Sequence
 from enum import Enum
-from typing import NamedTuple
 
 from .tile import Tile, is_flower
 from .deck import Deck
@@ -9,6 +8,7 @@ from .discard_pool import DiscardPool
 from .hand import Hand
 from .action import Action, ActionType, ActionSet
 from .win_info import Win
+from .game_options import GameOptions
 
 
 class RoundStatus(Enum):
@@ -22,24 +22,19 @@ class RoundStatus(Enum):
     END = 7
 
 
-class RoundOptions(NamedTuple):
-    seat_count: int = 4
-    auto_replace_flowers: bool = True
-    end_wall_count: int = 14
-
-
 class InvalidMoveException(Exception):
     pass
 
 
 class Round:
     def __init__(
-        self, tiles: list[int] | None = None, options: RoundOptions = RoundOptions()
+        self, tiles: list[int] | None = None, options: GameOptions = GameOptions()
     ):
+        self._player_count = options.player_count
         self._options = options
         self._deck = Deck(tiles) if tiles is not None else Deck.shuffled_deck()
         self._discard_pool = DiscardPool()
-        self._hands = tuple(Hand(self._deck) for _ in range(self._options.seat_count))
+        self._hands = tuple(Hand(self._deck) for _ in range(self._player_count))
         for tile_count in [4, 4, 4, 1]:
             for hand in self._hands:
                 hand.add_to_hand(tile_count)
@@ -125,7 +120,7 @@ class Round:
         self._history.append((seat, action))
 
     def get_priority_action(self, actions: Sequence[Action]):
-        if len(actions) != self._options.seat_count:
+        if len(actions) != self._player_count:
             raise Exception("Incorrect number of elements in actions")
         valid_actions: list[Action] = []
         for seat, action in enumerate(actions):
@@ -140,8 +135,8 @@ class Round:
             self._current_seat,
             valid_actions[self._current_seat],
         )
-        for index in range(1, self._options.seat_count):
-            seat = (self._current_seat + index) % self._options.seat_count
+        for index in range(1, self._player_count):
+            seat = (self._current_seat + index) % self._player_count
             action = valid_actions[seat]
             if action.action_type > best_action.action_type:
                 best_action_seat, best_action = seat, action
@@ -149,10 +144,10 @@ class Round:
         return best_action_seat, best_action
 
     def _previous_seat(self, seat: int):
-        return (seat - 1) % self._options.seat_count
+        return (seat - 1) % self._player_count
 
     def _next_seat(self, seat: int):
-        return (seat + 1) % self._options.seat_count
+        return (seat + 1) % self._player_count
 
     def _allowed_actions_start(self, seat: int, hand: Hand, last_tile: Tile):
         actions = ActionSet()
@@ -248,7 +243,7 @@ class Round:
         match self._status:
             case RoundStatus.START:
                 self._flower_pass_count += 1
-                if self._flower_pass_count >= self._options.seat_count + 1:
+                if self._flower_pass_count >= self._player_count + 1:
                     self._current_seat = 0
                     self._status = RoundStatus.PLAY
                 else:

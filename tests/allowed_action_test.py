@@ -1,7 +1,8 @@
 import unittest
 
 from src.mahjong.action import Action, ActionType
-from src.mahjong.round import Round, RoundOptions
+from src.mahjong.game_options import GameOptions
+from src.mahjong.round import Round
 
 from tests.decks import test_deck1, test_deck2, test_deck3
 
@@ -218,7 +219,7 @@ class AllowedActionTest(unittest.TestCase):
         )
 
     def test_start_flowers(self):
-        round = Round(test_deck3, RoundOptions(auto_replace_flowers=False))
+        round = Round(test_deck3, GameOptions(auto_replace_flowers=False))
         self.assertSetEqual(
             round.allowed_actions(0).actions,
             {
@@ -229,13 +230,13 @@ class AllowedActionTest(unittest.TestCase):
         )
 
     def test_start_wrong_seat_flowers(self):
-        round = Round(test_deck3, RoundOptions(auto_replace_flowers=False))
+        round = Round(test_deck3, GameOptions(auto_replace_flowers=False))
         self.assertSetEqual(
             round.allowed_actions(1).actions, {Action(action_type=ActionType.NOTHING)}
         )
 
     def test_manual_can_flower(self):
-        round = Round(test_deck3, RoundOptions(auto_replace_flowers=False))
+        round = Round(test_deck3, GameOptions(auto_replace_flowers=False))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
         round.do_action(0, Action(action_type=ActionType.NOTHING))
@@ -269,7 +270,7 @@ class AllowedActionTest(unittest.TestCase):
         )
 
     def test_auto_must_flower(self):
-        round = Round(test_deck3, RoundOptions(auto_replace_flowers=True))
+        round = Round(test_deck3, GameOptions(auto_replace_flowers=True))
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
         round.do_action(1, Action(action_type=ActionType.DRAW))
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
