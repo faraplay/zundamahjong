@@ -117,7 +117,7 @@ const tile_images = {
 const set_player_form = document.getElementById('set_player_form');
 const set_player_select = document.getElementById('set_player_select');
 
-const game_info_div = document.getElementById('game_info');
+const round_info_div = document.getElementById('round_info');
 const player_indicator = document.getElementById('player_indicator');
 const tiles_left_indicator = document.getElementById('tiles_left');
 const history_list = document.getElementById('history_list');
@@ -131,7 +131,7 @@ const win_info_div = document.getElementById('win_info');
 const win_player_indicator = document.getElementById('win_player');
 const win_hand_div = document.getElementById('win_hand');
 const win_calls_div = document.getElementById('win_calls');
-const new_game_button = document.getElementById('new_game');
+const new_round_button = document.getElementById('new_round');
 
 set_player_form.addEventListener('submit', (e) => {
     e.preventDefault();
@@ -140,9 +140,9 @@ set_player_form.addEventListener('submit', (e) => {
     }
 });
 
-new_game_button.addEventListener('click', (e) => {
+new_round_button.addEventListener('click', (e) => {
     e.preventDefault();
-    socket.emit('new_game');
+    socket.emit('new_round');
 })
 
 function createTileImageElement(tile) {
@@ -390,9 +390,9 @@ function disableActions() {
     disableHandDiscards()
 }
 
-socket.on('game_info', (info) => {
+socket.on('round_info', (info) => {
     console.log(info);
-    game_info_div.hidden = false;
+    round_info_div.hidden = false;
     win_info_div.hidden = true;
     player_indicator.textContent = `You are Player ${info.player}`;
     tiles_left_indicator.textContent = `${info.tiles_left} tiles left`;
@@ -424,14 +424,14 @@ socket.on('game_info', (info) => {
 
 socket.on('win_info', (info) => {
     console.log(info);
-    game_info_div.hidden = true;
+    round_info_div.hidden = true;
     win_info_div.hidden = false;
     if (info) {
         win_player_indicator.textContent = `Player ${info.win_player} wins!`;
         win_hand_div.replaceChildren(...info.hand.map(createTileElement));
         win_calls_div.replaceChildren(...info.calls.map(createCallElement));
     } else {
-        win_player_indicator.textContent = "The game is a draw..."
+        win_player_indicator.textContent = "The round is a draw..."
     }
 })
 

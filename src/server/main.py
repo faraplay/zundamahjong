@@ -4,23 +4,23 @@ from flask_socketio import SocketIO, emit
 from pydantic import ValidationError
 
 
-from ..mahjong.game import Game, GameStatus
+from ..mahjong.round import Round, RoundStatus
 from ..mahjong.action import Action
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-game = Game()
+round = Round()
 
 sid_players: dict[str, int] = {}
 submitted_actions = [None, None, None, None]
 
 
 def reset_submitted_actions():
-    if game.status == GameStatus.END:
+    if round.status == RoundStatus.END:
         submitted_actions[:] = [None, None, None, None]
         return
-    allowed_actions = [game.allowed_actions(player) for player in range(4)]
+    allowed_actions = [round.allowed_actions(player) for player in range(4)]
     submitted_actions[:] = [
         actions.default if len(actions.actions) == 1 else None
         for actions in allowed_actions
@@ -31,9 +31,9 @@ def reset_submitted_actions():
 
 
 def resolve_actions():
-    player, action = game.get_priority_action(submitted_actions)
-    game.do_action(player, action)
-    game.display_info()
+    player, action = round.get_priority_action(submitted_actions)
+    round.do_action(player, action)
+    round.display_info()
 
 
 def try_execute_actions():
@@ -45,43 +45,43 @@ def try_execute_actions():
 
 
 def get_win_info():
-    if game.win_info is not None:
+    if round.win_info is not None:
         return {
-            "win_player": game.win_info.win_player,
-            "hand": game.win_info.hand,
-            "calls": [call.model_dump() for call in game.win_info.calls],
+            "win_player": round.win_info.win_player,
+            "hand": round.win_info.hand,
+            "calls": [call.model_dump() for call in round.win_info.calls],
         }
     else:
         return None
 
 
-def get_game_info(player: int):
+def get_round_info(player: int):
     return {
         "player": player,
-        "hand": list(game.get_hand(player)),
-        "tiles_left": game.wall_count,
+        "hand": list(round.get_hand(player)),
+        "tiles_left": round.wall_count,
         "history": [
             {"player": action[0], "action": action[1].model_dump()}
-            for action in game.history
+            for action in round.history
         ],
-        "discards": list(game.discard_pool),
+        "discards": list(round.discard_pool),
         "player_calls": [
             {
                 "player": player,
-                "calls": [call.model_dump() for call in game.get_calls(player)],
+                "calls": [call.model_dump() for call in round.get_calls(player)],
             }
             for player in range(4)
         ],
         "actions": [
-            action.model_dump() for action in game.allowed_actions(player).actions
+            action.model_dump() for action in round.allowed_actions(player).actions
         ],
         "action_selected": submitted_actions[player] is not None,
     }
 
 
 def emit_info(sid: str, player: int):
-    if game.status != GameStatus.END:
-        emit("game_info", get_game_info(player), to=sid)
+    if round.status != RoundStatus.END:
+        emit("round_info", get_round_info(player), to=sid)
     else:
         emit("win_info", get_win_info(), to=sid)
 
@@ -102,11 +102,11 @@ def disconnect(reason):
     sid_players.pop(request.sid, None)
 
 
-@socketio.on("new_game")
-def start_new_game():
-    print("Starting new game...")
-    global game
-    game = Game()
+@socketio.on("new_round")
+def start_new_round():
+    print("Starting new round...")
+    global round
+    round = Round()
     reset_submitted_actions()
     emit_info_all()
 
