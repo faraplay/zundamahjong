@@ -1,15 +1,6 @@
-from pydantic import BaseModel
-
-from .tile import Tile, is_number
+from .tile import is_number
 from .call import Call, CallType
-
-
-class Win(BaseModel):
-    win_seat: int
-    lose_seat: int | None
-    hand: list[Tile]
-    calls: list[Call]
-
+from .win import Win
 
 yaku_display_names: dict[str, str] = {}
 default_yaku_han: dict[str, int] = {}
