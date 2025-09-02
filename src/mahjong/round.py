@@ -2,6 +2,7 @@ from collections import deque
 from collections.abc import Sequence, Callable
 from enum import Enum
 
+from .exceptions import InvalidMoveException
 from .tile import Tile, is_flower
 from .deck import Deck
 from .discard_pool import DiscardPool
@@ -20,10 +21,6 @@ class RoundStatus(Enum):
     DISCARDED = 5  # Options: draw, chi, pon, open kan, ron
     LAST_DISCARDED = 6  # Options: nothing, ron
     END = 7
-
-
-class InvalidMoveException(Exception):
-    pass
 
 
 class Round:
