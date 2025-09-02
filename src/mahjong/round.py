@@ -23,6 +23,26 @@ class RoundStatus(Enum):
     END = 7
 
 
+_allowed_actions_funcs = {}
+_do_action_funcs = {}
+
+
+def _register_allowed_actions(round_status: RoundStatus):
+    def _register_allowed_action_inner(_allowed_actions_func):
+        _allowed_actions_funcs[round_status] = _allowed_actions_func
+        return _allowed_actions_func
+
+    return _register_allowed_action_inner
+
+
+def _register_do_action(action_type: ActionType):
+    def _register_do_action_inner(_do_action_func):
+        _do_action_funcs[action_type] = _do_action_func
+        return _do_action_func
+
+    return _register_do_action_inner
+
+
 class Round:
     def __init__(
         self,
@@ -110,14 +130,14 @@ class Round:
         print("Discards:", self._discard_pool.tiles)
 
     def allowed_actions(self, seat: int):
-        return self._allowed_actions_funcs[self._status](
+        return _allowed_actions_funcs[self._status](
             self, seat, self._hands[seat], self._last_tile
         )
 
     def do_action(self, seat: int, action: Action):
         if action not in self.allowed_actions(seat).actions:
             raise InvalidMoveException()
-        self._do_action_funcs[action.action_type](self, seat, action.tile)
+        _do_action_funcs[action.action_type](self, seat, action.tile)
         self._history.append((seat, action))
         if self._status == RoundStatus.END:
             self._end_callback()
@@ -152,6 +172,7 @@ class Round:
     def _next_seat(self, seat: int):
         return (seat + 1) % self._player_count
 
+    @_register_allowed_actions(RoundStatus.START)
     def _allowed_actions_start(self, seat: int, hand: Hand, last_tile: Tile):
         actions = ActionSet()
         if self._current_seat == seat:
@@ -160,6 +181,7 @@ class Round:
                     actions.add(ActionType.FLOWER, tile)
         return actions
 
+    @_register_allowed_actions(RoundStatus.PLAY)
     def _allowed_actions_play(self, seat: int, hand: Hand, last_tile: Tile):
         if self._current_seat == seat:
             flowers = hand.flowers_in_hand()
@@ -181,6 +203,7 @@ class Round:
         else:
             return ActionSet()
 
+    @_register_allowed_actions(RoundStatus.CALLED_PLAY)
     def _allowed_actions_called_play(self, seat: int, hand: Hand, last_tile: Tile):
         if self._current_seat == seat:
             actions = ActionSet(ActionType.DISCARD, hand.tiles[-1])
@@ -190,6 +213,7 @@ class Round:
             actions = ActionSet()
         return actions
 
+    @_register_allowed_actions(RoundStatus.ADD_KAN_AFTER)
     def _allowed_actions_add_kan_after(self, seat: int, hand: Hand, last_tile: Tile):
         actions = ActionSet()
         if self._current_seat != seat:
@@ -197,6 +221,7 @@ class Round:
                 actions.add(ActionType.RON)
         return actions
 
+    @_register_allowed_actions(RoundStatus.CLOSED_KAN_AFTER)
     def _allowed_actions_closed_kan_after(self, seat: int, hand: Hand, last_tile: Tile):
         actions = ActionSet()
         if self._current_seat != seat:
@@ -204,6 +229,7 @@ class Round:
                 actions.add(ActionType.RON)
         return actions
 
+    @_register_allowed_actions(RoundStatus.DISCARDED)
     def _allowed_actions_discarded(self, seat: int, hand: Hand, last_tile: Tile):
         if self._current_seat == self._previous_seat(seat):
             actions = ActionSet(ActionType.DRAW)
@@ -225,6 +251,7 @@ class Round:
                 actions.add(ActionType.RON)
         return actions
 
+    @_register_allowed_actions(RoundStatus.LAST_DISCARDED)
     def _allowed_actions_last_discarded(self, seat: int, hand: Hand, last_tile: Tile):
         actions = ActionSet()
         if self._current_seat != seat:
@@ -232,16 +259,7 @@ class Round:
                 actions.add(ActionType.RON)
         return actions
 
-    _allowed_actions_funcs = {
-        RoundStatus.START: _allowed_actions_start,
-        RoundStatus.PLAY: _allowed_actions_play,
-        RoundStatus.CALLED_PLAY: _allowed_actions_called_play,
-        RoundStatus.ADD_KAN_AFTER: _allowed_actions_add_kan_after,
-        RoundStatus.CLOSED_KAN_AFTER: _allowed_actions_closed_kan_after,
-        RoundStatus.DISCARDED: _allowed_actions_discarded,
-        RoundStatus.LAST_DISCARDED: _allowed_actions_last_discarded,
-    }
-
+    @_register_do_action(ActionType.NOTHING)
     def _nothing(self, seat: int, tile: Tile):
         match self._status:
             case RoundStatus.START:
@@ -257,12 +275,14 @@ class Round:
             case RoundStatus.LAST_DISCARDED:
                 self._status = RoundStatus.END
 
+    @_register_do_action(ActionType.DRAW)
     def _draw(self, seat: int, tile: Tile):
         self._hands[seat].draw()
         self._current_seat = seat
         self._status = RoundStatus.PLAY
         self._last_tile = 0
 
+    @_register_do_action(ActionType.DISCARD)
     def _discard(self, seat: int, tile: Tile):
         self._hands[seat].discard(tile)
         self._discard_pool.append(tile)
@@ -272,6 +292,7 @@ class Round:
             self._status = RoundStatus.LAST_DISCARDED
         self._last_tile = tile
 
+    @_register_do_action(ActionType.CHI_A)
     def _chi_a(self, seat: int, tile: Tile):
         self._discard_pool.pop()
         self._hands[seat].chi_a(self._last_tile)
@@ -279,6 +300,7 @@ class Round:
         self._status = RoundStatus.CALLED_PLAY
         self._last_tile = 0
 
+    @_register_do_action(ActionType.CHI_B)
     def _chi_b(self, seat: int, tile: Tile):
         self._discard_pool.pop()
         self._hands[seat].chi_b(self._last_tile)
@@ -286,6 +308,7 @@ class Round:
         self._status = RoundStatus.CALLED_PLAY
         self._last_tile = 0
 
+    @_register_do_action(ActionType.CHI_C)
     def _chi_c(self, seat: int, tile: Tile):
         self._discard_pool.pop()
         self._hands[seat].chi_c(self._last_tile)
@@ -293,6 +316,7 @@ class Round:
         self._status = RoundStatus.CALLED_PLAY
         self._last_tile = 0
 
+    @_register_do_action(ActionType.PON)
     def _pon(self, seat: int, tile: Tile):
         self._discard_pool.pop()
         self._hands[seat].pon(self._last_tile)
@@ -300,6 +324,7 @@ class Round:
         self._status = RoundStatus.CALLED_PLAY
         self._last_tile = 0
 
+    @_register_do_action(ActionType.OPEN_KAN)
     def _open_kan(self, seat: int, tile: Tile):
         self._discard_pool.pop()
         self._hands[seat].open_kan(self._last_tile)
@@ -307,20 +332,24 @@ class Round:
         self._status = RoundStatus.CALLED_PLAY
         self._last_tile = 0
 
+    @_register_do_action(ActionType.ADD_KAN)
     def _add_kan(self, seat: int, tile: Tile):
         self._hands[seat].add_kan(tile)
         self._status = RoundStatus.ADD_KAN_AFTER
         self._last_tile = tile
 
+    @_register_do_action(ActionType.CLOSED_KAN)
     def _closed_kan(self, seat: int, tile: Tile):
         self._hands[seat].closed_kan(tile)
         self._status = RoundStatus.CLOSED_KAN_AFTER
         self._last_tile = tile
 
+    @_register_do_action(ActionType.FLOWER)
     def _flower(self, seat: int, tile: Tile):
         self._hands[seat].flower(tile)
         self._flower_pass_count = 0
 
+    @_register_do_action(ActionType.RON)
     def _ron(self, seat: int, tile: Tile):
         hand = self._hands[seat]
         self._win_info = Win(
@@ -331,25 +360,10 @@ class Round:
         )
         self._status = RoundStatus.END
 
+    @_register_do_action(ActionType.TSUMO)
     def _tsumo(self, seat: int, tile: Tile):
         hand = self._hands[seat]
         self._win_info = Win(
             win_seat=seat, lose_seat=None, hand=list(hand.tiles), calls=list(hand.calls)
         )
         self._status = RoundStatus.END
-
-    _do_action_funcs = {
-        ActionType.NOTHING: _nothing,
-        ActionType.DRAW: _draw,
-        ActionType.DISCARD: _discard,
-        ActionType.CHI_A: _chi_a,
-        ActionType.CHI_B: _chi_b,
-        ActionType.CHI_C: _chi_c,
-        ActionType.PON: _pon,
-        ActionType.OPEN_KAN: _open_kan,
-        ActionType.ADD_KAN: _add_kan,
-        ActionType.CLOSED_KAN: _closed_kan,
-        ActionType.FLOWER: _flower,
-        ActionType.RON: _ron,
-        ActionType.TSUMO: _tsumo,
-    }
