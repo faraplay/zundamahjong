@@ -57,7 +57,7 @@ class ScoringHand:
                 )
             seat_scores = [0] * player_count
             seat_scores[win_seat] = seat_pay_in_amount
-            seat_scores[lose_seat] = seat_pay_in_amount
+            seat_scores[lose_seat] = -seat_pay_in_amount
         return seat_scores
 
     def get_scoring(self, formed_hand: list[Call]):
@@ -69,7 +69,7 @@ class ScoringHand:
         return Score(yaku_hans=yaku_hans, han_total=han_total, seat_scores=seat_scores)
 
     def get_win_scoring(self):
-        scores = [
+        scorings = [
             self.get_scoring(formed_hand)
             for formed_hand in formed_hand_possibilities(self._win.hand)
         ]
@@ -77,5 +77,5 @@ class ScoringHand:
         def score_key(score: Score):
             return (score.han_total, score.seat_scores[self._win.win_seat])
 
-        score = max(scores, key=score_key)
-        return WinScoreInfo(self.win, score)
+        scoring = max(scorings, key=score_key)
+        return WinScoreInfo(win=self._win, scoring=scoring)

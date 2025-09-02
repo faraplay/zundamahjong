@@ -53,7 +53,7 @@ class YakuCalculator:
         pairs = [call for call in self._formed_hand if call.call_type == CallType.PAIR]
         if len(pairs) != 1:
             return False
-        tile = pairs[0]
+        tile = pairs[0].tiles[0]
         if not is_number(tile):
             return False
         return (tile % 10) % 3 == 2

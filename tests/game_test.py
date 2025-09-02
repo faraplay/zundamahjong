@@ -12,6 +12,7 @@ class GameTest(unittest.TestCase):
         game = Game(test_deck2)
         self.assertEqual(game.wind_round, 0)
         self.assertEqual(game.sub_round, 0)
+        self.assertSequenceEqual(game.player_scores, [0, 0, 0, 0])
 
     def test_no_winscoring_during_first_game(self):
         game = Game(test_deck2)
@@ -23,3 +24,6 @@ class GameTest(unittest.TestCase):
         game.round.do_action(2, Action(action_type=ActionType.RON))
         self.assertEqual(game.round.status, RoundStatus.END)
         self.assertIsNotNone(game.win_scoring)
+        self.assertSequenceEqual(
+            game.player_scores, game.win_scoring.scoring.seat_scores
+        )
