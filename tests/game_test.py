@@ -3,6 +3,7 @@ import unittest
 from src.mahjong.exceptions import InvalidOperationException
 from src.mahjong.action import Action, ActionType
 from src.mahjong.game_options import GameOptions
+from src.mahjong.round import RoundStatus
 from src.mahjong.game import Game
 
 from decks import *
@@ -87,3 +88,30 @@ class GameTest(unittest.TestCase):
         game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
         game.round.do_action(2, Action(action_type=ActionType.RON))
         self.assertTrue(game.is_end)
+
+    def test_draw_count(self):
+        game = Game(test_deck4)
+        self.assertEqual(game.draw_count, 0)
+        round = game.round
+        while round.status != RoundStatus.END:
+            actions = [round.allowed_actions(seat).default for seat in range(4)]
+            seat, action = round.get_priority_action(actions)
+            round.do_action(seat, action)
+        self.assertEqual(game.draw_count, 0)
+
+        game.start_next_round(test_deck4)
+        self.assertEqual(game.draw_count, 1)
+        round = game.round
+        while round.status != RoundStatus.END:
+            actions = [round.allowed_actions(seat).default for seat in range(4)]
+            seat, action = round.get_priority_action(actions)
+            round.do_action(seat, action)
+        self.assertEqual(game.draw_count, 1)
+
+        game.start_next_round(test_deck6)
+        self.assertEqual(game.draw_count, 2)
+        game.round.do_action(0, Action(action_type=ActionType.TSUMO))
+        self.assertEqual(game.draw_count, 2)
+
+        game.start_next_round(test_deck2)
+        self.assertEqual(game.draw_count, 0)

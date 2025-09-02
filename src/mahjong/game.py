@@ -33,6 +33,10 @@ class Game:
         return self._round
 
     @property
+    def draw_count(self):
+        return self._draw_count
+
+    @property
     def player_scores(self):
         return tuple(self._player_scores)
 
