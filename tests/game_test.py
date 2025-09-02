@@ -19,7 +19,7 @@ class GameTest(unittest.TestCase):
         game = Game(test_deck2)
         self.assertIsNone(game.win_scoring)
 
-    def test_cannot_start_next_round(self):
+    def test_cannot_start_next_round_during_round(self):
         game = Game(test_deck2)
         with self.assertRaises(InvalidOperationException):
             game.start_next_round(test_deck2)
@@ -62,6 +62,11 @@ class GameTest(unittest.TestCase):
         game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
         game.round.do_action(2, Action(action_type=ActionType.RON))
         self.assertTrue(game.is_end)
+
+    def test_cannot_start_next_round_at_end(self):
+        game = Game(test_deck2, GameOptions(game_length=(0, 1)))
+        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(2, Action(action_type=ActionType.RON))
         with self.assertRaises(InvalidOperationException):
             game.start_next_round()
 
@@ -79,3 +84,6 @@ class GameTest(unittest.TestCase):
         game.round.do_action(0, Action(action_type=ActionType.TSUMO))
         self.assertFalse(game.is_end)
         game.start_next_round(test_deck2)
+        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(2, Action(action_type=ActionType.RON))
+        self.assertTrue(game.is_end)
