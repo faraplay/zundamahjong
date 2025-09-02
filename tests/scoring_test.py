@@ -1,7 +1,7 @@
 import unittest
 
 from src.mahjong.call import Call, CallType
-from src.mahjong.win_info import Win
+from src.mahjong.yaku import Win
 from src.mahjong.game_options import GameOptions
 from src.mahjong.scoring import ScoringHand
 

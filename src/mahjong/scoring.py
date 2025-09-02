@@ -1,7 +1,7 @@
 from pydantic import BaseModel
 
 from .call import Call
-from .win_info import Win, YakuCalculator
+from .yaku import Win, YakuCalculator
 from .game_options import GameOptions
 from .form_hand import formed_hand_possibilities
 

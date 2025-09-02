@@ -8,7 +8,7 @@ from .deck import Deck
 from .discard_pool import DiscardPool
 from .hand import Hand
 from .action import Action, ActionType, ActionSet
-from .win_info import Win
+from .yaku import Win
 from .game_options import GameOptions
 
 

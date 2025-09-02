@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from .win_info import default_yaku_han
+from .yaku import default_yaku_han
 
 
 class GameOptions(BaseModel):
