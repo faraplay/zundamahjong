@@ -1,13 +1,13 @@
 from pydantic import BaseModel
 
 from .call import Call
-from .win_info import Win, YakuHan, YakuCalculator
+from .win_info import Win, YakuCalculator
 from .game_options import GameOptions
 from .form_hand import formed_hand_possibilities
 
 
 class Score(BaseModel):
-    yaku_hans: list[YakuHan]
+    yaku_hans: dict[str, int]
     han_total: int
     seat_scores: list[int]
 
@@ -63,8 +63,8 @@ class ScoringHand:
     def get_scoring(self, formed_hand: list[Call]):
         yakus = YakuCalculator(self, formed_hand).get_yakus()
         yaku_values = self._options.yaku_values
-        yaku_hans = [YakuHan(yaku=yaku, han=yaku_values[yaku]) for yaku in yakus]
-        han_total = sum(yaku_han.han for yaku_han in yaku_hans)
+        yaku_hans = dict((yaku, yaku_values[yaku]) for yaku in yakus)
+        han_total = sum(yaku_hans.values())
         seat_scores = self.get_seat_scores(han_total)
         return Score(yaku_hans=yaku_hans, han_total=han_total, seat_scores=seat_scores)
 

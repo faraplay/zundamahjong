@@ -11,11 +11,6 @@ class Win(BaseModel):
     calls: list[Call]
 
 
-class YakuHan(BaseModel):
-    yaku: str
-    han: int
-
-
 yaku_display_names: dict[str, str] = {}
 default_yaku_han: dict[str, int] = {}
 is_yaku_functions = {}
