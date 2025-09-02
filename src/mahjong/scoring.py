@@ -9,7 +9,7 @@ from .form_hand import formed_hand_possibilities
 class Score(BaseModel):
     yaku_hans: dict[str, int]
     han_total: int
-    seat_scores: list[int]
+    seat_scores: list[float]
 
 
 class WinScoreInfo(BaseModel):
@@ -30,16 +30,18 @@ class ScoringHand:
         if lose_seat is None:
             if win_seat == 0:
                 seat_pay_in_amount = (
-                    self._options.score_dealer_win_base_value * han_multiplier
+                    self._options.score_dealer_tsumo_base_value * han_multiplier
                 )
                 seat_scores = [-seat_pay_in_amount] * player_count
                 seat_scores[win_seat] = seat_pay_in_amount * (player_count - 1)
             else:
                 seat_pay_in_amount = (
-                    self._options.score_nondealer_win_base_value * han_multiplier
+                    self._options.score_nondealer_tsumo_nondealer_base_value
+                    * han_multiplier
                 )
                 dealer_pay_in_amount = (
-                    self._options.score_dealer_pay_in_base_value * han_multiplier
+                    self._options.score_nondealer_tsumo_dealer_base_value
+                    * han_multiplier
                 )
                 seat_scores = [-seat_pay_in_amount] * player_count
                 seat_scores[0] = -dealer_pay_in_amount
@@ -49,11 +51,11 @@ class ScoringHand:
         else:
             if win_seat == 0:
                 seat_pay_in_amount = (
-                    self._options.score_dealer_win_base_value * han_multiplier
+                    self._options.score_dealer_ron_base_value * han_multiplier
                 )
             else:
                 seat_pay_in_amount = (
-                    self._options.score_nondealer_win_base_value * han_multiplier
+                    self._options.score_nondealer_ron_base_value * han_multiplier
                 )
             seat_scores = [0] * player_count
             seat_scores[win_seat] = seat_pay_in_amount

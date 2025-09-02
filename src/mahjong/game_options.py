@@ -8,8 +8,10 @@ class GameOptions(BaseModel):
     auto_replace_flowers: bool = True
     end_wall_count: int = 14
     game_length: tuple[int, int] = (1, 0)
-    start_score: int = 0
+    start_score: float = 0.0
     yaku_values: dict[str, int] = default_yaku_han
-    score_dealer_win_base_value: int = 3
-    score_nondealer_win_base_value: int = 2
-    score_dealer_pay_in_base_value: int = 4
+    score_dealer_ron_base_value: float = 1.5
+    score_dealer_tsumo_base_value: float = 1.5
+    score_nondealer_ron_base_value: float = 1.0
+    score_nondealer_tsumo_nondealer_base_value: float = 0.5
+    score_nondealer_tsumo_dealer_base_value: float = 1.0
