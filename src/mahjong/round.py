@@ -363,7 +363,26 @@ class Round:
     @_register_do_action(ActionType.TSUMO)
     def _tsumo(self, seat: int, tile: Tile):
         hand = self._hands[seat]
+        after_flower_count = 0
+        after_kan_count = 0
+        for seat, action in reversed(self._history):
+            action_type = action.action_type
+            if action_type == ActionType.FLOWER:
+                after_flower_count += 1
+            elif action_type == ActionType.ADD_KAN:
+                after_kan_count += 1
+            elif action_type == ActionType.CLOSED_KAN:
+                after_kan_count += 1
+            elif action_type == ActionType.NOTHING:
+                pass
+            else:
+                break
         self._win_info = Win(
-            win_seat=seat, lose_seat=None, hand=list(hand.tiles), calls=list(hand.calls)
+            win_seat=seat,
+            lose_seat=None,
+            hand=list(hand.tiles),
+            calls=list(hand.calls),
+            after_flower_count=after_flower_count,
+            after_kan_count=after_kan_count,
         )
         self._status = RoundStatus.END

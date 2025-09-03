@@ -9,3 +9,5 @@ class Win(BaseModel):
     lose_seat: int | None
     hand: list[Tile]
     calls: list[Call]
+    after_flower_count: int = 0
+    after_kan_count: int = 0

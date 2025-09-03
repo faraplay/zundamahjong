@@ -499,3 +499,21 @@ class RoundTest(unittest.TestCase):
         self.assertEqual(round.status, RoundStatus.LAST_DISCARDED)
         round.do_action(3, Action(action_type=ActionType.RON))
         self.assertIsNotNone(round.win_info)
+
+    def test_after_flower(self):
+        round = Round(test_deck_rinshan)
+        round.do_action(0, Action(action_type=ActionType.TSUMO))
+        win = round.win_info
+        self.assertEqual(win.after_flower_count, 5)
+
+    def test_after_flower_and_kan(self):
+        round = Round(test_deck_rinshan)
+        round.do_action(0, Action(action_type=ActionType.DISCARD, tile=11))
+        round.do_action(1, Action(action_type=ActionType.DRAW))
+        round.do_action(1, Action(action_type=ActionType.CLOSED_KAN, tile=1))
+        round.do_action(1, Action(action_type=ActionType.NOTHING))
+        round.do_action(1, Action(action_type=ActionType.FLOWER, tile=48))
+        round.do_action(1, Action(action_type=ActionType.TSUMO))
+        win = round.win_info
+        self.assertEqual(win.after_flower_count, 1)
+        self.assertEqual(win.after_kan_count, 1)
