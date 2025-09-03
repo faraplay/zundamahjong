@@ -38,6 +38,29 @@ class YakuCalculator:
                 yaku_mults[yaku] = yaku_mult
         return yaku_mults
 
+    @_register_yaku("THIRTEEN_ORPHANS", "Thirteen Orphans", 13)
+    def _thirteen_orphans(self):
+        return int(
+            len(self._formed_hand) == 1
+            and self._formed_hand[0].call_type == CallType.THIRTEEN_ORPHANS
+        )
+
+    @_register_yaku("SEVEN_PAIRS", "Seven Pairs", 3)
+    def _seven_pairs(self):
+        return len(self._formed_hand) == 7 and int(
+            all(call.call_type == CallType.PAIR for call in self._formed_hand)
+        )
+
+    @_register_yaku("EYES", "Eyes", 1)
+    def _eyes(self):
+        pairs = [call for call in self._formed_hand if call.call_type == CallType.PAIR]
+        if len(pairs) != 1:
+            return 0
+        tile = pairs[0].tiles[0]
+        if not is_number(tile):
+            return 0
+        return int((tile % 10) % 3 == 2)
+
     @_register_yaku("NO_FLOWERS", "No Flowers", 1)
     def _no_flowers(self):
         return int(len(self._flowers) == 0)
@@ -59,26 +82,3 @@ class YakuCalculator:
     @_register_yaku("TWO_SETS_OF_FLOWERS", "Two Sets of Flowers", 8)
     def _two_sets_of_flowers(self):
         return int(len(self._flowers) == 8)
-
-    @_register_yaku("EYES", "Eyes", 1)
-    def _eyes(self):
-        pairs = [call for call in self._formed_hand if call.call_type == CallType.PAIR]
-        if len(pairs) != 1:
-            return 0
-        tile = pairs[0].tiles[0]
-        if not is_number(tile):
-            return 0
-        return int((tile % 10) % 3 == 2)
-
-    @_register_yaku("SEVEN_PAIRS", "Seven Pairs", 3)
-    def _seven_pairs(self):
-        return len(self._formed_hand) == 7 and int(
-            all(call.call_type == CallType.PAIR for call in self._formed_hand)
-        )
-
-    @_register_yaku("THIRTEEN_ORPHANS", "Thirteen Orphans", 13)
-    def _thirteen_orphans(self):
-        return int(
-            len(self._formed_hand) == 1
-            and self._formed_hand[0].call_type == CallType.THIRTEEN_ORPHANS
-        )
