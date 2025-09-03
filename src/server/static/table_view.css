@@ -28,68 +28,44 @@
     backface-visibility: hidden;
 }
 
+#table_view .tile_side {
+    height: var(--tile-depth);
+    background-image: linear-gradient(var(--tile-front-color) 70%, var(--tile-back-color) 70%);
+}
+
 #table_view .tile {
     transform: translateZ(var(--tile-depth));
 }
 
 #table_view .tile_left {
-    width: var(--tile-depth);
-    height: var(--tile-height);
-    transform: rotateY(-90deg);
-}
-
-#table_view .tile_left::before {
-    content: "";
-    width: 30%;
-    height: 100%;
-    position: absolute;
-    left: 0;
-    background-color: var(--tile-back-color);
+    width: var(--tile-height);
+    transform:
+        translate3d(0, 0, var(--tile-depth))
+        rotateZ(90deg)
+        rotateX(-90deg);
 }
 
 #table_view .tile_right {
-    width: var(--tile-depth);
-    height: var(--tile-height);
-    transform: translate3d(var(--tile-width), 0, var(--tile-depth)) rotateY(90deg);
-}
-
-#table_view .tile_right::before {
-    content: "";
-    width: 30%;
-    height: 100%;
-    position: absolute;
-    right: 0;
-    background-color: var(--tile-back-color);
+    width: var(--tile-height);
+    transform:
+        translate3d(var(--tile-width), var(--tile-height), var(--tile-depth))
+        rotateZ(-90deg)
+        rotateX(-90deg);
 }
 
 #table_view .tile_top {
     width: var(--tile-width);
-    height: var(--tile-depth);
-    transform: rotateX(90deg);
-}
-
-#table_view .tile_top::before {
-    content: "";
-    width: 100%;
-    height: 30%;
-    position: absolute;
-    top: 0;
-    background-color: var(--tile-back-color);
+    transform:
+        translate3d(var(--tile-width), 0, var(--tile-depth))
+        rotateZ(180deg)
+        rotateX(-90deg);
 }
 
 #table_view .tile_bottom {
     width: var(--tile-width);
-    height: var(--tile-depth);
-    transform: translate3d(0, var(--tile-height), var(--tile-depth)) rotateX(-90deg);
-}
-
-#table_view .tile_bottom::before {
-    content: "";
-    width: 100%;
-    height: 30%;
-    position: absolute;
-    bottom: 0;
-    background-color: var(--tile-back-color);
+    transform:
+        translate3d(0, var(--tile-height), var(--tile-depth))
+        rotateX(-90deg);
 }
 
 #table_view .tile_side::after {
