@@ -26,7 +26,6 @@
     </form>
     <p id="seat_indicator">Select a seat...</p>
     <div id="round_info">
-      <p id="tiles_left"></p>
       <div id="straight_view">
         <h3>Your hand</h3>
         <div id="hand"></div>
@@ -34,26 +33,25 @@
         <div id="actions"></div>
         <div id="actions_disambiguation"></div>
       </div>
-      <div id="table_view">
-        <div id="table">
-          <h3>Calls</h3>
-          <div id="calls_list">
-            <div class="seat_calls position_0">
-              <h4>Player 0</h4>
-            </div>
-            <div class="seat_calls position_1">
-              <h4>Player 1</h4>
-            </div>
-            <div class="seat_calls position_2">
-              <h4>Player 2</h4>
-            </div>
-            <div class="seat_calls position_3">
-              <h4>Player 3</h4>
-            </div>
+      <div id="table">
+        <h3>Calls</h3>
+        <p id="tiles_left"></p>
+        <div id="calls_list">
+          <div class="seat_calls position_0">
+            <h4>Player 0</h4>
           </div>
-          <h3>Discards</h3>
-          <div id="discard_pool" class="position_0"></div>
+          <div class="seat_calls position_1">
+            <h4>Player 1</h4>
+          </div>
+          <div class="seat_calls position_2">
+            <h4>Player 2</h4>
+          </div>
+          <div class="seat_calls position_3">
+            <h4>Player 3</h4>
+          </div>
         </div>
+        <h3>Discards</h3>
+        <div id="discard_pool" class="position_0"></div>
       </div>
       <div>
         <h3>History</h3>

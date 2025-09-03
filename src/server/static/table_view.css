@@ -1,43 +1,40 @@
-#table_view {
+#table {
+    --tile-width: 4cqw;
     width: 100cqw;
     height: 100cqw;
     position: absolute;
-    left: 0;
-    top: calc(100cqw * (9 - 16)/(2*16));
-    perspective: 300cqw;
-}
-
-#table {
-    --tile-width: 4cqw;
-    --table-transform: translate3d(0cqw, -4cqw, 0cqw) rotateX(53deg);
-    width: 100cqw;
-    height: 100cqw;
+    top: calc(50% - 50cqw);
     background-color: mediumaquamarine;
-    transform: var(--table-transform);
+    transform: perspective(300cqw) translate3d(0cqw, -4cqw, 0cqw) rotateX(53deg);
     transform-style: preserve-3d;
 }
 
-#table_view .tile_div {
+#table .tile_div {
     transform-style: preserve-3d;
 }
 
-#table_view .tile_face {
+#table .tile_face {
     position: absolute;
     background-color: var(--tile-front-color);
     transform-origin: left top;
     backface-visibility: hidden;
 }
 
-#table_view .tile_side {
+#table .tile_side {
     height: var(--tile-depth);
     background-image: linear-gradient(var(--tile-front-color) 70%, var(--tile-back-color) 70%);
 }
 
-#table_view .tile {
-    transform: translateZ(var(--tile-depth));
+#table .tile_side::after {
+    content: "";
+    width: calc(100% - 2*var(--tile-border-width));
+    height: calc(100% - 2*var(--tile-border-width));
+    position: absolute;
+    border: var(--tile-border-width) solid var(--tile-border-color);
+    background-color: rgba(0,0,0,var(--tile-side-darken-percent));
 }
 
-#table_view .tile_left {
+#table .tile_left {
     width: var(--tile-height);
     transform:
         translate3d(0, 0, var(--tile-depth))
@@ -45,7 +42,7 @@
         rotateX(-90deg);
 }
 
-#table_view .tile_right {
+#table .tile_right {
     width: var(--tile-height);
     transform:
         translate3d(var(--tile-width), var(--tile-height), var(--tile-depth))
@@ -53,7 +50,7 @@
         rotateX(-90deg);
 }
 
-#table_view .tile_top {
+#table .tile_top {
     width: var(--tile-width);
     transform:
         translate3d(var(--tile-width), 0, var(--tile-depth))
@@ -61,18 +58,13 @@
         rotateX(-90deg);
 }
 
-#table_view .tile_bottom {
+#table .tile_bottom {
     width: var(--tile-width);
     transform:
         translate3d(0, var(--tile-height), var(--tile-depth))
         rotateX(-90deg);
 }
 
-#table_view .tile_side::after {
-    content: "";
-    width: calc(100% - 2*var(--tile-border-width));
-    height: calc(100% - 2*var(--tile-border-width));
-    position: absolute;
-    border: var(--tile-border-width) solid var(--tile-border-color);
-    background-color: rgba(0,0,0,var(--tile-side-darken-percent));
+#table .tile {
+    transform: translateZ(var(--tile-depth));
 }
