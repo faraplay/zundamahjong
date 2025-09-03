@@ -7,7 +7,7 @@ from src.mahjong.yaku import YakuCalculator
 
 class YakuTest(TestCase):
 
-    def get_yakus(
+    def get_yaku_mults(
         self,
         *,
         win_seat: int = 0,
@@ -21,10 +21,10 @@ class YakuTest(TestCase):
             hand=[tile for call in formed_hand for tile in call.tiles],
             calls=calls,
         )
-        return set(YakuCalculator(win, formed_hand).get_yakus())
+        return YakuCalculator(win, formed_hand).get_yaku_mults()
 
     def test_eyes(self):
-        yakus = self.get_yakus(
+        yaku_mults = self.get_yaku_mults(
             win_seat=0,
             lose_seat=None,
             formed_hand=[
@@ -38,10 +38,10 @@ class YakuTest(TestCase):
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
         )
-        self.assertSetEqual(yakus, {"EYES"})
+        self.assertDictEqual(yaku_mults, {"EYES": 1})
 
     def test_all_runs(self):
-        yakus = self.get_yakus(
+        yaku_mults = self.get_yaku_mults(
             win_seat=0,
             lose_seat=None,
             formed_hand=[
@@ -55,10 +55,10 @@ class YakuTest(TestCase):
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
         )
-        self.assertSetEqual(yakus, {"ALL_RUNS"})
+        self.assertDictEqual(yaku_mults, {"ALL_RUNS": 1})
 
     def test_all_simples(self):
-        yakus = self.get_yakus(
+        yaku_mults = self.get_yaku_mults(
             win_seat=0,
             lose_seat=None,
             formed_hand=[
@@ -72,10 +72,10 @@ class YakuTest(TestCase):
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
         )
-        self.assertSetEqual(yakus, {"ALL_SIMPLES"})
+        self.assertDictEqual(yaku_mults, {"ALL_SIMPLES": 1})
 
     def test_seven_pairs(self):
-        yakus = self.get_yakus(
+        yaku_mults = self.get_yaku_mults(
             win_seat=0,
             lose_seat=None,
             formed_hand=[
@@ -91,4 +91,4 @@ class YakuTest(TestCase):
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
         )
-        self.assertSetEqual(yakus, {"SEVEN_PAIRS"})
+        self.assertDictEqual(yaku_mults, {"SEVEN_PAIRS": 1})
