@@ -3,7 +3,7 @@
     position: absolute;
     right: 15cqw;
     bottom: 10cqw;
-    z-index: 1000;
+    z-index: 1;
     display: flex;
     flex-direction: row-reverse;
     flex-wrap: wrap-reverse;
@@ -121,7 +121,7 @@
     left: 0;
     right: 0;
     bottom: 12cqw;
-    z-index: 1000;
+    z-index: 1;
     margin: auto;
     padding: 2cqw;
     border-radius: 2cqw;
