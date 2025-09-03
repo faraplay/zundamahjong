@@ -64,7 +64,7 @@ class ScoringHand:
         return seat_scores
 
     def get_scoring(self, formed_hand: list[Call]):
-        yaku_mults = YakuCalculator(self, formed_hand).get_yaku_mults()
+        yaku_mults = YakuCalculator(self._win, formed_hand).get_yaku_mults()
         yaku_values = self._options.yaku_values
         yaku_hans = dict(
             (yaku, yaku_values[yaku] * yaku_mults[yaku]) for yaku in yaku_mults.keys()
