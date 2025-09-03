@@ -23,6 +23,129 @@ class YakuTest(TestCase):
         )
         return YakuCalculator(win, formed_hand).get_yaku_mults()
 
+    def test_no_flowers(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+            ],
+        )
+        self.assertDictEqual(yaku_mults, {"NO_FLOWERS": 1})
+
+    def test_seat_flower(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.FLOWER, tiles=[41]),
+            ],
+        )
+        self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1})
+
+    def test_two_seat_flowers(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.FLOWER, tiles=[41]),
+                Call(call_type=CallType.FLOWER, tiles=[45]),
+            ],
+        )
+        self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 2})
+
+    def test_set_of_flowers(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.FLOWER, tiles=[41]),
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+                Call(call_type=CallType.FLOWER, tiles=[43]),
+                Call(call_type=CallType.FLOWER, tiles=[44]),
+            ],
+        )
+        self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1})
+
+    def test_seven_flowers(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.FLOWER, tiles=[41]),
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+                Call(call_type=CallType.FLOWER, tiles=[43]),
+                Call(call_type=CallType.FLOWER, tiles=[44]),
+                Call(call_type=CallType.FLOWER, tiles=[46]),
+                Call(call_type=CallType.FLOWER, tiles=[47]),
+                Call(call_type=CallType.FLOWER, tiles=[48]),
+            ],
+        )
+        self.assertDictEqual(
+            yaku_mults, {"SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1, "SEVEN_FLOWERS": 1}
+        )
+
+    def test_two_sets_of_flowers(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.FLOWER, tiles=[41]),
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+                Call(call_type=CallType.FLOWER, tiles=[43]),
+                Call(call_type=CallType.FLOWER, tiles=[44]),
+                Call(call_type=CallType.FLOWER, tiles=[45]),
+                Call(call_type=CallType.FLOWER, tiles=[46]),
+                Call(call_type=CallType.FLOWER, tiles=[47]),
+                Call(call_type=CallType.FLOWER, tiles=[48]),
+            ],
+        )
+        self.assertDictEqual(
+            yaku_mults,
+            {"SEAT_FLOWER": 2, "SET_OF_FLOWERS": 1, "TWO_SETS_OF_FLOWERS": 1},
+        )
+
     def test_eyes(self):
         yaku_mults = self.get_yaku_mults(
             win_seat=0,
