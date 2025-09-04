@@ -46,10 +46,12 @@ def _register_do_action(action_type: ActionType):
 class Round:
     def __init__(
         self,
+        wind_round: int = 0,
         tiles: list[int] | None = None,
         options: GameOptions = GameOptions(),
         round_end_callback: Callable[[], None] = lambda: None,
     ):
+        self._wind_round = wind_round
         self._player_count = options.player_count
         self._options = options
         self._end_callback = round_end_callback
@@ -357,6 +359,7 @@ class Round:
             lose_seat=self._current_seat,
             hand=list(hand.tiles) + [self._last_tile],
             calls=list(hand.calls),
+            wind_round=self._wind_round,
         )
         self._status = RoundStatus.END
 
@@ -382,6 +385,7 @@ class Round:
             lose_seat=None,
             hand=list(hand.tiles),
             calls=list(hand.calls),
+            wind_round=self._wind_round,
             after_flower_count=after_flower_count,
             after_kan_count=after_kan_count,
         )

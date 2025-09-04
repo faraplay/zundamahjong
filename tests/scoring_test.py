@@ -7,7 +7,6 @@ from src.mahjong.scoring import ScoringHand
 
 
 class ScoringTest(unittest.TestCase):
-
     def get_seat_scores(self, win: Win):
         return ScoringHand(win, GameOptions()).get_win_scoring().scoring.seat_scores
 
@@ -19,6 +18,7 @@ class ScoringTest(unittest.TestCase):
             calls=[
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            wind_round=0,
         )
         seat_scores = self.get_seat_scores(win)
         self.assertSequenceEqual(seat_scores, [12.0, -12.0, 0.0, 0.0])
@@ -31,6 +31,7 @@ class ScoringTest(unittest.TestCase):
             calls=[
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            wind_round=0,
         )
         seat_scores = self.get_seat_scores(win)
         self.assertSequenceEqual(seat_scores, [36.0, -12.0, -12.0, -12.0])
@@ -43,6 +44,7 @@ class ScoringTest(unittest.TestCase):
             calls=[
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            wind_round=0,
         )
         seat_scores = self.get_seat_scores(win)
         self.assertSequenceEqual(seat_scores, [0.0, -8.0, 8.0, 0.0])
@@ -55,6 +57,7 @@ class ScoringTest(unittest.TestCase):
             calls=[
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            wind_round=0,
         )
         seat_scores = self.get_seat_scores(win)
         self.assertSequenceEqual(seat_scores, [-8.0, -4.0, 16.0, -4.0])

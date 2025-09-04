@@ -14,6 +14,7 @@ class YakuTest(TestCase):
         lose_seat: int | None = None,
         formed_hand: list[Call],
         calls: list[Call],
+        wind_round: int = 0,
         after_flower_count: int = 0,
         after_kan_count: int = 0
     ):
@@ -22,6 +23,7 @@ class YakuTest(TestCase):
             lose_seat=lose_seat,
             hand=[tile for call in formed_hand for tile in call.tiles],
             calls=calls,
+            wind_round=wind_round,
             after_flower_count=after_flower_count,
             after_kan_count=after_kan_count,
         )

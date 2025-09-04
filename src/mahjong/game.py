@@ -95,6 +95,7 @@ class Game:
             self._calculate_win_score()
 
         self._round = Round(
+            wind_round=self._wind_round % 4,
             tiles=deck_tiles,
             options=self._options,
             round_end_callback=on_round_end,
