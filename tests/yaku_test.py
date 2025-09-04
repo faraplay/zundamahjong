@@ -15,8 +15,7 @@ class YakuTest(TestCase):
         formed_hand: list[Call],
         calls: list[Call],
         wind_round: int = 0,
-        after_flower_count: int = 0,
-        after_kan_count: int = 0
+        **kwargs
     ):
         win = Win(
             win_seat=win_seat,
@@ -24,8 +23,7 @@ class YakuTest(TestCase):
             hand=[tile for call in formed_hand for tile in call.tiles],
             calls=calls,
             wind_round=wind_round,
-            after_flower_count=after_flower_count,
-            after_kan_count=after_kan_count,
+            **kwargs
         )
         return YakuCalculator(win, formed_hand).get_yaku_mults()
 
@@ -344,6 +342,60 @@ class YakuTest(TestCase):
             ],
         )
         self.assertDictEqual(yaku_mults, {"NO_CALLS": 1})
+
+    def test_chankan(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+            ],
+            is_chankan=True,
+        )
+        self.assertDictEqual(yaku_mults, {"ROBBING_A_KAN": 1})
+
+    def test_haitei(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+            ],
+            is_haitei=True,
+        )
+        self.assertDictEqual(yaku_mults, {"UNDER_THE_SEA": 1})
+
+    def test_houtei(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+            ],
+            is_houtei=True,
+        )
+        self.assertDictEqual(yaku_mults, {"UNDER_THE_RIVER": 1})
 
     def test_all_runs(self):
         yaku_mults = self.get_yaku_mults(

@@ -354,12 +354,19 @@ class Round:
     @_register_do_action(ActionType.RON)
     def _ron(self, seat: int, tile: Tile):
         hand = self._hands[seat]
+        is_chankan = (
+            self._status == RoundStatus.ADD_KAN_AFTER
+            or self._status == RoundStatus.CLOSED_KAN_AFTER
+        )
+        is_houtei = self._status == RoundStatus.LAST_DISCARDED
         self._win_info = Win(
             win_seat=seat,
             lose_seat=self._current_seat,
             hand=list(hand.tiles) + [self._last_tile],
             calls=list(hand.calls),
             wind_round=self._wind_round,
+            is_chankan=is_chankan,
+            is_houtei=is_houtei,
         )
         self._status = RoundStatus.END
 
@@ -380,6 +387,7 @@ class Round:
                 pass
             else:
                 break
+        is_haitei = self.wall_count <= self._options.end_wall_count
         self._win_info = Win(
             win_seat=seat,
             lose_seat=None,
@@ -388,5 +396,6 @@ class Round:
             wind_round=self._wind_round,
             after_flower_count=after_flower_count,
             after_kan_count=after_kan_count,
+            is_haitei=is_haitei,
         )
         self._status = RoundStatus.END

@@ -101,6 +101,26 @@ class YakuCalculator:
             )
         )
 
+    @_register_yaku("ROBBING_A_KAN", "Robbing a Kan", 1)
+    def _robbing_a_kan(self):
+        return self._win.is_chankan
+
+    @_register_yaku("UNDER THE SEA", "Under the Sea", 1)
+    def _under_the_sea(self):
+        return self._win.is_haitei
+
+    @_register_yaku("UNDER_THE_RIVER", "Under the River", 1)
+    def _under_the_river(self):
+        return self._win.is_houtei
+
+    @_register_yaku("AFTER_A_FLOWER", "After a Flower", 1)
+    def _after_a_flower(self):
+        return self._win.after_flower_count
+
+    @_register_yaku("AFTER_A_KAN", "After a Kan", 2)
+    def _after_a_kan(self):
+        return self._win.after_kan_count
+
     @_register_yaku("NO_FLOWERS", "No Flowers", 1)
     def _no_flowers(self):
         return int(len(self._flowers) == 0)
@@ -122,11 +142,3 @@ class YakuCalculator:
     @_register_yaku("TWO_SETS_OF_FLOWERS", "Two Sets of Flowers", 8)
     def _two_sets_of_flowers(self):
         return int(len(self._flowers) == 8)
-
-    @_register_yaku("AFTER_A_FLOWER", "After a Flower", 1)
-    def _after_a_flower(self):
-        return self._win.after_flower_count
-
-    @_register_yaku("AFTER_A_KAN", "After a Kan", 2)
-    def _after_a_kan(self):
-        return self._win.after_kan_count
