@@ -281,6 +281,7 @@ class RoundTest(unittest.TestCase):
             win_info.hand, [11, 11, 11, 12, 12, 12, 14, 15, 31, 31, 32, 32, 32, 13]
         )
         self.assertCountEqual(win_info.calls, [])
+        self.assertTrue(win_info.is_chankan)
 
     def test_auto_flower_history(self):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=True))
@@ -486,6 +487,18 @@ class RoundTest(unittest.TestCase):
         self.assertEqual(round.wall_count, 14)
         self.assertIsNone(round.win_info)
 
+    def test_haitei(self):
+        round = Round(tiles=test_deck_haitei, options=GameOptions(end_wall_count=14))
+        while round.wall_count > 14:
+            actions = [round.allowed_actions(seat).default for seat in range(4)]
+            seat, action = round.get_priority_action(actions)
+            round.do_action(seat, action)
+        self.assertEqual(round.current_seat, 1)
+        self.assertEqual(round.status, RoundStatus.PLAY)
+        round.do_action(1, Action(action_type=ActionType.TSUMO))
+        self.assertIsNotNone(round.win_info)
+        self.assertTrue(round.win_info.is_haitei)
+
     def test_houtei(self):
         round = Round(tiles=test_deck4, options=GameOptions(end_wall_count=14))
         round.do_action(0, Action(action_type=ActionType.CLOSED_KAN, tile=4))
@@ -499,6 +512,7 @@ class RoundTest(unittest.TestCase):
         self.assertEqual(round.status, RoundStatus.LAST_DISCARDED)
         round.do_action(3, Action(action_type=ActionType.RON))
         self.assertIsNotNone(round.win_info)
+        self.assertTrue(round.win_info.is_houtei)
 
     def test_after_flower(self):
         round = Round(tiles=test_deck_rinshan)
