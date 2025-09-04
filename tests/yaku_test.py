@@ -14,12 +14,16 @@ class YakuTest(TestCase):
         lose_seat: int | None = None,
         formed_hand: list[Call],
         calls: list[Call],
+        after_flower_count: int = 0,
+        after_kan_count: int = 0
     ):
         win = Win(
             win_seat=win_seat,
             lose_seat=lose_seat,
             hand=[tile for call in formed_hand for tile in call.tiles],
             calls=calls,
+            after_flower_count=after_flower_count,
+            after_kan_count=after_kan_count,
         )
         return YakuCalculator(win, formed_hand).get_yaku_mults()
 
@@ -144,6 +148,46 @@ class YakuTest(TestCase):
         self.assertDictEqual(
             yaku_mults,
             {"SEAT_FLOWER": 2, "SET_OF_FLOWERS": 1, "TWO_SETS_OF_FLOWERS": 1},
+        )
+
+    def test_after_a_flower(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+            ],
+            after_flower_count=1,
+        )
+        self.assertDictEqual(
+            yaku_mults,
+            {"AFTER_A_FLOWER": 1},
+        )
+
+    def test_after_a_kan(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+            ],
+            after_kan_count=1,
+        )
+        self.assertDictEqual(
+            yaku_mults,
+            {"AFTER_A_KAN": 1},
         )
 
     def test_eyes(self):

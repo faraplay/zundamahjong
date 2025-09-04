@@ -82,3 +82,11 @@ class YakuCalculator:
     @_register_yaku("TWO_SETS_OF_FLOWERS", "Two Sets of Flowers", 8)
     def _two_sets_of_flowers(self):
         return int(len(self._flowers) == 8)
+
+    @_register_yaku("AFTER_A_FLOWER", "After a Flower", 1)
+    def _after_a_flower(self):
+        return self._win.after_flower_count
+
+    @_register_yaku("AFTER_A_KAN", "After a Kan", 2)
+    def _after_a_kan(self):
+        return self._win.after_kan_count
