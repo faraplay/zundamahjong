@@ -1,7 +1,7 @@
 from __future__ import annotations
 from collections.abc import Callable
 
-from .tile import is_number
+from .tile import is_flower, is_number
 from .call import Call, CallType
 from .win import Win
 
@@ -29,6 +29,24 @@ class YakuCalculator:
         self._flowers = {
             call.tiles[0] for call in win.calls if call.call_type == CallType.FLOWER
         }
+        self._all_calls = self._formed_hand + self._win.calls
+        self._hand_tiles = [
+            tile
+            for call in self._all_calls
+            if call.call_type != CallType.FLOWER
+            for tile in call.tiles
+        ]
+        self._used_suits = set((tile // 10) * 10 for tile in self._hand_tiles)
+
+    _triplet_types = {
+        CallType.PON,
+        CallType.OPEN_KAN,
+        CallType.ADD_KAN,
+        CallType.CLOSED_KAN,
+    }
+    _kan_types = {CallType.OPEN_KAN, CallType.ADD_KAN, CallType.CLOSED_KAN}
+    _number_suits = [0, 10, 20]
+    _honour_suit = 30
 
     def get_yaku_mults(self):
         yaku_mults: dict[str, int] = {}
@@ -45,6 +63,44 @@ class YakuCalculator:
             and self._formed_hand[0].call_type == CallType.THIRTEEN_ORPHANS
         )
 
+    @_register_yaku("ALL_RUNS", "All Runs", 1)
+    def _all_runs(self):
+        return int(sum(call.call_type == CallType.CHI for call in self._all_calls) == 4)
+
+    @_register_yaku("ALL_SIMPLES", "All Simples", 1)
+    def _all_simples(self):
+        return int(
+            all((is_number(tile) and 2 <= tile % 10 <= 8) for tile in self._hand_tiles)
+        )
+
+    @_register_yaku("PURE_STRAIGHT", "Pure Straight", 3)
+    def _pure_straight(self):
+        return int(
+            any(
+                Call(call_type=CallType.CHI, tiles=[suit + 1, suit + 2, suit + 3])
+                in self._all_calls
+                and Call(call_type=CallType.CHI, tiles=[suit + 4, suit + 5, suit + 6])
+                in self._all_calls
+                and Call(call_type=CallType.CHI, tiles=[suit + 7, suit + 8, suit + 9])
+                in self._all_calls
+                for suit in self._number_suits
+            )
+        )
+
+    @_register_yaku("ALL_TRIPLETS", "All Triplets", 3)
+    def _all_triplets(self):
+        return int(
+            sum(call.call_type in self._triplet_types for call in self._all_calls) == 4
+        )
+
+    @_register_yaku("HALF_FLUSH", "Half Flush", 3)
+    def _half_flush(self):
+        return int(len(self._used_suits) == 2 and self._honour_suit in self._used_suits)
+
+    @_register_yaku("FULL_FLUSH", "Full Flush", 7)
+    def _full_flush(self):
+        return int(any(self._used_suits == {suit} for suit in self._number_suits))
+
     @_register_yaku("SEVEN_PAIRS", "Seven Pairs", 3)
     def _seven_pairs(self):
         return len(self._formed_hand) == 7 and int(
@@ -55,7 +111,7 @@ class YakuCalculator:
         return int(
             any(
                 (call.tiles[0] == yaku_tile and call.call_type != CallType.PAIR)
-                for call in self._formed_hand + self._win.calls
+                for call in self._all_calls
             )
         )
 
@@ -103,15 +159,15 @@ class YakuCalculator:
 
     @_register_yaku("ROBBING_A_KAN", "Robbing a Kan", 1)
     def _robbing_a_kan(self):
-        return self._win.is_chankan
+        return int(self._win.is_chankan)
 
-    @_register_yaku("UNDER THE SEA", "Under the Sea", 1)
+    @_register_yaku("UNDER_THE_SEA", "Under the Sea", 1)
     def _under_the_sea(self):
-        return self._win.is_haitei
+        return int(self._win.is_haitei)
 
     @_register_yaku("UNDER_THE_RIVER", "Under the River", 1)
     def _under_the_river(self):
-        return self._win.is_houtei
+        return int(self._win.is_houtei)
 
     @_register_yaku("AFTER_A_FLOWER", "After a Flower", 1)
     def _after_a_flower(self):
