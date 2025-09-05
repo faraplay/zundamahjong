@@ -1,6 +1,6 @@
 from collections.abc import Sequence
 
-from .tile import Tile
+from .tile import Tile, orphans
 from .call import Call, CallType
 
 
@@ -149,9 +149,6 @@ def form_seven_pairs(tiles: Sequence[Tile]) -> list[list[Call]]:
         ]
     else:
         return []
-
-
-orphans = [1, 9, 11, 19, 21, 29, 31, 32, 33, 34, 35, 36, 37]
 
 
 def form_thirteen_orphans(tiles: Sequence[Tile]) -> list[list[Call]]:

@@ -517,3 +517,143 @@ class YakuTest(TestCase):
             ],
         )
         self.assertDictEqual(yaku_mults, {"SEVEN_PAIRS": 1})
+
+    def test_half_outside_hand(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[11, 12, 13]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[27, 28, 29]),
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+            ],
+        )
+        self.assertDictEqual(
+            yaku_mults,
+            {"HALF_OUTSIDE_HAND": 1},
+        )
+
+    def test_fully_outside_hand(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[11, 12, 13]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[29, 29]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[27, 28, 29]),
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+            ],
+        )
+        self.assertDictEqual(
+            yaku_mults,
+            {"FULLY_OUTSIDE_HAND": 1},
+        )
+
+    def test_pure_double_sequence(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+            ],
+        )
+        self.assertDictEqual(
+            yaku_mults,
+            {"PURE_DOUBLE_SEQUENCE": 1},
+        )
+
+    def test_twice_pure_double_sequence(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+            ],
+        )
+        self.assertDictEqual(
+            yaku_mults,
+            {"ALL_RUNS": 1, "TWICE_PURE_DOUBLE_SEQUENCE": 1},
+        )
+
+    def test_mixed_triple_sequence(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[3, 4, 5]),
+                Call(call_type=CallType.CHI, tiles=[13, 14, 15]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+            ],
+        )
+        self.assertDictEqual(
+            yaku_mults,
+            {"MIXED_TRIPLE_SEQUENCE": 1},
+        )
+
+    def test_triple_triplets(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.PON, tiles=[9, 9, 9]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.PON, tiles=[29, 29, 29]),
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+            ],
+        )
+        self.assertDictEqual(
+            yaku_mults,
+            {"TRIPLE_TRIPLETS": 1},
+        )
+
+    def test_all_terminals_and_honours(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.PON, tiles=[1, 1, 1]),
+                Call(call_type=CallType.PON, tiles=[11, 11, 11]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.PON, tiles=[29, 29, 29]),
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+            ],
+        )
+        self.assertDictEqual(
+            yaku_mults,
+            {"HALF_OUTSIDE_HAND": 1, "ALL_TRIPLETS": 1, "ALL_TERMINALS_AND_HONOURS": 1},
+        )

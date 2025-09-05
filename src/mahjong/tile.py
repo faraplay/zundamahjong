@@ -12,5 +12,16 @@ def is_number(tile: Tile):
     return tile < 30
 
 
+def is_honour(tile: Tile):
+    return 30 < tile < 40
+
+
 def is_flower(tile: Tile):
     return tile > 40
+
+
+orphans = {1, 9, 11, 19, 21, 29, 31, 32, 33, 34, 35, 36, 37}
+
+
+def is_orphan(tile: Tile):
+    return tile in orphans

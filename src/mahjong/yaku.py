@@ -1,7 +1,8 @@
 from __future__ import annotations
+from collections import Counter
 from collections.abc import Callable
 
-from .tile import is_flower, is_number
+from .tile import is_flower, is_number, is_orphan
 from .call import Call, CallType
 from .win import Win
 
@@ -30,13 +31,26 @@ class YakuCalculator:
             call.tiles[0] for call in win.calls if call.call_type == CallType.FLOWER
         }
         self._all_calls = self._formed_hand + self._win.calls
+        self._non_flower_calls = [
+            call for call in self._all_calls if call.call_type != CallType.FLOWER
+        ]
         self._hand_tiles = [
-            tile
-            for call in self._all_calls
-            if call.call_type != CallType.FLOWER
-            for tile in call.tiles
+            tile for call in self._non_flower_calls for tile in call.tiles
         ]
         self._used_suits = set((tile // 10) * 10 for tile in self._hand_tiles)
+        self._call_outsidenesses = set(
+            self._is_outside_call(call) for call in self._non_flower_calls
+        )
+        self._chi_start_tiles = Counter(
+            call.tiles[0]
+            for call in self._non_flower_calls
+            if call.call_type == CallType.CHI
+        )
+        self._triplet_tiles = {
+            call.tiles[0]
+            for call in self._non_flower_calls
+            if call.call_type in self._triplet_types
+        }
 
     _triplet_types = {
         CallType.PON,
@@ -65,7 +79,7 @@ class YakuCalculator:
 
     @_register_yaku("ALL_RUNS", "All Runs", 1)
     def _all_runs(self):
-        return int(sum(call.call_type == CallType.CHI for call in self._all_calls) == 4)
+        return int(sum(self._chi_start_tiles.values()) == 4)
 
     @_register_yaku("ALL_SIMPLES", "All Simples", 1)
     def _all_simples(self):
@@ -77,21 +91,14 @@ class YakuCalculator:
     def _pure_straight(self):
         return int(
             any(
-                Call(call_type=CallType.CHI, tiles=[suit + 1, suit + 2, suit + 3])
-                in self._all_calls
-                and Call(call_type=CallType.CHI, tiles=[suit + 4, suit + 5, suit + 6])
-                in self._all_calls
-                and Call(call_type=CallType.CHI, tiles=[suit + 7, suit + 8, suit + 9])
-                in self._all_calls
+                {suit + 1, suit + 4, suit + 7} <= self._chi_start_tiles.keys()
                 for suit in self._number_suits
             )
         )
 
     @_register_yaku("ALL_TRIPLETS", "All Triplets", 3)
     def _all_triplets(self):
-        return int(
-            sum(call.call_type in self._triplet_types for call in self._all_calls) == 4
-        )
+        return int(len(self._triplet_tiles) == 4)
 
     @_register_yaku("HALF_FLUSH", "Half Flush", 3)
     def _half_flush(self):
@@ -106,6 +113,64 @@ class YakuCalculator:
         return len(self._formed_hand) == 7 and int(
             all(call.call_type == CallType.PAIR for call in self._formed_hand)
         )
+
+    def _is_outside_call(self, call: Call):
+        "Returns 2 if it contains a terminal, 1 if it contains an honor, 0 otherwise"
+        tile = call.tiles[0]
+        if call.call_type == CallType.CHI:
+            if tile % 10 == 1 or tile % 10 == 7:
+                return 2
+            else:
+                return 0
+        elif call.call_type == CallType.THIRTEEN_ORPHANS:
+            return 0
+        else:
+            if not is_number(tile):
+                return 1
+            elif tile % 10 == 1 or tile % 10 == 9:
+                return 2
+            else:
+                return 0
+
+    @_register_yaku("HALF_OUTSIDE_HAND", "Half Outside Hand", 2)
+    def _half_outside_hand(self):
+        return int(self._call_outsidenesses == {1, 2})
+
+    @_register_yaku("FULLY_OUTSIDE_HAND", "Fully Outside Hand", 4)
+    def _fully_outside_hand(self):
+        return int(self._call_outsidenesses == {2})
+
+    @_register_yaku("PURE_DOUBLE_SEQUENCE", "Pure Double Sequence", 1)
+    def _pure_double_sequence(self):
+        return int(sum(count == 2 for count in self._chi_start_tiles.values()) == 1)
+
+    @_register_yaku("TWICE_PURE_DOUBLE_SEQUENCE", "Twice Pure Double Sequence", 4)
+    def _twice_pure_double_sequence(self):
+        return int(sum(count == 2 for count in self._chi_start_tiles.values()) == 2)
+
+    @_register_yaku("MIXED_TRIPLE_SEQUENCE", "Mixed Triple Sequence", 2)
+    def _mixed_triple_sequence(self):
+        return int(
+            any(
+                {tile, tile + 10, tile + 20} <= self._chi_start_tiles.keys()
+                for tile in self._chi_start_tiles
+                if tile < 10
+            )
+        )
+
+    @_register_yaku("TRIPLE_TRIPLETS", "Triple Triplets", 4)
+    def _triple_triplets(self):
+        return int(
+            any(
+                {tile, tile + 10, tile + 20} <= self._triplet_tiles
+                for tile in self._triplet_tiles
+                if tile < 10
+            )
+        )
+
+    @_register_yaku("ALL_TERMINALS_AND_HONOURS", "All Terminals and Honours", 3)
+    def _all_terminals_and_honours(self):
+        return int(all(is_orphan(tile) for tile in self._hand_tiles))
 
     def _yakuhai(self, yaku_tile):
         return int(
