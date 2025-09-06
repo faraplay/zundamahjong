@@ -227,17 +227,14 @@ function createCallElement(call) {
     return call_item
 }
 
-function createCallElementIndexed(call, startIndex) {
+function createTableCallElement(call) {
     const call_item = document.createElement("span");
     call_item.classList.add('call');
     const call_type_item = document.createElement("h4");
     call_type_item.textContent = call_types[call.call_type];
     call_item.appendChild(call_type_item);
-    var index = startIndex + call.tiles.length - 1;
     for (const tile of call.tiles) {
         tile_item = createTableTileElement(tile);
-        tile_item.style.setProperty('--seat-calls-tile-x-index', index);
-        --index;
         call_item.appendChild(tile_item)
     }
     return call_item
@@ -250,11 +247,9 @@ function createPlayerCallsElement(seat_calls) {
     seat_item_title.textContent = `Player ${seat_calls.seat}`;
     seat_item.appendChild(seat_item_title);
 
-    var index = 0;
     for (const call of seat_calls.calls) {
-        call_item = createCallElementIndexed(call, index);
+        call_item = createTableCallElement(call);
         seat_item.appendChild(call_item);
-        index += call.tiles.length;
     }
     return seat_item;
 }
@@ -399,11 +394,6 @@ socket.on('round_info', (info) => {
     history_list.replaceChildren(...info.history.map(createHistoryEntryElement));
 
     discard_items = info.discards.map(createTableTileElement);
-    for (var i=0; i<info.discards.length; ++i) {
-        const item = discard_items[i];
-        item.style.setProperty('--discard-tile-x-index', i % 15);
-        item.style.setProperty('--discard-tile-y-index', Math.floor(i / 15));
-    }
     discard_pool.replaceChildren(...discard_items);
 
     seat_calls = info.seat_calls.map(createPlayerCallsElement);

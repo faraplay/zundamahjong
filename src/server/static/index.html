@@ -9,7 +9,7 @@
     <link href="straight_view.css" rel="stylesheet" />
     <link href="hand.css" rel="stylesheet" />
     <link href="actions.css" rel="stylesheet" />
-    <link href="table_view.css" rel="stylesheet" />
+    <link href="table.css" rel="stylesheet" />
     <link href="seat_calls.css" rel="stylesheet" />
     <link href="discard_pool.css" rel="stylesheet" />
     <title>Mahjong</title>
@@ -26,7 +26,6 @@
     </form>
     <p id="seat_indicator">Select a seat...</p>
     <div id="round_info">
-      <p id="tiles_left"></p>
       <div id="straight_view">
         <h3>Your hand</h3>
         <div id="hand"></div>
@@ -34,9 +33,9 @@
         <div id="actions"></div>
         <div id="actions_disambiguation"></div>
       </div>
-      <div id="table_view">
-        <div id="table"></div>
+      <div id="table">
         <h3>Calls</h3>
+        <p id="tiles_left"></p>
         <div id="calls_list">
           <div class="seat_calls position_0">
             <h4>Player 0</h4>

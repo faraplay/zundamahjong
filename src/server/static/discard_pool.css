@@ -1,23 +1,15 @@
 #discard_pool {
     --discard-pool-left: 20cqw;
     --discard-pool-top: 20cqw;
-    --discard-pool-center-index: 7;
-    --discard-pool-transform: 
-        translate(var(--discard-pool-left), var(--discard-pool-top));
-    display: contents;
-}
-
-#discard_pool .tile_div {
-    --tile-z-index:
-        min(
-        calc(var(--discard-tile-x-index) - var(--discard-pool-center-index)),
-        calc(var(--discard-pool-center-index) - var(--discard-tile-x-index))
-        );
-    --tile-transform:
-        var(--table-transform)
-        var(--discard-pool-transform)
-        translateX(calc(var(--discard-tile-x-index) * var(--tile-width)))
-        translateY(calc(var(--discard-tile-y-index) * var(--tile-height)))
-        translate(-50cqw,-50cqw)
-        ;
+    width: 60cqw;
+    height: 60cqw;
+    position: absolute;
+    left: var(--discard-pool-left);
+    top: var(--discard-pool-top);
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    align-content: flex-start;
+    transform-style: preserve-3d;
 }

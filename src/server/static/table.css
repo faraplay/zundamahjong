@@ -1,0 +1,70 @@
+#table {
+    --tile-width: 4cqw;
+    width: 100cqw;
+    height: 100cqw;
+    position: absolute;
+    top: calc(50% - 50cqw);
+    background-color: mediumaquamarine;
+    transform: perspective(300cqw) translate3d(0cqw, -4cqw, 0cqw) rotateX(53deg);
+    transform-style: preserve-3d;
+}
+
+#table .tile_div {
+    transform-style: preserve-3d;
+}
+
+#table .tile_face {
+    position: absolute;
+    background-color: var(--tile-front-color);
+    transform-origin: left top;
+    backface-visibility: hidden;
+}
+
+#table .tile_side {
+    height: var(--tile-depth);
+    background-image: linear-gradient(var(--tile-front-color) 70%, var(--tile-back-color) 70%);
+}
+
+#table .tile_side::after {
+    content: "";
+    width: calc(100% - 2*var(--tile-border-width));
+    height: calc(100% - 2*var(--tile-border-width));
+    position: absolute;
+    border: var(--tile-border-width) solid var(--tile-border-color);
+    background-color: rgba(0,0,0,var(--tile-side-darken-percent));
+}
+
+#table .tile_left {
+    width: var(--tile-height);
+    transform:
+        translate3d(0, 0, var(--tile-depth))
+        rotateZ(90deg)
+        rotateX(-90deg);
+}
+
+#table .tile_right {
+    width: var(--tile-height);
+    transform:
+        translate3d(var(--tile-width), var(--tile-height), var(--tile-depth))
+        rotateZ(-90deg)
+        rotateX(-90deg);
+}
+
+#table .tile_top {
+    width: var(--tile-width);
+    transform:
+        translate3d(var(--tile-width), 0, var(--tile-depth))
+        rotateZ(180deg)
+        rotateX(-90deg);
+}
+
+#table .tile_bottom {
+    width: var(--tile-width);
+    transform:
+        translate3d(0, var(--tile-height), var(--tile-depth))
+        rotateX(-90deg);
+}
+
+#table .tile {
+    transform: translateZ(var(--tile-depth));
+}
