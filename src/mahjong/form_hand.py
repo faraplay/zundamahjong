@@ -159,7 +159,9 @@ def form_thirteen_orphans(tiles: Sequence[Tile]) -> list[list[Call]]:
             tiles_list.remove(tile)
         assert len(tiles_list) == 1
         if tiles_list[0] in orphans:
-            return [[Call(call_type=CallType.THIRTEEN_ORPHANS, tiles=list(tiles))]]
+            return [
+                [Call(call_type=CallType.THIRTEEN_ORPHANS, tiles=list(tiles).sort())]
+            ]
         else:
             return []
     except ValueError:
