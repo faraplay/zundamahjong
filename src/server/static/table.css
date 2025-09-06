@@ -9,6 +9,22 @@
     transform-style: preserve-3d;
 }
 
+.position_0 {
+    transform: rotate(0deg);
+}
+
+.position_1 {
+    transform: rotate(-90deg);
+}
+
+.position_2 {
+    transform: rotate(180deg);
+}
+
+.position_3 {
+    transform: rotate(90deg);
+}
+
 #table .tile_div {
     transform-style: preserve-3d;
 }

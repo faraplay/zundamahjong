@@ -1,15 +1,27 @@
 #discard_pool {
-    --discard-pool-left: 20cqw;
-    --discard-pool-top: 20cqw;
-    width: 60cqw;
-    height: 60cqw;
+    --discard-pool-pos: 20cqw;
+    width: calc(100cqw - 2*var(--discard-pool-pos));
+    height: calc(100cqw - 2*var(--discard-pool-pos));
     position: absolute;
-    left: var(--discard-pool-left);
-    top: var(--discard-pool-top);
+    left: var(--discard-pool-pos);
+    top: var(--discard-pool-pos);
+    transform-style: preserve-3d;
+}
+
+#discard_pool .seat_discards {
+    --seat-discard-gap: 2cqw;
+    width: calc(6*var(--tile-width) + 1cqw);
+    height: calc(3 * (4/3) * var(--tile-width));
+    position: absolute;
+    left: calc(50cqw - var(--discard-pool-pos) - 3*var(--tile-width));
+    top: calc(50cqw - var(--discard-pool-pos) + 3*var(--tile-width) + var(--seat-discard-gap));
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     align-items: flex-start;
     align-content: flex-start;
+    transform-origin:
+        calc(3*var(--tile-width))
+        calc(-1*var(--seat-discard-gap) - 3*var(--tile-width));
     transform-style: preserve-3d;
 }

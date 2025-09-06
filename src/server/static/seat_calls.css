@@ -19,22 +19,6 @@
     transform-style: preserve-3d;
 }
 
-.seat_calls.position_0 {
-    transform: rotate(0deg);
-}
-
-.seat_calls.position_1 {
-    transform: rotate(-90deg);
-}
-
-.seat_calls.position_2 {
-    transform: rotate(180deg);
-}
-
-.seat_calls.position_3 {
-    transform: rotate(90deg);
-}
-
 .seat_calls .call {
     display: flex;
     flex-direction: row;

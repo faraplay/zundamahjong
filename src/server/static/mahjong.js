@@ -215,6 +215,20 @@ function createHistoryEntryElement(history_entry) {
     return history_item;
 }
 
+function createSeatDiscardsElement(seat, seat_discard_tiles) {
+    const seat_discards_item = document.createElement("div");
+    seat_discards_item.classList.add("seat_discards");
+    const seat_item_title = document.createElement('h4');
+    seat_item_title.textContent = `Player ${seat}`;
+    seat_discards_item.appendChild(seat_item_title);
+
+    for (const tile of seat_discard_tiles) {
+        tile_item = createTableTileElement(tile);
+        seat_discards_item.appendChild(tile_item);
+    }
+    return seat_discards_item;
+}
+
 function createCallElement(call) {
     const call_item = document.createElement("span");
     call_item.classList.add('call');
@@ -393,8 +407,18 @@ socket.on('round_info', (info) => {
     tiles_left_indicator.textContent = `${info.tiles_left} tiles left`;
     history_list.replaceChildren(...info.history.map(createHistoryEntryElement));
 
-    discard_items = info.discards.map(createTableTileElement);
-    discard_pool.replaceChildren(...discard_items);
+    // discard_items = info.discards.map(createTableTileElement);
+    const seat_discard_items = []
+    for (var seat=0; seat<4; ++seat) {
+        const seat_discard_tiles =
+            info.discards.filter(discard => discard.seat == seat)
+            .map(discard => discard.tile);
+        seat_discard_items.push(createSeatDiscardsElement(seat, seat_discard_tiles))
+    }
+    for (var i=0; i<4; ++i) {
+        seat_discard_items[(info.seat + i) % 4].classList.add(`position_${i}`);
+    }
+    discard_pool.replaceChildren(...seat_discard_items);
 
     seat_calls = info.seat_calls.map(createPlayerCallsElement);
     for (var i=0; i<4; ++i) {
@@ -405,7 +429,7 @@ socket.on('round_info', (info) => {
 
     hand_div.replaceChildren(...info.hand.map(createHandTileButtonElement));
 
-    last_discard = info.discards.at(-1);
+    last_discard = info.discards.at(-1).tile;
     createAllActionElements(info.actions, last_discard);
     if (info.action_selected) {
         disableActions();
