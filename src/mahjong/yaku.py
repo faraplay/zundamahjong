@@ -165,7 +165,6 @@ class YakuCalculator:
         ]
         tile_counter = Counter(self._hand_tiles)
         tile_counter.subtract(model_tiles)
-        print(-tile_counter)
         return int(len(-tile_counter) == 0)
 
     @_register_yaku("ALL_RUNS", "All Runs", 1)
