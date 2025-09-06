@@ -1,25 +1,32 @@
+from pydantic import BaseModel
+
 from collections import deque
 from collections.abc import Sequence
 
 from .tile import Tile
 
 
+class Discard(BaseModel):
+    seat: int
+    tile: Tile
+
+
 class DiscardPool:
     def __init__(self):
-        self._tiles: deque[Tile] = deque()
+        self._discards: deque[Discard] = deque()
 
     @property
-    def tiles(self) -> Sequence[Tile]:
-        return self._tiles
+    def discards(self) -> Sequence[Discard]:
+        return self._discards
 
-    def append(self, tile: Tile):
-        self._tiles.append(tile)
+    def append(self, seat: int, tile: Tile):
+        self._discards.append(Discard(seat=seat, tile=tile))
 
     def pop(self):
-        return self._tiles.pop()
+        return self._discards.pop()
 
     def peek(self):
         try:
-            return self._tiles[-1]
+            return self._discards[-1]
         except IndexError:
             return 0

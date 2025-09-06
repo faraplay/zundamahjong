@@ -13,7 +13,7 @@ class RoundTest(unittest.TestCase):
         round = Round(tiles=test_deck1)
         self.assertEqual(round.current_seat, 0)
         self.assertEqual(round.status, RoundStatus.PLAY)
-        self.assertSequenceEqual(round.discard_pool, [])
+        self.assertSequenceEqual(round.discard_tiles, [])
         self.assertSequenceEqual(
             round.history,
             [
@@ -43,7 +43,7 @@ class RoundTest(unittest.TestCase):
     def test_discard_pool(self):
         round = Round(tiles=test_deck1)
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=17))
-        self.assertSequenceEqual(round.discard_pool, [17])
+        self.assertSequenceEqual(round.discard_tiles, [17])
 
     def test_discard_hand(self):
         round = Round(tiles=test_deck1)
@@ -69,7 +69,7 @@ class RoundTest(unittest.TestCase):
             round.get_calls(1), [Call(call_type=CallType.CHI, tiles=[5, 6, 7])]
         )
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
-        self.assertSequenceEqual(round.discard_pool, [2])
+        self.assertSequenceEqual(round.discard_tiles, [2])
 
     def test_chi_b(self):
         round = Round(tiles=test_deck1)
@@ -80,7 +80,7 @@ class RoundTest(unittest.TestCase):
             round.get_calls(1), [Call(call_type=CallType.CHI, tiles=[4, 5, 6])]
         )
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
-        self.assertSequenceEqual(round.discard_pool, [2])
+        self.assertSequenceEqual(round.discard_tiles, [2])
 
     def test_chi_c(self):
         round = Round(tiles=test_deck1)
@@ -91,7 +91,7 @@ class RoundTest(unittest.TestCase):
             round.get_calls(1), [Call(call_type=CallType.CHI, tiles=[3, 4, 5])]
         )
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
-        self.assertSequenceEqual(round.discard_pool, [2])
+        self.assertSequenceEqual(round.discard_tiles, [2])
 
     def test_pon(self):
         round = Round(tiles=test_deck1)
@@ -102,7 +102,7 @@ class RoundTest(unittest.TestCase):
             round.get_calls(1), [Call(call_type=CallType.PON, tiles=[9, 9, 9])]
         )
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
-        self.assertSequenceEqual(round.discard_pool, [2])
+        self.assertSequenceEqual(round.discard_tiles, [2])
 
     def test_pon_change_turn(self):
         round = Round(tiles=test_deck1)
@@ -115,7 +115,7 @@ class RoundTest(unittest.TestCase):
             round.get_calls(0), [Call(call_type=CallType.PON, tiles=[21, 21, 21])]
         )
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=2))
-        self.assertSequenceEqual(round.discard_pool, [1, 2])
+        self.assertSequenceEqual(round.discard_tiles, [1, 2])
 
     def test_open_kan(self):
         round = Round(tiles=test_deck1)
@@ -126,7 +126,7 @@ class RoundTest(unittest.TestCase):
             round.get_calls(1), [Call(call_type=CallType.OPEN_KAN, tiles=[9, 9, 9, 9])]
         )
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
-        self.assertSequenceEqual(round.discard_pool, [2])
+        self.assertSequenceEqual(round.discard_tiles, [2])
 
     def test_open_kan_change_turn(self):
         round = Round(tiles=test_deck1)
@@ -140,7 +140,7 @@ class RoundTest(unittest.TestCase):
             [Call(call_type=CallType.OPEN_KAN, tiles=[21, 21, 21, 21])],
         )
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=2))
-        self.assertSequenceEqual(round.discard_pool, [1, 2])
+        self.assertSequenceEqual(round.discard_tiles, [1, 2])
 
     def test_add_kan(self):
         round = Round(tiles=test_deck1)
@@ -157,7 +157,7 @@ class RoundTest(unittest.TestCase):
         )
         round.do_action(1, Action(action_type=ActionType.NOTHING))
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
-        self.assertSequenceEqual(round.discard_pool, [1, 2])
+        self.assertSequenceEqual(round.discard_tiles, [1, 2])
 
     def test_closed_kan(self):
         round = Round(tiles=test_deck1)
@@ -175,7 +175,7 @@ class RoundTest(unittest.TestCase):
         )
         round.do_action(2, Action(action_type=ActionType.NOTHING))
         round.do_action(2, Action(action_type=ActionType.DISCARD, tile=13))
-        self.assertSequenceEqual(round.discard_pool, [1, 2, 13])
+        self.assertSequenceEqual(round.discard_tiles, [1, 2, 13])
 
     def test_deck_2_start_hands(self):
         round = Round(tiles=test_deck2)

@@ -102,8 +102,12 @@ class Round:
         return self._status
 
     @property
-    def discard_pool(self):
-        return self._discard_pool.tiles
+    def discards(self):
+        return self._discard_pool.discards
+
+    @property
+    def discard_tiles(self):
+        return [discard.tile for discard in self._discard_pool.discards]
 
     @property
     def wall_count(self):
@@ -129,7 +133,7 @@ class Round:
                 hand.tiles,
                 [call.tiles for call in hand.calls],
             )
-        print("Discards:", self._discard_pool.tiles)
+        print("Discards:", self.discard_tiles)
 
     def allowed_actions(self, seat: int):
         return _allowed_actions_funcs[self._status](
@@ -287,7 +291,7 @@ class Round:
     @_register_do_action(ActionType.DISCARD)
     def _discard(self, seat: int, tile: Tile):
         self._hands[seat].discard(tile)
-        self._discard_pool.append(tile)
+        self._discard_pool.append(seat, tile)
         if self.wall_count > self._options.end_wall_count:
             self._status = RoundStatus.DISCARDED
         else:
