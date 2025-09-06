@@ -70,6 +70,14 @@ class YakuCalculator:
                 yaku_mults[yaku] = yaku_mult
         return yaku_mults
 
+    @_register_yaku("BLESSING_OF_HEAVEN", "Blessing of Heaven", 20)
+    def _blessing_of_heaven(self):
+        return int(self._win.is_tenhou)
+
+    @_register_yaku("BLESSING_OF_EARTH", "Blessing of Earth", 19)
+    def _blessing_of_earth(self):
+        return int(self._win.is_chiihou)
+
     @_register_yaku("THIRTEEN_ORPHANS", "Thirteen Orphans", 13)
     def _thirteen_orphans(self):
         return int(

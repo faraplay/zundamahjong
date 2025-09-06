@@ -531,3 +531,31 @@ class RoundTest(unittest.TestCase):
         win = round.win_info
         self.assertEqual(win.after_flower_count, 1)
         self.assertEqual(win.after_kan_count, 1)
+
+    def test_tenhou(self):
+        round = Round(tiles=test_deck_kan_tenhou)
+        round.do_action(0, Action(action_type=ActionType.TSUMO))
+        self.assertTrue(round.win_info.is_tenhou)
+
+    def test_not_tenhou_after_call(self):
+        round = Round(tiles=test_deck_kan_tenhou)
+        round.do_action(0, Action(action_type=ActionType.CLOSED_KAN, tile=16))
+        round.do_action(0, Action(action_type=ActionType.NOTHING))
+        round.do_action(0, Action(action_type=ActionType.TSUMO))
+        self.assertFalse(round.win_info.is_tenhou)
+
+    def test_chiihou(self):
+        round = Round(tiles=test_deck_kan_tenhou)
+        round.do_action(0, Action(action_type=ActionType.DISCARD, tile=11))
+        round.do_action(1, Action(action_type=ActionType.DRAW))
+        round.do_action(1, Action(action_type=ActionType.TSUMO))
+        self.assertTrue(round.win_info.is_chiihou)
+
+    def test_not_chiihou_after_call(self):
+        round = Round(tiles=test_deck_kan_tenhou)
+        round.do_action(0, Action(action_type=ActionType.CLOSED_KAN, tile=16))
+        round.do_action(0, Action(action_type=ActionType.NOTHING))
+        round.do_action(0, Action(action_type=ActionType.DISCARD, tile=11))
+        round.do_action(1, Action(action_type=ActionType.DRAW))
+        round.do_action(1, Action(action_type=ActionType.TSUMO))
+        self.assertFalse(round.win_info.is_chiihou)

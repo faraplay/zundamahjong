@@ -657,3 +657,39 @@ class YakuTest(TestCase):
             yaku_mults,
             {"HALF_OUTSIDE_HAND": 1, "ALL_TRIPLETS": 1, "ALL_TERMINALS_AND_HONOURS": 1},
         )
+
+    def test_blessing_of_heaven(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=0,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+            ],
+            is_tenhou=True,
+        )
+        self.assertDictEqual(yaku_mults, {"NO_CALLS": 1, "BLESSING_OF_HEAVEN": 1})
+
+    def test_blessing_of_earth(self):
+        yaku_mults = self.get_yaku_mults(
+            win_seat=1,
+            lose_seat=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.FLOWER, tiles=[43]),
+            ],
+            is_chiihou=True,
+        )
+        self.assertDictEqual(yaku_mults, {"NO_CALLS": 1, "BLESSING_OF_EARTH": 1})

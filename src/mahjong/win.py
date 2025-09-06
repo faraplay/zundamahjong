@@ -15,3 +15,5 @@ class Win(BaseModel):
     is_chankan: bool = False
     is_haitei: bool = False
     is_houtei: bool = False
+    is_tenhou: bool = False
+    is_chiihou: bool = False

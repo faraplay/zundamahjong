@@ -21,6 +21,17 @@ class ActionType(IntEnum):
     TSUMO = 12
 
 
+call_action_types = {
+    ActionType.CHI_A,
+    ActionType.CHI_B,
+    ActionType.CHI_C,
+    ActionType.PON,
+    ActionType.OPEN_KAN,
+    ActionType.ADD_KAN,
+    ActionType.CLOSED_KAN,
+}
+
+
 class Action(BaseModel, frozen=True):
     action_type: ActionType
     tile: Tile = 0

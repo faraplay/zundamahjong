@@ -7,7 +7,7 @@ from .tile import Tile, is_flower
 from .deck import Deck
 from .discard_pool import DiscardPool
 from .hand import Hand
-from .action import Action, ActionType, ActionSet
+from .action import Action, ActionType, ActionSet, call_action_types
 from .win import Win
 from .game_options import GameOptions
 
@@ -388,6 +388,17 @@ class Round:
             else:
                 break
         is_haitei = self.wall_count <= self._options.end_wall_count
+        is_tenhou = False
+        is_chiihou = False
+        if not any(
+            (action.action_type in call_action_types)
+            or (action.action_type == ActionType.DISCARD and history_seat == seat)
+            for history_seat, action in self._history
+        ):
+            if seat == 0:
+                is_tenhou = True
+            else:
+                is_chiihou = True
         self._win_info = Win(
             win_seat=seat,
             lose_seat=None,
@@ -397,5 +408,7 @@ class Round:
             after_flower_count=after_flower_count,
             after_kan_count=after_kan_count,
             is_haitei=is_haitei,
+            is_tenhou=is_tenhou,
+            is_chiihou=is_chiihou,
         )
         self._status = RoundStatus.END
