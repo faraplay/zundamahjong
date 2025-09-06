@@ -3,7 +3,7 @@ import unittest
 from src.mahjong.form_hand import is_winning, formed_hand_possibilities
 
 
-class WinTest(unittest.TestCase):
+class FormHandTest(unittest.TestCase):
     def test_wrong_size_hand(self):
         tiles = [1, 1, 1, 1]
         self.assertFalse(is_winning(tiles))
