@@ -2,24 +2,24 @@
     display: contents;
 }
 
-.seat_calls {
-    --seat-calls-right: 16cqw;
-    --seat-calls-bottom: 11cqw;
+.player_calls {
+    --player-calls-right: 16cqw;
+    --player-calls-bottom: 11cqw;
     width: 0;
     height: 0;
     position: absolute;
-    right: var(--seat-calls-right);
-    bottom: var(--seat-calls-bottom);
+    right: var(--player-calls-right);
+    bottom: var(--player-calls-bottom);
     display: flex;
     flex-direction: row-reverse;
     align-items: flex-end;
     transform-origin: 
-        calc(var(--seat-calls-right) - 50cqw)
-        calc(var(--seat-calls-bottom) - 50cqw);
+        calc(var(--player-calls-right) - 50cqw)
+        calc(var(--player-calls-bottom) - 50cqw);
     transform-style: preserve-3d;
 }
 
-.seat_calls .call {
+.player_calls .call {
     display: flex;
     flex-direction: row;
     transform-style: preserve-3d;

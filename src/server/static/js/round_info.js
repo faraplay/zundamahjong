@@ -13,7 +13,7 @@ const seat_winds = ['東', '南', '西', '北']
 
 function setScores(scores) {
     for (var player = 0; player < 4; ++player) {
-        score_elements[player].innerHTML = `<h4>Player ${player}</h4>${scores[player]}`;
+        score_elements[player].innerHTML = `${scores[player]}`;
     }
 }
 
@@ -26,8 +26,8 @@ function setRoundInfo(round_info) {
 
     history_list.replaceChildren(...round_info.history.map(createHistoryEntryElement));
 
-    setDiscards(round_info.seat, round_info.discards);
-    setCalls(round_info.seat, round_info.calls);
+    setDiscards(round_info.discards);
+    setCalls(round_info.calls);
     setHand(round_info.hand);
 
     if (round_info.discards.length > 0) {

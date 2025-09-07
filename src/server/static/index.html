@@ -13,7 +13,7 @@
   <link href="style/actions.css" rel="stylesheet" />
   <link href="style/table.css" rel="stylesheet" />
   <link href="style/table_center_info.css" rel="stylesheet" />
-  <link href="style/seat_calls.css" rel="stylesheet" />
+  <link href="style/player_calls.css" rel="stylesheet" />
   <link href="style/discard_pool.css" rel="stylesheet" />
   <title>Mahjong</title>
 </head>
@@ -29,7 +29,7 @@
     <button>Send</button>
   </form>
   <p id="player_indicator">Select a player...</p>
-  <div id="round_info">
+  <div id="round_info" class="me_player_0">
     <div id="straight_view">
       <h3>Your hand</h3>
       <div id="hand"></div>
@@ -39,56 +39,58 @@
     </div>
     <div id="table">
       <div id="table_center_info">
+        <h4>Current round</h4>
         <p id="wind_seat_round">東1</p>
+        <h4>Tiles left</h4>
         <p id="tiles_left"></p>
+        <h3>Scores</h3>
         <div id="scores">
-          <h3>Scores</h3>
+          <h4>Player 0</h4>
           <div class="score player_0">
-            <h4>Player 0</h4>
             100
           </div>
+          <h4>Player 1</h4>
           <div class="score player_1">
-            <h4>Player 1</h4>
             200
           </div>
+          <h4>Player 2</h4>
           <div class="score player_2">
-            <h4>Player 2</h4>
             300
           </div>
+          <h4>Player 3</h4>
           <div class="score player_3">
-            <h4>Player 3</h4>
             -600
           </div>
         </div>
       </div>
       <h3>Calls</h3>
       <div id="calls_list">
-        <div class="seat_calls player_0">
-          <h4>Player 0</h4>
+        <h4>Player 0</h4>
+        <div class="player_calls player_0">
         </div>
-        <div class="seat_calls player_1">
-          <h4>Player 1</h4>
+        <h4>Player 1</h4>
+        <div class="player_calls player_1">
         </div>
-        <div class="seat_calls player_2">
-          <h4>Player 2</h4>
+        <h4>Player 2</h4>
+        <div class="player_calls player_2">
         </div>
-        <div class="seat_calls player_3">
-          <h4>Player 3</h4>
+        <h4>Player 3</h4>
+        <div class="player_calls player_3">
         </div>
       </div>
       <h3>Discards</h3>
       <div id="discard_pool">
-        <div class="seat_discards player_0">
-          <h4>Player 0</h4>
+        <h4>Player 0</h4>
+        <div class="player_discards player_0">
         </div>
-        <div class="seat_discards player_1">
-          <h4>Player 1</h4>
+        <h4>Player 1</h4>
+        <div class="player_discards player_1">
         </div>
-        <div class="seat_discards player_2">
-          <h4>Player 2</h4>
+        <h4>Player 2</h4>
+        <div class="player_discards player_2">
         </div>
-        <div class="seat_discards player_3">
-          <h4>Player 3</h4>
+        <h4>Player 3</h4>
+        <div class="player_discards player_3">
         </div>
       </div>
     </div>

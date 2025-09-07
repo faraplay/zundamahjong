@@ -8,7 +8,7 @@
     transform-style: preserve-3d;
 }
 
-#discard_pool .seat_discards {
+#discard_pool .player_discards {
     --seat-discard-gap: 1cqw;
     width: calc(6*var(--tile-width) + 1cqw);
     height: calc(3 * (4/3) * var(--tile-width));
@@ -26,6 +26,10 @@
     transform-style: preserve-3d;
 }
 
-#discard_pool .seat_discards.position_0 {
+.me_player_0 #discard_pool .player_discards.player_0,
+.me_player_1 #discard_pool .player_discards.player_1,
+.me_player_2 #discard_pool .player_discards.player_2,
+.me_player_3 #discard_pool .player_discards.player_3
+{
     top: calc(52cqw - var(--discard-pool-pos) + 3*var(--tile-width) + var(--seat-discard-gap));
 }
