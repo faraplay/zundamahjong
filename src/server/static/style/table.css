@@ -9,20 +9,36 @@
     transform-style: preserve-3d;
 }
 
-.position_0 {
-    transform: rotate(0deg);
+.me_player_0 {
+    --me-player: 0;
 }
 
-.position_1 {
-    transform: rotate(-90deg);
+.me_player_1 {
+    --me-player: 1;
 }
 
-.position_2 {
-    transform: rotate(180deg);
+.me_player_2 {
+    --me-player: 2;
 }
 
-.position_3 {
-    transform: rotate(90deg);
+.me_player_3 {
+    --me-player: 3;
+}
+
+.player_0 {
+    transform: rotate(calc(0deg + var(--me-player) * 90deg));
+}
+
+.player_1 {
+    transform: rotate(calc(-90deg + var(--me-player) * 90deg));
+}
+
+.player_2 {
+    transform: rotate(calc(-180deg + var(--me-player) * 90deg));
+}
+
+.player_3 {
+    transform: rotate(calc(-270deg + var(--me-player) * 90deg));
 }
 
 #table .tile_div {

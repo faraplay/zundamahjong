@@ -19,8 +19,8 @@
 </head>
 
 <body>
-  <form id="set_seat_form" action="">
-    <select id="set_seat_select">
+  <form id="set_player_form" action="">
+    <select id="set_player_select">
       <option value="0">0</option>
       <option value="1">1</option>
       <option value="2">2</option>
@@ -28,7 +28,7 @@
     </select>
     <button>Send</button>
   </form>
-  <p id="seat_indicator">Select a seat...</p>
+  <p id="player_indicator">Select a player...</p>
   <div id="round_info">
     <div id="straight_view">
       <h3>Your hand</h3>
@@ -43,19 +43,19 @@
         <p id="tiles_left"></p>
         <div id="scores">
           <h3>Scores</h3>
-          <div class="score position_0">
+          <div class="score player_0">
             <h4>Player 0</h4>
             100
           </div>
-          <div class="score position_1">
+          <div class="score player_1">
             <h4>Player 1</h4>
             200
           </div>
-          <div class="score position_2">
+          <div class="score player_2">
             <h4>Player 2</h4>
             300
           </div>
-          <div class="score position_3">
+          <div class="score player_3">
             <h4>Player 3</h4>
             -600
           </div>
@@ -63,31 +63,31 @@
       </div>
       <h3>Calls</h3>
       <div id="calls_list">
-        <div class="seat_calls position_0">
+        <div class="seat_calls player_0">
           <h4>Player 0</h4>
         </div>
-        <div class="seat_calls position_1">
+        <div class="seat_calls player_1">
           <h4>Player 1</h4>
         </div>
-        <div class="seat_calls position_2">
+        <div class="seat_calls player_2">
           <h4>Player 2</h4>
         </div>
-        <div class="seat_calls position_3">
+        <div class="seat_calls player_3">
           <h4>Player 3</h4>
         </div>
       </div>
       <h3>Discards</h3>
       <div id="discard_pool">
-        <div class="seat_discards position_0">
+        <div class="seat_discards player_0">
           <h4>Player 0</h4>
         </div>
-        <div class="seat_discards position_1">
+        <div class="seat_discards player_1">
           <h4>Player 1</h4>
         </div>
-        <div class="seat_discards position_2">
+        <div class="seat_discards player_2">
           <h4>Player 2</h4>
         </div>
-        <div class="seat_discards position_3">
+        <div class="seat_discards player_3">
           <h4>Player 3</h4>
         </div>
       </div>

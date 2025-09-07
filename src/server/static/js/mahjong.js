@@ -114,8 +114,8 @@ const tile_images = {
     48: "mahjongtiles/flower/04.svg",
 }
 
-const set_seat_form = document.getElementById('set_seat_form');
-const set_seat_select = document.getElementById('set_seat_select');
+const set_player_form = document.getElementById('set_player_form');
+const set_player_select = document.getElementById('set_player_select');
 
 const win_info_div = document.getElementById('win_info');
 const win_seat_indicator = document.getElementById('win_seat');
@@ -123,10 +123,10 @@ const win_hand_div = document.getElementById('win_hand');
 const win_calls_div = document.getElementById('win_calls');
 const new_round_button = document.getElementById('new_round');
 
-set_seat_form.addEventListener('submit', (e) => {
+set_player_form.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (set_seat_select.value) {
-        socket.emit('set_seat', set_seat_select.value);
+    if (set_player_select.value) {
+        socket.emit('set_seat', set_player_select.value);
     }
 });
 

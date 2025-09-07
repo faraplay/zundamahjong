@@ -57,6 +57,7 @@ def get_win_info():
 
 def get_round_info(seat: int):
     return {
+        "player": seat,
         "seat": seat,
         "wind_round": 0,
         "seat_round": 0,
