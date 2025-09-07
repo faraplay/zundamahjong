@@ -60,7 +60,7 @@ def get_round_info(seat: int):
         "seat": seat,
         "wind_round": 0,
         "seat_round": 0,
-        "tiles_left": round.wall_count,
+        "tiles_left": round.tiles_left,
         "player_scores": [100, 200, 300, -600],
         "current_seat": round.current_seat,
         "status": round.status.value,

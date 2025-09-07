@@ -114,6 +114,10 @@ class Round:
         return len(self._deck.tiles)
 
     @property
+    def tiles_left(self):
+        return len(self._deck.tiles) - self._options.end_wall_count
+
+    @property
     def history(self) -> Sequence[tuple[int, Action]]:
         return self._history
 
