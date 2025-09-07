@@ -1,11 +1,11 @@
 #table {
-    --tile-width: 4cqw;
+    --tile-width: 3cqw;
     width: 100cqw;
     height: 100cqw;
     position: absolute;
     top: calc(50% - 50cqw);
     background-color: mediumaquamarine;
-    transform: perspective(300cqw) translate3d(0cqw, -4cqw, 0cqw) rotateX(53deg);
+    transform: perspective(130cqw) rotateX(45deg) translateY(-8cqw);
     transform-style: preserve-3d;
 }
 

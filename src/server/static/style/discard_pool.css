@@ -9,7 +9,7 @@
 }
 
 #discard_pool .seat_discards {
-    --seat-discard-gap: 2cqw;
+    --seat-discard-gap: 1cqw;
     width: calc(6*var(--tile-width) + 1cqw);
     height: calc(3 * (4/3) * var(--tile-width));
     position: absolute;
