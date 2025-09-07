@@ -65,12 +65,8 @@ def get_round_info(seat: int):
             for action in round.history
         ],
         "discards": [discard.model_dump() for discard in round.discards],
-        "seat_calls": [
-            {
-                "seat": seat,
-                "calls": [call.model_dump() for call in round.get_calls(seat)],
-            }
-            for seat in range(4)
+        "calls": [
+            [call.model_dump() for call in round.get_calls(seat)] for seat in range(4)
         ],
         "actions": [
             action.model_dump() for action in round.allowed_actions(seat).actions

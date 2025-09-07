@@ -117,16 +117,6 @@ const tile_images = {
 const set_seat_form = document.getElementById('set_seat_form');
 const set_seat_select = document.getElementById('set_seat_select');
 
-const round_info_div = document.getElementById('round_info');
-const seat_indicator = document.getElementById('seat_indicator');
-const tiles_left_indicator = document.getElementById('tiles_left');
-const history_list = document.getElementById('history_list');
-const discard_pool = document.getElementById('discard_pool');
-const calls_list = document.getElementById('calls_list');
-const hand_div = document.getElementById('hand');
-const actions_div = document.getElementById('actions');
-const actions_disambiguation_div = document.getElementById('actions_disambiguation');
-
 const win_info_div = document.getElementById('win_info');
 const win_seat_indicator = document.getElementById('win_seat');
 const win_hand_div = document.getElementById('win_hand');
@@ -160,19 +150,6 @@ function createTileElement(tile) {
     return item;
 }
 
-function createTableTileElement(tile) {
-    const item = createTileElement(tile);
-    item.firstChild.classList.add('tile_face');
-    for (const class_name of ['tile_left', 'tile_right', 'tile_top', 'tile_bottom']) {
-        const side_item = document.createElement('span');
-        side_item.classList.add('tile_face');
-        side_item.classList.add('tile_side');
-        side_item.classList.add(class_name);
-        item.appendChild(side_item);
-    }
-    item.appendChild(item.firstChild)
-    return item;
-}
 
 function createStraightTileElement(tile) {
     const tile_item = createTileElement(tile);
@@ -184,21 +161,6 @@ function createStraightTileElement(tile) {
     tile_item.appendChild(tile_middle_item);
     tile_item.appendChild(tile_item.firstChild);
     return tile_item;
-}
-
-function createHandTileButtonElement(tile) {
-    const button = document.createElement('button');
-    button.classList.add('hand_tile_button');
-    const tile_item = createStraightTileElement(tile);
-    button.appendChild(tile_item);
-    button.addEventListener('click', (e) => {
-        e.preventDefault();
-        socket.emit('action', {
-            'action_type': ACTION_DISCARD,
-            'tile': tile
-        })
-    });
-    return button;
 }
 
 function createHistoryEntryElement(history_entry) {
@@ -215,20 +177,6 @@ function createHistoryEntryElement(history_entry) {
     return history_item;
 }
 
-function createSeatDiscardsElement(seat, seat_discard_tiles) {
-    const seat_discards_item = document.createElement("div");
-    seat_discards_item.classList.add("seat_discards");
-    const seat_item_title = document.createElement('h4');
-    seat_item_title.textContent = `Player ${seat}`;
-    seat_discards_item.appendChild(seat_item_title);
-
-    for (const tile of seat_discard_tiles) {
-        tile_item = createTableTileElement(tile);
-        seat_discards_item.appendChild(tile_item);
-    }
-    return seat_discards_item;
-}
-
 function createCallElement(call) {
     const call_item = document.createElement("span");
     call_item.classList.add('call');
@@ -240,215 +188,3 @@ function createCallElement(call) {
     )
     return call_item
 }
-
-function createTableCallElement(call) {
-    const call_item = document.createElement("span");
-    call_item.classList.add('call');
-    const call_type_item = document.createElement("h4");
-    call_type_item.textContent = call_types[call.call_type];
-    call_item.appendChild(call_type_item);
-    for (const tile of call.tiles) {
-        tile_item = createTableTileElement(tile);
-        call_item.appendChild(tile_item)
-    }
-    return call_item
-}
-
-function createPlayerCallsElement(seat_calls) {
-    const seat_item = document.createElement('div');
-    seat_item.classList.add('seat_calls');
-    const seat_item_title = document.createElement('h4');
-    seat_item_title.textContent = `Player ${seat_calls.seat}`;
-    seat_item.appendChild(seat_item_title);
-
-    for (const call of seat_calls.calls) {
-        call_item = createTableCallElement(call);
-        seat_item.appendChild(call_item);
-    }
-    return seat_item;
-}
-
-function createDisambiguationActionButtonElement(action, last_discard) {
-    const action_item = document.createElement('button');
-    action_item.classList.add('disambig_action_button')
-    switch (action.action_type) {
-        case ACTION_CHI_A:
-            for (const tile of [last_discard, last_discard+1, last_discard+2]) {
-                action_item.appendChild(createStraightTileElement(tile))
-            }
-            break;
-        case ACTION_CHI_B:
-            for (const tile of [last_discard-1, last_discard, last_discard+1]) {
-                action_item.appendChild(createStraightTileElement(tile))
-            }
-            break;
-        case ACTION_CHI_C:
-            for (const tile of [last_discard-2, last_discard-1, last_discard]) {
-                action_item.appendChild(createStraightTileElement(tile))
-            }
-            break;
-        case ACTION_ADD_KAN:
-        case ACTION_CLOSED_KAN:
-        case ACTION_FLOWER:
-            action_item.appendChild(createStraightTileElement(action.tile))
-            break;
-    }
-    action_item.addEventListener('click',
-        (e) => {
-            e.preventDefault();
-            socket.emit('action', action)
-        }
-    )
-    return action_item;
-}
-
-function createActionSupertypeElement(action_supertype) {
-    const action_supertype_item = document.createElement('button');
-    action_supertype_item.classList.add('action_button');
-    action_supertype_item.classList.add(`action_${action_supertype}`);
-    const supertype = action_supertype_strings[action_supertype];
-    action_supertype_item.dataset.text = supertype;
-    const text_item = document.createElement('div');
-    text_item.classList.add('action_button_text');
-    text_item.textContent = supertype;
-    action_supertype_item.appendChild(text_item);
-    return action_supertype_item;
-}
-
-function createActionDisambiguationElement(actions, last_discard) {
-    const disambig_item = document.createElement('div');
-    disambig_item.classList.add('hidden');
-    disambig_item.classList.add('disambig_div');
-    const text_item = document.createElement('div');
-    text_item.classList.add('disambig_text');
-    text_item.textContent = "Select an option";
-    disambig_item.appendChild(text_item);
-    if (actions[0].action_type <= ACTION_CHI_C) {
-        actions.sort((a,b) => b.action_type - a.action_type);
-    } else {
-        actions.sort((a,b) => a.tile - b.tile);
-    }
-    for (const action of actions) {
-        disambig_item.appendChild(
-            createDisambiguationActionButtonElement(action, last_discard)
-        );
-    }
-    return disambig_item;
-}
-
-function createAllActionElements(actions, last_discard) {
-    actions_div.replaceChildren();
-    actions_div.classList.remove('hidden');
-    actions_disambiguation_div.replaceChildren();
-    if (actions.length == 1) {
-        return;
-    }
-    const action_supertypes_dict = {};
-    for (const action of actions) {
-        const action_supertype = action_supertypes[action.action_type];
-        if (action_supertype == 0) {
-            continue;
-        }
-        if (!action_supertypes_dict[action_supertype]) {
-            action_supertypes_dict[action_supertype] = [];
-        }
-        action_supertypes_dict[action_supertype].push(action);
-    }
-
-    const keys = Object.keys(action_supertypes_dict).sort((a,b) => b-a);
-    for (const key of keys) {
-        const action_supertype_item = createActionSupertypeElement(key);
-        const supertype_actions = action_supertypes_dict[key];
-        if (supertype_actions.length > 1) {
-            const disambig_item =
-                createActionDisambiguationElement(supertype_actions, last_discard);
-            actions_disambiguation_div.appendChild(disambig_item);
-            action_supertype_item.addEventListener('click',
-                (e) => {
-                    e.preventDefault();
-                    actions_div.classList.add('hidden');
-                    disambig_item.classList.remove('hidden');
-                }
-            )
-        } else {
-            const action = supertype_actions[0];
-            action_supertype_item.addEventListener('click',
-                (e) => {
-                    e.preventDefault();
-                    socket.emit('action', action)
-                }
-            )
-        }
-        actions_div.appendChild(action_supertype_item);
-    }
-    // for (var i=7; i>=1; --i) {
-    //     actions_div.appendChild(createActionSupertypeElement(i));
-    // }
-}
-
-function disableHandDiscards() {
-    for (const button of hand_div.children) {
-        button.disabled = true;
-    }
-}
-
-function disableActions() {
-    for (const button of actions_div.children) {
-        button.disabled = true;
-    }
-    disableHandDiscards()
-}
-
-socket.on('round_info', (info) => {
-    console.log(info);
-    round_info_div.hidden = false;
-    win_info_div.hidden = true;
-    seat_indicator.textContent = `You are Player ${info.seat}`;
-    tiles_left_indicator.textContent = `${info.tiles_left} tiles left`;
-    history_list.replaceChildren(...info.history.map(createHistoryEntryElement));
-
-    // discard_items = info.discards.map(createTableTileElement);
-    const seat_discard_items = []
-    for (var seat=0; seat<4; ++seat) {
-        const seat_discard_tiles =
-            info.discards.filter(discard => discard.seat == seat)
-            .map(discard => discard.tile);
-        seat_discard_items.push(createSeatDiscardsElement(seat, seat_discard_tiles))
-    }
-    for (var i=0; i<4; ++i) {
-        seat_discard_items[(info.seat + i) % 4].classList.add(`position_${i}`);
-    }
-    discard_pool.replaceChildren(...seat_discard_items);
-
-    seat_calls = info.seat_calls.map(createPlayerCallsElement);
-    for (var i=0; i<4; ++i) {
-        seat_calls[(info.seat + i) % 4].classList.add('seat_calls');
-        seat_calls[(info.seat + i) % 4].classList.add(`position_${i}`);
-    }
-    calls_list.replaceChildren(...seat_calls);
-
-    hand_div.replaceChildren(...info.hand.map(createHandTileButtonElement));
-
-    last_discard = info.discards.at(-1).tile;
-    createAllActionElements(info.actions, last_discard);
-    if (info.action_selected) {
-        disableActions();
-    }
-});
-
-socket.on('win_info', (info) => {
-    console.log(info);
-    round_info_div.hidden = true;
-    win_info_div.hidden = false;
-    if (info) {
-        win_seat_indicator.textContent = `Player ${info.win_seat} wins!`;
-        win_hand_div.replaceChildren(...info.hand.map(createTileElement));
-        win_calls_div.replaceChildren(...info.calls.map(createCallElement));
-    } else {
-        win_seat_indicator.textContent = "The round is a draw..."
-    }
-})
-
-socket.on('action_received', () => {
-    disableActions();
-})
