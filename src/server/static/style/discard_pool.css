@@ -1,5 +1,5 @@
 #discard_pool {
-    --discard-pool-pos: 20cqw;
+    --discard-pool-pos: 50cqw;
     width: calc(100cqw - 2*var(--discard-pool-pos));
     height: calc(100cqw - 2*var(--discard-pool-pos));
     position: absolute;
@@ -24,4 +24,8 @@
         calc(3*var(--tile-width))
         calc(-1*var(--seat-discard-gap) - 3*var(--tile-width));
     transform-style: preserve-3d;
+}
+
+#discard_pool .seat_discards.position_0 {
+    top: calc(52cqw - var(--discard-pool-pos) + 3*var(--tile-width) + var(--seat-discard-gap));
 }

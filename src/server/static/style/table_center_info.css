@@ -1,0 +1,49 @@
+#table_center_info {
+    width: 18cqw;
+    height: 18cqw;
+    position: absolute;
+    left: 41cqw;
+    top: 41cqw;
+    border-radius: 2.5cqw;
+    background-color: lightgray;
+}
+
+#table_center_info #wind_seat_round {
+    width: 6cqw;
+    height: 3cqw;
+    position: absolute;
+    left: 6cqw;
+    top: 6cqw;
+    margin: 0;
+    text-align: center;
+    font-size: 2.5cqw;
+}
+
+#table_center_info #tiles_left {
+    width: 6cqw;
+    height: 3cqw;
+    position: absolute;
+    left: 6cqw;
+    top: 9cqw;
+    margin: 0;
+    text-align: center;
+    font-size: 2.5cqw;
+}
+
+#table_center_info .score {
+    --score-width: 10cqw;
+    --score-height: 2cqw;
+    --border-width: 1px;
+    width: calc(var(--score-width) - 2*var(--border-width));
+    height: calc(var(--score-height) - 2*var(--border-width));
+    position: absolute;
+    left: 4cqw;
+    top: 14cqw;
+    border-radius: 0.6cqw;
+    margin: 0;
+    border: var(--border-width) solid darkblue;
+    transform-origin: 5cqw -5cqw;
+    text-align: center;
+    font-size: 1.5cqw;
+    background-image: radial-gradient(ellipse 90% 70%, aliceblue 50%, lightblue);
+}

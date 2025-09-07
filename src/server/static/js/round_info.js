@@ -5,7 +5,7 @@ const history_list = document.getElementById('history_list');
 
 function setRoundInfo(round_info) {
     seat_indicator.textContent = `You are Player ${round_info.seat}`;
-    tiles_left_indicator.textContent = `${round_info.tiles_left} tiles left`;
+    tiles_left_indicator.textContent = round_info.tiles_left;
     history_list.replaceChildren(...round_info.history.map(createHistoryEntryElement));
 
     setDiscards(round_info.seat, round_info.discards);

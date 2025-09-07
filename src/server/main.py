@@ -58,8 +58,13 @@ def get_win_info():
 def get_round_info(seat: int):
     return {
         "seat": seat,
-        "hand": list(round.get_hand(seat)),
+        "wind_round": 0,
+        "seat_round": 0,
         "tiles_left": round.wall_count,
+        "player_scores": [100, 200, 300, -600],
+        "current_seat": round.current_seat,
+        "status": round.status.value,
+        "hand": list(round.get_hand(seat)),
         "history": [
             {"seat": action[0], "action": action[1].model_dump()}
             for action in round.history

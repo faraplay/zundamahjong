@@ -1,88 +1,112 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap" rel="stylesheet">
-    <link href="style/style.css" rel="stylesheet" />
-    <link href="style/straight_view.css" rel="stylesheet" />
-    <link href="style/hand.css" rel="stylesheet" />
-    <link href="style/actions.css" rel="stylesheet" />
-    <link href="style/table.css" rel="stylesheet" />
-    <link href="style/seat_calls.css" rel="stylesheet" />
-    <link href="style/discard_pool.css" rel="stylesheet" />
-    <title>Mahjong</title>
-  </head>
-  <body>
-    <form id="set_seat_form" action="">
-      <select id="set_seat_select">
-        <option value="0">0</option>
-        <option value="1">1</option>
-        <option value="2">2</option>
-        <option value="3">3</option>
-      </select>
-      <button>Send</button>
-    </form>
-    <p id="seat_indicator">Select a seat...</p>
-    <div id="round_info">
-      <div id="straight_view">
-        <h3>Your hand</h3>
-        <div id="hand"></div>
-        <h3>Actions</h3>
-        <div id="actions"></div>
-        <div id="actions_disambiguation"></div>
-      </div>
-      <div id="table">
-        <h3>Calls</h3>
+
+<head>
+  <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap" rel="stylesheet">
+  <link href="style/style.css" rel="stylesheet" />
+  <link href="style/straight_view.css" rel="stylesheet" />
+  <link href="style/hand.css" rel="stylesheet" />
+  <link href="style/actions.css" rel="stylesheet" />
+  <link href="style/table.css" rel="stylesheet" />
+  <link href="style/table_center_info.css" rel="stylesheet" />
+  <link href="style/seat_calls.css" rel="stylesheet" />
+  <link href="style/discard_pool.css" rel="stylesheet" />
+  <title>Mahjong</title>
+</head>
+
+<body>
+  <form id="set_seat_form" action="">
+    <select id="set_seat_select">
+      <option value="0">0</option>
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+    </select>
+    <button>Send</button>
+  </form>
+  <p id="seat_indicator">Select a seat...</p>
+  <div id="round_info">
+    <div id="straight_view">
+      <h3>Your hand</h3>
+      <div id="hand"></div>
+      <h3>Actions</h3>
+      <div id="actions"></div>
+      <div id="actions_disambiguation"></div>
+    </div>
+    <div id="table">
+      <div id="table_center_info">
+        <p id="wind_seat_round">東1</p>
         <p id="tiles_left"></p>
-        <div id="calls_list">
-          <div class="seat_calls position_0">
-            <h4>Player 0</h4>
-          </div>
-          <div class="seat_calls position_1">
-            <h4>Player 1</h4>
-          </div>
-          <div class="seat_calls position_2">
-            <h4>Player 2</h4>
-          </div>
-          <div class="seat_calls position_3">
-            <h4>Player 3</h4>
-          </div>
+        <h3>Scores</h3>
+        <div class="score position_0">
+          <h4>Player 0</h4>
+          100
         </div>
-        <h3>Discards</h3>
-        <div id="discard_pool">
-          <div class="seat_discards position_0">
-            <h4>Player 0</h4>
-          </div>
-          <div class="seat_discards position_1">
-            <h4>Player 1</h4>
-          </div>
-          <div class="seat_discards position_2">
-            <h4>Player 2</h4>
-          </div>
-          <div class="seat_discards position_3">
-            <h4>Player 3</h4>
-          </div>
+        <div class="score position_1">
+          <h4>Player 1</h4>
+          200
+        </div>
+        <div class="score position_2">
+          <h4>Player 2</h4>
+          300
+        </div>
+        <div class="score position_3">
+          <h4>Player 3</h4>
+          -600
         </div>
       </div>
-      <div>
-        <h3>History</h3>
-        <ul id="history_list"></ul>
+      <h3>Calls</h3>
+      <div id="calls_list">
+        <div class="seat_calls position_0">
+          <h4>Player 0</h4>
+        </div>
+        <div class="seat_calls position_1">
+          <h4>Player 1</h4>
+        </div>
+        <div class="seat_calls position_2">
+          <h4>Player 2</h4>
+        </div>
+        <div class="seat_calls position_3">
+          <h4>Player 3</h4>
+        </div>
+      </div>
+      <h3>Discards</h3>
+      <div id="discard_pool">
+        <div class="seat_discards position_0">
+          <h4>Player 0</h4>
+        </div>
+        <div class="seat_discards position_1">
+          <h4>Player 1</h4>
+        </div>
+        <div class="seat_discards position_2">
+          <h4>Player 2</h4>
+        </div>
+        <div class="seat_discards position_3">
+          <h4>Player 3</h4>
+        </div>
       </div>
     </div>
-    <div id="win_info" hidden>
-      <p id="win_seat"></p>
-      <div id="win_hand"></div>
-      <div id="win_calls"></div>
-      <button id="new_round">Start new round</button>
+    <div>
+      <h3>History</h3>
+      <ul id="history_list"></ul>
     </div>
-    <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
-    <script src="js/mahjong.js"></script>
-    <script src="js/hand.js"></script>
-    <script src="js/actions.js"></script>
-    <script src="js/table.js"></script>
-    <script src="js/round_info.js"></script>
-    <script src="js/main.js"></script>
-  </body>
+  </div>
+  <div id="win_info" hidden>
+    <p id="win_seat"></p>
+    <div id="win_hand"></div>
+    <div id="win_calls"></div>
+    <button id="new_round">Start new round</button>
+  </div>
+  <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
+  <script src="js/mahjong.js"></script>
+  <script src="js/hand.js"></script>
+  <script src="js/actions.js"></script>
+  <script src="js/table.js"></script>
+  <script src="js/round_info.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
 </html>
