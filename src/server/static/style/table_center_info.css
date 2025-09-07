@@ -37,6 +37,10 @@
     font-size: 2.5cqw;
 }
 
+#table_center_info #scores {
+    display: contents;
+}
+
 #table_center_info .score {
     --score-width: 10cqw;
     --score-height: 2cqw;
