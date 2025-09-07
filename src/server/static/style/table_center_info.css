@@ -8,6 +8,13 @@
     background-color: lightgray;
 }
 
+#table_center_info * {
+    font-family: "Chiron GoRound TC", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+}
+
 #table_center_info #wind_seat_round {
     width: 6cqw;
     height: 3cqw;
