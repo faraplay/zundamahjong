@@ -16,13 +16,13 @@ const seat_winds = ['東', '南', '西', '北']
 
 function setSeatIndicators(seat_round) {
     for (var player = 0; player < 4; ++player) {
-        score_elements[player].innerHTML = seat_winds[(player - seat_round + 4) % 4];
+        score_elements[player].textContent = seat_winds[(player - seat_round + 4) % 4];
     }
 }
 
 function setScores(scores) {
     for (var player = 0; player < 4; ++player) {
-        score_elements[player].innerHTML = `${scores[player]}`;
+        score_elements[player].textContent = `${scores[player]}`;
     }
 }
 
