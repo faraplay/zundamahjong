@@ -47,14 +47,10 @@ def try_resolve_actions():
 
 
 def get_win_info():
-    if game.round.win_info is not None:
-        return {
-            "win_player": game.round.win_info.win_player,
-            "hand": game.round.win_info.hand,
-            "calls": [call.model_dump() for call in game.round.win_info.calls],
-        }
-    else:
-        return None
+    return {
+        "win": game.win.model_dump(),
+        "scoring": game.scoring.model_dump(),
+    }
 
 
 def get_round_info(player: int):
