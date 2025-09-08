@@ -121,18 +121,18 @@ const win_info_div = document.getElementById('win_info');
 const win_seat_indicator = document.getElementById('win_seat');
 const win_hand_div = document.getElementById('win_hand');
 const win_calls_div = document.getElementById('win_calls');
-const new_round_button = document.getElementById('new_round');
+const next_round_button = document.getElementById('next_round');
 
 set_player_form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (set_player_select.value) {
-        socket.emit('set_seat', set_player_select.value);
+        socket.emit('set_player', set_player_select.value);
     }
 });
 
-new_round_button.addEventListener('click', (e) => {
+next_round_button.addEventListener('click', (e) => {
     e.preventDefault();
-    socket.emit('new_round');
+    socket.emit('next_round');
 })
 
 function createTileImageElement(tile) {

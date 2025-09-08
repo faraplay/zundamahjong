@@ -4,29 +4,34 @@ from flask_socketio import SocketIO, emit
 from pydantic import ValidationError
 
 
-from ..mahjong.round import Round, RoundStatus
 from ..mahjong.action import Action
+from ..mahjong.round import Round, RoundStatus
+from ..mahjong.game import Game, GameOptions
 
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-round = Round()
+game = Game()
 
-sid_seats: dict[str, int] = {}
+sid_players: dict[str, int] = {}
 submitted_actions = [None, None, None, None]
 
 
 def resolve_action():
-    seat, action = round.get_priority_action(submitted_actions)
-    round.do_action(seat, action)
-    round.display_info()
+    seat, action = game.round.get_priority_action(
+        [submitted_actions[game.get_player(seat)] for seat in range(4)]
+    )
+    game.round.do_action(seat, action)
+    game.round.display_info()
 
 
 def set_default_submitted_actions():
-    if round.status == RoundStatus.END:
+    if game.round.status == RoundStatus.END:
         submitted_actions[:] = [None, None, None, None]
     else:
-        allowed_actions = [round.allowed_actions(seat) for seat in range(4)]
+        allowed_actions = [
+            game.round.allowed_actions(game.get_seat(player)) for player in range(4)
+        ]
         submitted_actions[:] = [
             actions.default if len(actions.actions) == 1 else None
             for actions in allowed_actions
@@ -44,52 +49,53 @@ def try_resolve_actions():
 
 
 def get_win_info():
-    if round.win_info is not None:
+    if game.round.win_info is not None:
         return {
-            "win_seat": round.win_info.win_seat,
-            "hand": round.win_info.hand,
-            "calls": [call.model_dump() for call in round.win_info.calls],
+            "win_seat": game.round.win_info.win_seat,
+            "hand": game.round.win_info.hand,
+            "calls": [call.model_dump() for call in game.round.win_info.calls],
         }
     else:
         return None
 
 
-def get_round_info(seat: int):
+def get_round_info(player: int):
     return {
-        "player": seat,
-        "seat": seat,
-        "wind_round": 0,
-        "seat_round": 0,
-        "tiles_left": round.tiles_left,
-        "player_scores": [100, 200, 300, -600],
-        "current_seat": round.current_seat,
-        "status": round.status.value,
-        "hand": list(round.get_hand(seat)),
+        "player": player,
+        "wind_round": game.wind_round,
+        "seat_round": game.sub_round,
+        "player_scores": game.player_scores,
+        "tiles_left": game.round.tiles_left,
+        "current_seat": game.round.current_seat,
+        "status": game.round.status.value,
+        "hand": list(game.round.get_hand(game.get_seat(player))),
         "history": [
             {"seat": action[0], "action": action[1].model_dump()}
-            for action in round.history
+            for action in game.round.history
         ],
-        "discards": [discard.model_dump() for discard in round.discards],
+        "discards": [discard.model_dump() for discard in game.round.discards],
         "calls": [
-            [call.model_dump() for call in round.get_calls(seat)] for seat in range(4)
+            [call.model_dump() for call in game.round.get_calls(game.get_seat(player))]
+            for player in range(4)
         ],
         "actions": [
-            action.model_dump() for action in round.allowed_actions(seat).actions
+            action.model_dump()
+            for action in game.round.allowed_actions(game.get_seat(player)).actions
         ],
-        "action_selected": submitted_actions[seat] is not None,
+        "action_selected": submitted_actions[player] is not None,
     }
 
 
 def emit_info(sid: str, seat: int):
-    if round.status != RoundStatus.END:
+    if game.round.status != RoundStatus.END:
         emit("round_info", get_round_info(seat), to=sid)
     else:
         emit("win_info", get_win_info(), to=sid)
 
 
 def emit_info_all():
-    for sid, seat in sid_seats.items():
-        emit_info(sid, seat)
+    for sid, player in sid_players.items():
+        emit_info(sid, player)
 
 
 @socketio.on("connect")
@@ -100,38 +106,52 @@ def connect(auth):
 @socketio.on("disconnect")
 def disconnect(reason):
     print(f"Client disconnected: {request.sid},\nReason: {reason}")
-    sid_seats.pop(request.sid, None)
+    sid_players.pop(request.sid, None)
 
 
-@socketio.on("new_round")
-def start_new_round():
-    print("Starting new round...")
-    global round
-    round = Round()
+@socketio.on("next_round")
+def start_next_round():
+    if not game.can_start_next_round:
+        print("Cannot start next round!")
+        return
+    print("Starting next round...")
+    game.start_next_round()
     set_default_submitted_actions()
+    game.round.display_info()
     emit_info_all()
 
 
-@socketio.on("set_seat")
+@socketio.on("new_game")
+def start_new_game():
+    global game
+    if not game.is_game_end:
+        print("Game is still in progress!")
+        return
+    game = Game()
+    game.round.display_info()
+    emit_info_all()
+
+
+@socketio.on("set_player")
 def handle_set_seat(data):
-    print(f"Received set_seat from {request.sid}: {data}")
+    print(f"Received set_player from {request.sid}: {data}")
     try:
-        seat = int(data)
-        if seat not in range(4):
-            print("Invalid seat number!", seat)
+        player = int(data)
+        if player not in range(4):
+            print("Invalid player number!", player)
             return
     except ValueError:
         print("Received data is not an integer!", data)
         return
-    sid_seats[request.sid] = seat
-    emit_info(request.sid, seat)
+    sid_players[request.sid] = player
+    emit_info(request.sid, player)
 
 
 @socketio.on("action")
 def handle_action(data):
     print(f"Received action from {request.sid}: {data}")
     try:
-        seat = sid_seats[request.sid]
+        player = sid_players[request.sid]
     except KeyError:
         print(f"sid {request.sid} does not have an associated seat!")
         return
@@ -139,7 +159,7 @@ def handle_action(data):
         action = Action.model_validate(data)
     except ValidationError:
         print(f"Data could not be converted into Action object!")
-    submitted_actions[seat] = action
+    submitted_actions[player] = action
     print(submitted_actions)
     emit("action_received")
     try_resolve_actions()
@@ -147,4 +167,5 @@ def handle_action(data):
 
 def run_server():
     set_default_submitted_actions()
+    game.round.display_info()
     socketio.run(app, debug=True)
