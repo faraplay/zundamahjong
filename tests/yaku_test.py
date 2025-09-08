@@ -12,6 +12,7 @@ def get_yaku_mults(
     formed_hand: list[Call],
     calls: list[Call],
     wind_round: int = 0,
+    sub_round: int = 0,
     **kwargs
 ):
     win = Win(
@@ -20,6 +21,7 @@ def get_yaku_mults(
         hand=[tile for call in formed_hand for tile in call.tiles],
         calls=calls,
         wind_round=wind_round,
+        sub_round=sub_round,
         **kwargs
     )
     return YakuCalculator(win, formed_hand).get_yaku_mults()

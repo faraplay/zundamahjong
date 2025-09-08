@@ -386,6 +386,7 @@ class Round:
             hand=list(hand.tiles) + [self._last_tile],
             calls=list(hand.calls),
             wind_round=self._wind_round,
+            sub_round=self._sub_round,
             is_chankan=is_chankan,
             is_houtei=is_houtei,
         )
@@ -416,7 +417,7 @@ class Round:
             or (action.action_type == ActionType.DISCARD and history_player == player)
             for history_player, action in self._history
         ):
-            if player == 0:
+            if player == self._sub_round:
                 is_tenhou = True
             else:
                 is_chiihou = True
@@ -426,6 +427,7 @@ class Round:
             hand=list(hand.tiles),
             calls=list(hand.calls),
             wind_round=self._wind_round,
+            sub_round=self._sub_round,
             after_flower_count=after_flower_count,
             after_kan_count=after_kan_count,
             is_haitei=is_haitei,

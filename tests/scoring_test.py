@@ -19,6 +19,7 @@ class ScoringTest(unittest.TestCase):
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
             wind_round=0,
+            sub_round=0,
         )
         player_scores = self.get_player_scores(win)
         self.assertSequenceEqual(player_scores, [12.0, -12.0, 0.0, 0.0])
@@ -32,6 +33,7 @@ class ScoringTest(unittest.TestCase):
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
             wind_round=0,
+            sub_round=0,
         )
         player_scores = self.get_player_scores(win)
         self.assertSequenceEqual(player_scores, [36.0, -12.0, -12.0, -12.0])
@@ -45,6 +47,7 @@ class ScoringTest(unittest.TestCase):
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
             wind_round=0,
+            sub_round=0,
         )
         player_scores = self.get_player_scores(win)
         self.assertSequenceEqual(player_scores, [0.0, -8.0, 8.0, 0.0])
@@ -58,6 +61,7 @@ class ScoringTest(unittest.TestCase):
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
             wind_round=0,
+            sub_round=0,
         )
         player_scores = self.get_player_scores(win)
         self.assertSequenceEqual(player_scores, [-8.0, -4.0, 16.0, -4.0])

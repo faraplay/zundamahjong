@@ -10,6 +10,7 @@ class Win(BaseModel):
     hand: list[Tile]
     calls: list[Call]
     wind_round: int
+    sub_round: int
     after_flower_count: int = 0
     after_kan_count: int = 0
     is_chankan: bool = False
