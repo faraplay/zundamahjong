@@ -61,6 +61,7 @@ def get_win_info():
 
 def get_round_info(player: int):
     return {
+        "player_count": game.player_count,
         "player": player,
         "wind_round": game.wind_round,
         "sub_round": game.sub_round,

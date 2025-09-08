@@ -1,3 +1,5 @@
+var player_count = 4
+
 const round_info_div = document.getElementById('round_info');
 const player_indicator = document.getElementById('player_indicator');
 
@@ -15,19 +17,20 @@ const history_list = document.getElementById('history_list');
 const player_winds = ['東', '南', '西', '北']
 
 function setPlayerWindIndicators(sub_round) {
-    for (var player = 0; player < 4; ++player) {
+    for (var player = 0; player < player_count; ++player) {
         player_wind_indicator_elements[player].textContent =
-            player_winds[(player - sub_round + 4) % 4];
+            player_winds[(player - sub_round + player_count) % player_count];
     }
 }
 
 function setScores(scores) {
-    for (var player = 0; player < 4; ++player) {
+    for (var player = 0; player < player_count; ++player) {
         score_elements[player].textContent = `${scores[player]}`;
     }
 }
 
 function setRoundInfo(round_info) {
+    player_count = round_info.player_count;
     round_info_div.className = `me_player_${round_info.player}`;
     player_indicator.textContent = `You are Player ${round_info.player}`;
     wind_sub_round_element.textContent = `${player_winds[round_info.wind_round]}${round_info.sub_round + 1}`
