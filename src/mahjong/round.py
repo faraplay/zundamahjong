@@ -4,7 +4,7 @@ from enum import Enum
 
 from .exceptions import InvalidMoveException
 from .tile import Tile, is_flower
-from .deck import Deck
+from .deck import Deck, four_player_deck, three_player_deck
 from .discard_pool import DiscardPool
 from .hand import Hand
 from .action import Action, ActionType, ActionSet, call_action_types
@@ -57,7 +57,13 @@ class Round:
         self._player_count = options.player_count
         self._options = options
         self._end_callback = round_end_callback
-        self._deck = Deck(tiles) if tiles is not None else Deck.shuffled_deck()
+        if tiles is not None:
+            self._deck = Deck(tiles)
+        else:
+            if options.player_count == 3:
+                self._deck = Deck.shuffled_deck(three_player_deck)
+            else:
+                self._deck = Deck.shuffled_deck(four_player_deck)
         self._discard_pool = DiscardPool()
         self._hands = [Hand(self._deck) for _ in range(self._player_count)]
         for tile_count in [4, 4, 4, 1]:
