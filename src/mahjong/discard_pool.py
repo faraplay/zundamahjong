@@ -7,7 +7,7 @@ from .tile import Tile
 
 
 class Discard(BaseModel):
-    seat: int
+    player: int
     tile: Tile
 
 
@@ -19,8 +19,8 @@ class DiscardPool:
     def discards(self) -> Sequence[Discard]:
         return self._discards
 
-    def append(self, seat: int, tile: Tile):
-        self._discards.append(Discard(seat=seat, tile=tile))
+    def append(self, player: int, tile: Tile):
+        self._discards.append(Discard(player=player, tile=tile))
 
     def pop(self):
         return self._discards.pop()

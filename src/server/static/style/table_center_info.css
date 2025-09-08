@@ -15,7 +15,7 @@
     font-style: normal;
 }
 
-#table_center_info #wind_seat_round {
+#table_center_info #wind_player_round {
     width: 6cqw;
     height: 3cqw;
     position: absolute;
@@ -59,7 +59,7 @@
     background-image: radial-gradient(ellipse 90% 70%, aliceblue 50%, lightblue);
 }
 
-#table_center_info .seat_indicator {
+#table_center_info .player_indicator {
     --total-width: 2.5cqw;
     --total-height: 2.5cqw;
     --border-width: 1px;

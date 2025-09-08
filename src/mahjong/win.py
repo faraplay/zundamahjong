@@ -5,8 +5,8 @@ from .call import Call
 
 
 class Win(BaseModel):
-    win_seat: int
-    lose_seat: int | None
+    win_player: int
+    lose_player: int | None
     hand: list[Tile]
     calls: list[Call]
     wind_round: int

@@ -7,16 +7,16 @@ from src.mahjong.yaku import YakuCalculator
 
 def get_yaku_mults(
     *,
-    win_seat: int = 0,
-    lose_seat: int | None = None,
+    win_player: int = 0,
+    lose_player: int | None = None,
     formed_hand: list[Call],
     calls: list[Call],
     wind_round: int = 0,
     **kwargs
 ):
     win = Win(
-        win_seat=win_seat,
-        lose_seat=lose_seat,
+        win_player=win_player,
+        lose_player=lose_player,
         hand=[tile for call in formed_hand for tile in call.tiles],
         calls=calls,
         wind_round=wind_round,
@@ -28,8 +28,8 @@ def get_yaku_mults(
 class YakuTest(TestCase):
     def test_no_flowers(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -42,10 +42,10 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"NO_FLOWERS": 1})
 
-    def test_seat_flower(self):
+    def test_player_flower(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -59,10 +59,10 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1})
 
-    def test_two_seat_flowers(self):
+    def test_two_player_flowers(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -79,8 +79,8 @@ class YakuTest(TestCase):
 
     def test_set_of_flowers(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -99,8 +99,8 @@ class YakuTest(TestCase):
 
     def test_seven_flowers(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -124,8 +124,8 @@ class YakuTest(TestCase):
 
     def test_two_sets_of_flowers(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -151,8 +151,8 @@ class YakuTest(TestCase):
 
     def test_after_a_flower(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -172,8 +172,8 @@ class YakuTest(TestCase):
 
     def test_after_a_kan(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -191,10 +191,10 @@ class YakuTest(TestCase):
             {"AFTER_A_KAN": 1},
         )
 
-    def test_seat_wind(self):
+    def test_player_wind(self):
         yaku_mults = get_yaku_mults(
-            win_seat=1,
-            lose_seat=None,
+            win_player=1,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -213,8 +213,8 @@ class YakuTest(TestCase):
 
     def test_prevalent_wind(self):
         yaku_mults = get_yaku_mults(
-            win_seat=1,
-            lose_seat=None,
+            win_player=1,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -233,8 +233,8 @@ class YakuTest(TestCase):
 
     def test_white_dragon(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -253,8 +253,8 @@ class YakuTest(TestCase):
 
     def test_green_dragon(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -273,8 +273,8 @@ class YakuTest(TestCase):
 
     def test_red_dragon(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -293,8 +293,8 @@ class YakuTest(TestCase):
 
     def test_eyes(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.PON, tiles=[19, 19, 19]),
                 Call(call_type=CallType.PAIR, tiles=[8, 8]),
@@ -310,8 +310,8 @@ class YakuTest(TestCase):
 
     def test_no_calls(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -327,8 +327,8 @@ class YakuTest(TestCase):
 
     def test_no_calls_closed_kan(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -344,8 +344,8 @@ class YakuTest(TestCase):
 
     def test_chankan(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -362,8 +362,8 @@ class YakuTest(TestCase):
 
     def test_haitei(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -380,8 +380,8 @@ class YakuTest(TestCase):
 
     def test_houtei(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -398,8 +398,8 @@ class YakuTest(TestCase):
 
     def test_all_runs(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.PAIR, tiles=[1, 1]),
             ],
@@ -415,8 +415,8 @@ class YakuTest(TestCase):
 
     def test_all_simples(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.PON, tiles=[3, 3, 3]),
                 Call(call_type=CallType.CHI, tiles=[4, 5, 6]),
@@ -432,8 +432,8 @@ class YakuTest(TestCase):
 
     def test_pure_straight(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[21, 22, 23]),
                 Call(call_type=CallType.CHI, tiles=[24, 25, 26]),
@@ -449,8 +449,8 @@ class YakuTest(TestCase):
 
     def test_all_triplets(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.PON, tiles=[1, 1, 1]),
                 Call(call_type=CallType.PON, tiles=[15, 15, 15]),
@@ -466,8 +466,8 @@ class YakuTest(TestCase):
 
     def test_half_flush(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[5, 6, 7]),
@@ -483,8 +483,8 @@ class YakuTest(TestCase):
 
     def test_full_flush(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[5, 6, 7]),
@@ -500,8 +500,8 @@ class YakuTest(TestCase):
 
     def test_seven_pairs(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.PAIR, tiles=[3, 3]),
                 Call(call_type=CallType.PAIR, tiles=[4, 4]),
@@ -519,8 +519,8 @@ class YakuTest(TestCase):
 
     def test_half_outside_hand(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[11, 12, 13]),
@@ -539,8 +539,8 @@ class YakuTest(TestCase):
 
     def test_fully_outside_hand(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[11, 12, 13]),
@@ -559,8 +559,8 @@ class YakuTest(TestCase):
 
     def test_pure_double_sequence(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
@@ -579,8 +579,8 @@ class YakuTest(TestCase):
 
     def test_twice_pure_double_sequence(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
@@ -599,8 +599,8 @@ class YakuTest(TestCase):
 
     def test_mixed_triple_sequence(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.CHI, tiles=[3, 4, 5]),
                 Call(call_type=CallType.CHI, tiles=[13, 14, 15]),
@@ -619,8 +619,8 @@ class YakuTest(TestCase):
 
     def test_triple_triplets(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.PON, tiles=[9, 9, 9]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
@@ -639,8 +639,8 @@ class YakuTest(TestCase):
 
     def test_all_terminals_and_honours(self):
         yaku_mults = get_yaku_mults(
-            win_seat=0,
-            lose_seat=None,
+            win_player=0,
+            lose_player=None,
             formed_hand=[
                 Call(call_type=CallType.PON, tiles=[1, 1, 1]),
                 Call(call_type=CallType.PON, tiles=[11, 11, 11]),

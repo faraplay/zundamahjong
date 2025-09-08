@@ -275,8 +275,8 @@ class YakuCalculator:
         )
 
     @_register_yaku("SEAT_WIND", "Seat Wind", 1)
-    def _seat_wind(self):
-        return self._yakuhai(self._win.win_seat + 31)
+    def _player_wind(self):
+        return self._yakuhai(self._win.win_player + 31)
 
     @_register_yaku("PREVALENT_WIND", "Prevalent Wind", 1)
     def _prevalent_wind(self):
@@ -341,8 +341,8 @@ class YakuCalculator:
         return int(len(self._flowers) == 0)
 
     @_register_yaku("SEAT_FLOWER", "Seat Flower", 1)
-    def _seat_flower(self):
-        return sum((tile - 41) % 4 == self._win.win_seat for tile in self._flowers)
+    def _player_flower(self):
+        return sum((tile - 41) % 4 == self._win.win_player for tile in self._flowers)
 
     @_register_yaku("SET_OF_FLOWERS", "Set of Flowers", 2)
     def _set_of_flowers(self):

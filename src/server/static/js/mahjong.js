@@ -118,7 +118,7 @@ const set_player_form = document.getElementById('set_player_form');
 const set_player_select = document.getElementById('set_player_select');
 
 const win_info_div = document.getElementById('win_info');
-const win_seat_indicator = document.getElementById('win_seat');
+const win_player_indicator = document.getElementById('win_player');
 const win_hand_div = document.getElementById('win_hand');
 const win_calls_div = document.getElementById('win_calls');
 const next_round_button = document.getElementById('next_round');
@@ -169,7 +169,7 @@ function createHistoryEntryElement(history_entry) {
     const history_item = document.createElement('li');
     const history_text_item = document.createElement('span');
     history_text_item.textContent =
-        `Player: ${history_entry.seat}, Action: ${action_type}`;
+        `Player: ${history_entry.player}, Action: ${action_type}`;
     history_item.appendChild(history_text_item);
     if (action.tile != 0) {
         history_item.appendChild(createTileElement(action.tile))

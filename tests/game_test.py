@@ -31,7 +31,7 @@ class GameTest(unittest.TestCase):
         game.round.do_action(2, Action(action_type=ActionType.RON))
         self.assertIsNotNone(game.win_scoring)
         self.assertSequenceEqual(
-            game.player_scores, game.win_scoring.scoring.seat_scores
+            game.player_scores, game.win_scoring.scoring.player_scores
         )
 
     def test_dealer_repeat_next_round(self):
@@ -103,18 +103,18 @@ class GameTest(unittest.TestCase):
         self.assertEqual(game.draw_count, 0)
         round = game.round
         while round.status != RoundStatus.END:
-            actions = [round.allowed_actions(seat).default for seat in range(4)]
-            seat, action = round.get_priority_action(actions)
-            round.do_action(seat, action)
+            actions = [round.allowed_actions(player).default for player in range(4)]
+            player, action = round.get_priority_action(actions)
+            round.do_action(player, action)
         self.assertEqual(game.draw_count, 0)
 
         game.start_next_round(test_deck4)
         self.assertEqual(game.draw_count, 1)
         round = game.round
         while round.status != RoundStatus.END:
-            actions = [round.allowed_actions(seat).default for seat in range(4)]
-            seat, action = round.get_priority_action(actions)
-            round.do_action(seat, action)
+            actions = [round.allowed_actions(player).default for player in range(4)]
+            player, action = round.get_priority_action(actions)
+            round.do_action(player, action)
         self.assertEqual(game.draw_count, 1)
 
         game.start_next_round(test_deck6)

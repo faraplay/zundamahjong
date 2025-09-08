@@ -18,10 +18,10 @@ submitted_actions = [None, None, None, None]
 
 
 def resolve_action():
-    seat, action = game.round.get_priority_action(
+    player, action = game.round.get_priority_action(
         [submitted_actions[player] for player in range(4)]
     )
-    game.round.do_action(seat, action)
+    game.round.do_action(player, action)
     game.round.display_info()
 
 
@@ -49,7 +49,7 @@ def try_resolve_actions():
 def get_win_info():
     if game.round.win_info is not None:
         return {
-            "win_seat": game.round.win_info.win_seat,
+            "win_player": game.round.win_info.win_player,
             "hand": game.round.win_info.hand,
             "calls": [call.model_dump() for call in game.round.win_info.calls],
         }
@@ -61,14 +61,14 @@ def get_round_info(player: int):
     return {
         "player": player,
         "wind_round": game.wind_round,
-        "seat_round": game.sub_round,
+        "player_round": game.sub_round,
         "player_scores": game.player_scores,
         "tiles_left": game.round.tiles_left,
-        "current_seat": game.round.current_seat,
+        "current_player": game.round.current_player,
         "status": game.round.status.value,
         "hand": list(game.round.get_hand(player)),
         "history": [
-            {"seat": action[0], "action": action[1].model_dump()}
+            {"player": action[0], "action": action[1].model_dump()}
             for action in game.round.history
         ],
         "discards": [discard.model_dump() for discard in game.round.discards],
@@ -83,9 +83,9 @@ def get_round_info(player: int):
     }
 
 
-def emit_info(sid: str, seat: int):
+def emit_info(sid: str, player: int):
     if game.round.status != RoundStatus.END:
-        emit("round_info", get_round_info(seat), to=sid)
+        emit("round_info", get_round_info(player), to=sid)
     else:
         emit("win_info", get_win_info(), to=sid)
 
@@ -130,7 +130,7 @@ def start_new_game():
 
 
 @socketio.on("set_player")
-def handle_set_seat(data):
+def handle_set_player(data):
     print(f"Received set_player from {request.sid}: {data}")
     try:
         player = int(data)
@@ -150,7 +150,7 @@ def handle_action(data):
     try:
         player = sid_players[request.sid]
     except KeyError:
-        print(f"sid {request.sid} does not have an associated seat!")
+        print(f"sid {request.sid} does not have an associated player!")
         return
     try:
         action = Action.model_validate(data)

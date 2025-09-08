@@ -71,7 +71,7 @@ class Game:
         if self._win_scoring is None:
             return True
         else:
-            return self._win_scoring.win.win_seat == self.sub_round
+            return self._win_scoring.win.win_player == self.sub_round
 
     def _next_round(self):
         next_wind_round = self._wind_round
@@ -103,4 +103,4 @@ class Game:
             ).get_win_scoring()
             self._win_scoring = win_scoring
             for player in range(self._player_count):
-                self._player_scores[player] += win_scoring.scoring.seat_scores[player]
+                self._player_scores[player] += win_scoring.scoring.player_scores[player]

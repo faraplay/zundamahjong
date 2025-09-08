@@ -21,11 +21,11 @@ function createTableTileElement(tile) {
 
 function setDiscards(discards) {
     for (var player = 0; player < 4; ++player) {
-        const seat_discard_tiles =
-            discards.filter(discard => discard.seat == player)
+        const player_discard_tiles =
+            discards.filter(discard => discard.player == player)
                 .map(discard => discard.tile);
         player_discards_elements[player].replaceChildren(
-            ...seat_discard_tiles.map(createTableTileElement)
+            ...player_discard_tiles.map(createTableTileElement)
         )
     }
 }

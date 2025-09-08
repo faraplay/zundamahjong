@@ -228,7 +228,7 @@ class AllowedActionTest(unittest.TestCase):
             },
         )
 
-    def test_start_wrong_seat_flowers(self):
+    def test_start_wrong_player_flowers(self):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         self.assertSetEqual(
             round.allowed_actions(1).actions, {Action(action_type=ActionType.NOTHING)}
