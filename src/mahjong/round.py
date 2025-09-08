@@ -47,23 +47,27 @@ class Round:
     def __init__(
         self,
         wind_round: int = 0,
+        sub_round: int = 0,
         tiles: list[int] | None = None,
         options: GameOptions = GameOptions(),
         round_end_callback: Callable[[], None] = lambda: None,
     ):
         self._wind_round = wind_round
+        self._sub_round = sub_round
         self._player_count = options.player_count
         self._options = options
         self._end_callback = round_end_callback
         self._deck = Deck(tiles) if tiles is not None else Deck.shuffled_deck()
         self._discard_pool = DiscardPool()
-        self._hands = tuple(Hand(self._deck) for _ in range(self._player_count))
+        self._hands = [Hand(self._deck) for _ in range(self._player_count)]
         for tile_count in [4, 4, 4, 1]:
-            for hand in self._hands:
-                hand.add_to_hand(tile_count)
-        self._hands[0].draw()
+            for wind in range(self._player_count):
+                self._hands[(sub_round + wind) % self._player_count].add_to_hand(
+                    tile_count
+                )
+        self._hands[sub_round].draw()
 
-        self._current_seat = 0
+        self._current_seat = sub_round
         self._status = RoundStatus.START
         self._last_tile: Tile = 0
         self._history: deque[tuple[int, Action]] = deque()
@@ -85,6 +89,13 @@ class Round:
 
     def get_hand(self, seat: int):
         return self._hands[seat].tiles
+
+    def get_discard_tiles(self, seat: int):
+        return [
+            discard.tile
+            for discard in self._discard_pool.discards
+            if discard.seat == seat
+        ]
 
     def get_calls(self, seat: int):
         return self._hands[seat].calls
@@ -275,7 +286,7 @@ class Round:
             case RoundStatus.START:
                 self._flower_pass_count += 1
                 if self._flower_pass_count >= self._player_count + 1:
-                    self._current_seat = 0
+                    self._current_seat = self._sub_round
                     self._status = RoundStatus.PLAY
                 else:
                     self._current_seat = self._next_seat(self._current_seat)

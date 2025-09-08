@@ -40,6 +40,21 @@ class RoundTest(unittest.TestCase):
             round.get_hand(3), [12, 12, 12, 12, 14, 14, 14, 14, 16, 16, 16, 16, 17]
         )
 
+    def test_sub_round_start_hands(self):
+        round = Round(tiles=test_deck1, sub_round=1)
+        self.assertCountEqual(
+            round.get_hand(1), [1, 1, 2, 3, 4, 5, 6, 7, 8, 9, 17, 21, 21, 21]
+        )
+        self.assertCountEqual(
+            round.get_hand(2), [1, 2, 3, 4, 5, 6, 7, 8, 9, 9, 9, 17, 21]
+        )
+        self.assertCountEqual(
+            round.get_hand(3), [11, 11, 11, 11, 13, 13, 13, 13, 15, 15, 15, 15, 17]
+        )
+        self.assertCountEqual(
+            round.get_hand(0), [12, 12, 12, 12, 14, 14, 14, 14, 16, 16, 16, 16, 17]
+        )
+
     def test_discard_pool(self):
         round = Round(tiles=test_deck1)
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=17))
@@ -301,6 +316,31 @@ class RoundTest(unittest.TestCase):
                 (2, Action(action_type=ActionType.NOTHING)),
                 (3, Action(action_type=ActionType.NOTHING)),
                 (0, Action(action_type=ActionType.NOTHING)),
+            ],
+        )
+
+    def test_sub_round_auto_flower_history(self):
+        round = Round(
+            tiles=test_deck3,
+            sub_round=1,
+            options=GameOptions(auto_replace_flowers=True),
+        )
+        self.assertSequenceEqual(
+            round.history,
+            [
+                (1, Action(action_type=ActionType.FLOWER, tile=41)),
+                (1, Action(action_type=ActionType.FLOWER, tile=43)),
+                (1, Action(action_type=ActionType.NOTHING)),
+                (2, Action(action_type=ActionType.FLOWER, tile=42)),
+                (2, Action(action_type=ActionType.NOTHING)),
+                (3, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.NOTHING)),
+                (1, Action(action_type=ActionType.FLOWER, tile=44)),
+                (1, Action(action_type=ActionType.NOTHING)),
+                (2, Action(action_type=ActionType.NOTHING)),
+                (3, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.NOTHING)),
+                (1, Action(action_type=ActionType.NOTHING)),
             ],
         )
 

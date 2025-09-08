@@ -15,7 +15,6 @@ class Game:
         self._options = options
         self._wind_round: int = 0
         self._sub_round: int = 0
-        self._player_seats = tuple(range(self._player_count))
         self._player_scores = [options.start_score] * self._player_count
         self._draw_count: int = 0
         self._create_round(first_deck_tiles)
@@ -58,20 +57,16 @@ class Game:
         )
 
     def get_seat(self, player: int):
-        return (player - self._sub_round) % self._player_count
+        return player
 
     def get_player(self, seat: int):
-        return (seat + self._sub_round) % self._player_count
+        return seat
 
     def start_next_round(self, deck_tiles: list[int] | None = None):
         if not self.can_start_next_round:
             raise InvalidOperationException()
         if not self.is_dealer_repeat():
             self._wind_round, self._sub_round = self._next_round()
-        self._player_seats = tuple(
-            (player + self._sub_round) % self._player_count
-            for player in range(self._player_count)
-        )
         if self._win_scoring is None:
             self._draw_count += 1
         else:
@@ -82,7 +77,7 @@ class Game:
         if self._win_scoring is None:
             return True
         else:
-            return self._win_scoring.win.win_seat == 0
+            return self._win_scoring.win.win_seat == self.sub_round
 
     def _next_round(self):
         next_wind_round = self._wind_round
@@ -98,6 +93,7 @@ class Game:
 
         self._round = Round(
             wind_round=self._wind_round % 4,
+            sub_round=self._sub_round,
             tiles=deck_tiles,
             options=self._options,
             round_end_callback=on_round_end,
