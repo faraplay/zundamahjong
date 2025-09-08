@@ -59,6 +59,24 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1})
 
+    def test_sub_round_player_flower(self):
+        yaku_mults = get_yaku_mults(
+            win_player=0,
+            lose_player=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.FLOWER, tiles=[44]),
+            ],
+            sub_round=1,
+        )
+        self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1})
+
     def test_two_player_flowers(self):
         yaku_mults = get_yaku_mults(
             win_player=0,
@@ -205,6 +223,27 @@ class YakuTest(TestCase):
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
                 Call(call_type=CallType.FLOWER, tiles=[44]),
             ],
+        )
+        self.assertDictEqual(
+            yaku_mults,
+            {"SEAT_WIND": 1},
+        )
+
+    def test_sub_round_player_wind(self):
+        yaku_mults = get_yaku_mults(
+            win_player=2,
+            lose_player=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[32, 32, 32]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.FLOWER, tiles=[44]),
+            ],
+            sub_round=1,
         )
         self.assertDictEqual(
             yaku_mults,

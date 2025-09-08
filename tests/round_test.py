@@ -577,6 +577,11 @@ class RoundTest(unittest.TestCase):
         round.do_action(0, Action(action_type=ActionType.TSUMO))
         self.assertTrue(round.win_info.is_tenhou)
 
+    def test_sub_round_tenhou(self):
+        round = Round(tiles=test_deck_kan_tenhou, sub_round=1)
+        round.do_action(1, Action(action_type=ActionType.TSUMO))
+        self.assertTrue(round.win_info.is_tenhou)
+
     def test_not_tenhou_after_call(self):
         round = Round(tiles=test_deck_kan_tenhou)
         round.do_action(0, Action(action_type=ActionType.CLOSED_KAN, tile=16))
