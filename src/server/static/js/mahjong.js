@@ -140,6 +140,8 @@ function createTileImageElement(tile) {
     item.classList.add('tile');
     item.src = tile_images[tile];
     item.alt = tile;
+    item.width = 60;
+    item.height = 80;
     return item;
 }
 

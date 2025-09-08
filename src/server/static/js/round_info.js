@@ -1,9 +1,9 @@
 const round_info_div = document.getElementById('round_info');
 const player_indicator = document.getElementById('player_indicator');
 
-const wind_player_round_element = document.getElementById('wind_player_round');
+const wind_sub_round_element = document.getElementById('wind_sub_round');
 const tiles_left_indicator = document.getElementById('tiles_left');
-const player_indicator_elements = [0, 1, 2, 3].map(
+const player_wind_indicator_elements = [0, 1, 2, 3].map(
     player => document.querySelector(`.player_indicator.player_${player}`)
 )
 const score_elements = [0, 1, 2, 3].map(
@@ -14,9 +14,10 @@ const history_list = document.getElementById('history_list');
 
 const player_winds = ['東', '南', '西', '北']
 
-function setSeatIndicators(player_round) {
+function setPlayerWindIndicators(sub_round) {
     for (var player = 0; player < 4; ++player) {
-        score_elements[player].textContent = player_winds[(player - player_round + 4) % 4];
+        player_wind_indicator_elements[player].textContent =
+            player_winds[(player - sub_round + 4) % 4];
     }
 }
 
@@ -29,9 +30,9 @@ function setScores(scores) {
 function setRoundInfo(round_info) {
     round_info_div.className = `me_player_${round_info.player}`;
     player_indicator.textContent = `You are Player ${round_info.player}`;
-    wind_player_round_element.textContent = `${player_winds[round_info.wind_round]}${round_info.player_round + 1}`
+    wind_sub_round_element.textContent = `${player_winds[round_info.wind_round]}${round_info.sub_round + 1}`
     tiles_left_indicator.textContent = round_info.tiles_left;
-    setSeatIndicators(round_info.player_round)
+    setPlayerWindIndicators(round_info.sub_round)
     setScores(round_info.player_scores)
 
     history_list.replaceChildren(...round_info.history.map(createHistoryEntryElement));
