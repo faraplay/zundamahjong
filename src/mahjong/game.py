@@ -58,10 +58,10 @@ class Game:
         )
 
     def get_seat(self, player: int):
-        return (player + self._sub_round) % self._player_count
+        return (player - self._sub_round) % self._player_count
 
     def get_player(self, seat: int):
-        return (seat - self._sub_round) % self._player_count
+        return (seat + self._sub_round) % self._player_count
 
     def start_next_round(self, deck_tiles: list[int] | None = None):
         if not self.can_start_next_round:

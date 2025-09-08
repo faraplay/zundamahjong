@@ -49,6 +49,20 @@ class GameTest(unittest.TestCase):
         self.assertEqual(game.wind_round, 0)
         self.assertEqual(game.sub_round, 1)
 
+    def test_player_seat(self):
+        game = Game(test_deck2)
+        self.assertEqual(game.get_seat(0), 0)
+        self.assertEqual(game.get_player(0), 0)
+        self.assertEqual(game.get_seat(1), 1)
+        self.assertEqual(game.get_player(1), 1)
+        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(2, Action(action_type=ActionType.RON))
+        game.start_next_round(test_deck2)
+        self.assertEqual(game.get_seat(0), 3)
+        self.assertEqual(game.get_player(0), 1)
+        self.assertEqual(game.get_seat(1), 0)
+        self.assertEqual(game.get_player(1), 2)
+
     def test_next_wind_round(self):
         game = Game(test_deck2, GameOptions(game_length=(2, 0)))
         for _ in range(4):
