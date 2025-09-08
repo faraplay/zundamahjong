@@ -24,7 +24,7 @@ class Deck:
         self._tiles = deque(tiles)
 
     @classmethod
-    def shuffled_deck(cls, tiles):
+    def shuffled_deck(cls, tiles: list[Tile]):
         new_deck = tiles.copy()
         shuffle(new_deck)
         return cls(new_deck)
