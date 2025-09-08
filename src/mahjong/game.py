@@ -56,12 +56,6 @@ class Game:
             and not self.is_dealer_repeat()
         )
 
-    def get_seat(self, player: int):
-        return player
-
-    def get_player(self, seat: int):
-        return seat
-
     def start_next_round(self, deck_tiles: list[int] | None = None):
         if not self.can_start_next_round:
             raise InvalidOperationException()
@@ -109,6 +103,4 @@ class Game:
             ).get_win_scoring()
             self._win_scoring = win_scoring
             for player in range(self._player_count):
-                self._player_scores[player] += win_scoring.scoring.seat_scores[
-                    self.get_seat(player)
-                ]
+                self._player_scores[player] += win_scoring.scoring.seat_scores[player]

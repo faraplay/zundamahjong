@@ -19,7 +19,7 @@ submitted_actions = [None, None, None, None]
 
 def resolve_action():
     seat, action = game.round.get_priority_action(
-        [submitted_actions[game.get_player(seat)] for seat in range(4)]
+        [submitted_actions[player] for player in range(4)]
     )
     game.round.do_action(seat, action)
     game.round.display_info()
@@ -29,9 +29,7 @@ def set_default_submitted_actions():
     if game.round.status == RoundStatus.END:
         submitted_actions[:] = [None, None, None, None]
     else:
-        allowed_actions = [
-            game.round.allowed_actions(game.get_seat(player)) for player in range(4)
-        ]
+        allowed_actions = [game.round.allowed_actions(player) for player in range(4)]
         submitted_actions[:] = [
             actions.default if len(actions.actions) == 1 else None
             for actions in allowed_actions
@@ -68,19 +66,18 @@ def get_round_info(player: int):
         "tiles_left": game.round.tiles_left,
         "current_seat": game.round.current_seat,
         "status": game.round.status.value,
-        "hand": list(game.round.get_hand(game.get_seat(player))),
+        "hand": list(game.round.get_hand(player)),
         "history": [
             {"seat": action[0], "action": action[1].model_dump()}
             for action in game.round.history
         ],
         "discards": [discard.model_dump() for discard in game.round.discards],
         "calls": [
-            [call.model_dump() for call in game.round.get_calls(game.get_seat(player))]
+            [call.model_dump() for call in game.round.get_calls(player)]
             for player in range(4)
         ],
         "actions": [
-            action.model_dump()
-            for action in game.round.allowed_actions(game.get_seat(player)).actions
+            action.model_dump() for action in game.round.allowed_actions(player).actions
         ],
         "action_selected": submitted_actions[player] is not None,
     }
