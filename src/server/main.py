@@ -16,32 +16,31 @@ sid_seats: dict[str, int] = {}
 submitted_actions = [None, None, None, None]
 
 
-def reset_submitted_actions():
-    if round.status == RoundStatus.END:
-        submitted_actions[:] = [None, None, None, None]
-        return
-    allowed_actions = [round.allowed_actions(seat) for seat in range(4)]
-    submitted_actions[:] = [
-        actions.default if len(actions.actions) == 1 else None
-        for actions in allowed_actions
-    ]
-    if all(action is not None for action in submitted_actions):
-        resolve_actions()
-        reset_submitted_actions()
-
-
-def resolve_actions():
+def resolve_action():
     seat, action = round.get_priority_action(submitted_actions)
     round.do_action(seat, action)
     round.display_info()
 
 
-def try_execute_actions():
-    if any(action is None for action in submitted_actions):
-        return
-    resolve_actions()
-    reset_submitted_actions()
-    emit_info_all()
+def set_default_submitted_actions():
+    if round.status == RoundStatus.END:
+        submitted_actions[:] = [None, None, None, None]
+    else:
+        allowed_actions = [round.allowed_actions(seat) for seat in range(4)]
+        submitted_actions[:] = [
+            actions.default if len(actions.actions) == 1 else None
+            for actions in allowed_actions
+        ]
+
+
+def try_resolve_actions():
+    action_resolve_count = 0
+    while all(action is not None for action in submitted_actions):
+        resolve_action()
+        action_resolve_count += 1
+        set_default_submitted_actions()
+    if action_resolve_count > 0:
+        emit_info_all()
 
 
 def get_win_info():
@@ -109,7 +108,7 @@ def start_new_round():
     print("Starting new round...")
     global round
     round = Round()
-    reset_submitted_actions()
+    set_default_submitted_actions()
     emit_info_all()
 
 
@@ -143,9 +142,9 @@ def handle_action(data):
     submitted_actions[seat] = action
     print(submitted_actions)
     emit("action_received")
-    try_execute_actions()
+    try_resolve_actions()
 
 
 def run_server():
-    reset_submitted_actions()
+    set_default_submitted_actions()
     socketio.run(app, debug=True)
