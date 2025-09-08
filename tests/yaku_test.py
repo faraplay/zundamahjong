@@ -11,6 +11,7 @@ def get_yaku_mults(
     lose_player: int | None = None,
     formed_hand: list[Call],
     calls: list[Call],
+    player_count: int = 4,
     wind_round: int = 0,
     sub_round: int = 0,
     **kwargs
@@ -20,6 +21,7 @@ def get_yaku_mults(
         lose_player=lose_player,
         hand=[tile for call in formed_hand for tile in call.tiles],
         calls=calls,
+        player_count=player_count,
         wind_round=wind_round,
         sub_round=sub_round,
         **kwargs

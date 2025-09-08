@@ -35,6 +35,9 @@ class YakuCalculator:
         self._win = win
         self._formed_hand = formed_hand
 
+        self._seat = (
+            self._win.win_player - self._win.sub_round
+        ) % self._win.player_count
         self._flowers = {
             call.tiles[0] for call in win.calls if call.call_type == CallType.FLOWER
         }
@@ -276,7 +279,7 @@ class YakuCalculator:
 
     @_register_yaku("SEAT_WIND", "Seat Wind", 1)
     def _player_wind(self):
-        return self._yakuhai(self._win.win_player + 31)
+        return self._yakuhai(self._seat + 31)
 
     @_register_yaku("PREVALENT_WIND", "Prevalent Wind", 1)
     def _prevalent_wind(self):
@@ -342,7 +345,7 @@ class YakuCalculator:
 
     @_register_yaku("SEAT_FLOWER", "Seat Flower", 1)
     def _player_flower(self):
-        return sum((tile - 41) % 4 == self._win.win_player for tile in self._flowers)
+        return sum((tile - 41) % 4 == self._seat for tile in self._flowers)
 
     @_register_yaku("SET_OF_FLOWERS", "Set of Flowers", 2)
     def _set_of_flowers(self):

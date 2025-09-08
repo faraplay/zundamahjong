@@ -18,6 +18,7 @@ class ScoringTest(unittest.TestCase):
             calls=[
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            player_count=4,
             wind_round=0,
             sub_round=0,
         )
@@ -32,6 +33,7 @@ class ScoringTest(unittest.TestCase):
             calls=[
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            player_count=4,
             wind_round=0,
             sub_round=0,
         )
@@ -46,6 +48,7 @@ class ScoringTest(unittest.TestCase):
             calls=[
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            player_count=4,
             wind_round=0,
             sub_round=0,
         )
@@ -60,6 +63,7 @@ class ScoringTest(unittest.TestCase):
             calls=[
                 Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            player_count=4,
             wind_round=0,
             sub_round=0,
         )

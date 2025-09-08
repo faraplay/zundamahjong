@@ -9,6 +9,8 @@ class Win(BaseModel):
     lose_player: int | None
     hand: list[Tile]
     calls: list[Call]
+
+    player_count: int
     wind_round: int
     sub_round: int
     after_flower_count: int = 0
