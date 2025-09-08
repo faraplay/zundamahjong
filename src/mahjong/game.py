@@ -45,7 +45,11 @@ class Game:
         return self._win_scoring
 
     @property
-    def is_end(self):
+    def can_start_next_round(self):
+        return self._round.status == RoundStatus.END and not self.is_game_end
+
+    @property
+    def is_game_end(self):
         if self._round.status != RoundStatus.END:
             return False
         return (
@@ -60,9 +64,7 @@ class Game:
         return (seat - self._sub_round) % self._player_count
 
     def start_next_round(self, deck_tiles: list[int] | None = None):
-        if self._round.status != RoundStatus.END:
-            raise InvalidOperationException()
-        if self.is_end:
+        if not self.can_start_next_round:
             raise InvalidOperationException()
         if not self.is_dealer_repeat():
             self._wind_round, self._sub_round = self._next_round()

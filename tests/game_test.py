@@ -63,7 +63,7 @@ class GameTest(unittest.TestCase):
         game = Game(test_deck2, GameOptions(game_length=(0, 1)))
         game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
         game.round.do_action(2, Action(action_type=ActionType.RON))
-        self.assertTrue(game.is_end)
+        self.assertTrue(game.is_game_end)
 
     def test_cannot_start_next_round_at_end(self):
         game = Game(test_deck2, GameOptions(game_length=(0, 1)))
@@ -84,11 +84,11 @@ class GameTest(unittest.TestCase):
         game.round.do_action(2, Action(action_type=ActionType.RON))
         game.start_next_round(test_deck6)
         game.round.do_action(0, Action(action_type=ActionType.TSUMO))
-        self.assertFalse(game.is_end)
+        self.assertFalse(game.is_game_end)
         game.start_next_round(test_deck2)
         game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
         game.round.do_action(2, Action(action_type=ActionType.RON))
-        self.assertTrue(game.is_end)
+        self.assertTrue(game.is_game_end)
 
     def test_draw_count(self):
         game = Game(test_deck4)
