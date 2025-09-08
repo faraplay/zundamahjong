@@ -21,6 +21,10 @@ class Game:
         self._create_round(first_deck_tiles)
 
     @property
+    def player_count(self):
+        return self._player_count
+
+    @property
     def wind_round(self):
         return self._wind_round
 
