@@ -46,6 +46,7 @@ def _register_do_action(action_type: ActionType):
 class Round:
     def __init__(
         self,
+        *,
         wind_round: int = 0,
         sub_round: int = 0,
         tiles: list[int] | None = None,

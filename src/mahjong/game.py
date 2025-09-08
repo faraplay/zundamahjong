@@ -8,6 +8,7 @@ from .scoring import ScoringHand
 class Game:
     def __init__(
         self,
+        *,
         first_deck_tiles: list[Tile] | None = None,
         options: GameOptions = GameOptions(),
     ):
