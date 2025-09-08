@@ -17,7 +17,7 @@ socket.on('round_info', (round_info) => {
 
 socket.on('win_info', (win_info) => {
     console.log(win_info);
-    round_info_div.hidden = true;
+    // round_info_div.hidden = true;
     win_info_div.hidden = false;
     setWinInfo(win_info);
 })
