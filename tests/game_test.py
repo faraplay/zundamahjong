@@ -16,9 +16,9 @@ class GameTest(unittest.TestCase):
         self.assertEqual(game.sub_round, 0)
         self.assertSequenceEqual(game.player_scores, [0, 0, 0, 0])
 
-    def test_no_winscoring_during_first_round(self):
+    def test_no_win_during_first_round(self):
         game = Game(test_deck2)
-        self.assertIsNone(game.win_scoring)
+        self.assertIsNone(game.win)
 
     def test_cannot_start_next_round_during_round(self):
         game = Game(test_deck2)
@@ -29,10 +29,8 @@ class GameTest(unittest.TestCase):
         game = Game(test_deck2)
         game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
         game.round.do_action(2, Action(action_type=ActionType.RON))
-        self.assertIsNotNone(game.win_scoring)
-        self.assertSequenceEqual(
-            game.player_scores, game.win_scoring.scoring.player_scores
-        )
+        self.assertIsNotNone(game.win)
+        self.assertSequenceEqual(game.player_scores, game.scoring.player_scores)
 
     def test_dealer_repeat_next_round(self):
         game = Game(test_deck6)
