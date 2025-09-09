@@ -20,7 +20,7 @@ function createTableTileElement(tile) {
 }
 
 function setDiscards(discards) {
-    for (var player = 0; player < 4; ++player) {
+    for (var player = 0; player < player_count; ++player) {
         const player_discard_tiles =
             discards.filter(discard => discard.player == player)
                 .map(discard => discard.tile);
@@ -40,7 +40,7 @@ function createTableCallElement(call) {
 }
 
 function setCalls(calls) {
-    for (var player = 0; player < 4; ++player) {
+    for (var player = 0; player < player_count; ++player) {
         player_calls_elements[player].replaceChildren(
             ...calls[player].map(createTableCallElement)
         )

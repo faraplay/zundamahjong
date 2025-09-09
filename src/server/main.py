@@ -11,15 +11,15 @@ from ..mahjong.game import Game, GameOptions
 app = Flask(__name__)
 socketio = SocketIO(app)
 
-game = Game()
+game = Game(options=GameOptions(player_count=3))
 
 sid_players: dict[str, int] = {}
-submitted_actions = [None, None, None, None]
+submitted_actions = []
 
 
 def resolve_action():
     player, action = game.round.get_priority_action(
-        [submitted_actions[player] for player in range(4)]
+        [submitted_actions[player] for player in range(game.player_count)]
     )
     game.round.do_action(player, action)
     game.round.display_info()
@@ -27,9 +27,11 @@ def resolve_action():
 
 def set_default_submitted_actions():
     if game.round.status == RoundStatus.END:
-        submitted_actions[:] = [None, None, None, None]
+        submitted_actions[:] = [None] * game.player_count
     else:
-        allowed_actions = [game.round.allowed_actions(player) for player in range(4)]
+        allowed_actions = [
+            game.round.allowed_actions(player) for player in range(game.player_count)
+        ]
         submitted_actions[:] = [
             actions.default if len(actions.actions) == 1 else None
             for actions in allowed_actions
@@ -67,7 +69,7 @@ def get_round_info(player: int):
     discards = [discard.model_dump() for discard in game.round.discards]
     calls = [
         [call.model_dump() for call in game.round.get_calls(player)]
-        for player in range(4)
+        for player in range(game.player_count)
     ]
     if game.round.status == RoundStatus.END:
         actions = None
@@ -77,6 +79,7 @@ def get_round_info(player: int):
         ]
     action_selected = submitted_actions[player] is not None
     return {
+        "player_count": game.player_count,
         "player": player,
         "wind_round": game.wind_round,
         "sub_round": game.sub_round,
@@ -145,7 +148,7 @@ def handle_set_player(data):
     print(f"Received set_player from {request.sid}: {data}")
     try:
         player = int(data)
-        if player not in range(4):
+        if player not in range(game.player_count):
             print("Invalid player number!", player)
             return
     except ValueError:

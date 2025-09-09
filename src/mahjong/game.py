@@ -11,6 +11,7 @@ from .scoring import Scoring, Scorer
 class Game:
     def __init__(
         self,
+        *,
         first_deck_tiles: list[Tile] | None = None,
         options: GameOptions = GameOptions(),
     ):
@@ -23,6 +24,10 @@ class Game:
         self._scoring: Optional[Scoring] = None
         self._draw_count: int = 0
         self._create_round(first_deck_tiles)
+
+    @property
+    def player_count(self):
+        return self._player_count
 
     @property
     def wind_round(self):
