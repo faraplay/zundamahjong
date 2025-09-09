@@ -52,13 +52,18 @@ function createYakuElement(yakuhan) {
     return yaku_element;
 }
 
-function createPlayerScoreElement(player, new_score, score_change, position) {
+const position_labels = ['1st', '2nd', '3rd', '4th'];
+
+function createPlayerScoreElement(
+    player, new_score, score_change, new_position
+) {
     const player_score_element = document.createElement('div');
     player_score_element.classList.add('results_player_score');
+    player_score_element.classList.add(`new_position_${new_position}`);
 
     const position_element = document.createElement('span');
     position_element.classList.add('position');
-    position_element.textContent = position;
+    position_element.textContent = position_labels[new_position];
     player_score_element.appendChild(position_element);
 
     const player_element = document.createElement('span');
@@ -87,7 +92,7 @@ function createPlayerScoreElement(player, new_score, score_change, position) {
 function setResults(win_info) {
     const player_count = 4;
     const player_scores_sort = [...win_info.player_scores.keys()].sort(
-        (a, b) => (win_info.player_scores[a] - win_info.player_scores[b])
+        (a, b) => (win_info.player_scores[b] - win_info.player_scores[a])
     );
     player_score_elements = [];
     for (let player = 0; player < player_count; ++player) {

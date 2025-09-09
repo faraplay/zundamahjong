@@ -1,4 +1,4 @@
-#win_info {
+#win_info, #results {
     --tile-width: 4cqw;
     width: 86cqw;
     height: calc(900cqw / 16 - 14cqw);
@@ -10,7 +10,7 @@
     background-color: rgba(180,180,180,80%);
 }
 
-#win_info * {
+#win_info *, #results * {
     font-family: "Contrail One", sans-serif;
     font-weight: 400;
     font-style: normal;
@@ -87,4 +87,5 @@
 
 #see_results {
     grid-column: 5;
+    font-size: 2cqw;
 }
