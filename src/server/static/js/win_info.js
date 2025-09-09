@@ -3,6 +3,7 @@ const win_info_div = document.getElementById('win_info');
 const win_hand_div = document.getElementById('win_hand');
 const win_tiles_div = document.getElementById('win_tiles');
 const win_calls_div = document.getElementById('win_calls');
+const win_flowers_div = document.getElementById('win_flowers');
 const yakus_element = document.getElementById('yakus');
 
 const win_player_indicator = document.getElementById('win_player');
@@ -110,8 +111,20 @@ function setResults(win_info) {
 
 function setWinInfo(win_info) {
     if (win_info) {
+        win_flowers_div.replaceChildren(...win_info.win.flowers.map(createStraightTileElement));
         win_tiles_div.replaceChildren(...win_info.win.hand.map(createStraightTileElement));
         win_calls_div.replaceChildren(...win_info.win.calls.map(createCallElement));
+
+        const win_hand_width = win_info.win.calls.reduce(
+            (partial_sum, call) => partial_sum + call.tiles.length + 0.5,
+            win_info.win.hand.length
+        );
+        console.log(win_hand_width + win_info.win.flowers.length);
+        if (win_hand_width + win_info.win.flowers.length >= 21.5) {
+            win_flowers_div.classList.add('overlap');
+        } else {
+            win_flowers_div.classList.remove('overlap');
+        }
         yakus_element.replaceChildren(
             ...Object.entries(win_info.scoring.yaku_hans).map(createYakuElement)
         );
