@@ -13,6 +13,7 @@ class Win(BaseModel):
     player_count: int
     wind_round: int
     sub_round: int
+    draw_count: int = 0
     after_flower_count: int = 0
     after_kan_count: int = 0
     is_chankan: bool = False

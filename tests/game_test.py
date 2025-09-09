@@ -130,3 +130,27 @@ class GameTest(unittest.TestCase):
 
         game.start_next_round(test_deck2)
         self.assertEqual(game.draw_count, 0)
+
+    def test_win_draw_count(self):
+        game = Game(first_deck_tiles=test_deck4)
+        self.assertEqual(game.draw_count, 0)
+        round = game.round
+        while round.status != RoundStatus.END:
+            actions = [round.allowed_actions(player).default for player in range(4)]
+            player, action = round.get_priority_action(actions)
+            round.do_action(player, action)
+        self.assertEqual(game.draw_count, 0)
+
+        game.start_next_round(test_deck4)
+        self.assertEqual(game.draw_count, 1)
+        round = game.round
+        while round.status != RoundStatus.END:
+            actions = [round.allowed_actions(player).default for player in range(4)]
+            player, action = round.get_priority_action(actions)
+            round.do_action(player, action)
+        self.assertEqual(game.draw_count, 1)
+
+        game.start_next_round(test_deck6)
+        self.assertEqual(game.draw_count, 2)
+        game.round.do_action(0, Action(action_type=ActionType.TSUMO))
+        self.assertEqual(game.win.draw_count, 2)

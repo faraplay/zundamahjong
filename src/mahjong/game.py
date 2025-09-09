@@ -102,6 +102,7 @@ class Game:
         self._round = Round(
             wind_round=self._wind_round % 4,
             sub_round=self._sub_round,
+            draw_count=self._draw_count,
             tiles=deck_tiles,
             options=self._options,
             round_end_callback=on_round_end,

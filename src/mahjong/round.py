@@ -49,12 +49,14 @@ class Round:
         *,
         wind_round: int = 0,
         sub_round: int = 0,
+        draw_count: int = 0,
         tiles: list[int] | None = None,
         options: GameOptions = GameOptions(),
         round_end_callback: Callable[[], None] = lambda: None,
     ):
         self._wind_round = wind_round
         self._sub_round = sub_round
+        self._draw_count = draw_count
         self._player_count = options.player_count
         self._options = options
         self._end_callback = round_end_callback
@@ -395,6 +397,7 @@ class Round:
             player_count=self._player_count,
             wind_round=self._wind_round,
             sub_round=self._sub_round,
+            draw_count=self._draw_count,
             is_chankan=is_chankan,
             is_houtei=is_houtei,
         )
@@ -437,6 +440,7 @@ class Round:
             player_count=self._player_count,
             wind_round=self._wind_round,
             sub_round=self._sub_round,
+            draw_count=self._draw_count,
             after_flower_count=after_flower_count,
             after_kan_count=after_kan_count,
             is_haitei=is_haitei,

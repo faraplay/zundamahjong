@@ -171,6 +171,27 @@ class YakuTest(TestCase):
             {"SEAT_FLOWER": 2, "SET_OF_FLOWERS": 1, "TWO_SETS_OF_FLOWERS": 1},
         )
 
+    def test_draw(self):
+        yaku_mults = get_yaku_mults(
+            win_player=0,
+            lose_player=None,
+            formed_hand=[
+                Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
+                Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
+                Call(call_type=CallType.PON, tiles=[19, 19, 19]),
+                Call(call_type=CallType.PAIR, tiles=[33, 33]),
+            ],
+            calls=[
+                Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
+                Call(call_type=CallType.FLOWER, tiles=[42]),
+            ],
+            draw_count=1,
+        )
+        self.assertDictEqual(
+            yaku_mults,
+            {"DRAW": 1},
+        )
+
     def test_after_a_flower(self):
         yaku_mults = get_yaku_mults(
             win_player=0,

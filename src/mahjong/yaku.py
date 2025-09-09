@@ -360,3 +360,7 @@ class YakuCalculator:
     @_register_yaku("TWO_SETS_OF_FLOWERS", "Two Sets of Flowers", 8)
     def _two_sets_of_flowers(self):
         return int(len(self._flowers) == 8)
+
+    @_register_yaku("DRAW", "Draw", 1)
+    def _draw(self):
+        return self._win.draw_count
