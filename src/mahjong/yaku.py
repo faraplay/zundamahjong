@@ -38,28 +38,19 @@ class YakuCalculator:
         self._seat = (
             self._win.win_player - self._win.sub_round
         ) % self._win.player_count
-        self._flowers = {
-            call.tiles[0] for call in win.calls if call.call_type == CallType.FLOWER
-        }
-        self._all_calls = self._formed_hand + self._win.calls
-        self._non_flower_calls = [
-            call for call in self._all_calls if call.call_type != CallType.FLOWER
-        ]
-        self._hand_tiles = [
-            tile for call in self._non_flower_calls for tile in call.tiles
-        ]
+        self._flowers = set(self._win.flowers)
+        self._melds = self._formed_hand + self._win.calls
+        self._hand_tiles = [tile for call in self._melds for tile in call.tiles]
         self._used_suits = set((tile // 10) * 10 for tile in self._hand_tiles)
         self._call_outsidenesses = set(
-            self._is_outside_call(call) for call in self._non_flower_calls
+            self._is_outside_call(call) for call in self._melds
         )
         self._chi_start_tiles = Counter(
-            call.tiles[0]
-            for call in self._non_flower_calls
-            if call.call_type == CallType.CHI
+            call.tiles[0] for call in self._melds if call.call_type == CallType.CHI
         )
         self._triplet_tiles = {
             call.tiles[0]
-            for call in self._non_flower_calls
+            for call in self._melds
             if call.call_type in self._triplet_types
         }
 
@@ -139,10 +130,7 @@ class YakuCalculator:
 
     @_register_yaku("FOUR_QUADS", "Four Quads", 18)
     def _four_quads(self):
-        return int(
-            sum(call.call_type in self._kan_types for call in self._non_flower_calls)
-            == 4
-        )
+        return int(sum(call.call_type in self._kan_types for call in self._melds) == 4)
 
     @_register_yaku("NINE_GATES", "Nine Gates", 11)
     def _nine_gates(self):
@@ -273,7 +261,7 @@ class YakuCalculator:
         return int(
             any(
                 (call.tiles[0] == yaku_tile and call.call_type != CallType.PAIR)
-                for call in self._all_calls
+                for call in self._melds
             )
         )
 
@@ -312,11 +300,7 @@ class YakuCalculator:
         return int(
             not self._seven_pairs()
             and not self._thirteen_orphans()
-            and all(
-                call.call_type == CallType.FLOWER
-                or call.call_type == CallType.CLOSED_KAN
-                for call in self._win.calls
-            )
+            and all(call.call_type == CallType.CLOSED_KAN for call in self._win.calls)
         )
 
     @_register_yaku("ROBBING_A_KAN", "Robbing a Kan", 1)

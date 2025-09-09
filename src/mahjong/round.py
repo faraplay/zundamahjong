@@ -107,6 +107,9 @@ class Round:
     def get_calls(self, player: int):
         return self._hands[player].calls
 
+    def get_flowers(self, player: int):
+        return self._hands[player].flowers
+
     @property
     def options(self):
         return self._options
@@ -392,6 +395,7 @@ class Round:
             lose_player=self._current_player,
             hand=list(hand.tiles) + [self._last_tile],
             calls=list(hand.calls),
+            flowers=list(hand.flowers),
             player_count=self._player_count,
             wind_round=self._wind_round,
             sub_round=self._sub_round,
@@ -434,6 +438,7 @@ class Round:
             lose_player=None,
             hand=list(hand.tiles),
             calls=list(hand.calls),
+            flowers=list(hand.flowers),
             player_count=self._player_count,
             wind_round=self._wind_round,
             sub_round=self._sub_round,

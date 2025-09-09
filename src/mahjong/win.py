@@ -9,6 +9,7 @@ class Win(BaseModel):
     lose_player: int | None
     hand: list[Tile]
     calls: list[Call]
+    flowers: list[Tile]
 
     player_count: int
     wind_round: int
