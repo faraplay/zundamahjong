@@ -43,6 +43,7 @@ class YakuTest(TestCase):
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
             ],
+            flowers=[],
         )
         self.assertDictEqual(yaku_mults, {"NO_FLOWERS": 1})
 
@@ -58,8 +59,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[41]),
             ],
+            flowers=[41],
         )
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1})
 
@@ -75,8 +76,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[44]),
             ],
+            flowers=[44],
             sub_round=1,
         )
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1})
@@ -93,9 +94,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[41]),
-                Call(call_type=CallType.FLOWER, tiles=[45]),
             ],
+            flowers=[41, 45],
         )
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 2})
 
@@ -111,11 +111,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[41]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
-                Call(call_type=CallType.FLOWER, tiles=[43]),
-                Call(call_type=CallType.FLOWER, tiles=[44]),
             ],
+            flowers=[41, 42, 43, 44],
         )
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1})
 
@@ -131,14 +128,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[41]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
-                Call(call_type=CallType.FLOWER, tiles=[43]),
-                Call(call_type=CallType.FLOWER, tiles=[44]),
-                Call(call_type=CallType.FLOWER, tiles=[46]),
-                Call(call_type=CallType.FLOWER, tiles=[47]),
-                Call(call_type=CallType.FLOWER, tiles=[48]),
             ],
+            flowers=[41, 42, 43, 44, 46, 47, 48],
         )
         self.assertDictEqual(
             yaku_mults, {"SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1, "SEVEN_FLOWERS": 1}
@@ -156,15 +147,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[41]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
-                Call(call_type=CallType.FLOWER, tiles=[43]),
-                Call(call_type=CallType.FLOWER, tiles=[44]),
-                Call(call_type=CallType.FLOWER, tiles=[45]),
-                Call(call_type=CallType.FLOWER, tiles=[46]),
-                Call(call_type=CallType.FLOWER, tiles=[47]),
-                Call(call_type=CallType.FLOWER, tiles=[48]),
             ],
+            flowers=[41, 42, 43, 44, 45, 46, 47, 48],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -204,8 +188,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
             after_flower_count=1,
         )
         self.assertDictEqual(
@@ -225,8 +209,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
             after_kan_count=1,
         )
         self.assertDictEqual(
@@ -246,8 +230,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[44]),
             ],
+            flowers=[44],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -266,8 +250,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[44]),
             ],
+            flowers=[44],
             sub_round=1,
         )
         self.assertDictEqual(
@@ -287,8 +271,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[44]),
             ],
+            flowers=[44],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -307,8 +291,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -327,8 +311,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -347,8 +331,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -367,8 +351,8 @@ class YakuTest(TestCase):
                 Call(call_type=CallType.CHI, tiles=[1, 2, 3]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(yaku_mults, {"EYES": 1})
 
@@ -384,8 +368,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CLOSED_KAN, tiles=[19, 19, 19, 19]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(yaku_mults, {"NO_CALLS": 1})
 
@@ -401,8 +385,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CLOSED_KAN, tiles=[19, 19, 19, 19]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(yaku_mults, {"NO_CALLS": 1})
 
@@ -418,8 +402,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
             is_chankan=True,
         )
         self.assertDictEqual(yaku_mults, {"ROBBING_A_KAN": 1})
@@ -436,8 +420,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
             is_haitei=True,
         )
         self.assertDictEqual(yaku_mults, {"UNDER_THE_SEA": 1})
@@ -454,8 +438,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
             is_houtei=True,
         )
         self.assertDictEqual(yaku_mults, {"UNDER_THE_RIVER": 1})
@@ -472,8 +456,8 @@ class YakuTest(TestCase):
                 Call(call_type=CallType.CHI, tiles=[14, 15, 16]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(yaku_mults, {"ALL_RUNS": 1})
 
@@ -489,8 +473,8 @@ class YakuTest(TestCase):
             calls=[
                 Call(call_type=CallType.PON, tiles=[15, 15, 15]),
                 Call(call_type=CallType.CHI, tiles=[15, 16, 17]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(yaku_mults, {"ALL_SIMPLES": 1})
 
@@ -506,8 +490,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[27, 28, 29]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(yaku_mults, {"PURE_STRAIGHT": 1})
 
@@ -523,8 +507,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.PON, tiles=[23, 23, 23]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(yaku_mults, {"ALL_TRIPLETS": 1})
 
@@ -540,8 +524,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[3, 4, 5]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(yaku_mults, {"HALF_FLUSH": 1})
 
@@ -557,8 +541,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[3, 4, 5]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(yaku_mults, {"FULL_FLUSH": 1})
 
@@ -575,9 +559,8 @@ class YakuTest(TestCase):
                 Call(call_type=CallType.PAIR, tiles=[22, 22]),
                 Call(call_type=CallType.PAIR, tiles=[31, 31]),
             ],
-            calls=[
-                Call(call_type=CallType.FLOWER, tiles=[42]),
-            ],
+            calls=[],
+            flowers=[42],
         )
         self.assertDictEqual(yaku_mults, {"SEVEN_PAIRS": 1})
 
@@ -593,8 +576,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[27, 28, 29]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -613,8 +596,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[27, 28, 29]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -633,8 +616,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -653,8 +636,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -673,8 +656,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -693,8 +676,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.PON, tiles=[29, 29, 29]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -713,8 +696,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.PON, tiles=[29, 29, 29]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
         )
         self.assertDictEqual(
             yaku_mults,

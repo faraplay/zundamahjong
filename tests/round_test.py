@@ -197,20 +197,13 @@ class RoundTest(unittest.TestCase):
         self.assertCountEqual(
             round.get_hand(0), [1, 1, 1, 1, 4, 4, 4, 4, 7, 7, 7, 9, 13, 36]
         )
-        self.assertCountEqual(
-            round.get_calls(0),
-            [
-                Call(call_type=CallType.FLOWER, tiles=[41]),
-                Call(call_type=CallType.FLOWER, tiles=[43]),
-            ],
-        )
+        self.assertCountEqual(round.get_calls(0), [])
+        self.assertCountEqual(round.get_flowers(0), [41, 43])
         self.assertCountEqual(
             round.get_hand(1), [2, 2, 2, 2, 5, 5, 5, 5, 7, 13, 13, 13, 37]
         )
-        self.assertCountEqual(
-            round.get_calls(1),
-            [Call(call_type=CallType.FLOWER, tiles=[42])],
-        )
+        self.assertCountEqual(round.get_calls(1), [])
+        self.assertCountEqual(round.get_flowers(1), [42])
         self.assertCountEqual(
             round.get_hand(2), [11, 11, 11, 12, 12, 12, 14, 15, 31, 31, 32, 32, 32]
         )
@@ -370,23 +363,14 @@ class RoundTest(unittest.TestCase):
     def test_start_flower_call(self):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
-        self.assertCountEqual(
-            round.get_calls(0), [Call(call_type=CallType.FLOWER, tiles=[41])]
-        )
+        self.assertCountEqual(round.get_flowers(0), [41])
 
     def test_start_flower_calls(self):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=44))
-        self.assertCountEqual(
-            round.get_calls(0),
-            [
-                Call(call_type=CallType.FLOWER, tiles=[41]),
-                Call(call_type=CallType.FLOWER, tiles=[43]),
-                Call(call_type=CallType.FLOWER, tiles=[44]),
-            ],
-        )
+        self.assertCountEqual(round.get_flowers(0), [41, 43, 44])
 
     def test_start_flower_next_player(self):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
@@ -398,9 +382,7 @@ class RoundTest(unittest.TestCase):
         self.assertCountEqual(
             round.get_hand(1), [2, 2, 2, 2, 6, 6, 6, 6, 12, 12, 12, 12, 35]
         )
-        self.assertCountEqual(
-            round.get_calls(1), [Call(call_type=CallType.FLOWER, tiles=[42])]
-        )
+        self.assertCountEqual(round.get_flowers(1), [42])
 
     def test_start_flower_pass_all(self):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
@@ -455,9 +437,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         round.do_action(2, Action(action_type=ActionType.DRAW))
         round.do_action(2, Action(action_type=ActionType.FLOWER, tile=45))
-        self.assertCountEqual(
-            round.get_calls(2), [Call(call_type=CallType.FLOWER, tiles=[45])]
-        )
+        self.assertCountEqual(round.get_flowers(2), [45])
         self.assertCountEqual(
             round.get_hand(2), [3, 3, 3, 3, 7, 7, 7, 7, 9, 13, 13, 13, 13, 46]
         )

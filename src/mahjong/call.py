@@ -11,8 +11,7 @@ class CallType(IntEnum):
     OPEN_KAN = 3
     ADD_KAN = 4
     CLOSED_KAN = 5
-    FLOWER = 6
-    THIRTEEN_ORPHANS = 7
+    THIRTEEN_ORPHANS = 6
 
 
 class Call(BaseModel):

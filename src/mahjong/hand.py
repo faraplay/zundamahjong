@@ -11,6 +11,7 @@ class Hand:
         self._deck = deck
         self._tiles: list[Tile] = []
         self._calls: list[Call] = []
+        self._flowers: list[Tile] = []
 
     @property
     def tiles(self) -> Sequence[Tile]:
@@ -19,6 +20,10 @@ class Hand:
     @property
     def calls(self) -> Sequence[Call]:
         return self._calls
+
+    @property
+    def flowers(self) -> Sequence[Tile]:
+        return self._flowers
 
     def sort(self):
         self._tiles.sort()
@@ -146,6 +151,6 @@ class Hand:
         assert is_flower(tile)
         assert tile in self._tiles
         self._tiles.remove(tile)
-        self._calls.append(Call(call_type=CallType.FLOWER, tiles=[tile]))
+        self._flowers.append(tile)
         self.sort()
         self._draw_from_back()
