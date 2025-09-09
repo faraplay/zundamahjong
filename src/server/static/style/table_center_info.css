@@ -23,7 +23,8 @@
     top: 6cqw;
     margin: 0;
     text-align: center;
-    font-size: 2.5cqw;
+    white-space: pre;
+    font-size: 2cqw;
 }
 
 #table_center_info #tiles_left {

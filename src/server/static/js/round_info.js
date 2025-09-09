@@ -30,7 +30,8 @@ function setScores(scores) {
 function setRoundInfo(round_info) {
     round_info_div.className = `me_player_${round_info.player}`;
     player_indicator.textContent = `You are Player ${round_info.player}`;
-    wind_sub_round_element.textContent = `${player_winds[round_info.wind_round]}${round_info.sub_round + 1}`
+    wind_sub_round_element.textContent =
+        `${player_winds[round_info.wind_round]}${round_info.sub_round + 1}-${round_info.draw_count}`;
     tiles_left_indicator.textContent = round_info.tiles_left;
     setPlayerWindIndicators(round_info.sub_round)
     setScores(round_info.player_scores)

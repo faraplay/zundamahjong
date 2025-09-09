@@ -81,6 +81,7 @@ def get_round_info(player: int):
         "player": player,
         "wind_round": game.wind_round,
         "sub_round": game.sub_round,
+        "draw_count": game.draw_count,
         "player_scores": game.player_scores,
         "tiles_left": game.round.tiles_left,
         "current_player": game.round.current_player,
