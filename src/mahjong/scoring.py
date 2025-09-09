@@ -29,7 +29,7 @@ class ScoringHand:
         lose_player = self._win.lose_player
         han_multiplier = 2 ** min(han_total, 6)
         if lose_player is None:
-            if win_player == 0:
+            if win_player == self._win.sub_round:
                 player_pay_in_amount = (
                     self._options.score_dealer_tsumo_base_value * han_multiplier
                 )
@@ -50,7 +50,7 @@ class ScoringHand:
                     player_count - 2
                 ) * player_pay_in_amount + dealer_pay_in_amount
         else:
-            if win_player == 0:
+            if win_player == self._win.sub_round:
                 player_pay_in_amount = (
                     self._options.score_dealer_ron_base_value * han_multiplier
                 )
