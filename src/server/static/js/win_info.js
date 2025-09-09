@@ -7,6 +7,7 @@ const yakus_element = document.getElementById('yakus');
 
 const win_player_indicator = document.getElementById('win_player');
 const total_han_element = document.getElementById('total_han');
+const tsumo_or_ron_element = document.getElementById('tsumo_or_ron');
 const total_score_element = document.getElementById('total_score');
 
 const next_round_button = document.getElementById('next_round');
@@ -53,6 +54,7 @@ function setWinInfo(win_info) {
 
         win_player_indicator.textContent = `Player ${win_info.win.win_player} wins!`;
         total_han_element.textContent = `${win_info.scoring.han_total} han`;
+        tsumo_or_ron_element.textContent = win_info.win.lose_player ? "Ron" : "Tsumo";
         total_score_element.textContent =
             win_info.scoring.player_scores[win_info.win.win_player];
     } else {
