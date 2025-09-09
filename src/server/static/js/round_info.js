@@ -46,6 +46,12 @@ function setRoundInfo(round_info) {
         setActions([], 0)
     } else {
         setHand(round_info.hand);
+        if (!(round_info.current_player == round_info.player
+            && (round_info.status == round_status.PLAY
+                || round_info.status == round_status.CALLED_PLAY)
+        )) {
+            disableHandDiscards();
+        }
         if (round_info.discards.length > 0) {
             last_discard = round_info.discards.at(-1).tile;
         } else {
