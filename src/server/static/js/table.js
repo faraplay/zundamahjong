@@ -4,6 +4,9 @@ const player_discards_elements = [0, 1, 2, 3].map(
 const player_calls_elements = [0, 1, 2, 3].map(
     player => document.querySelector(`.player_calls.player_${player}`)
 );
+const player_flowers_elements = [0, 1, 2, 3].map(
+    player => document.querySelector(`.player_flowers.player_${player}`)
+);
 
 function createTableTileElement(tile) {
     const tile_element = createTileElement(tile);
@@ -43,6 +46,14 @@ function setCalls(calls) {
     for (var player = 0; player < player_count; ++player) {
         player_calls_elements[player].replaceChildren(
             ...calls[player].map(createTableCallElement)
+        )
+    }
+}
+
+function setFlowers(flowers) {
+    for (var player = 0; player < player_count; ++player) {
+        player_flowers_elements[player].replaceChildren(
+            ...flowers[player].map(createTableTileElement)
         )
     }
 }

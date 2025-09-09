@@ -65,7 +65,6 @@ const call_types = [
     "OPEN_KAN",
     "ADD_KAN",
     "CLOSED_KAN",
-    "FLOWER",
     "THIRTEEN_ORPHANS",
 ];
 

@@ -42,6 +42,7 @@ function setRoundInfo(round_info) {
 
     setDiscards(round_info.discards);
     setCalls(round_info.calls);
+    setFlowers(round_info.flowers);
 
     if (round_info.status == round_status.END) {
         setHand([]);

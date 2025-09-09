@@ -71,6 +71,7 @@ def get_round_info(player: int):
         [call.model_dump() for call in game.round.get_calls(player)]
         for player in range(game.player_count)
     ]
+    flowers = [game.round.get_flowers(player) for player in range(game.player_count)]
     if game.round.status == RoundStatus.END:
         actions = None
     else:
@@ -91,6 +92,7 @@ def get_round_info(player: int):
         "history": history,
         "discards": discards,
         "calls": calls,
+        "flowers": flowers,
         "actions": actions,
         "action_selected": action_selected,
     }
