@@ -91,7 +91,6 @@ function createPlayerScoreElement(
 }
 
 function setResults(win_info) {
-    const player_count = 4;
     const player_scores_sort = [...win_info.player_scores.keys()].sort(
         (a, b) => (win_info.player_scores[b] - win_info.player_scores[a])
     );
