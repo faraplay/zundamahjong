@@ -2,7 +2,7 @@ from pydantic import BaseModel
 
 from .call import Call
 from .win import Win
-from .yaku import YakuCalculator
+from .yaku import YakuCalculator, yaku_display_names
 from .game_options import GameOptions
 from .form_hand import formed_hand_possibilities
 
@@ -62,7 +62,9 @@ class Scorer:
         yaku_mults = YakuCalculator(self._win, formed_hand).get_yaku_mults()
         yaku_values = self._options.yaku_values
         yaku_hans = dict(
-            (yaku, yaku_values[yaku] * yaku_mults[yaku]) for yaku in yaku_mults.keys()
+            (yaku_display_names[yaku], yaku_values[yaku] * yaku_mults[yaku])
+            for yaku in yaku_mults.keys()
+            if yaku_values[yaku] != 0
         )
         han_total = sum(yaku_hans.values())
         player_scores = self._get_player_scores(han_total)
