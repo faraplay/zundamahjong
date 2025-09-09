@@ -90,17 +90,17 @@ function createPlayerScoreElement(
     return player_score_element;
 }
 
-function setResults(win_info) {
-    const player_scores_sort = [...win_info.player_scores.keys()].sort(
-        (a, b) => (win_info.player_scores[b] - win_info.player_scores[a])
+function setResults(player_scores, score_changes) {
+    const player_scores_sort = [...player_scores.keys()].sort(
+        (a, b) => (player_scores[b] - player_scores[a])
     );
     player_score_elements = [];
     for (let player = 0; player < player_count; ++player) {
         player_score_elements.push(
             createPlayerScoreElement(
                 player,
-                win_info.player_scores[player],
-                win_info.scoring.player_scores[player],
+                player_scores[player],
+                score_changes[player],
                 player_scores_sort.indexOf(player)
             )
         );
@@ -108,7 +108,7 @@ function setResults(win_info) {
     player_scores_div.replaceChildren(...player_score_elements);
 }
 
-function setWinInfo(win_info) {
+function setWinInfo(player_scores, win_info) {
     if (win_info) {
         win_tiles_div.replaceChildren(...win_info.win.hand.map(createStraightTileElement));
         win_calls_div.replaceChildren(...win_info.win.calls.map(createCallElement));
@@ -121,8 +121,16 @@ function setWinInfo(win_info) {
         tsumo_or_ron_element.textContent = win_info.win.lose_player ? "Ron" : "Tsumo";
         total_score_element.textContent =
             win_info.scoring.player_scores[win_info.win.win_player];
-        setResults(win_info);
+        setResults(player_scores, win_info.scoring.player_scores);
     } else {
+        win_tiles_div.replaceChildren();
+        win_calls_div.replaceChildren();
+        yakus_element.replaceChildren();
+
         win_player_indicator.textContent = "The round is a draw...";
+        total_han_element.textContent = "";
+        tsumo_or_ron_element.textContent = "";
+        total_score_element.textContent = "";
+        setResults(player_scores, Array(player_count).fill(0));
     }
 }

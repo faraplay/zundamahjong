@@ -17,7 +17,7 @@ socket.on('info', (info) => {
     if (round_info.action_selected) {
         disableActions();
     }
-    setWinInfo(info.win_info);
+    setWinInfo(info.round_info.player_scores, info.win_info);
 })
 
 socket.on('action_received', () => {

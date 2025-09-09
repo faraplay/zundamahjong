@@ -17,6 +17,7 @@
 }
 
 #win_hand {
+    height: calc(1.5*var(--tile-width));
     display: flex;
 }
 
