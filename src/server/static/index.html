@@ -65,32 +65,24 @@
         <h3>Calls</h3>
         <div id="calls_list">
           <h4>Player 0</h4>
-          <div class="player_calls player_0">
-          </div>
+          <div class="player_calls player_0"></div>
           <h4>Player 1</h4>
-          <div class="player_calls player_1">
-          </div>
+          <div class="player_calls player_1"></div>
           <h4>Player 2</h4>
-          <div class="player_calls player_2">
-          </div>
+          <div class="player_calls player_2"></div>
           <h4>Player 3</h4>
-          <div class="player_calls player_3">
-          </div>
+          <div class="player_calls player_3"></div>
         </div>
         <h3>Discards</h3>
         <div id="discard_pool">
           <h4>Player 0</h4>
-          <div class="player_discards player_0">
-          </div>
+          <div class="player_discards player_0"></div>
           <h4>Player 1</h4>
-          <div class="player_discards player_1">
-          </div>
+          <div class="player_discards player_1"></div>
           <h4>Player 2</h4>
-          <div class="player_discards player_2">
-          </div>
+          <div class="player_discards player_2"></div>
           <h4>Player 3</h4>
-          <div class="player_discards player_3">
-          </div>
+          <div class="player_discards player_3"></div>
         </div>
       </div>
       <div>
@@ -108,8 +100,12 @@
         <div id="win_player"></div>
         <div id="total_han"></div>
         <div id="total_score"></div>
-        <button id="next_round">Start next round</button>
+        <button id="see_results">Next</button>
       </div>
+    </div>
+    <div id="results" hidden>
+      <div id="results_player_scores"></div>
+      <button id="next_round">Start next round</button>
     </div>
   </div>
   <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>

@@ -48,6 +48,7 @@ def try_resolve_actions():
 
 def get_win_info():
     return {
+        "player_scores": game.player_scores,
         "win": game.win.model_dump(),
         "scoring": game.scoring.model_dump(),
     }

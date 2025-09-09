@@ -8,8 +8,17 @@ const yakus_element = document.getElementById('yakus');
 const win_player_indicator = document.getElementById('win_player');
 const total_han_element = document.getElementById('total_han');
 const total_score_element = document.getElementById('total_score');
+const see_results_button = document.getElementById('see_results');
 
+const results_div = document.getElementById('results');
+const player_scores_div = document.getElementById('results_player_scores');
 const next_round_button = document.getElementById('next_round');
+
+see_results_button.addEventListener('click', (e) => {
+    e.preventDefault();
+    win_info_div.hidden = true;
+    results_div.hidden = false;
+});
 
 next_round_button.addEventListener('click', (e) => {
     e.preventDefault();
@@ -43,6 +52,57 @@ function createYakuElement(yakuhan) {
     return yaku_element;
 }
 
+function createPlayerScoreElement(player, new_score, score_change, position) {
+    const player_score_element = document.createElement('div');
+    player_score_element.classList.add('results_player_score');
+
+    const position_element = document.createElement('span');
+    position_element.classList.add('position');
+    position_element.textContent = position;
+    player_score_element.appendChild(position_element);
+
+    const player_element = document.createElement('span');
+    player_element.classList.add('player');
+    player_element.textContent = `Player ${player}`;
+    player_score_element.appendChild(player_element);
+
+    const old_score_element = document.createElement('span');
+    old_score_element.classList.add('old_score');
+    old_score_element.textContent = `${new_score - score_change}`;
+    player_score_element.appendChild(old_score_element);
+
+    const score_change_element = document.createElement('span');
+    score_change_element.classList.add('score_change');
+    score_change_element.textContent = `${score_change >= 0 ? '+' : ''}${score_change}`;
+    player_score_element.appendChild(score_change_element);
+
+    const new_score_element = document.createElement('span');
+    new_score_element.classList.add('new_score');
+    new_score_element.textContent = new_score;
+    player_score_element.appendChild(new_score_element);
+
+    return player_score_element;
+}
+
+function setResults(win_info) {
+    const player_count = 4;
+    const player_scores_sort = [...win_info.player_scores.keys()].sort(
+        (a, b) => (win_info.player_scores[a] - win_info.player_scores[b])
+    );
+    player_score_elements = [];
+    for (let player = 0; player < player_count; ++player) {
+        player_score_elements.push(
+            createPlayerScoreElement(
+                player,
+                win_info.player_scores[player],
+                win_info.scoring.player_scores[player],
+                player_scores_sort.indexOf(player)
+            )
+        );
+    }
+    player_scores_div.replaceChildren(...player_score_elements);
+}
+
 function setWinInfo(win_info) {
     if (win_info.win) {
         win_tiles_div.replaceChildren(...win_info.win.hand.map(createStraightTileElement));
@@ -55,6 +115,7 @@ function setWinInfo(win_info) {
         total_han_element.textContent = `${win_info.scoring.han_total} han`;
         total_score_element.textContent =
             win_info.scoring.player_scores[win_info.win.win_player];
+        setResults(win_info);
     } else {
         win_player_indicator.textContent = "The round is a draw...";
     }

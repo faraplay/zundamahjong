@@ -85,7 +85,6 @@
     font-size: 3cqw;
 }
 
-#next_round {
+#see_results {
     grid-column: 5;
-    justify-self: center;
 }
