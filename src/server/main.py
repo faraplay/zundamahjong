@@ -51,6 +51,7 @@ def get_win_info():
         None
         if game.win is None
         else {
+            "player_scores": game.player_scores,
             "win": game.win.model_dump(),
             "scoring": game.scoring.model_dump(),
         }

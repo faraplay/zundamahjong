@@ -12,6 +12,7 @@ socket.on('info', (info) => {
     } else {
         win_info_div.hidden = true;
     }
+    results_div.hidden = true;
     setRoundInfo(info.round_info);
     if (round_info.action_selected) {
         disableActions();
