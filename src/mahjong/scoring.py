@@ -2,28 +2,23 @@ from pydantic import BaseModel
 
 from .call import Call
 from .win import Win
-from .yaku import YakuCalculator
+from .yaku import YakuCalculator, yaku_display_names
 from .game_options import GameOptions
 from .form_hand import formed_hand_possibilities
 
 
-class Score(BaseModel):
+class Scoring(BaseModel):
     yaku_hans: dict[str, int]
     han_total: int
     player_scores: list[float]
 
 
-class WinScoreInfo(BaseModel):
-    win: Win
-    scoring: Score
-
-
-class ScoringHand:
+class Scorer:
     def __init__(self, win: Win, options: GameOptions):
         self._win = win
         self._options = options
 
-    def get_player_scores(self, han_total: int):
+    def _get_player_scores(self, han_total: int):
         player_count = self._options.player_count
         win_player = self._win.win_player
         lose_player = self._win.lose_player
@@ -63,26 +58,31 @@ class ScoringHand:
             player_scores[lose_player] = -player_pay_in_amount
         return player_scores
 
-    def get_scoring(self, formed_hand: list[Call]):
+    def _get_formed_hand_scoring(self, formed_hand: list[Call]):
         yaku_mults = YakuCalculator(self._win, formed_hand).get_yaku_mults()
         yaku_values = self._options.yaku_values
         yaku_hans = dict(
-            (yaku, yaku_values[yaku] * yaku_mults[yaku]) for yaku in yaku_mults.keys()
+            (yaku_display_names[yaku], yaku_values[yaku] * yaku_mults[yaku])
+            for yaku in yaku_mults.keys()
+            if yaku_values[yaku] != 0
         )
         han_total = sum(yaku_hans.values())
-        player_scores = self.get_player_scores(han_total)
-        return Score(
+        player_scores = self._get_player_scores(han_total)
+        return Scoring(
             yaku_hans=yaku_hans, han_total=han_total, player_scores=player_scores
         )
 
-    def get_win_scoring(self):
+    def _get_win_scoring(self):
         scorings = [
-            self.get_scoring(formed_hand)
+            self._get_formed_hand_scoring(formed_hand)
             for formed_hand in formed_hand_possibilities(self._win.hand)
         ]
 
-        def score_key(score: Score):
-            return (score.han_total, score.player_scores[self._win.win_player])
+        def score_key(scoring: Scoring):
+            return (scoring.han_total, scoring.player_scores[self._win.win_player])
 
-        scoring = max(scorings, key=score_key)
-        return WinScoreInfo(win=self._win, scoring=scoring)
+        return max(scorings, key=score_key)
+
+    @classmethod
+    def score(cls, win, options):
+        return cls(win, options)._get_win_scoring()

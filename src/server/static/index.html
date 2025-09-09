@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width,height=device-height,initial-scale=1.0">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Chiron+GoRound+TC:wght@600&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap&family=Chiron+GoRound+TC:wght@600&display=swap&family=Contrail+One&display=swap"
+    rel="stylesheet">
   <link href="style/style.css" rel="stylesheet" />
   <link href="style/straight_view.css" rel="stylesheet" />
   <link href="style/hand.css" rel="stylesheet" />
@@ -15,6 +16,7 @@
   <link href="style/table_center_info.css" rel="stylesheet" />
   <link href="style/player_calls.css" rel="stylesheet" />
   <link href="style/discard_pool.css" rel="stylesheet" />
+  <link href="style/win_info.css" rel="stylesheet" />
   <title>Mahjong</title>
 </head>
 
@@ -29,77 +31,87 @@
     <button>Send</button>
   </form>
   <p id="player_indicator">Select a player...</p>
-  <div id="round_info" class="me_player_0">
-    <div id="straight_view">
-      <h3>Your hand</h3>
-      <div id="hand"></div>
-      <h3>Actions</h3>
-      <div id="actions"></div>
-      <div id="actions_disambiguation"></div>
-    </div>
-    <div id="table">
-      <div id="table_center_info">
-        <h4>Current round</h4>
-        <p id="wind_sub_round">東1</p>
-        <h4>Tiles left</h4>
-        <p id="tiles_left"></p>
-        <h3>Scores</h3>
-        <div id="scores">
+  <div id="view">
+    <div id="round_info" class="me_player_0">
+      <div id="round_hand_actions" class="straight_view">
+        <h3>Your hand</h3>
+        <div id="hand"></div>
+        <h3>Actions</h3>
+        <div id="actions"></div>
+        <div id="actions_disambiguation"></div>
+      </div>
+      <div id="table">
+        <div id="table_center_info">
+          <h4>Current round</h4>
+          <p id="wind_sub_round">東1</p>
+          <h4>Tiles left</h4>
+          <p id="tiles_left"></p>
+          <h3>Scores</h3>
+          <div id="scores">
+            <h4>Player 0</h4>
+            <span class="player_indicator player_0">東</span>
+            <span class="score player_0">0</span>
+            <h4>Player 1</h4>
+            <span class="player_indicator player_1">南</span>
+            <span class="score player_1">0</span>
+            <h4>Player 2</h4>
+            <span class="player_indicator player_2">西</span>
+            <span class="score player_2">0</span>
+            <h4>Player 3</h4>
+            <span class="player_indicator player_3">北</span>
+            <span class="score player_3">0</span>
+          </div>
+        </div>
+        <h3>Calls</h3>
+        <div id="calls_list">
           <h4>Player 0</h4>
-          <span class="player_indicator player_0">東</span>
-          <span class="score player_0">0</span>
+          <div class="player_calls player_0">
+          </div>
           <h4>Player 1</h4>
-          <span class="player_indicator player_1">南</span>
-          <span class="score player_1">0</span>
+          <div class="player_calls player_1">
+          </div>
           <h4>Player 2</h4>
-          <span class="player_indicator player_2">西</span>
-          <span class="score player_2">0</span>
+          <div class="player_calls player_2">
+          </div>
           <h4>Player 3</h4>
-          <span class="player_indicator player_3">北</span>
-          <span class="score player_3">0</span>
+          <div class="player_calls player_3">
+          </div>
+        </div>
+        <h3>Discards</h3>
+        <div id="discard_pool">
+          <h4>Player 0</h4>
+          <div class="player_discards player_0">
+          </div>
+          <h4>Player 1</h4>
+          <div class="player_discards player_1">
+          </div>
+          <h4>Player 2</h4>
+          <div class="player_discards player_2">
+          </div>
+          <h4>Player 3</h4>
+          <div class="player_discards player_3">
+          </div>
         </div>
       </div>
-      <h3>Calls</h3>
-      <div id="calls_list">
-        <h4>Player 0</h4>
-        <div class="player_calls player_0">
-        </div>
-        <h4>Player 1</h4>
-        <div class="player_calls player_1">
-        </div>
-        <h4>Player 2</h4>
-        <div class="player_calls player_2">
-        </div>
-        <h4>Player 3</h4>
-        <div class="player_calls player_3">
-        </div>
-      </div>
-      <h3>Discards</h3>
-      <div id="discard_pool">
-        <h4>Player 0</h4>
-        <div class="player_discards player_0">
-        </div>
-        <h4>Player 1</h4>
-        <div class="player_discards player_1">
-        </div>
-        <h4>Player 2</h4>
-        <div class="player_discards player_2">
-        </div>
-        <h4>Player 3</h4>
-        <div class="player_discards player_3">
-        </div>
+      <div>
+        <h3>History</h3>
+        <ul id="history_list"></ul>
       </div>
     </div>
-    <div>
-      <h3>History</h3>
-      <ul id="history_list"></ul>
+    <div id="win_info" class="straight_view" hidden>
+      <div id="win_hand">
+        <div id="win_tiles"></div>
+        <div id="win_calls"></div>
+      </div>
+      <div id="yakus"></div>
+      <div id="win_totals">
+        <div id="win_player"></div>
+        <div id="total_han"></div>
+        <div id="tsumo_or_ron"></div>
+        <div id="total_score"></div>
+        <button id="next_round">Start next round</button>
+      </div>
     </div>
-  </div>
-  <div id="win_info" hidden>
-    <p id="win_player"></p>
-    <div id="win_hand"></div>
-    <div id="win_calls"></div>
-    <button id="next_round">Start next round</button>
   </div>
   <script src="https://cdn.socket.io/4.8.1/socket.io.min.js"></script>
   <script src="js/mahjong.js"></script>
@@ -107,6 +119,7 @@
   <script src="js/actions.js"></script>
   <script src="js/table.js"></script>
   <script src="js/round_info.js"></script>
+  <script src="js/win_info.js"></script>
   <script src="js/main.js"></script>
 </body>
 

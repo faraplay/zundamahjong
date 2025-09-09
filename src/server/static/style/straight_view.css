@@ -1,23 +1,23 @@
-#straight_view {
+.straight_view {
     --tile-width: 5cqw;
     --tile-border-radius: calc(var(--tile-width) * 0.1);
 }
 
-#straight_view .tile_div {
+.straight_view .tile_div {
     height: calc(var(--tile-height) * 9/8);
     display: inline-block;
     position: relative;
 }
 
-#straight_view .tile_div .tile_back_layer,
-#straight_view .tile_div .tile_middle_layer {
+.straight_view .tile_div .tile_back_layer,
+.straight_view .tile_div .tile_middle_layer {
     width: var(--tile-width);
     height: var(--tile-height);
     position: absolute;
     border-radius: var(--tile-border-radius);
 }
 
-#straight_view .tile_div .tile_back_layer {
+.straight_view .tile_div .tile_back_layer {
     bottom: calc(var(--tile-height) * 1/8);
     background-color: color-mix(
         in srgb,
@@ -25,7 +25,7 @@
         black var(--tile-side-darken-percent));
 }
 
-#straight_view .tile_div .tile_middle_layer {
+.straight_view .tile_div .tile_middle_layer {
     bottom: calc(var(--tile-height) * 1/8 * 0.7);
     background-color: color-mix(
         in srgb,
@@ -33,7 +33,7 @@
         black var(--tile-side-darken-percent));
 }
 
-#straight_view .tile_div .tile {
+.straight_view .tile_div .tile {
     position: absolute;
     left: 0;
     bottom: 0;
@@ -41,7 +41,7 @@
     border-color: var(--tile-front-color);
 }
 
-#straight_view .tile_div::after {
+.straight_view .tile_div::after {
     --border-width: 1px;
     content: "";
     width: calc(100% - 2*var(--border-width));

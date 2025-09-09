@@ -1,0 +1,97 @@
+#win_info {
+    --tile-width: 4cqw;
+    width: 86cqw;
+    height: calc(900cqw / 16 - 14cqw);
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 3cqw;
+    padding: 4cqw;
+    background-color: rgba(180,180,180,80%);
+}
+
+#win_info * {
+    font-family: "Contrail One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+#win_hand {
+    display: flex;
+}
+
+#win_hand .call {
+    margin-left: calc(0.5 * var(--tile-width));
+}
+
+#yakus {
+    width: 81cqw;
+    height: 25cqw;
+    margin: 2.5cqw;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+}
+
+.yaku {
+    width: 27cqw;
+    height: 5cqw;
+    position: relative;
+}
+
+.yaku_name, .yaku_han {
+    text-align: center;
+}
+
+.yaku_name {
+    width: 22cqw;
+    height: 5cqw;
+    position: absolute;
+    left: 0;
+    font-size: 1.5cqw;
+}
+
+.yaku_han {
+    width: 5cqw;
+    height: 5cqw;
+    position: absolute;
+    right: 0;
+    font-size: 2cqw;
+}
+
+#win_totals {
+    width: 84cqw;
+    height: 5cqw;
+    margin: 2.5cqw;
+    display: grid;
+    grid-template-columns: auto 10cqw 10cqw 10cqw 3cqw 10cqw;
+}
+
+#win_player {
+    grid-column: 1;
+    justify-self: start;
+    font-size: 2cqw;
+}
+
+#total_han {
+    grid-column: 2;
+    justify-self: end;
+    font-size: 2cqw;
+}
+
+#tsumo_or_ron {
+    grid-column: 3;
+    justify-self: end;
+    font-size: 2cqw;
+}
+
+#total_score {
+    grid-column: 4;
+    justify-self: end;
+    font-size: 3cqw;
+}
+
+#next_round {
+    grid-column: 6;
+    justify-self: center;
+}

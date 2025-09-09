@@ -1,8 +1,11 @@
+from typing import Optional
+
 from .exceptions import InvalidOperationException
 from .tile import Tile
 from .game_options import GameOptions
+from .win import Win
 from .round import Round, RoundStatus
-from .scoring import ScoringHand
+from .scoring import Scoring, Scorer
 
 
 class Game:
@@ -16,6 +19,8 @@ class Game:
         self._wind_round: int = 0
         self._sub_round: int = 0
         self._player_scores = [options.start_score] * self._player_count
+        self._win: Optional[Win] = None
+        self._scoring: Optional[Scoring] = None
         self._draw_count: int = 0
         self._create_round(first_deck_tiles)
 
@@ -40,8 +45,12 @@ class Game:
         return tuple(self._player_scores)
 
     @property
-    def win_scoring(self):
-        return self._win_scoring
+    def win(self):
+        return self._win
+
+    @property
+    def scoring(self):
+        return self._scoring
 
     @property
     def can_start_next_round(self):
@@ -61,17 +70,17 @@ class Game:
             raise InvalidOperationException()
         if not self.is_dealer_repeat():
             self._wind_round, self._sub_round = self._next_round()
-        if self._win_scoring is None:
+        if self._win is None:
             self._draw_count += 1
         else:
             self._draw_count = 0
         self._create_round(deck_tiles)
 
     def is_dealer_repeat(self):
-        if self._win_scoring is None:
+        if self._win is None:
             return True
         else:
-            return self._win_scoring.win.win_player == self.sub_round
+            return self._win.win_player == self.sub_round
 
     def _next_round(self):
         next_wind_round = self._wind_round
@@ -92,15 +101,15 @@ class Game:
             options=self._options,
             round_end_callback=on_round_end,
         )
-        self._win_scoring = None
+        self._win = None
+        self._scoring = None
 
     def _calculate_win_score(self):
-        if self._round.win_info is None:
-            self._win_scoring = None
+        self._win = self._round.win_info
+        if self._win is None:
+            self._scoring = None
         else:
-            win_scoring = ScoringHand(
-                self._round.win_info, self._options
-            ).get_win_scoring()
-            self._win_scoring = win_scoring
+            scoring = Scorer.score(self._round.win_info, self._options)
+            self._scoring = scoring
             for player in range(self._player_count):
-                self._player_scores[player] += win_scoring.scoring.player_scores[player]
+                self._player_scores[player] += scoring.player_scores[player]

@@ -3,12 +3,12 @@ import unittest
 from src.mahjong.call import Call, CallType
 from src.mahjong.yaku import Win
 from src.mahjong.game_options import GameOptions
-from src.mahjong.scoring import ScoringHand
+from src.mahjong.scoring import Scorer
 
 
 class ScoringTest(unittest.TestCase):
     def get_player_scores(self, win: Win):
-        return ScoringHand(win, GameOptions()).get_win_scoring().scoring.player_scores
+        return Scorer.score(win, GameOptions()).player_scores
 
     def test_dealer_ron(self):
         win = Win(

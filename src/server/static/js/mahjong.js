@@ -69,6 +69,18 @@ const call_types = [
     "THIRTEEN_ORPHANS",
 ];
 
+const round_status = {
+    START: 0,
+    PLAY: 1,
+    CALLED_PLAY: 2,
+    ADD_KAN_AFTER: 3,
+    CLOSED_KAN_AFTER: 4,
+    DISCARDED: 5,
+    LAST_DISCARDED: 6,
+    END: 7
+}
+
+
 const tile_images = {
     1: "mahjongtiles/character/01.svg",
     2: "mahjongtiles/character/02.svg",
@@ -117,23 +129,12 @@ const tile_images = {
 const set_player_form = document.getElementById('set_player_form');
 const set_player_select = document.getElementById('set_player_select');
 
-const win_info_div = document.getElementById('win_info');
-const win_player_indicator = document.getElementById('win_player');
-const win_hand_div = document.getElementById('win_hand');
-const win_calls_div = document.getElementById('win_calls');
-const next_round_button = document.getElementById('next_round');
-
 set_player_form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (set_player_select.value) {
         socket.emit('set_player', set_player_select.value);
     }
 });
-
-next_round_button.addEventListener('click', (e) => {
-    e.preventDefault();
-    socket.emit('next_round');
-})
 
 function createTileImageElement(tile) {
     const item = document.createElement('img');
@@ -177,16 +178,4 @@ function createHistoryEntryElement(history_entry) {
         history_item.appendChild(createTileElement(action.tile))
     }
     return history_item;
-}
-
-function createCallElement(call) {
-    const call_item = document.createElement("span");
-    call_item.classList.add('call');
-    const call_type_item = document.createElement("h4");
-    call_type_item.textContent = call_types[call.call_type];
-    call_item.replaceChildren(
-        call_type_item,
-        ...call.tiles.map(createTileElement)
-    )
-    return call_item
 }
