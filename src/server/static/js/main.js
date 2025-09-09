@@ -5,21 +5,18 @@ function disableActions() {
     disableHandDiscards()
 }
 
-socket.on('round_info', (round_info) => {
-    console.log(round_info);
-    round_info_div.hidden = false;
-    win_info_div.hidden = true;
-    setRoundInfo(round_info)
+socket.on('info', (info) => {
+    console.log(info);
+    if (info.round_info.status == round_status.END) {
+        win_info_div.hidden = false;
+    } else {
+        win_info_div.hidden = true;
+    }
+    setRoundInfo(info.round_info);
     if (round_info.action_selected) {
         disableActions();
     }
-});
-
-socket.on('win_info', (win_info) => {
-    console.log(win_info);
-    // round_info_div.hidden = true;
-    win_info_div.hidden = false;
-    setWinInfo(win_info);
+    setWinInfo(info.win_info);
 })
 
 socket.on('action_received', () => {

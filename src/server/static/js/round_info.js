@@ -39,12 +39,17 @@ function setRoundInfo(round_info) {
 
     setDiscards(round_info.discards);
     setCalls(round_info.calls);
-    setHand(round_info.hand);
 
-    if (round_info.discards.length > 0) {
-        last_discard = round_info.discards.at(-1).tile;
+    if (round_info.status == round_status.END) {
+        setHand([]);
+        setActions([], 0)
     } else {
-        last_discard = 0
+        setHand(round_info.hand);
+        if (round_info.discards.length > 0) {
+            last_discard = round_info.discards.at(-1).tile;
+        } else {
+            last_discard = 0
+        }
+        setActions(round_info.actions, last_discard);
     }
-    setActions(round_info.actions, last_discard);
 }

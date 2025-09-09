@@ -47,13 +47,34 @@ def try_resolve_actions():
 
 
 def get_win_info():
-    return {
-        "win": game.win.model_dump(),
-        "scoring": game.scoring.model_dump(),
-    }
+    return (
+        None
+        if game.win is None
+        else {
+            "win": game.win.model_dump(),
+            "scoring": game.scoring.model_dump(),
+        }
+    )
 
 
 def get_round_info(player: int):
+    hand = list(game.round.get_hand(player))
+    history = [
+        {"player": action[0], "action": action[1].model_dump()}
+        for action in game.round.history
+    ]
+    discards = [discard.model_dump() for discard in game.round.discards]
+    calls = [
+        [call.model_dump() for call in game.round.get_calls(player)]
+        for player in range(4)
+    ]
+    if game.round.status == RoundStatus.END:
+        actions = None
+    else:
+        actions = [
+            action.model_dump() for action in game.round.allowed_actions(player).actions
+        ]
+    action_selected = submitted_actions[player] is not None
     return {
         "player": player,
         "wind_round": game.wind_round,
@@ -62,28 +83,21 @@ def get_round_info(player: int):
         "tiles_left": game.round.tiles_left,
         "current_player": game.round.current_player,
         "status": game.round.status.value,
-        "hand": list(game.round.get_hand(player)),
-        "history": [
-            {"player": action[0], "action": action[1].model_dump()}
-            for action in game.round.history
-        ],
-        "discards": [discard.model_dump() for discard in game.round.discards],
-        "calls": [
-            [call.model_dump() for call in game.round.get_calls(player)]
-            for player in range(4)
-        ],
-        "actions": [
-            action.model_dump() for action in game.round.allowed_actions(player).actions
-        ],
-        "action_selected": submitted_actions[player] is not None,
+        "hand": hand,
+        "history": history,
+        "discards": discards,
+        "calls": calls,
+        "actions": actions,
+        "action_selected": action_selected,
     }
 
 
 def emit_info(sid: str, player: int):
-    if game.round.status != RoundStatus.END:
-        emit("round_info", get_round_info(player), to=sid)
-    else:
-        emit("win_info", get_win_info(), to=sid)
+    emit(
+        "info",
+        {"round_info": get_round_info(player), "win_info": get_win_info()},
+        to=sid,
+    )
 
 
 def emit_info_all():

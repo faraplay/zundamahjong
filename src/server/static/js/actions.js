@@ -73,7 +73,7 @@ function setActions(actions, last_discard) {
     actions_div.replaceChildren();
     actions_div.classList.remove('hidden');
     actions_disambiguation_div.replaceChildren();
-    if (actions.length == 1) {
+    if (actions.length <= 1) {
         return;
     }
     const action_supertypes_dict = {};
