@@ -1,3 +1,5 @@
+var player_count = 4;
+
 function disableActions() {
     for (const button of actions_div.children) {
         button.disabled = true;
@@ -13,6 +15,7 @@ socket.on('info', (info) => {
         win_info_div.hidden = true;
     }
     results_div.hidden = true;
+    player_count = info.player_count;
     setRoundInfo(info.round_info);
     if (round_info.action_selected) {
         disableActions();

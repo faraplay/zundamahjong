@@ -53,7 +53,6 @@ def get_win_info():
         None
         if game.win is None
         else {
-            "player_scores": game.player_scores,
             "win": game.win.model_dump(),
             "scoring": game.scoring.model_dump(),
         }
@@ -79,7 +78,6 @@ def get_round_info(player: int):
         ]
     action_selected = submitted_actions[player] is not None
     return {
-        "player_count": game.player_count,
         "player": player,
         "wind_round": game.wind_round,
         "sub_round": game.sub_round,
@@ -99,7 +97,11 @@ def get_round_info(player: int):
 def emit_info(sid: str, player: int):
     emit(
         "info",
-        {"round_info": get_round_info(player), "win_info": get_win_info()},
+        {
+            "player_count": game.player_count,
+            "round_info": get_round_info(player),
+            "win_info": get_win_info(),
+        },
         to=sid,
     )
 

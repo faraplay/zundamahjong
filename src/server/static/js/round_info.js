@@ -1,5 +1,3 @@
-var player_count = 4
-
 const round_info_div = document.getElementById('round_info');
 const player_indicator = document.getElementById('player_indicator');
 
@@ -30,7 +28,6 @@ function setScores(scores) {
 }
 
 function setRoundInfo(round_info) {
-    player_count = round_info.player_count;
     round_info_div.className = `me_player_${round_info.player}`;
     player_indicator.textContent = `You are Player ${round_info.player}`;
     wind_sub_round_element.textContent = `${player_winds[round_info.wind_round]}${round_info.sub_round + 1}`
