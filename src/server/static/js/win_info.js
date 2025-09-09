@@ -44,7 +44,7 @@ function createYakuElement(yakuhan) {
 }
 
 function setWinInfo(win_info) {
-    if (win_info.win) {
+    if (win_info) {
         win_tiles_div.replaceChildren(...win_info.win.hand.map(createStraightTileElement));
         win_calls_div.replaceChildren(...win_info.win.calls.map(createCallElement));
         yakus_element.replaceChildren(
