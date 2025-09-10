@@ -8,7 +8,7 @@ from ..mahjong.round import Round, RoundStatus
 from ..mahjong.game import Game, GameOptions
 
 from .socketio import socketio, app
-from .name_sid import get_name, remove_sid, set_name
+from .name_sid import verify_name, get_name, set_name, remove_sid
 from .game_room import GameRoom
 
 game = Game(options=GameOptions(player_count=3))
@@ -188,11 +188,8 @@ def handle_action(data):
 
 @socketio.on("set_name")
 def on_set_name(name):
+    verify_name(name)
     print(f"Received set_name from {request.sid}: {name}")
-    if not isinstance(name, str):
-        raise Exception("Received data is not a string!")
-    if len(name) > 20:
-        raise Exception("Name is over 20 characters long!")
     set_name(request.sid, name)
     return name
 
@@ -203,14 +200,17 @@ def on_get_rooms():
 
 
 @socketio.on("create_room")
-def on_create_room(room_name):
-    print(f"Received create_room from {request.sid}: {room_name}")
+def on_create_room(room_name, player_count):
+    GameRoom.verify_player_count(player_count)
+    GameRoom.verify_room_name(room_name)
+    print(f"Received create_room from {request.sid}: {room_name} {player_count}")
     player_name = get_name(request.sid)
-    return GameRoom.create_room(player_name, room_name, 4)
+    return GameRoom.create_room(player_name, room_name, player_count)
 
 
 @socketio.on("join_room")
 def on_join_room(room_name):
+    GameRoom.verify_room_name(room_name)
     print(f"Received join_room from {request.sid}: {room_name}")
     player_name = get_name(request.sid)
     return GameRoom.join_room(player_name, room_name)

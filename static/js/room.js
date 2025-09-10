@@ -17,16 +17,23 @@ name_form.addEventListener('submit', (e) => {
 });
 
 const create_room_form = document.getElementById('create_room_form');
-const create_room_input = document.querySelector('#create_room_form input');
+const create_room_name_input = document.querySelector('#create_room_form input');
+const create_room_player_count_select
+    = document.querySelector('#create_room_form #player_count_select');
 
 create_room_form.addEventListener('submit', (e) => {
     e.preventDefault();
-    if (create_room_input.value) {
-        socket.emit('create_room', create_room_input.value, (room_name) => {
+    let player_count = Number(create_room_player_count_select.value);
+    if (!(player_count == 3 || player_count == 4)) return;
+    if (!create_room_name_input.value) return;
+    socket.emit(
+        'create_room',
+        create_room_name_input.value,
+        player_count,
+        (room_name) => {
             if (!room_name) return;
             console.log(`Created room ${room_name}`)
         });
-    }
 });
 
 const join_room_form = document.getElementById('join_room_form');

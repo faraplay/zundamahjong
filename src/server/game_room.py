@@ -33,6 +33,22 @@ class GameRoom:
         return rooms.keys()
 
     @classmethod
+    def verify_room_name(cls, room_name):
+        if not isinstance(room_name, str):
+            raise Exception("Room name is not a string!")
+        if room_name == "":
+            raise Exception("Room name cannot be empty!")
+        if len(room_name) > 20:
+            raise Exception(f"Room name {room_name} is over 20 characters long!")
+
+    @classmethod
+    def verify_player_count(cls, player_count):
+        if not isinstance(player_count, int):
+            raise Exception(f"Player count {player_count} is not an integer!")
+        if not (player_count == 3 or player_count == 4):
+            raise Exception(f"Player count is not 3 or 4!")
+
+    @classmethod
     def create_room(cls, creator_player: str, room_name: str, player_count: int):
         with rooms_lock:
             if creator_player in player_rooms:

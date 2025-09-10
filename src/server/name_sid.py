@@ -7,6 +7,15 @@ sid_to_name: dict[str, str] = {}
 name_sid_lock = Lock()
 
 
+def verify_name(name: str):
+    if not isinstance(name, str):
+        raise Exception("Name is not a string!")
+    if len(name) > 20:
+        raise Exception("Name is over 20 characters long!")
+    if name == "":
+        raise Exception("Name cannot be empty!")
+
+
 def get_name(sid: str):
     try:
         return sid_to_name[sid]
@@ -15,8 +24,6 @@ def get_name(sid: str):
 
 
 def set_name(sid: str, name: str):
-    if name == "":
-        raise Exception("Name cannot be empty!")
     with name_sid_lock:
         if name_to_sid.get(name, sid) != sid:
             raise Exception("Name is already in use!")
