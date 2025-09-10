@@ -7,7 +7,7 @@ function createHandTileElement(tile) {
     button.appendChild(tile_item);
     button.addEventListener('click', (e) => {
         e.preventDefault();
-        socket.emit('action', {
+        socket.emit('action', my_player_info, {
             'action_type': ACTION_DISCARD,
             'tile': tile
         })

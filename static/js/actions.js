@@ -29,7 +29,7 @@ function createDisambiguationActionButtonElement(action, last_discard) {
     action_item.addEventListener('click',
         (e) => {
             e.preventDefault();
-            socket.emit('action', action)
+            socket.emit('action', my_player_info, action)
         }
     )
     return action_item;
@@ -108,7 +108,7 @@ function setActions(actions, last_discard) {
             action_supertype_item.addEventListener('click',
                 (e) => {
                     e.preventDefault();
-                    socket.emit('action', action)
+                    socket.emit('action', my_player_info, action)
                 }
             )
         }

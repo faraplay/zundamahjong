@@ -127,10 +127,19 @@ const tile_images = {
 const set_player_form = document.getElementById('set_player_form');
 const set_player_select = document.getElementById('set_player_select');
 
+var my_player_info;
+
 set_player_form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (set_player_select.value) {
-        socket.emit('set_player', set_player_select.value);
+        socket.emit(
+            'set_player',
+            set_player_select.value,
+            (player_info) => {
+                if (!player_info) return;
+                my_player_info = player_info;
+            }
+        );
     }
 });
 
