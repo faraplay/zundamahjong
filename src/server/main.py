@@ -8,7 +8,7 @@ from ..mahjong.action import Action
 from ..mahjong.round import Round, RoundStatus
 from ..mahjong.game import Game, GameOptions
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="../../static")
 socketio = SocketIO(app)
 
 game = Game(options=GameOptions(player_count=3))
