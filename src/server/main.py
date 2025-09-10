@@ -1,6 +1,5 @@
-from flask import Flask, request
-from markupsafe import escape
-from flask_socketio import SocketIO, emit
+from flask import request
+from flask_socketio import emit
 from pydantic import ValidationError
 
 
@@ -8,13 +7,13 @@ from ..mahjong.action import Action
 from ..mahjong.round import Round, RoundStatus
 from ..mahjong.game import Game, GameOptions
 
-app = Flask(__name__, static_folder="../../static")
-socketio = SocketIO(app)
+from .socketio import socketio, app
+from .name_sid import set_name
 
 game = Game(options=GameOptions(player_count=3))
 
 sid_players: dict[str, int] = {}
-submitted_actions = []
+submitted_actions: list[Action] = []
 
 
 def resolve_action():
@@ -183,6 +182,12 @@ def handle_action(data):
     print(submitted_actions)
     emit("action_received")
     try_resolve_actions()
+
+
+@socketio.on("set_name")
+def on_set_name(name):
+    print(f"Received set_name from {request.sid}: {name}")
+    set_name(request.sid, name)
 
 
 def run_server():
