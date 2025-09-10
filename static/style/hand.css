@@ -12,7 +12,7 @@
     align-items: flex-end;
 }
 
-.hand_tile_button:nth-child(3n + 2):nth-last-child(1) {
+#round_info.status_PLAY .hand_tile_button:nth-child(3n + 2):nth-last-child(1) {
     margin-left: calc(var(--tile-width) / 2);
 }
 

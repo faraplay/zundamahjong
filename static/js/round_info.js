@@ -28,7 +28,11 @@ function setScores(scores) {
 }
 
 function setRoundInfo(round_info) {
-    round_info_div.className = `me_player_${round_info.player}`;
+    const round_status = round_statuses[round_info.status];
+    round_info_div.classList.remove(...round_info_div.classList);
+    round_info_div.classList.add(`me_player_${round_info.player}`);
+    round_info_div.classList.add(`status_${round_status}`)
+
     player_indicator.textContent = `You are Player ${round_info.player}`;
     wind_sub_round_element.textContent =
         `${player_winds[round_info.wind_round]}${round_info.sub_round + 1}-${round_info.draw_count}`;
@@ -46,14 +50,14 @@ function setRoundInfo(round_info) {
     setCalls(round_info.calls);
     setFlowers(round_info.flowers);
 
-    if (round_info.status == round_status.END) {
+    if (round_status == "END") {
         setHand([]);
         setActions([], 0)
     } else {
         setHand(round_info.hand);
         if (!(round_info.current_player == round_info.player
-            && (round_info.status == round_status.PLAY
-                || round_info.status == round_status.CALLED_PLAY)
+            && (round_status == "PLAY"
+                || round_status == "CALLED_PLAY")
         )) {
             disableHandDiscards();
         }

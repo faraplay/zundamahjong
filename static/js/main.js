@@ -9,7 +9,7 @@ function disableActions() {
 
 socket.on('info', (info) => {
     console.log(info);
-    if (info.round_info.status == round_status.END) {
+    if (round_statuses[info.round_info.status] == "END") {
         win_info_div.hidden = false;
     } else {
         win_info_div.hidden = true;

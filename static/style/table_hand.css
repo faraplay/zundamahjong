@@ -28,3 +28,8 @@
     transform: rotateX(-90deg);
     transform-style: preserve-3d;
 }
+
+#round_info.status_PLAY .table_hand .tile_div:nth-child(3n + 2):nth-last-child(1),
+#round_info.status_END .table_hand .tile_div:nth-child(3n + 2):nth-last-child(1) {
+    margin-left: calc(var(--tile-width));
+}

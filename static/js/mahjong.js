@@ -68,17 +68,16 @@ const call_types = [
     "THIRTEEN_ORPHANS",
 ];
 
-const round_status = {
-    START: 0,
-    PLAY: 1,
-    CALLED_PLAY: 2,
-    ADD_KAN_AFTER: 3,
-    CLOSED_KAN_AFTER: 4,
-    DISCARDED: 5,
-    LAST_DISCARDED: 6,
-    END: 7
-}
-
+const round_statuses = [
+    "START",
+    "PLAY",
+    "CALLED_PLAY",
+    "ADD_KAN_AFTER",
+    "CLOSED_KAN_AFTER",
+    "DISCARDED",
+    "LAST_DISCARDED",
+    "END",
+]
 
 const tile_images = {
     1: "mahjongtiles/character/01.svg",
