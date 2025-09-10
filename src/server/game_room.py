@@ -28,9 +28,17 @@ class GameRoom:
     def room_id(self):
         return make_room_id(self.room_name)
 
+    @property
+    def room_info(self):
+        return {
+            "room_name": self.room_name,
+            "player_count": self.player_count,
+            "joined_players": self.joined_players,
+        }
+
     @classmethod
     def get_rooms(cls):
-        return rooms.keys()
+        return rooms.values()
 
     @classmethod
     def verify_room_name(cls, room_name):
@@ -49,6 +57,10 @@ class GameRoom:
             raise Exception(f"Player count is not 3 or 4!")
 
     @classmethod
+    def get_player_room(cls, player_name: str):
+        return player_rooms.get(player_name, None)
+
+    @classmethod
     def create_room(cls, creator_player: str, room_name: str, player_count: int):
         with rooms_lock:
             if creator_player in player_rooms:
@@ -60,7 +72,7 @@ class GameRoom:
             rooms[room_name] = game_room
         join_room(make_room_id(room_name))
         print(f"Player {creator_player} has created room {room_name}")
-        return room_name
+        return game_room
 
     @classmethod
     def join_room(cls, player_name: str, room_name: str):
@@ -77,7 +89,7 @@ class GameRoom:
         # broadcast new player to room
         join_room(game_room.room_id)
         game_room.broadcast_room_joined_players()
-        return room_name
+        return game_room
 
     @classmethod
     def leave_room(cls, player_name: str):
@@ -98,7 +110,7 @@ class GameRoom:
             # broadcast
         leave_room(game_room.room_id)
         game_room.broadcast_room_joined_players()
-        return game_room.room_name
+        return game_room
 
     def close_room(self):
         with rooms_lock:

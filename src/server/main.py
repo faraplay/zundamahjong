@@ -191,12 +191,14 @@ def on_set_name(name):
     verify_name(name)
     print(f"Received set_name from {request.sid}: {name}")
     set_name(request.sid, name)
-    return name
+    game_room = GameRoom.get_player_room(name)
+    room_info = game_room.room_info if game_room is not None else None
+    return name, room_info
 
 
 @socketio.on("get_rooms")
 def on_get_rooms():
-    return list(GameRoom.get_rooms())
+    return [game_room.room_info for game_room in GameRoom.get_rooms()]
 
 
 @socketio.on("create_room")
@@ -205,7 +207,7 @@ def on_create_room(room_name, player_count):
     GameRoom.verify_room_name(room_name)
     print(f"Received create_room from {request.sid}: {room_name} {player_count}")
     player_name = get_name(request.sid)
-    return GameRoom.create_room(player_name, room_name, player_count)
+    return GameRoom.create_room(player_name, room_name, player_count).room_info
 
 
 @socketio.on("join_room")
@@ -213,14 +215,14 @@ def on_join_room(room_name):
     GameRoom.verify_room_name(room_name)
     print(f"Received join_room from {request.sid}: {room_name}")
     player_name = get_name(request.sid)
-    return GameRoom.join_room(player_name, room_name)
+    return GameRoom.join_room(player_name, room_name).room_info
 
 
 @socketio.on("leave_room")
 def on_leave_room():
     print(f"Received leave_room from {request.sid}")
     player_name = get_name(request.sid)
-    return GameRoom.leave_room(player_name)
+    return GameRoom.leave_room(player_name).room_info
 
 
 @socketio.on_error()

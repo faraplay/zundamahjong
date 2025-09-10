@@ -33,6 +33,8 @@
     </select>
     <button>Send</button>
   </form>
+  <span id="name_info">Enter a name...</span>
+  <span id="room_info"></span>
   <form id="name_form" action="">
     <input type="text">
     <button>Set name</button>
@@ -45,14 +47,14 @@
       <option value="3">3</option>
       <option value="4">4</option>
     </select>
-    <button>Create room</button>
+    <button disabled>Create room</button>
   </form>
   <button id="refresh_room_list">Refresh room list</button>
   <form id="join_room_form" action="">
     <select id="room_list"></select>
-    <button>Join room</button>
+    <button disabled>Join room</button>
   </form>
-  <button id="leave_room">Leave room</button>
+  <button id="leave_room" disabled>Leave room</button>
   <p id="player_indicator">Select a player...</p>
   <div id="view">
     <div id="round_info" class="me_player_0">
