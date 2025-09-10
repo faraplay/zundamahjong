@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections import deque
 from collections.abc import Sequence, Callable
 from enum import Enum
@@ -23,12 +24,16 @@ class RoundStatus(Enum):
     END = 7
 
 
-_allowed_actions_funcs = {}
-_do_action_funcs = {}
+_allowed_actions_funcs: dict[
+    RoundStatus, Callable[[Round, int, Hand, Tile], ActionSet]
+] = {}
+_do_action_funcs: dict[ActionType, Callable[[Round, int, Tile], None]] = {}
 
 
 def _register_allowed_actions(round_status: RoundStatus):
-    def _register_allowed_action_inner(_allowed_actions_func):
+    def _register_allowed_action_inner(
+        _allowed_actions_func: Callable[[Round, int, Hand, Tile], ActionSet],
+    ):
         _allowed_actions_funcs[round_status] = _allowed_actions_func
         return _allowed_actions_func
 
@@ -36,7 +41,7 @@ def _register_allowed_actions(round_status: RoundStatus):
 
 
 def _register_do_action(action_type: ActionType):
-    def _register_do_action_inner(_do_action_func):
+    def _register_do_action_inner(_do_action_func: Callable[[Round, int, Tile], None]):
         _do_action_funcs[action_type] = _do_action_func
         return _do_action_func
 
