@@ -1,3 +1,6 @@
+const table_hand_elements = [0, 1, 2, 3].map(
+    player => document.querySelector(`.table_hand_outer.player_${player} .table_hand`)
+);
 const player_discards_elements = [0, 1, 2, 3].map(
     player => document.querySelector(`.player_discards.player_${player}`)
 );
@@ -11,15 +14,22 @@ const player_flowers_elements = [0, 1, 2, 3].map(
 function createTableTileElement(tile) {
     const tile_element = createTileElement(tile);
     tile_element.firstChild.classList.add('tile_face');
-    for (const class_name of ['tile_left', 'tile_right', 'tile_top', 'tile_bottom']) {
+    tile_element.firstChild.classList.add('tile_front');
+    for (const class_name of ['tile_back', 'tile_left', 'tile_right', 'tile_top', 'tile_bottom']) {
         const side_item = document.createElement('span');
         side_item.classList.add('tile_face');
-        side_item.classList.add('tile_side');
         side_item.classList.add(class_name);
         tile_element.appendChild(side_item);
     }
     tile_element.appendChild(tile_element.firstChild);
     return tile_element;
+}
+
+function setTableHands(known_hands, hand_counts) {
+    for (var player = 0; player < player_count; ++player) {
+        tiles = known_hands[player] ?? Array(hand_counts[player]).fill(0);
+        table_hand_elements[player].replaceChildren(...tiles.map(createTableTileElement));
+    }
 }
 
 function setDiscards(discards) {

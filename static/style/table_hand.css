@@ -1,0 +1,30 @@
+#table_hands {
+    display: contents;
+}
+
+.table_hand_outer {
+    --table-hand-left: 24cqw;
+    --table-hand-bottom: 15cqw;
+    width: 0;
+    height: 0;
+    position: absolute;
+    left: var(--table-hand-left);
+    bottom: var(--table-hand-bottom);
+    transform-origin: 
+        calc(50cqw - var(--table-hand-left))
+        calc(var(--table-hand-bottom) - 50cqw);
+    transform-style: preserve-3d;
+}
+
+.table_hand {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-items: flex-end;
+    transform-origin: left bottom;
+    transform: rotateX(-90deg);
+    transform-style: preserve-3d;
+}

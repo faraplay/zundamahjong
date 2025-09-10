@@ -52,18 +52,32 @@
     backface-visibility: hidden;
 }
 
-#table .tile_side {
+#table .tile_left,
+#table .tile_right,
+#table .tile_top,
+#table .tile_bottom {
+    --tile-face-darken-percent: 8%;
     height: var(--tile-depth);
     background-image: linear-gradient(var(--tile-front-color) 70%, var(--tile-back-color) 70%);
 }
 
-#table .tile_side::after {
+#table .tile_face::after {
     content: "";
     width: calc(100% - 2*var(--tile-border-width));
     height: calc(100% - 2*var(--tile-border-width));
     position: absolute;
     border: var(--tile-border-width) solid var(--tile-border-color);
-    background-color: rgba(0,0,0,var(--tile-side-darken-percent));
+    background-color: rgba(0,0,0,var(--tile-face-darken-percent));
+}
+
+#table .tile_back {
+    --tile-face-darken-percent: 8%;
+    width: var(--tile-width);
+    height: var(--tile-height);
+    background-color: var(--tile-back-color);
+    transform: 
+        translate3d(0, var(--tile-height), 0)
+        rotateX(180deg);
 }
 
 #table .tile_left {
@@ -97,6 +111,6 @@
         rotateX(-90deg);
 }
 
-#table .tile {
+#table .tile_front {
     transform: translateZ(var(--tile-depth));
 }

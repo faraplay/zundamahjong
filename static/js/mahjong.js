@@ -136,13 +136,20 @@ set_player_form.addEventListener('submit', (e) => {
 });
 
 function createTileImageElement(tile) {
-    const item = document.createElement('img');
-    item.classList.add('tile');
-    item.src = tile_images[tile];
-    item.alt = tile;
-    item.width = 60;
-    item.height = 80;
-    return item;
+    if (tile) {
+        const item = document.createElement('img');
+        item.classList.add('tile');
+        item.src = tile_images[tile];
+        item.alt = tile;
+        item.width = 60;
+        item.height = 80;
+        return item;
+    }
+    else {
+        const element = document.createElement('div');
+        element.classList.add('tile');
+        return element;
+    }
 }
 
 function createTileElement(tile) {

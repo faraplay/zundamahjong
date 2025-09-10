@@ -38,6 +38,10 @@ function setRoundInfo(round_info) {
 
     history_list.replaceChildren(...round_info.history.map(createHistoryEntryElement));
 
+    const known_hands = Array(player_count);
+    known_hands[round_info.player] = round_info.hand;
+    setTableHands(known_hands, round_info.hand_counts);
+
     setDiscards(round_info.discards);
     setCalls(round_info.calls);
     setFlowers(round_info.flowers);

@@ -65,6 +65,9 @@ def get_round_info(player: int):
         {"player": action[0], "action": action[1].model_dump()}
         for action in game.round.history
     ]
+    hand_counts = [
+        len(game.round.get_hand(player)) for player in range(game.player_count)
+    ]
     discards = [discard.model_dump() for discard in game.round.discards]
     calls = [
         [call.model_dump() for call in game.round.get_calls(player)]
@@ -89,6 +92,7 @@ def get_round_info(player: int):
         "status": game.round.status.value,
         "hand": hand,
         "history": history,
+        "hand_counts": hand_counts,
         "discards": discards,
         "calls": calls,
         "flowers": flowers,
