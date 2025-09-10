@@ -1,121 +1,18 @@
 from flask import request
-from flask_socketio import emit, send
-from pydantic import ValidationError
+from flask_socketio import send, join_room, leave_room, rooms
 
-
-from ..mahjong.action import Action
-from ..mahjong.round import Round, RoundStatus
-from ..mahjong.game import Game, GameOptions
+from src.mahjong.action import Action
+from src.mahjong.game_options import GameOptions
 
 from .socketio import socketio, app
 from .name_sid import verify_name, get_name, set_name, remove_sid
+from .player_info import PlayerInfo
+from .game_controller import GameController
 from .game_room import GameRoom
 
-game = Game(options=GameOptions(player_count=3))
-
-sid_players: dict[str, int] = {}
-submitted_actions: list[Action] = []
-
-
-def resolve_action():
-    player, action = game.round.get_priority_action(
-        [submitted_actions[player] for player in range(game.player_count)]
-    )
-    game.round.do_action(player, action)
-    game.round.display_info()
-
-
-def set_default_submitted_actions():
-    if game.round.status == RoundStatus.END:
-        submitted_actions[:] = [None] * game.player_count
-    else:
-        allowed_actions = [
-            game.round.allowed_actions(player) for player in range(game.player_count)
-        ]
-        submitted_actions[:] = [
-            actions.default if len(actions.actions) == 1 else None
-            for actions in allowed_actions
-        ]
-
-
-def try_resolve_actions():
-    action_resolve_count = 0
-    while all(action is not None for action in submitted_actions):
-        resolve_action()
-        action_resolve_count += 1
-        set_default_submitted_actions()
-    if action_resolve_count > 0:
-        emit_info_all()
-
-
-def get_win_info():
-    return (
-        None
-        if game.win is None
-        else {
-            "win": game.win.model_dump(),
-            "scoring": game.scoring.model_dump(),
-        }
-    )
-
-
-def get_round_info(player: int):
-    hand = list(game.round.get_hand(player))
-    history = [
-        {"player": action[0], "action": action[1].model_dump()}
-        for action in game.round.history
-    ]
-    hand_counts = [
-        len(game.round.get_hand(player)) for player in range(game.player_count)
-    ]
-    discards = [discard.model_dump() for discard in game.round.discards]
-    calls = [
-        [call.model_dump() for call in game.round.get_calls(player)]
-        for player in range(game.player_count)
-    ]
-    flowers = [game.round.get_flowers(player) for player in range(game.player_count)]
-    if game.round.status == RoundStatus.END:
-        actions = None
-    else:
-        actions = [
-            action.model_dump() for action in game.round.allowed_actions(player).actions
-        ]
-    action_selected = submitted_actions[player] is not None
-    return {
-        "player": player,
-        "wind_round": game.wind_round,
-        "sub_round": game.sub_round,
-        "draw_count": game.draw_count,
-        "player_scores": game.player_scores,
-        "tiles_left": game.round.tiles_left,
-        "current_player": game.round.current_player,
-        "status": game.round.status.value,
-        "hand": hand,
-        "history": history,
-        "hand_counts": hand_counts,
-        "discards": discards,
-        "calls": calls,
-        "flowers": flowers,
-        "actions": actions,
-        "action_selected": action_selected,
-    }
-
-
-def emit_info(sid: str, player: int):
-    emit(
-        "info",
-        {
-            "player_count": game.player_count,
-            "round_info": get_round_info(player),
-            "win_info": get_win_info(),
-        },
-        to=sid,
-    )
-
-
-def emit_info_all():
-    for sid, player in sid_players.items():
-        emit_info(sid, player)
+game_controller = GameController(
+    ["player:0", "player:1", "player:2", "player:3"], GameOptions()
+)
 
 
 @socketio.on("connect")
@@ -127,63 +24,35 @@ def connect(auth):
 def disconnect(reason):
     print(f"Client disconnected: {request.sid},\nReason: {reason}")
     remove_sid(request.sid)
-    sid_players.pop(request.sid, None)
-
-
-@socketio.on("next_round")
-def start_next_round():
-    if not game.can_start_next_round:
-        print("Cannot start next round!")
-        return
-    print("Starting next round...")
-    game.start_next_round()
-    set_default_submitted_actions()
-    game.round.display_info()
-    emit_info_all()
-
-
-@socketio.on("new_game")
-def start_new_game():
-    global game
-    if not game.is_game_end:
-        print("Game is still in progress!")
-        return
-    game = Game()
-    game.round.display_info()
-    emit_info_all()
 
 
 @socketio.on("set_player")
-def handle_set_player(data):
-    print(f"Received set_player from {request.sid}: {data}")
-    try:
-        player = int(data)
-        if player not in range(game.player_count):
-            print("Invalid player number!", player)
-            return
-    except ValueError:
-        print("Received data is not an integer!", data)
-        return
-    sid_players[request.sid] = player
-    emit_info(request.sid, player)
+def handle_set_player(player_data):
+    print(f"Received set_player from {request.sid}: {player_data}")
+    player = int(player_data)
+    client_rooms = rooms()
+    print(client_rooms)
+    for room_name in client_rooms:
+        if room_name.startswith("player:"):
+            leave_room(room_name)
+    player_info = PlayerInfo(player_id=f"player:{player}", player=player)
+    join_room(player_info.player_id)
+    game_controller.emit_info(player_info)
+    return player_info.model_dump()
 
 
 @socketio.on("action")
-def handle_action(data):
-    print(f"Received action from {request.sid}: {data}")
-    try:
-        player = sid_players[request.sid]
-    except KeyError:
-        print(f"sid {request.sid} does not have an associated player!")
-        return
-    try:
-        action = Action.model_validate(data)
-    except ValidationError:
-        print(f"Data could not be converted into Action object!")
-    submitted_actions[player] = action
-    print(submitted_actions)
-    emit("action_received")
-    try_resolve_actions()
+def handle_action(player_info_data, action_data):
+    print(f"Received action from {request.sid}: {player_info_data}, {action_data}")
+    player_info = PlayerInfo.model_validate(player_info_data)
+    action = Action.model_validate(action_data)
+    game_controller.submit_action(player_info, action)
+
+
+@socketio.on("next_round")
+def start_next_round(player_info_data):
+    player_info = PlayerInfo.model_validate(player_info_data)
+    game_controller.start_next_round(player_info)
 
 
 @socketio.on("set_name")
@@ -231,6 +100,4 @@ def error_handler(e):
 
 
 def run_server():
-    set_default_submitted_actions()
-    game.round.display_info()
     socketio.run(app, debug=True)

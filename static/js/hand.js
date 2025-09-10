@@ -5,13 +5,11 @@ function createHandTileElement(tile) {
     button.classList.add('hand_tile_button');
     const tile_item = createStraightTileElement(tile);
     button.appendChild(tile_item);
-    button.addEventListener('click', (e) => {
-        e.preventDefault();
-        socket.emit('action', {
-            'action_type': ACTION_DISCARD,
-            'tile': tile
-        })
-    });
+    const action = {
+        'action_type': ACTION_DISCARD,
+        'tile': tile
+    };
+    button.addEventListener('click', (e) => sendAction(e, action));
     return button;
 }
 

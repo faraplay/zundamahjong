@@ -22,7 +22,3 @@ socket.on('info', (info) => {
     }
     setWinInfo(info.round_info.player_scores, info.win_info);
 })
-
-socket.on('action_received', () => {
-    disableActions();
-})

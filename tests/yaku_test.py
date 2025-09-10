@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+from src.mahjong.tile import Tile
 from src.mahjong.call import Call, CallType
 from src.mahjong.yaku import Win
 from src.mahjong.yaku import YakuCalculator
@@ -11,6 +12,7 @@ def get_yaku_mults(
     lose_player: int | None = None,
     formed_hand: list[Call],
     calls: list[Call],
+    flowers: list[Tile],
     player_count: int = 4,
     wind_round: int = 0,
     sub_round: int = 0,
@@ -21,6 +23,7 @@ def get_yaku_mults(
         lose_player=lose_player,
         hand=[tile for call in formed_hand for tile in call.tiles],
         calls=calls,
+        flowers=flowers,
         player_count=player_count,
         wind_round=wind_round,
         sub_round=sub_round,
@@ -167,8 +170,8 @@ class YakuTest(TestCase):
             ],
             calls=[
                 Call(call_type=CallType.CHI, tiles=[23, 24, 25]),
-                Call(call_type=CallType.FLOWER, tiles=[42]),
             ],
+            flowers=[42],
             draw_count=1,
         )
         self.assertDictEqual(
