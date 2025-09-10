@@ -1,6 +1,14 @@
 const actions_div = document.getElementById('actions');
 const actions_disambiguation_div = document.getElementById('actions_disambiguation');
 
+function sendAction(e, action) {
+    e.preventDefault();
+    disableActions();
+    socket.emit('action', my_player_info, action, () => {
+        actions_div.classList.add('hidden');
+    });
+}
+
 function createDisambiguationActionButtonElement(action, last_discard) {
     const action_item = document.createElement('button');
     action_item.classList.add('disambig_action_button')
@@ -26,12 +34,7 @@ function createDisambiguationActionButtonElement(action, last_discard) {
             action_item.appendChild(createStraightTileElement(action.tile))
             break;
     }
-    action_item.addEventListener('click',
-        (e) => {
-            e.preventDefault();
-            socket.emit('action', my_player_info, action)
-        }
-    )
+    action_item.addEventListener('click', (e) => sendAction(e, action))
     return action_item;
 }
 
@@ -106,10 +109,7 @@ function setActions(actions, last_discard) {
         } else {
             const action = supertype_actions[0];
             action_supertype_item.addEventListener('click',
-                (e) => {
-                    e.preventDefault();
-                    socket.emit('action', my_player_info, action)
-                }
+                (e) => sendAction(e, action)
             )
         }
         actions_div.appendChild(action_supertype_item);
