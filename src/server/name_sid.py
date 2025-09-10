@@ -7,17 +7,24 @@ sid_to_name: dict[str, str] = {}
 name_sid_lock = Lock()
 
 
+def get_name(sid: str):
+    try:
+        return sid_to_name[sid]
+    except KeyError:
+        raise Exception("Client has no name set!")
+
+
 def set_name(sid: str, name: str):
+    if name == "":
+        raise Exception("Name cannot be empty!")
     with name_sid_lock:
         if name_to_sid.get(name, sid) != sid:
-            emit("name_in_use_error")
-        else:
-            old_name = sid_to_name.get(sid, None)
-            if old_name:
-                name_to_sid.pop(old_name)
-            name_to_sid[name] = sid
-            sid_to_name[sid] = name
-            emit("set_name_success")
+            raise Exception("Name is already in use!")
+        old_name = sid_to_name.get(sid, None)
+        if old_name:
+            name_to_sid.pop(old_name)
+        name_to_sid[name] = sid
+        sid_to_name[sid] = name
 
 
 def remove_sid(sid: str):
