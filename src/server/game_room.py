@@ -88,7 +88,7 @@ class GameRoom:
             player_rooms[player_name] = game_room
         # broadcast new player to room
         join_room(game_room.room_id)
-        game_room.broadcast_room_joined_players()
+        game_room.broadcast_room_info()
         return game_room
 
     @classmethod
@@ -109,7 +109,7 @@ class GameRoom:
                 rooms.pop(game_room.room_name)
             # broadcast
         leave_room(game_room.room_id)
-        game_room.broadcast_room_joined_players()
+        game_room.broadcast_room_info()
         return game_room
 
     def close_room(self):
@@ -121,5 +121,5 @@ class GameRoom:
             rooms.pop(self.room_name)
         close_room(self.room_id)
 
-    def broadcast_room_joined_players(self):
-        emit("room_joined_players", self.joined_players, to=self.room_id)
+    def broadcast_room_info(self):
+        emit("room_info", self.room_info, to=self.room_id)

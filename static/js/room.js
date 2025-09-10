@@ -39,6 +39,8 @@ function setRoomInfo(room_info) {
     }
 }
 
+socket.on('room_info', setRoomInfo);
+
 name_form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (name_input.value) {
