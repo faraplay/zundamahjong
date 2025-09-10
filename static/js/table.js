@@ -25,10 +25,15 @@ function createTableTileElement(tile) {
     return tile_element;
 }
 
-function setTableHands(known_hands, hand_counts) {
+function setTableHands(known_hands, hand_counts, win_player) {
     for (var player = 0; player < player_count; ++player) {
         tiles = known_hands[player] ?? Array(hand_counts[player]).fill(0);
         table_hand_elements[player].replaceChildren(...tiles.map(createTableTileElement));
+        if (player == win_player) {
+            table_hand_elements[player].classList.add('won_hand');
+        } else {
+            table_hand_elements[player].classList.remove('won_hand');
+        }
     }
 }
 

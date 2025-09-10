@@ -27,7 +27,7 @@ function setScores(scores) {
     }
 }
 
-function setRoundInfo(round_info) {
+function setRoundInfo(round_info, win) {
     const round_status = round_statuses[round_info.status];
     round_info_div.classList.remove(...round_info_div.classList);
     round_info_div.classList.add(`me_player_${round_info.player}`);
@@ -44,7 +44,10 @@ function setRoundInfo(round_info) {
 
     const known_hands = Array(player_count);
     known_hands[round_info.player] = round_info.hand;
-    setTableHands(known_hands, round_info.hand_counts);
+    if (win) {
+        known_hands[win.win_player] = win.hand;
+    }
+    setTableHands(known_hands, round_info.hand_counts, win?.win_player);
 
     setDiscards(round_info.discards);
     setCalls(round_info.calls);

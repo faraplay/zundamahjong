@@ -16,7 +16,7 @@ socket.on('info', (info) => {
     }
     results_div.hidden = true;
     player_count = info.player_count;
-    setRoundInfo(info.round_info);
+    setRoundInfo(info.round_info, info.win_info?.win);
     if (round_info.action_selected) {
         disableActions();
     }
