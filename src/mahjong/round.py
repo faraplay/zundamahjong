@@ -138,6 +138,10 @@ class Round:
         return [discard.tile for discard in self._discard_pool.discards]
 
     @property
+    def last_tile(self):
+        return self._last_tile
+
+    @property
     def wall_count(self):
         return len(self._deck.tiles)
 

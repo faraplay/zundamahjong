@@ -12,7 +12,11 @@
     align-items: flex-end;
 }
 
-#round_info.status_PLAY .hand_tile_button:nth-child(3n + 2):nth-last-child(1) {
+#round_info.status_7 #hand {
+    display: none;
+}
+
+#round_info.status_1 .hand_tile_button:nth-child(3n + 2):nth-last-child(1) {
     margin-left: calc(var(--tile-width) / 2);
 }
 

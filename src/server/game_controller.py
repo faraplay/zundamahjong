@@ -32,8 +32,15 @@ class GameController:
             }
         )
 
-    def _round_info(self, index: int):
-        hand = list(self._game.round.get_hand(index))
+    def _game_info(self):
+        return {
+            "wind_round": self._game.wind_round,
+            "sub_round": self._game.sub_round,
+            "draw_count": self._game.draw_count,
+            "player_scores": self._game.player_scores,
+        }
+
+    def _round_info(self):
         history = [
             {"player": action[0], "action": action[1].model_dump()}
             for action in self._game.round.history
@@ -51,8 +58,21 @@ class GameController:
             self._game.round.get_flowers(player)
             for player in range(self._game.player_count)
         ]
+        return {
+            "tiles_left": self._game.round.tiles_left,
+            "current_player": self._game.round.current_player,
+            "status": self._game.round.status.value,
+            "hand_counts": hand_counts,
+            "discards": discards,
+            "calls": calls,
+            "flowers": flowers,
+            "history": history,
+        }
+
+    def _player_info(self, index: int):
+        hand = list(self._game.round.get_hand(index))
         if self._game.round.status == RoundStatus.END:
-            actions = None
+            actions = []
         else:
             actions = [
                 action.model_dump()
@@ -60,20 +80,8 @@ class GameController:
             ]
         action_selected = self._submitted_actions[index] is not None
         return {
-            "player": index,
-            "wind_round": self._game.wind_round,
-            "sub_round": self._game.sub_round,
-            "draw_count": self._game.draw_count,
-            "player_scores": self._game.player_scores,
-            "tiles_left": self._game.round.tiles_left,
-            "current_player": self._game.round.current_player,
-            "status": self._game.round.status.value,
             "hand": hand,
-            "history": history,
-            "hand_counts": hand_counts,
-            "discards": discards,
-            "calls": calls,
-            "flowers": flowers,
+            "last_tile": self._game.round.last_tile,
             "actions": actions,
             "action_selected": action_selected,
         }
@@ -81,7 +89,10 @@ class GameController:
     def _info(self, index: int):
         return {
             "player_count": self._game.player_count,
-            "round_info": self._round_info(index),
+            "player_index": index,
+            "game_info": self._game_info(),
+            "round_info": self._round_info(),
+            "player_info": self._player_info(index),
             "win_info": self._win_info(),
         }
 

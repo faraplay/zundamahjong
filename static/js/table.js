@@ -25,9 +25,16 @@ function createTableTileElement(tile) {
     return tile_element;
 }
 
-function setTableHands(known_hands, hand_counts, win_player) {
-    for (var player = 0; player < player_count; ++player) {
-        tiles = known_hands[player] ?? Array(hand_counts[player]).fill(0);
+function setTableHands(info) {
+    const known_hands = Array(info.player_count);
+    known_hands[info.player_index] = info.round_info.hand;
+    if (info.win_info?.win) {
+        known_hands[info.win_info.win.win_player] = info.win_info.win.hand;
+    }
+    const hand_counts = info.round_info.hand_counts;
+    const win_player = info.win_info?.win?.win_player;
+    for (var player = 0; player < info.player_count; ++player) {
+        const tiles = known_hands[player] ?? Array(hand_counts[player]).fill(0);
         table_hand_elements[player].replaceChildren(...tiles.map(createTableTileElement));
         if (player == win_player) {
             table_hand_elements[player].classList.add('won_hand');

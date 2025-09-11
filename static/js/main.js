@@ -1,5 +1,7 @@
 var player_count = 4;
 
+const round_info_div = document.getElementById('round_info');
+
 function disableActions() {
     for (const button of actions_div.children) {
         button.disabled = true;
@@ -15,11 +17,18 @@ socket.on('info', (info) => {
         win_info_div.hidden = true;
     }
     results_div.hidden = true;
+
     player_count = info.player_count;
-    setRoundInfo(info.round_info, info.win_info?.win);
-    if (round_info.action_selected) {
-        disableActions();
-    }
-    setWinInfo(info.round_info.player_scores, info.win_info);
+
+    round_info_div.classList.remove(...round_info_div.classList);
+    round_info_div.classList.add(`me_player_${info.player_index}`);
+
+    setGameInfo(info.game_info);
+    setRoundInfo(info.round_info);
+    setPlayerInfo(info.player_info);
+
+    setWinInfo(info.game_info.player_scores, info.win_info);
+    setTableHands(info);
+
     showScreen("game_screen");
 })
