@@ -24,7 +24,7 @@ see_results_button.addEventListener('click', (e) => {
 
 next_round_button.addEventListener('click', (e) => {
     e.preventDefault();
-    socket.emit('next_round', my_player_info);
+    socket.emit('next_round', my_player);
 })
 
 function createCallElement(call) {

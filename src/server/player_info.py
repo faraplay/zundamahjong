@@ -1,6 +1,10 @@
 from pydantic import BaseModel
 
 
-class PlayerInfo(BaseModel):
-    player_id: str
-    player: int
+class Player(BaseModel, frozen=True):
+    id: str
+    name: str
+
+    @classmethod
+    def from_name(cls, name: str):
+        return Player(id="player:" + name, name=name)

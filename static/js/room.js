@@ -22,20 +22,29 @@ const refresh_room_list_button = document.getElementById('refresh_room_list');
 
 const leave_room_button = document.getElementById('leave_room');
 
+const start_game_button = document.getElementById('start_game');
+
+var my_player = null;
+var my_room_info = null;
+
 function setRoomInfo(room_info) {
+    my_room_info = room_info;
     if (room_info) {
-        create_room_button.disabled = true;
-        join_room_button.disabled = true;
-        leave_room_button.disabled = false;
         room_info_element.textContent =
             `Room ${room_info.room_name} --- `
             + `${room_info.player_count} player game --- `
             + `Players: ${room_info.joined_players.join(", ")}`;
+        create_room_button.disabled = true;
+        join_room_button.disabled = true;
+        leave_room_button.disabled = false;
+        start_game_button.disabled =
+            !(room_info.joined_players.length == room_info.player_count);
     } else {
+        room_info_element.textContent = ""
         create_room_button.disabled = false;
         join_room_button.disabled = false;
         leave_room_button.disabled = true;
-        room_info_element.textContent = ""
+        start_game_button.disabled = true;
     }
 }
 
@@ -44,9 +53,10 @@ socket.on('room_info', setRoomInfo);
 name_form.addEventListener('submit', (e) => {
     e.preventDefault();
     if (name_input.value) {
-        socket.emit('set_name', name_input.value, (player_name, room_info) => {
-            if (!player_name) return;
-            name_info_element.textContent = `Your name is ${player_name}`;
+        socket.emit('set_name', name_input.value, (player, room_info) => {
+            if (!player) return;
+            my_player = player;
+            name_info_element.textContent = `Your name is ${player.name}`;
             setRoomInfo(room_info);
         });
     }
@@ -99,7 +109,12 @@ leave_room_button.addEventListener('click', (e) => {
     e.preventDefault();
     socket.emit('leave_room', (room_info) => {
         if (!room_info) return;
-        setRoomInfo(room_info);
+        setRoomInfo(null);
         console.log(`Left room ${room_info.room_name}`)
     })
+})
+
+start_game_button.addEventListener('click', (e) => {
+    e.preventDefault();
+    socket.emit('start_game', my_room_info.room_name)
 })

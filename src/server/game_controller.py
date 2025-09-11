@@ -5,23 +5,22 @@ from src.mahjong.game_options import GameOptions
 from src.mahjong.round import RoundStatus
 from src.mahjong.game import Game
 
-from .player_info import PlayerInfo
+from .player_info import Player
 
 
 class GameController:
-    def __init__(self, player_ids: list[str], options: GameOptions):
-        self._player_ids = player_ids
+    def __init__(self, players: list[Player], options: GameOptions):
+        self._players = players
         self._game = Game(options=options)
         self._submitted_actions = []
         self.set_default_submitted_actions()
         # self._game.round.display_info()
 
-    def validate_player_id(self, player_info):
-        if self._player_ids[player_info.player] != player_info.player_id:
-            raise Exception(
-                f"Player id {player_info.player_id} and game player id "
-                + f"{self._player_ids[player_info.player]} do not match!"
-            )
+    def get_player_index(self, player: Player):
+        try:
+            return self._players.index(player)
+        except ValueError:
+            raise Exception(f"Player {player.id} not found in this game!")
 
     def _win_info(self):
         return (
@@ -33,8 +32,8 @@ class GameController:
             }
         )
 
-    def _round_info(self, player: int):
-        hand = list(self._game.round.get_hand(player))
+    def _round_info(self, index: int):
+        hand = list(self._game.round.get_hand(index))
         history = [
             {"player": action[0], "action": action[1].model_dump()}
             for action in self._game.round.history
@@ -57,11 +56,11 @@ class GameController:
         else:
             actions = [
                 action.model_dump()
-                for action in self._game.round.allowed_actions(player).actions
+                for action in self._game.round.allowed_actions(index).actions
             ]
-        action_selected = self._submitted_actions[player] is not None
+        action_selected = self._submitted_actions[index] is not None
         return {
-            "player": player,
+            "player": index,
             "wind_round": self._game.wind_round,
             "sub_round": self._game.sub_round,
             "draw_count": self._game.draw_count,
@@ -79,20 +78,20 @@ class GameController:
             "action_selected": action_selected,
         }
 
-    def _game_info(self, player: int):
+    def _info(self, index: int):
         return {
             "player_count": self._game.player_count,
-            "round_info": self._round_info(player),
+            "round_info": self._round_info(index),
             "win_info": self._win_info(),
         }
 
-    def emit_info(self, player_info: PlayerInfo):
-        self.validate_player_id(player_info)
-        emit("info", self._game_info(player_info.player), to=player_info.player_id)
+    def emit_info(self, player: Player):
+        index = self.get_player_index(player)
+        emit("info", self._info(index), to=player.id)
 
     def emit_info_all(self):
-        for player, player_id in enumerate(self._player_ids):
-            emit("info", self._game_info(player), to=player_id)
+        for player_index, player in enumerate(self._players):
+            emit("info", self._info(player_index), to=player.id)
 
     def set_default_submitted_actions(self):
         if self._game.round.status == RoundStatus.END:
@@ -126,14 +125,14 @@ class GameController:
         if action_resolve_count > 0:
             self.emit_info_all()
 
-    def submit_action(self, player_info: PlayerInfo, action: Action):
-        self.validate_player_id(player_info)
-        self._submitted_actions[player_info.player] = action
+    def submit_action(self, player: Player, action: Action):
+        index = self.get_player_index(player)
+        self._submitted_actions[index] = action
         # print(self._submitted_actions)
         self.try_resolve_actions()
 
-    def start_next_round(self, player_info: PlayerInfo):
-        self.validate_player_id(player_info)
+    def start_next_round(self, player: Player):
+        self.get_player_index(player)
         if not self._game.can_start_next_round:
             raise Exception("Cannot start next round!")
         print("Starting next round...")

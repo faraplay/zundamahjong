@@ -4,7 +4,7 @@ const actions_disambiguation_div = document.getElementById('actions_disambiguati
 function sendAction(e, action) {
     e.preventDefault();
     disableActions();
-    socket.emit('action', my_player_info, action, () => {
+    socket.emit('action', my_player, action, () => {
         actions_div.classList.add('hidden');
     });
 }

@@ -1,10 +1,12 @@
 from threading import Lock
 
-from flask_socketio import emit
+from flask_socketio import join_room, close_room
 
-name_to_sid: dict[str, str] = {}
-sid_to_name: dict[str, str] = {}
-name_sid_lock = Lock()
+from .player_info import Player
+
+sid_to_player: dict[str, Player] = {}
+id_to_sid: dict[str, str] = {}
+player_sid_lock = Lock()
 
 
 def verify_name(name: str):
@@ -16,33 +18,30 @@ def verify_name(name: str):
         raise Exception("Name cannot be empty!")
 
 
-def get_name(sid: str):
+def get_player(sid: str):
     try:
-        return sid_to_name[sid]
+        return sid_to_player[sid]
     except KeyError:
         raise Exception("Client has no name set!")
 
 
-def set_name(sid: str, name: str):
-    with name_sid_lock:
-        if name_to_sid.get(name, sid) != sid:
-            raise Exception("Name is already in use!")
-        old_name = sid_to_name.get(sid, None)
-        if old_name:
-            name_to_sid.pop(old_name)
-        name_to_sid[name] = sid
-        sid_to_name[sid] = name
+def set_player(sid: str, player: Player):
+    with player_sid_lock:
+        if id_to_sid.get(player.id, sid) != sid:
+            raise Exception(f"Id {player.id} is already in use!")
+        old_player = sid_to_player.get(sid, None)
+        if old_player:
+            id_to_sid.pop(old_player.id)
+            close_room(old_player.id)
+        id_to_sid[player.id] = sid
+        sid_to_player[sid] = player
+        join_room(player.id, sid)
 
 
 def remove_sid(sid: str):
-    with name_sid_lock:
-        name = sid_to_name.get(sid, None)
-        if name:
-            name_to_sid.pop(name)
-            sid_to_name.pop(sid)
-
-
-def emit_to_name(event, *args, name: str):
-    sid = name_to_sid.get(name, None)
-    if sid:
-        emit(event, *args, to=sid)
+    with player_sid_lock:
+        player = sid_to_player.get(sid, None)
+        if player:
+            id_to_sid.pop(player.id)
+            sid_to_player.pop(sid)
+            close_room(player.id)
