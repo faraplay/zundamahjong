@@ -123,17 +123,11 @@ class GameRoom:
         game_room.broadcast_room_info()
         return game_room
 
-    def close_room(self):
-        with rooms_lock:
-            for player in self.joined_players:
-                player_rooms.pop(player.id)
-            self.joined_players.clear()
-            print(f"Room {self.room_name} is now empty, removing from rooms dict")
-            rooms.pop(self.room_name)
-        close_room(self.room_id)
-
     def broadcast_room_info(self):
         emit("room_info", self.room_info, to=self.room_id)
+
+    def rejoin(self):
+        join_room(self.room_id)
 
     def start_game(self, game_options: GameOptions):
         if len(self.joined_players) != self.player_count:

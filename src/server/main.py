@@ -54,6 +54,7 @@ def on_set_name(name):
     game_room = GameRoom.get_player_room(player)
     if game_room is None:
         return player.model_dump(), None, None
+    game_room.rejoin()
     if game_room.game_controller is None:
         return player.model_dump(), game_room.room_info, None
     game_room.game_controller.emit_info(player)
