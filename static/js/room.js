@@ -55,6 +55,12 @@ function refreshRoomList() {
     });
 }
 
+socket.on('game_end', (room_info) => {
+    my_room_info = room_info;
+    setRoomInfo();
+    showScreen("room_screen");
+})
+
 
 name_form.addEventListener('submit', (e) => {
     e.preventDefault();

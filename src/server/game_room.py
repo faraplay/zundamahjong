@@ -144,3 +144,9 @@ class GameRoom:
             self.joined_players, GameOptions(player_count=self.player_count)
         )
         self.game_controller.emit_info_all()
+
+    def end_game(self):
+        if not self.game_controller._game.is_game_end:
+            raise Exception("Game is not over yet!")
+        self.game_controller = None
+        emit("game_end", self.room_info, to=self.room_id)
