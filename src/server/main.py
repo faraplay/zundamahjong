@@ -1,13 +1,11 @@
 from flask import request
-from flask_socketio import send, join_room, leave_room, rooms
+from flask_socketio import send
 
 from src.mahjong.action import Action
-from src.mahjong.game_options import GameOptions
 
 from .socketio import socketio, app
 from .name_sid import verify_name, get_player, set_player, remove_sid
 from .player_info import Player
-from .game_controller import GameController
 from .game_room import GameRoom
 
 
@@ -53,8 +51,11 @@ def on_set_name(name):
     player = Player.from_name(name)
     set_player(request.sid, player)
     game_room = GameRoom.get_player_room(player)
-    room_info = game_room.room_info if game_room is not None else None
-    return player.model_dump(), room_info
+    if game_room is None:
+        return player.model_dump(), None
+    if game_room.game_controller is not None:
+        game_room.game_controller.emit_info(player)
+    return player.model_dump(), game_room.room_info
 
 
 @socketio.on("get_rooms")
