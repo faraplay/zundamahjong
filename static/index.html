@@ -8,6 +8,7 @@
   <link
     href="https://fonts.googleapis.com/css2?family=Racing+Sans+One&display=swap&family=Chiron+GoRound+TC:wght@600&display=swap&family=Contrail+One&display=swap"
     rel="stylesheet">
+  <link href="style/room.css" rel="stylesheet" />
   <link href="style/style.css" rel="stylesheet" />
   <link href="style/straight_view.css" rel="stylesheet" />
   <link href="style/hand.css" rel="stylesheet" />
@@ -28,26 +29,36 @@
   <div id="view">
     <div id="name_screen" class="screen">
       <form id="name_form" action="">
-        <p>Enter a name...</p>
-        <input type="text">
+        Enter a name
+        <div>
+          <label for="name_input">Name</label>
+          <input id="name_input" type="text">
+        </div>
         <button type="submit">Set name</button>
       </form>
     </div>
     <div id="lobby_screen" class="screen" hidden>
-      <button type="button" id="refresh_room_list">Refresh room list</button>
       <form id="join_room_form" action="">
-        <select id="room_list"></select>
-        <button type="submit" disabled>Join room</button>
+        Select a room to join
+        <select id="room_list" size="4"></select>
+        <div id="join_room_buttons">
+          <button type="button" id="refresh_room_list">Refresh room list</button>
+          <button type="submit" disabled>Join room</button>
+        </div>
       </form>
-      <div>Or create a room:</div>
       <form id="create_room_form" action="">
-        <span>Room name:</span>
-        <input type="text">
-        <span>Number of players:</span>
-        <select id="player_count_select">
-          <option value="3">3</option>
-          <option value="4">4</option>
-        </select>
+        Or create a room
+        <div>
+          <label for="create_room_name">Room name:</label>
+          <input id="create_room_name" type="text">
+        </div>
+        <div>
+          <label for="player_count_select">Number of players:</label>
+          <select id="player_count_select">
+            <option value="3">3</option>
+            <option value="4">4</option>
+          </select>
+        </div>
         <button type="submit" disabled>Create room</button>
       </form>
     </div>
