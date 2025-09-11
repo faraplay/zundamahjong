@@ -22,6 +22,8 @@ const refresh_room_list_button = document.getElementById('refresh_room_list');
 const leave_room_button = document.getElementById('leave_room');
 
 const start_game_button = document.getElementById('start_game');
+const game_options_form = document.getElementById('game_options_form');
+const game_options_player_count_input = document.getElementById('game_options_player_count');
 
 var my_player = null;
 var my_room_info = null;
@@ -30,7 +32,9 @@ function setRoomInfo() {
     room_info_element.textContent =
         `Room ${my_room_info.room_name} --- `
         + `${my_room_info.player_count} player game --- `
-        + `Players: ${my_room_info.joined_players.join(", ")}`;
+        + `Players: ${my_room_info.joined_players.map(player => player.name).join(", ")}`;
+    game_options_form.hidden = !(my_room_info.joined_players[0].id == my_player.id);
+    game_options_player_count_input.value = my_room_info.player_count;
     start_game_button.disabled =
         !(my_room_info.joined_players.length == my_room_info.player_count);
 }
@@ -129,7 +133,9 @@ leave_room_button.addEventListener('click', (e) => {
     })
 })
 
-start_game_button.addEventListener('click', (e) => {
+game_options_form.addEventListener('submit', (e) => {
     e.preventDefault();
-    socket.emit('start_game', my_room_info.room_name)
+    const form_data = Object.fromEntries(new FormData(game_options_form));
+    console.log(form_data);
+    socket.emit('start_game', my_room_info.room_name, form_data);
 })

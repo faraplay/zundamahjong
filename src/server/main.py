@@ -2,6 +2,7 @@ from flask import request
 from flask_socketio import send
 
 from src.mahjong.action import Action
+from src.mahjong.game_options import GameOptions
 
 from .socketio import socketio, app
 from .name_sid import verify_name, get_player, set_player, remove_sid
@@ -92,13 +93,20 @@ def on_leave_room():
 
 
 @socketio.on("start_game")
-def on_start_game(room_name):
+def on_start_game(room_name, form_data):
     print(f"Received start_game from {request.sid}")
     player = get_player(request.sid)
     game_room = GameRoom.get_player_room(player)
     if game_room is None or room_name != game_room.room_name:
         raise Exception(f"Player is not in room {room_name}!")
-    game_room.start_game()
+    game_options = GameOptions(
+        player_count=form_data["player_count"],
+        game_length=(
+            form_data["game_length_wind_rounds"],
+            form_data["game_length_sub_rounds"],
+        ),
+    )
+    game_room.start_game(game_options)
 
 
 @socketio.on_error()

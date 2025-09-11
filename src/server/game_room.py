@@ -39,7 +39,7 @@ class GameRoom:
         return {
             "room_name": self.room_name,
             "player_count": self.player_count,
-            "joined_players": [player.name for player in self.joined_players],
+            "joined_players": [player.model_dump() for player in self.joined_players],
         }
 
     @classmethod
@@ -135,14 +135,14 @@ class GameRoom:
     def broadcast_room_info(self):
         emit("room_info", self.room_info, to=self.room_id)
 
-    def start_game(self):
+    def start_game(self, game_options: GameOptions):
         if len(self.joined_players) != self.player_count:
             raise Exception("Room is not full!")
         if self.game_controller is not None:
             raise Exception("Game is already in progress!")
-        self.game_controller = GameController(
-            self.joined_players, GameOptions(player_count=self.player_count)
-        )
+        if game_options.player_count != self.player_count:
+            raise Exception("Wrong number of players specified!")
+        self.game_controller = GameController(self.joined_players, game_options)
         self.game_controller.emit_info_all()
 
     def end_game(self):
