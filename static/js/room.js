@@ -26,28 +26,19 @@ const start_game_button = document.getElementById('start_game');
 var my_player = null;
 var my_room_info = null;
 
-function setRoomInfo(room_info) {
-    my_room_info = room_info;
-    if (room_info) {
-        room_info_element.textContent =
-            `Room ${room_info.room_name} --- `
-            + `${room_info.player_count} player game --- `
-            + `Players: ${room_info.joined_players.join(", ")}`;
-        create_room_button.disabled = true;
-        join_room_button.disabled = true;
-        leave_room_button.disabled = false;
-        start_game_button.disabled =
-            !(room_info.joined_players.length == room_info.player_count);
-    } else {
-        room_info_element.textContent = ""
-        create_room_button.disabled = false;
-        join_room_button.disabled = false;
-        leave_room_button.disabled = true;
-        start_game_button.disabled = true;
-    }
+function setRoomInfo() {
+    room_info_element.textContent =
+        `Room ${my_room_info.room_name} --- `
+        + `${my_room_info.player_count} player game --- `
+        + `Players: ${my_room_info.joined_players.join(", ")}`;
+    start_game_button.disabled =
+        !(my_room_info.joined_players.length == my_room_info.player_count);
 }
 
-socket.on('room_info', setRoomInfo);
+socket.on('room_info', (room_info) => {
+    my_room_info = room_info;
+    setRoomInfo()
+});
 
 function refreshRoomList() {
     socket.emit('get_rooms', (rooms) => {
@@ -71,13 +62,15 @@ name_form.addEventListener('submit', (e) => {
         socket.emit('set_name', name_input.value, (player, room_info, is_in_game) => {
             if (!player) return;
             my_player = player;
-            setRoomInfo(room_info);
+            my_room_info = room_info;
             if (!room_info) {
                 showScreen("lobby_screen");
                 refreshRoomList();
             } else if (!is_in_game) {
+                setRoomInfo();
                 showScreen("room_screen");
             } else {
+                setRoomInfo();
                 showScreen("game_screen");
             }
         });
@@ -95,7 +88,8 @@ create_room_form.addEventListener('submit', (e) => {
         player_count,
         (room_info) => {
             if (!room_info) return;
-            setRoomInfo(room_info);
+            my_room_info = room_info;
+            setRoomInfo();
             console.log(`Created room ${room_info.room_name}`)
             showScreen("room_screen");
         });
@@ -111,7 +105,8 @@ join_room_form.addEventListener('submit', (e) => {
     if (room_list_select.value) {
         socket.emit('join_room', room_list_select.value, (room_info) => {
             if (!room_info) return;
-            setRoomInfo(room_info);
+            my_room_info = room_info;
+            setRoomInfo();
             console.log(`Joined room ${room_info.room_name}`)
             showScreen("room_screen");
         });
@@ -122,7 +117,7 @@ leave_room_button.addEventListener('click', (e) => {
     e.preventDefault();
     socket.emit('leave_room', (room_info) => {
         if (!room_info) return;
-        setRoomInfo(null);
+        my_room_info = null;
         console.log(`Left room ${room_info.room_name}`)
         showScreen("lobby_screen");
     })
