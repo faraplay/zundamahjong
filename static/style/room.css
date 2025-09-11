@@ -1,4 +1,4 @@
-#name_form, #join_room_form, #create_room_form {
+#name_form, #join_room_form, #create_room_form, #game_options_form {
     width: 40cqw;
     margin-inline: auto;
     margin-block: 5cqw;
@@ -24,4 +24,9 @@
     display: flex;
     justify-content: flex-end;
     gap: 1cqw;
+}
+
+#game_options_form {
+    display: grid;
+    grid-template-columns: auto auto;
 }

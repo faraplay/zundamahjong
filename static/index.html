@@ -65,18 +65,12 @@
       <span id="room_info"></span>
       <button type="button" id="leave_room">Leave room</button>
       <form id="game_options_form">
-        <div>
-          <label for="player_count">Number of players</label>
-          <input id="game_options_player_count" type="number" name="player_count" value="4" readonly>
-        </div>
-        <div>
-          <label for="game_length_wind_rounds">Number of wind rounds</label>
-          <input type="number" name="game_length_wind_rounds" min="0" max="4" step="1" value="1">
-        </div>
-        <div>
-          <label for="game_length_sub_rounds">Number of sub rounds</label>
-          <input type="number" name="game_length_sub_rounds" min="0" max="3" step="1" value="0">
-        </div>
+        <label for="player_count">Number of players</label>
+        <input id="game_options_player_count" type="number" name="player_count" value="4" readonly>
+        <label for="game_length_wind_rounds">Number of wind rounds</label>
+        <input type="number" name="game_length_wind_rounds" min="0" max="4" step="1" value="1">
+        <label for="game_length_sub_rounds">Number of sub rounds</label>
+        <input type="number" name="game_length_sub_rounds" min="0" max="3" step="1" value="0">
         <button type="submit" id="start_game">Start game</button>
       </form>
     </div>

@@ -33,7 +33,11 @@ function setRoomInfo() {
         `Room ${my_room_info.room_name} --- `
         + `${my_room_info.player_count} player game --- `
         + `Players: ${my_room_info.joined_players.map(player => player.name).join(", ")}`;
-    game_options_form.hidden = !(my_room_info.joined_players[0].id == my_player.id);
+    if (my_room_info.joined_players[0].id == my_player.id) {
+        game_options_form.classList.remove('hidden');
+    } else {
+        game_options_form.classList.add('hidden');
+    }
     game_options_player_count_input.value = my_room_info.player_count;
     start_game_button.disabled =
         !(my_room_info.joined_players.length == my_room_info.player_count);
