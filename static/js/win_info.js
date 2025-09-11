@@ -109,41 +109,44 @@ function setResults(player_scores, score_changes) {
     player_scores_div.replaceChildren(...player_score_elements);
 }
 
-function setWinInfo(player_scores, win_info) {
+function setWinInfo(win_info) {
     if (win_info) {
-        win_flowers_div.replaceChildren(...win_info.win.flowers.map(createStraightTileElement));
-        win_tiles_div.replaceChildren(...win_info.win.hand.map(createStraightTileElement));
-        win_calls_div.replaceChildren(...win_info.win.calls.map(createCallElement));
+        win_tiles_div.replaceChildren(...win_info.hand.map(createStraightTileElement));
+        win_calls_div.replaceChildren(...win_info.calls.map(createCallElement));
+        win_flowers_div.replaceChildren(...win_info.flowers.map(createStraightTileElement));
 
-        const win_hand_width = win_info.win.calls.reduce(
+        const win_hand_width = win_info.calls.reduce(
             (partial_sum, call) => partial_sum + call.tiles.length + 0.5,
-            win_info.win.hand.length
+            win_info.hand.length
         );
-        console.log(win_hand_width + win_info.win.flowers.length);
-        if (win_hand_width + win_info.win.flowers.length >= 21.5) {
+        if (win_hand_width + win_info.flowers.length >= 21.5) {
             win_flowers_div.classList.add('overlap');
         } else {
             win_flowers_div.classList.remove('overlap');
         }
-        yakus_element.replaceChildren(
-            ...Object.entries(win_info.scoring.yaku_hans).map(createYakuElement)
-        );
-
-        win_player_indicator.textContent = `Player ${win_info.win.win_player} wins!`;
-        total_han_element.textContent = `${win_info.scoring.han_total} han`;
-        tsumo_or_ron_element.textContent = win_info.win.lose_player ? "Ron" : "Tsumo";
-        total_score_element.textContent =
-            win_info.scoring.player_scores[win_info.win.win_player];
-        setResults(player_scores, win_info.scoring.player_scores);
     } else {
         win_tiles_div.replaceChildren();
         win_calls_div.replaceChildren();
-        yakus_element.replaceChildren();
+        win_flowers_div.replaceChildren();
+    }
+}
 
+
+function setScoringInfo(scoring_info) {
+    if (scoring_info) {
+        yakus_element.replaceChildren(
+            ...Object.entries(scoring_info.yaku_hans).map(createYakuElement)
+        );
+        win_player_indicator.textContent = `Player ${scoring_info.win_player} wins!`;
+        total_han_element.textContent = `${scoring_info.han_total} han`;
+        tsumo_or_ron_element.textContent = scoring_info.lose_player ? "Ron" : "Tsumo";
+        total_score_element.textContent =
+            scoring_info.player_scores[scoring_info.win_player];
+    } else {
+        yakus_element.replaceChildren();
         win_player_indicator.textContent = "The round is a draw...";
         total_han_element.textContent = "";
         tsumo_or_ron_element.textContent = "";
         total_score_element.textContent = "";
-        setResults(player_scores, Array(player_count).fill(0));
     }
 }

@@ -22,16 +22,6 @@ class GameController:
         except ValueError:
             raise Exception(f"Player {player.id} not found in this game!")
 
-    def _win_info(self):
-        return (
-            None
-            if self._game.win is None
-            else {
-                "win": self._game.win.model_dump(),
-                "scoring": self._game.scoring.model_dump(),
-            }
-        )
-
     def _game_info(self):
         return {
             "wind_round": self._game.wind_round,
@@ -90,10 +80,14 @@ class GameController:
         return {
             "player_count": self._game.player_count,
             "player_index": index,
+            "is_game_end": self._game.is_game_end,
             "game_info": self._game_info(),
             "round_info": self._round_info(),
             "player_info": self._player_info(index),
-            "win_info": self._win_info(),
+            "win_info": self._game.win.model_dump() if self._game.win else None,
+            "scoring_info": (
+                self._game.scoring.model_dump() if self._game.scoring else None
+            ),
         }
 
     def emit_info(self, player: Player):

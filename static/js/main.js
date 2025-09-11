@@ -27,7 +27,13 @@ socket.on('info', (info) => {
     setRoundInfo(info.round_info);
     setPlayerInfo(info.player_info);
 
-    setWinInfo(info.game_info.player_scores, info.win_info);
+    setWinInfo(info.win_info);
+    setScoringInfo(info.scoring_info);
+
+    const score_diffs = info.scoring_info?.player_scores ?? Array(player_count).fill(0);
+    setResults(info.game_info.player_scores, score_diffs);
+    next_round_button.textContent = info.is_game_end ? "End game" : "Start next round";
+
     setTableHands(info);
 
     showScreen("game_screen");

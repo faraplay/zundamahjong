@@ -8,6 +8,8 @@ from .form_hand import formed_hand_possibilities
 
 
 class Scoring(BaseModel):
+    win_player: int
+    lose_player: int | None
     yaku_hans: dict[str, int]
     han_total: int
     player_scores: list[float]
@@ -69,20 +71,24 @@ class Scorer:
         han_total = sum(yaku_hans.values())
         player_scores = self._get_player_scores(han_total)
         return Scoring(
-            yaku_hans=yaku_hans, han_total=han_total, player_scores=player_scores
+            win_player=self._win.win_player,
+            lose_player=self._win.lose_player,
+            yaku_hans=yaku_hans,
+            han_total=han_total,
+            player_scores=player_scores,
         )
 
-    def _get_win_scoring(self):
+    def _get_scoring(self):
         scorings = [
             self._get_formed_hand_scoring(formed_hand)
             for formed_hand in formed_hand_possibilities(self._win.hand)
         ]
 
-        def score_key(scoring: Scoring):
+        def key(scoring: Scoring):
             return (scoring.han_total, scoring.player_scores[self._win.win_player])
 
-        return max(scorings, key=score_key)
+        return max(scorings, key=key)
 
     @classmethod
     def score(cls, win, options):
-        return cls(win, options)._get_win_scoring()
+        return cls(win, options)._get_scoring()
