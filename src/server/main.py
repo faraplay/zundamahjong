@@ -52,10 +52,11 @@ def on_set_name(name):
     set_player(request.sid, player)
     game_room = GameRoom.get_player_room(player)
     if game_room is None:
-        return player.model_dump(), None
-    if game_room.game_controller is not None:
-        game_room.game_controller.emit_info(player)
-    return player.model_dump(), game_room.room_info
+        return player.model_dump(), None, None
+    if game_room.game_controller is None:
+        return player.model_dump(), game_room.room_info, None
+    game_room.game_controller.emit_info(player)
+    return player.model_dump(), game_room.room_info, True
 
 
 @socketio.on("get_rooms")

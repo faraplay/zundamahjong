@@ -21,4 +21,5 @@ socket.on('info', (info) => {
         disableActions();
     }
     setWinInfo(info.round_info.player_scores, info.win_info);
+    showScreen("game_screen");
 })

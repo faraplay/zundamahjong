@@ -11,7 +11,8 @@ function sendAction(e, action) {
 
 function createDisambiguationActionButtonElement(action, last_discard) {
     const action_item = document.createElement('button');
-    action_item.classList.add('disambig_action_button')
+    action_item.type = "button";
+    action_item.classList.add('disambig_action_button');
     switch (action.action_type) {
         case ACTION_CHI_A:
             for (const tile of [last_discard, last_discard + 1, last_discard + 2]) {
@@ -40,6 +41,7 @@ function createDisambiguationActionButtonElement(action, last_discard) {
 
 function createActionSupertypeElement(action_supertype) {
     const action_supertype_item = document.createElement('button');
+    action_supertype_item.type = "button";
     action_supertype_item.classList.add('action_button');
     action_supertype_item.classList.add(`action_${action_supertype}`);
     const supertype = action_supertype_strings[action_supertype];

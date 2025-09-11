@@ -2,6 +2,7 @@ const hand_div = document.getElementById('hand');
 
 function createHandTileElement(tile) {
     const button = document.createElement('button');
+    button.type = "button";
     button.classList.add('hand_tile_button');
     const tile_item = createStraightTileElement(tile);
     button.appendChild(tile_item);
