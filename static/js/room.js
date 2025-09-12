@@ -56,7 +56,9 @@ function refreshRoomList() {
             const room_option = document.createElement("option");
             room_option.value = room_info.room_name;
             room_option.textContent =
-                `${room_info.room_name} (${room_info.joined_players.length}/${room_info.player_count})`;
+                `${room_info.room_name} `
+                + `(${room_info.joined_players.length}/${room_info.player_count}) `
+                + room_info.joined_players.map(player => player.name).join(", ");
             room_option.disabled = room_info.joined_players.length == room_info.player_count;
             room_list_select.options.add(room_option);
         }
