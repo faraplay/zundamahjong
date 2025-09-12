@@ -20,19 +20,26 @@ def sio_on(event: str):
     return sio_on_decorator
 
 
+debug_path = "/zundamahjong"
 debug_app = WSGIApp(
     sio,
     static_files={
-        "/static/index.html": {
+        f"{debug_path}/": {
             "filename": "./static/index.html",
             "content_type": "text/html",
         },
-        "/static/mahjongtiles": {
+        f"{debug_path}/mahjongtiles": {
             "filename": "./static/mahjongtiles",
             "content_type": "image/svg+xml",
         },
-        "/static/js": {"filename": "./static/js", "content_type": "text/javascript"},
-        "/static/style": {"filename": "./static/style", "content_type": "text/css"},
+        f"{debug_path}/js": {
+            "filename": "./static/js",
+            "content_type": "text/javascript",
+        },
+        f"{debug_path}/style": {
+            "filename": "./static/style",
+            "content_type": "text/css",
+        },
     },
 )
 
