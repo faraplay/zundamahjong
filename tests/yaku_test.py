@@ -1,3 +1,5 @@
+from typing import Optional
+
 from unittest import TestCase
 
 from src.mahjong.tile import Tile
@@ -9,7 +11,7 @@ from src.mahjong.yaku import YakuCalculator
 def get_yaku_mults(
     *,
     win_player: int = 0,
-    lose_player: int | None = None,
+    lose_player: Optional[int],
     formed_hand: list[Call],
     calls: list[Call],
     flowers: list[Tile],

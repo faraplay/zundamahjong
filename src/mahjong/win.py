@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 from .tile import Tile
@@ -6,7 +8,7 @@ from .call import Call
 
 class Win(BaseModel):
     win_player: int
-    lose_player: int | None
+    lose_player: Optional[int]
     hand: list[Tile]
     calls: list[Call]
     flowers: list[Tile]

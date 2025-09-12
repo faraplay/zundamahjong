@@ -1,4 +1,5 @@
 from __future__ import annotations
+from typing import Optional
 from collections import deque
 from collections.abc import Sequence, Callable
 from enum import Enum
@@ -55,7 +56,7 @@ class Round:
         wind_round: int = 0,
         sub_round: int = 0,
         draw_count: int = 0,
-        tiles: list[int] | None = None,
+        tiles: Optional[list[Tile]] = None,
         options: GameOptions = GameOptions(),
         round_end_callback: Callable[[], None] = lambda: None,
     ):
@@ -305,19 +306,21 @@ class Round:
 
     @_register_do_action(ActionType.NOTHING)
     def _nothing(self, player: int, tile: Tile):
-        match self._status:
-            case RoundStatus.START:
-                self._flower_pass_count += 1
-                if self._flower_pass_count >= self._player_count + 1:
-                    self._current_player = self._sub_round
-                    self._status = RoundStatus.PLAY
-                else:
-                    self._current_player = self._next_player(self._current_player)
-            case RoundStatus.ADD_KAN_AFTER | RoundStatus.CLOSED_KAN_AFTER:
+        if self._status == RoundStatus.START:
+            self._flower_pass_count += 1
+            if self._flower_pass_count >= self._player_count + 1:
+                self._current_player = self._sub_round
                 self._status = RoundStatus.PLAY
-                self._last_tile = 0
-            case RoundStatus.LAST_DISCARDED:
-                self._status = RoundStatus.END
+            else:
+                self._current_player = self._next_player(self._current_player)
+        elif (
+            self._status == RoundStatus.ADD_KAN_AFTER
+            or self._status == RoundStatus.CLOSED_KAN_AFTER
+        ):
+            self._status = RoundStatus.PLAY
+            self._last_tile = 0
+        elif self._status == RoundStatus.LAST_DISCARDED:
+            self._status = RoundStatus.END
 
     @_register_do_action(ActionType.DRAW)
     def _draw(self, player: int, tile: Tile):

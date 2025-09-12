@@ -12,7 +12,7 @@ class Game:
     def __init__(
         self,
         *,
-        first_deck_tiles: list[Tile] | None = None,
+        first_deck_tiles: Optional[list[Tile]] = None,
         options: GameOptions = GameOptions(),
     ):
         self._player_count = options.player_count
@@ -70,7 +70,7 @@ class Game:
             and not self.is_dealer_repeat()
         )
 
-    def start_next_round(self, deck_tiles: list[int] | None = None):
+    def start_next_round(self, deck_tiles: Optional[list[int]] = None):
         if not self.can_start_next_round:
             raise InvalidOperationException()
         if not self.is_dealer_repeat():
@@ -95,7 +95,7 @@ class Game:
             next_sub_round = 0
         return next_wind_round, next_sub_round
 
-    def _create_round(self, deck_tiles: list[Tile] | None):
+    def _create_round(self, deck_tiles: Optional[list[Tile]]):
         def on_round_end():
             self._calculate_win_score()
 

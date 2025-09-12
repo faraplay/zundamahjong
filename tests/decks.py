@@ -8,7 +8,7 @@ def fill_missing_tiles(deck_front: list[Tile], deck_back: list[Tile]):
     count_deck = Counter(four_player_deck)
     count_deck.subtract(deck_front)
     count_deck.subtract(deck_back)
-    assert (-count_deck).total() == 0
+    assert -count_deck == {}
     return deck_front + list(count_deck.elements()) + deck_back
 
 

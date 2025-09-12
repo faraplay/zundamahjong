@@ -1,3 +1,5 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 from .call import Call
@@ -9,7 +11,7 @@ from .form_hand import formed_hand_possibilities
 
 class Scoring(BaseModel):
     win_player: int
-    lose_player: int | None
+    lose_player: Optional[int]
     yaku_hans: dict[str, int]
     han_total: int
     player_scores: list[float]
