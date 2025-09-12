@@ -35,3 +35,5 @@ debug_app = WSGIApp(
         "/static/style": {"filename": "./static/style", "content_type": "text/css"},
     },
 )
+
+app = WSGIApp(sio)
