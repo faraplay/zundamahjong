@@ -1,7 +1,6 @@
 from threading import Lock
 
-from flask_socketio import join_room, close_room
-
+from .sio import sio
 from .player_info import Player
 
 sid_to_player: dict[str, Player] = {}
@@ -32,10 +31,10 @@ def set_player(sid: str, player: Player):
         old_player = sid_to_player.get(sid, None)
         if old_player:
             id_to_sid.pop(old_player.id)
-            close_room(old_player.id)
+            sio.close_room(old_player.id)
         id_to_sid[player.id] = sid
         sid_to_player[sid] = player
-        join_room(player.id, sid)
+        sio.enter_room(sid, player.id)
 
 
 def remove_sid(sid: str):
@@ -44,4 +43,4 @@ def remove_sid(sid: str):
         if player:
             id_to_sid.pop(player.id)
             sid_to_player.pop(sid)
-            close_room(player.id)
+            sio.close_room(player.id)

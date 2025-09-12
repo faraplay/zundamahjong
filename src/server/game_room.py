@@ -2,10 +2,9 @@ from __future__ import annotations
 from threading import Lock
 from typing import Optional
 
-from flask_socketio import emit, join_room, leave_room, close_room
-
 from src.mahjong.game_options import GameOptions
 
+from .sio import sio
 from .player_info import Player
 from .game_controller import GameController
 
@@ -69,6 +68,7 @@ class GameRoom:
     @classmethod
     def create_room(
         cls,
+        sid: str,
         creator: Player,
         room_name: str,
         player_count: int,
@@ -81,12 +81,12 @@ class GameRoom:
             game_room = cls(creator, room_name, player_count)
             player_rooms[creator.id] = game_room
             rooms[room_name] = game_room
-        join_room(make_room_id(room_name))
+        sio.enter_room(sid, game_room.room_id)
         print(f"Player {creator.id} has created room {room_name}")
         return game_room
 
     @classmethod
-    def join_room(cls, player: Player, room_name: str):
+    def join_room(cls, sid: str, player: Player, room_name: str):
         with rooms_lock:
             if player.id in player_rooms:
                 raise Exception(f"Player {player.id} is already in a room!")
@@ -98,12 +98,12 @@ class GameRoom:
             game_room.joined_players.append(player)
             player_rooms[player.id] = game_room
         # broadcast new player to room
-        join_room(game_room.room_id)
+        sio.enter_room(sid, game_room.room_id)
         game_room.broadcast_room_info()
         return game_room
 
     @classmethod
-    def leave_room(cls, player: Player):
+    def leave_room(cls, sid: str, player: Player):
         with rooms_lock:
             try:
                 game_room = player_rooms[player.id]
@@ -119,15 +119,15 @@ class GameRoom:
                 )
                 rooms.pop(game_room.room_name)
             # broadcast
-        leave_room(game_room.room_id)
+        sio.leave_room(sid, game_room.room_id)
         game_room.broadcast_room_info()
         return game_room
 
     def broadcast_room_info(self):
-        emit("room_info", self.room_info, to=self.room_id)
+        sio.emit("room_info", self.room_info, to=self.room_id)
 
-    def rejoin(self):
-        join_room(self.room_id)
+    def rejoin(self, sid):
+        sio.enter_room(sid, self.room_id)
 
     def start_game(self, game_options: GameOptions):
         if len(self.joined_players) != self.player_count:
@@ -143,4 +143,4 @@ class GameRoom:
         if not self.game_controller._game.is_game_end:
             raise Exception("Game is not over yet!")
         self.game_controller = None
-        emit("game_end", self.room_info, to=self.room_id)
+        sio.emit("game_end", self.room_info, to=self.room_id)

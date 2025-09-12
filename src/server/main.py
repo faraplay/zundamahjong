@@ -1,27 +1,24 @@
-from flask import request
-from flask_socketio import send
-
 from src.mahjong.action import Action
 from src.mahjong.game_options import GameOptions
 
-from .socketio import socketio, app
+from .sio import sio, sio_on
 from .name_sid import verify_name, get_player, set_player, remove_sid
 from .player_info import Player
 from .game_room import GameRoom
 
 
-@socketio.on("connect")
-def connect(auth):
+@sio_on("connect")
+def connect(sid, environ, auth=None):
     pass
 
 
-@socketio.on("disconnect")
-def disconnect(reason):
-    remove_sid(request.sid)
+@sio_on("disconnect")
+def disconnect(sid, reason):
+    remove_sid(sid)
 
 
-@socketio.on("action")
-def handle_action(player_data, action_data):
+@sio_on("action")
+def handle_action(sid, player_data, action_data):
     player = Player.model_validate(player_data)
     game_room = GameRoom.get_player_room(player)
     if game_room is None:
@@ -32,8 +29,8 @@ def handle_action(player_data, action_data):
     game_room.game_controller.submit_action(player, action)
 
 
-@socketio.on("next_round")
-def start_next_round(player_data):
+@sio_on("next_round")
+def start_next_round(sid, player_data):
     player = Player.model_validate(player_data)
     game_room = GameRoom.get_player_room(player)
     if game_room is None:
@@ -46,50 +43,50 @@ def start_next_round(player_data):
         game_room.end_game()
 
 
-@socketio.on("set_name")
-def on_set_name(name):
+@sio_on("set_name")
+def on_set_name(sid, name):
     verify_name(name)
     player = Player.from_name(name)
-    set_player(request.sid, player)
+    set_player(sid, player)
     game_room = GameRoom.get_player_room(player)
     if game_room is None:
         return player.model_dump(), None, None
-    game_room.rejoin()
+    game_room.rejoin(sid)
     if game_room.game_controller is None:
         return player.model_dump(), game_room.room_info, None
     game_room.game_controller.emit_info(player)
     return player.model_dump(), game_room.room_info, True
 
 
-@socketio.on("get_rooms")
-def on_get_rooms():
+@sio_on("get_rooms")
+def on_get_rooms(sid):
     return [game_room.room_info for game_room in GameRoom.get_rooms()]
 
 
-@socketio.on("create_room")
-def on_create_room(room_name, player_count):
+@sio_on("create_room")
+def on_create_room(sid, room_name, player_count):
     GameRoom.verify_player_count(player_count)
     GameRoom.verify_room_name(room_name)
-    player = get_player(request.sid)
-    return GameRoom.create_room(player, room_name, player_count).room_info
+    player = get_player(sid)
+    return GameRoom.create_room(sid, player, room_name, player_count).room_info
 
 
-@socketio.on("join_room")
-def on_join_room(room_name):
+@sio_on("join_room")
+def on_join_room(sid, room_name):
     GameRoom.verify_room_name(room_name)
-    player = get_player(request.sid)
-    return GameRoom.join_room(player, room_name).room_info
+    player = get_player(sid)
+    return GameRoom.join_room(sid, player, room_name).room_info
 
 
-@socketio.on("leave_room")
-def on_leave_room():
-    player = get_player(request.sid)
-    return GameRoom.leave_room(player).room_info
+@sio_on("leave_room")
+def on_leave_room(sid):
+    player = get_player(sid)
+    return GameRoom.leave_room(sid, player).room_info
 
 
-@socketio.on("start_game")
-def on_start_game(room_name, form_data):
-    player = get_player(request.sid)
+@sio_on("start_game")
+def on_start_game(sid, room_name, form_data):
+    player = get_player(sid)
     game_room = GameRoom.get_player_room(player)
     if game_room is None or room_name != game_room.room_name:
         raise Exception(f"Player is not in room {room_name}!")
@@ -101,12 +98,3 @@ def on_start_game(room_name, form_data):
         ),
     )
     game_room.start_game(game_options)
-
-
-@socketio.on_error()
-def error_handler(e):
-    send(str(e))
-
-
-def run_server():
-    socketio.run(app, debug=True)

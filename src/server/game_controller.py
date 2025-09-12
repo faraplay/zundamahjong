@@ -1,10 +1,9 @@
-from flask_socketio import emit
-
 from src.mahjong.action import Action, ActionType
 from src.mahjong.game_options import GameOptions
 from src.mahjong.round import RoundStatus
 from src.mahjong.game import Game
 
+from .sio import sio
 from .player_info import Player
 
 
@@ -92,11 +91,11 @@ class GameController:
 
     def emit_info(self, player: Player):
         index = self.get_player_index(player)
-        emit("info", self._info(index), to=player.id)
+        sio.emit("info", self._info(index), to=player.id)
 
     def emit_info_all(self):
-        for player_index, player in enumerate(self._players):
-            emit("info", self._info(player_index), to=player.id)
+        for index, player in enumerate(self._players):
+            sio.emit("info", self._info(index), to=player.id)
 
     def set_default_submitted_actions(self):
         if self._game.round.status == RoundStatus.END:
