@@ -18,10 +18,7 @@ def verify_name(name: str):
 
 
 def get_player(sid: str):
-    try:
-        return sid_to_player[sid]
-    except KeyError:
-        raise Exception("Client has no name set!")
+    return sid_to_player.get(sid, None)
 
 
 def set_player(sid: str, player: Player):
