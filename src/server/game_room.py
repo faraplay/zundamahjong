@@ -13,10 +13,6 @@ player_rooms: dict[str, GameRoom] = {}
 rooms_lock = Lock()
 
 
-def make_room_id(name: str):
-    return "room:" + name
-
-
 class GameRoom:
     def __init__(
         self,
@@ -28,10 +24,6 @@ class GameRoom:
         self.player_count = player_count
         self.game_controller: Optional[GameController] = None
         self.joined_players: list[Player] = [creator]
-
-    @property
-    def room_id(self):
-        return make_room_id(self.room_name)
 
     @property
     def room_info(self):
@@ -81,7 +73,6 @@ class GameRoom:
             game_room = cls(creator, room_name, player_count)
             player_rooms[creator.id] = game_room
             rooms[room_name] = game_room
-        sio.enter_room(sid, game_room.room_id)
         print(f"Player {creator.id} has created room {room_name}")
         return game_room
 
@@ -98,7 +89,6 @@ class GameRoom:
             game_room.joined_players.append(player)
             player_rooms[player.id] = game_room
         # broadcast new player to room
-        sio.enter_room(sid, game_room.room_id)
         game_room.broadcast_room_info()
         return game_room
 
@@ -119,15 +109,19 @@ class GameRoom:
                 )
                 rooms.pop(game_room.room_name)
             # broadcast
-        sio.leave_room(sid, game_room.room_id)
         game_room.broadcast_room_info()
         return game_room
 
     def broadcast_room_info(self):
-        sio.emit("room_info", self.room_info, to=self.room_id)
+        for player in self.joined_players:
+            sio.emit("room_info", self.room_info, to=player)
+
+    def broadcast_game_end(self):
+        for player in self.joined_players:
+            sio.emit("game_end", self.room_info, to=player)
 
     def rejoin(self, sid):
-        sio.enter_room(sid, self.room_id)
+        pass
 
     def start_game(self, game_options: GameOptions):
         if len(self.joined_players) != self.player_count:
@@ -143,4 +137,4 @@ class GameRoom:
         if not self.game_controller._game.is_game_end:
             raise Exception("Game is not over yet!")
         self.game_controller = None
-        sio.emit("game_end", self.room_info, to=self.room_id)
+        self.broadcast_game_end()
