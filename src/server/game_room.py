@@ -5,7 +5,7 @@ from typing import Optional
 from src.mahjong.game_options import GameOptions
 
 from .sio import sio
-from .player_info import Player
+from .player_info import Player, PlayerConnection
 from .game_controller import GameController
 
 rooms: dict[str, GameRoom] = {}
@@ -23,7 +23,16 @@ class GameRoom:
         self.room_name = room_name
         self.player_count = player_count
         self.game_controller: Optional[GameController] = None
-        self.joined_players: list[Player] = [creator]
+        self.joined_player_connections: list[PlayerConnection] = [
+            PlayerConnection(player=creator)
+        ]
+
+    @property
+    def joined_players(self):
+        return [
+            player_connection.player
+            for player_connection in self.joined_player_connections
+        ]
 
     @property
     def room_info(self):
@@ -81,11 +90,18 @@ class GameRoom:
                 raise Exception(f"Game already in progress!")
             if len(game_room.joined_players) >= game_room.player_count:
                 raise Exception(f"Room {game_room.room_name} is full!")
-            game_room.joined_players.append(player)
+            game_room.joined_player_connections.append(PlayerConnection(player=player))
             player_rooms[player.id] = game_room
         # broadcast new player to room
         game_room.broadcast_room_info()
         return game_room
+
+    def _remove_player(self, player_connection: PlayerConnection):
+        self.joined_player_connections.remove(player_connection)
+        player_rooms.pop(player_connection.player.id)
+        if len(self.joined_players) == 0:
+            print(f"Room {self.room_name} is now empty, removing from rooms dict")
+            rooms.pop(self.room_name)
 
     @classmethod
     def leave_room(cls, player: Player):
@@ -96,40 +112,75 @@ class GameRoom:
                 raise Exception("Player is not in a room!")
             if game_room.game_controller:
                 raise Exception("Game already in progress!")
-            game_room.joined_players.remove(player)
-            player_rooms.pop(player.id)
-            if len(game_room.joined_players) == 0:
-                print(
-                    f"Room {game_room.room_name} is now empty, removing from rooms dict"
-                )
-                rooms.pop(game_room.room_name)
+            player_connection = game_room.get_player_connection(player)
+            game_room._remove_player(player_connection)
             # broadcast
         game_room.broadcast_room_info()
         return game_room
 
     def broadcast_room_info(self):
         for player in self.joined_players:
-            sio.emit("room_info", self.room_info, to=player)
+            sio.emit("room_info", self.room_info, to=player.id)
 
     def broadcast_game_end(self):
         for player in self.joined_players:
-            sio.emit("game_end", self.room_info, to=player)
+            sio.emit("game_end", self.room_info, to=player.id)
 
-    def rejoin(self, sid):
-        pass
+    def get_player_connection(self, player: Player):
+        return next(
+            player_connection
+            for player_connection in self.joined_player_connections
+            if player_connection.player == player
+        )
+
+    @classmethod
+    def try_disconnect(cls, player: Player):
+        with rooms_lock:
+            game_room = player_rooms.get(player.id)
+            if game_room is None:
+                return
+            player_connection = game_room.get_player_connection(player)
+            player_connection.is_connected = False
+            if game_room.game_controller is None:
+                game_room._remove_player(player_connection)
+                game_room.broadcast_room_info()
+            else:
+                is_any_connections = any(
+                    player_connection.is_connected
+                    for player_connection in game_room.joined_player_connections
+                )
+                if not is_any_connections:
+                    print(
+                        f"Room {game_room.room_name} has no connections, closing room"
+                    )
+                    for player in game_room.joined_players:
+                        player_rooms.pop(player.id)
+                    game_room.joined_player_connections.clear()
+                    rooms.pop(game_room.room_name)
+
+    @classmethod
+    def try_reconnect(cls, player: Player):
+        with rooms_lock:
+            game_room = player_rooms.get(player.id)
+            if game_room is None:
+                return None
+            game_room.get_player_connection(player).is_connected = True
+            return game_room
 
     def start_game(self, game_options: GameOptions):
-        if len(self.joined_players) != self.player_count:
-            raise Exception("Room is not full!")
-        if self.game_controller is not None:
-            raise Exception("Game is already in progress!")
         if game_options.player_count != self.player_count:
             raise Exception("Wrong number of players specified!")
-        self.game_controller = GameController(self.joined_players, game_options)
+        with rooms_lock:
+            if len(self.joined_players) != self.player_count:
+                raise Exception("Room is not full!")
+            if self.game_controller is not None:
+                raise Exception("Game is already in progress!")
+            self.game_controller = GameController(self.joined_players, game_options)
         self.game_controller.emit_info_all()
 
     def end_game(self):
-        if not self.game_controller._game.is_game_end:
-            raise Exception("Game is not over yet!")
-        self.game_controller = None
+        with rooms_lock:
+            if not self.game_controller._game.is_game_end:
+                raise Exception("Game is not over yet!")
+            self.game_controller = None
         self.broadcast_game_end()

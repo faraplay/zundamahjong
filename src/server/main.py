@@ -16,9 +16,7 @@ def connect(sid, environ, auth=None):
 def disconnect(sid, reason):
     player = try_get_player(sid)
     if player is not None:
-        game_room = GameRoom.get_player_room(player)
-        if game_room is not None and game_room.game_controller is None:
-            GameRoom.leave_room(player)
+        GameRoom.try_disconnect(player)
     remove_sid(sid)
 
 
@@ -53,10 +51,9 @@ def on_set_name(sid, name):
     verify_name(name)
     player = Player.from_name(name)
     set_player(sid, player)
-    game_room = GameRoom.get_player_room(player)
+    game_room = GameRoom.try_reconnect(player)
     if game_room is None:
         return player.model_dump(), None, None
-    game_room.rejoin(sid)
     if game_room.game_controller is None:
         return player.model_dump(), game_room.room_info, None
     game_room.game_controller.emit_info(player)
