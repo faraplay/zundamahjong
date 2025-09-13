@@ -96,5 +96,14 @@ def on_start_game(sid, room_name, form_data):
             form_data["game_length_wind_rounds"],
             form_data["game_length_sub_rounds"],
         ),
+        score_dealer_ron_base_value=form_data["score_dealer_ron_base_value"],
+        score_dealer_tsumo_base_value=form_data["score_dealer_tsumo_base_value"],
+        score_nondealer_ron_base_value=form_data["score_nondealer_ron_base_value"],
+        score_nondealer_tsumo_nondealer_base_value=form_data[
+            "score_nondealer_tsumo_nondealer_base_value"
+        ],
+        score_nondealer_tsumo_dealer_base_value=form_data[
+            "score_nondealer_tsumo_dealer_base_value"
+        ],
     )
     game_room.start_game(game_options)

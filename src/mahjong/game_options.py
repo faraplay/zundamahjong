@@ -11,7 +11,7 @@ class GameOptions(BaseModel):
     start_score: float = 0.0
     yaku_values: dict[str, int] = default_yaku_han
     score_dealer_ron_base_value: float = 1.5
-    score_dealer_tsumo_base_value: float = 1.5
+    score_dealer_tsumo_base_value: float = 1.0
     score_nondealer_ron_base_value: float = 1.0
     score_nondealer_tsumo_nondealer_base_value: float = 0.5
     score_nondealer_tsumo_dealer_base_value: float = 1.0

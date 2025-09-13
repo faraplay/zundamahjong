@@ -73,6 +73,18 @@
         <input type="number" name="game_length_wind_rounds" min="0" max="4" step="1" value="1">
         <label for="game_length_sub_rounds">Number of sub rounds</label>
         <input type="number" name="game_length_sub_rounds" min="0" max="3" step="1" value="0">
+        <label for="score_dealer_ron_base_value">Dealer ron base score</label>
+        <input id="score_dealer_ron_base_value" type="number" name="score_dealer_ron_base_value" value="1.5">
+        <label for="score_dealer_tsumo_base_value">Dealer tsumo base score</label>
+        <input id="score_dealer_tsumo_base_value" type="number" name="score_dealer_tsumo_base_value" value="1.0">
+        <label for="score_nondealer_ron_base_value">Nondealer ron base score</label>
+        <input id="score_nondealer_ron_base_value" type="number" name="score_nondealer_ron_base_value" value="1.0">
+        <label for="score_nondealer_tsumo_nondealer_base_value">Nondealer-nondealer tsumo base score</label>
+        <input id="score_nondealer_tsumo_nondealer_base_value" type="number"
+          name="score_nondealer_tsumo_nondealer_base_value" value="0.5">
+        <label for="score_nondealer_tsumo_dealer_base_value">Nondealer-dealer base score</label>
+        <input id="score_nondealer_tsumo_dealer_base_value" type="number" name="score_nondealer_tsumo_dealer_base_value"
+          value="1.0">
         <button type="submit" id="start_game">Start game</button>
       </form>
     </div>

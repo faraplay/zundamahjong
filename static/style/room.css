@@ -29,4 +29,5 @@
 #game_options_form {
     display: grid;
     grid-template-columns: auto auto;
+    overflow: scroll;
 }
