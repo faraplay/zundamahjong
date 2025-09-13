@@ -6,6 +6,9 @@ const tiles_left_indicator = document.getElementById('tiles_left');
 const player_wind_indicator_elements = [0, 1, 2, 3].map(
     player => document.querySelector(`.player_indicator.player_${player}`)
 )
+const turn_indicator_elements = [0, 1, 2, 3].map(
+    player => document.querySelector(`.turn_indicator.player_${player}`)
+)
 const score_elements = [0, 1, 2, 3].map(
     player => document.querySelector(`.score.player_${player}`)
 );
@@ -34,6 +37,18 @@ function setScores(scores) {
     }
 }
 
+function setTurnIndicator(round_info) {
+    for (var player_index = 0; player_index < player_count; ++player_index) {
+        element = turn_indicator_elements[player_index];
+        if (round_info.current_player == player_index) {
+            element.classList.add("current_player");
+        } else {
+            element.classList.remove("current_player");
+        }
+    }
+
+}
+
 function setGameInfo(game_info) {
     setPlayerNames(game_info.player_names);
     wind_sub_round_element.textContent =
@@ -47,6 +62,7 @@ function setRoundInfo(round_info) {
 
     tiles_left_indicator.textContent = round_info.tiles_left;
     round_info_div.classList.add(`status_${round_info.status}`)
+    setTurnIndicator(round_info);
 
     setDiscards(round_info.discards);
     setCalls(round_info.calls);

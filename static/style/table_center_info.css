@@ -76,3 +76,24 @@
     font-size: 2cqw;
     background-image: radial-gradient(ellipse 90% 90%, rgb(255, 215, 192) 30%, rgb(255, 126, 103));
 }
+
+#table_center_info .turn_indicator {
+    width: 8cqw;
+    height: 1cqw;
+    position: absolute;
+    left: 5cqw;
+    top: 16.5cqw;
+    border-radius: 0.5cqw;
+    transform-origin: 4cqw -7.5cqw;
+    background-color: rgb(138, 138, 138);
+}
+
+#round_info:is(.status_1, .status_2)
+#table_center_info .turn_indicator.current_player {
+    background-color: rgb(23, 230, 116);
+}
+
+#round_info:is(.status_3, .status_4, .status_5, .status_6)
+#table_center_info .turn_indicator.current_player {
+    background-color: rgb(243, 158, 36);
+}
