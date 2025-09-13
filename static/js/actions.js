@@ -4,8 +4,11 @@ const actions_disambiguation_div = document.getElementById('actions_disambiguati
 function sendAction(e, action) {
     e.preventDefault();
     disableActions();
+    const action_history_index = round_history.length;
     socket.emit('action', my_player, action, () => {
-        actions_div.classList.add('hidden');
+        if (action_history_index == round_history.length) {
+            actions_div.classList.add('hidden');
+        }
     });
 }
 

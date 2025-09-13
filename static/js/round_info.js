@@ -8,6 +8,7 @@ const score_elements = [0, 1, 2, 3].map(
 );
 
 const history_list = document.getElementById('history_list');
+var round_history = [];
 
 const player_winds = ['東', '南', '西', '北']
 
@@ -32,14 +33,15 @@ function setGameInfo(game_info) {
 }
 
 function setRoundInfo(round_info) {
+    round_history = round_info.history;
+
     tiles_left_indicator.textContent = round_info.tiles_left;
     round_info_div.classList.add(`status_${round_info.status}`)
 
     setDiscards(round_info.discards);
     setCalls(round_info.calls);
     setFlowers(round_info.flowers);
-
-    history_list.replaceChildren(...round_info.history.map(createHistoryEntryElement));
+    // history_list.replaceChildren(...round_info.history.map(createHistoryEntryElement));
 }
 
 function setPlayerInfo(player_info) {
