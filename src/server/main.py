@@ -18,7 +18,7 @@ def disconnect(sid, reason):
     if player is not None:
         game_room = GameRoom.get_player_room(player)
         if game_room is not None and game_room.game_controller is None:
-            GameRoom.leave_room(sid, player)
+            GameRoom.leave_room(player)
     remove_sid(sid)
 
 
@@ -75,7 +75,7 @@ def on_create_room(sid, room_name, player_count):
     player = get_player(sid)
     if player is None:
         raise Exception("Client has no name set!")
-    return GameRoom.create_room(sid, player, room_name, player_count).room_info
+    return GameRoom.create_room(player, room_name, player_count).room_info
 
 
 @sio_on("join_room")
@@ -84,7 +84,7 @@ def on_join_room(sid, room_name):
     player = get_player(sid)
     if player is None:
         raise Exception("Client has no name set!")
-    return GameRoom.join_room(sid, player, room_name).room_info
+    return GameRoom.join_room(player, room_name).room_info
 
 
 @sio_on("leave_room")
@@ -92,7 +92,7 @@ def on_leave_room(sid):
     player = get_player(sid)
     if player is None:
         raise Exception("Client has no name set!")
-    return GameRoom.leave_room(sid, player).room_info
+    return GameRoom.leave_room(player).room_info
 
 
 @sio_on("start_game")

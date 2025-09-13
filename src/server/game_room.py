@@ -55,16 +55,11 @@ class GameRoom:
 
     @classmethod
     def get_player_room(cls, player: Player):
-        return player_rooms.get(player.id, None)
+        with rooms_lock:
+            return player_rooms.get(player.id)
 
     @classmethod
-    def create_room(
-        cls,
-        sid: str,
-        creator: Player,
-        room_name: str,
-        player_count: int,
-    ):
+    def create_room(cls, creator: Player, room_name: str, player_count: int):
         with rooms_lock:
             if creator.id in player_rooms:
                 raise Exception(f"Player {creator.id} is already in a room!")
@@ -77,7 +72,7 @@ class GameRoom:
         return game_room
 
     @classmethod
-    def join_room(cls, sid: str, player: Player, room_name: str):
+    def join_room(cls, player: Player, room_name: str):
         with rooms_lock:
             if player.id in player_rooms:
                 raise Exception(f"Player {player.id} is already in a room!")
@@ -93,7 +88,7 @@ class GameRoom:
         return game_room
 
     @classmethod
-    def leave_room(cls, sid: str, player: Player):
+    def leave_room(cls, player: Player):
         with rooms_lock:
             try:
                 game_room = player_rooms[player.id]
