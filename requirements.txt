@@ -1,3 +1,4 @@
 pydantic
 python-socketio
+werkzeug
 gunicorn
