@@ -5,6 +5,7 @@
     position: absolute;
     left: 0;
     top: 0;
+    z-index: 2;
     margin: 3cqw;
     padding: 4cqw;
     background-color: rgba(180,180,180,80%);

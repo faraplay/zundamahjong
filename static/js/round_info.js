@@ -1,3 +1,6 @@
+const player_name_elements = [0, 1, 2, 3].map(
+    player => document.querySelector(`.player_name.player_${player}`)
+)
 const wind_sub_round_element = document.getElementById('wind_sub_round');
 const tiles_left_indicator = document.getElementById('tiles_left');
 const player_wind_indicator_elements = [0, 1, 2, 3].map(
@@ -11,6 +14,12 @@ const history_list = document.getElementById('history_list');
 var round_history = [];
 
 const player_winds = ['東', '南', '西', '北']
+
+function setPlayerNames(player_names) {
+    for (var player = 0; player < player_count; ++player) {
+        player_name_elements[player].textContent = player_names[player];
+    }
+}
 
 function setPlayerWindIndicators(sub_round) {
     for (var player = 0; player < player_count; ++player) {
@@ -26,6 +35,7 @@ function setScores(scores) {
 }
 
 function setGameInfo(game_info) {
+    setPlayerNames(game_info.player_names);
     wind_sub_round_element.textContent =
         `${player_winds[game_info.wind_round]}${game_info.sub_round + 1}-${game_info.draw_count}`;
     setPlayerWindIndicators(game_info.sub_round)

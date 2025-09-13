@@ -3,8 +3,8 @@
 }
 
 .player_flowers {
-    --player-flowers-right: 25cqw;
-    --player-flowers-bottom: 25cqw;
+    --player-flowers-right: 33cqw;
+    --player-flowers-bottom: 17cqw;
     --player-flowers-width: calc(4.1*var(--tile-width));
     width: var(--player-flowers-width);
     height: 0;

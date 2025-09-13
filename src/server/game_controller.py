@@ -23,6 +23,7 @@ class GameController:
 
     def _game_info(self):
         return {
+            "player_names": [player.name for player in self._players],
             "wind_round": self._game.wind_round,
             "sub_round": self._game.sub_round,
             "draw_count": self._game.draw_count,
