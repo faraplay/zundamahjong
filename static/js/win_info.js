@@ -57,7 +57,7 @@ function createYakuElement(yakuhan) {
 const position_labels = ['1st', '2nd', '3rd', '4th'];
 
 function createPlayerScoreElement(
-    player, new_score, score_change, new_position
+    player_name, new_score, score_change, new_position
 ) {
     const player_score_element = document.createElement('div');
     player_score_element.classList.add('results_player_score');
@@ -68,10 +68,10 @@ function createPlayerScoreElement(
     position_element.textContent = position_labels[new_position];
     player_score_element.appendChild(position_element);
 
-    const player_element = document.createElement('span');
-    player_element.classList.add('player');
-    player_element.textContent = `Player ${player}`;
-    player_score_element.appendChild(player_element);
+    const player_name_element = document.createElement('span');
+    player_name_element.classList.add('player');
+    player_name_element.textContent = player_name;
+    player_score_element.appendChild(player_name_element);
 
     const old_score_element = document.createElement('span');
     old_score_element.classList.add('old_score');
@@ -91,18 +91,18 @@ function createPlayerScoreElement(
     return player_score_element;
 }
 
-function setResults(player_scores, score_changes) {
+function setResults(player_names, player_scores, score_changes) {
     const player_scores_sort = [...player_scores.keys()].sort(
         (a, b) => (player_scores[b] - player_scores[a])
     );
     player_score_elements = [];
-    for (let player = 0; player < player_count; ++player) {
+    for (let player_index = 0; player_index < player_count; ++player_index) {
         player_score_elements.push(
             createPlayerScoreElement(
-                player,
-                player_scores[player],
-                score_changes[player],
-                player_scores_sort.indexOf(player)
+                player_names[player_index],
+                player_scores[player_index],
+                score_changes[player_index],
+                player_scores_sort.indexOf(player_index)
             )
         );
     }
