@@ -140,8 +140,8 @@ class GameController:
         self.get_player_index(player)
         if not self._game.can_start_next_round:
             raise Exception("Cannot start next round!")
-        print("Starting next round...")
         self._game.start_next_round()
         self.set_default_submitted_actions()
+        # print("Starting next round...")
         # self._game.round.display_info()
         self.emit_info_all()

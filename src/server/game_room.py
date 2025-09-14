@@ -1,12 +1,15 @@
 from __future__ import annotations
 from threading import Lock
 from typing import Optional
+import logging
 
 from src.mahjong.game_options import GameOptions
 
 from .sio import sio
 from .player_info import Player
 from .game_controller import GameController
+
+logger = logging.getLogger(__name__)
 
 rooms: dict[str, GameRoom] = {}
 player_rooms: dict[str, GameRoom] = {}
@@ -82,7 +85,7 @@ class GameRoom:
             player_rooms[creator.id] = game_room
             rooms[room_name] = game_room
         sio.enter_room(sid, game_room.room_id)
-        print(f"Player {creator.id} has created room {room_name}")
+        logger.info(f"Player {creator.id} has created room {room_name}")
         return game_room
 
     @classmethod
@@ -114,7 +117,7 @@ class GameRoom:
             game_room.joined_players.remove(player)
             player_rooms.pop(player.id)
             if len(game_room.joined_players) == 0:
-                print(
+                logger.info(
                     f"Room {game_room.room_name} is now empty, removing from rooms dict"
                 )
                 rooms.pop(game_room.room_name)

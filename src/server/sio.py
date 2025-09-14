@@ -1,8 +1,11 @@
 from collections.abc import Callable
+import logging
 
 from socketio import Server, WSGIApp
 
-sio = Server(logger=True, async_mode="threading")
+logger = logging.getLogger(__name__)
+
+sio = Server(logger=logger, async_mode="threading")
 
 
 def sio_on(event: str):
@@ -11,7 +14,7 @@ def sio_on(event: str):
             try:
                 return handler(sid, *args)
             except Exception as e:
-                print(e)
+                logger.error(e)
                 sio.send(str(e), to=sid)
 
         sio.on(event, wrapped_handler)
