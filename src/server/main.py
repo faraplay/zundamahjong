@@ -2,7 +2,7 @@ from src.mahjong.action import Action
 from src.mahjong.game_options import GameOptions
 
 from .sio import sio, sio_on
-from .name_sid import verify_name, get_player, set_player, remove_sid
+from .name_sid import verify_name, get_player, try_get_player, set_player, remove_sid
 from .player_info import Player
 from .game_room import GameRoom
 
@@ -14,6 +14,9 @@ def connect(sid, environ, auth=None):
 
 @sio_on("disconnect")
 def disconnect(sid, reason):
+    player = try_get_player(sid)
+    if player is not None:
+        GameRoom.try_disconnect(player)
     remove_sid(sid)
 
 
@@ -48,10 +51,9 @@ def on_set_name(sid, name):
     verify_name(name)
     player = Player.from_name(name)
     set_player(sid, player)
-    game_room = GameRoom.get_player_room(player)
+    game_room = GameRoom.try_reconnect(player)
     if game_room is None:
         return player.model_dump(), None, None
-    game_room.rejoin(sid)
     if game_room.game_controller is None:
         return player.model_dump(), game_room.room_info, None
     game_room.game_controller.emit_info(player)
@@ -67,27 +69,23 @@ def on_get_rooms(sid):
 def on_create_room(sid, room_name, player_count):
     GameRoom.verify_player_count(player_count)
     GameRoom.verify_room_name(room_name)
-    player = get_player(sid)
-    return GameRoom.create_room(sid, player, room_name, player_count).room_info
+    return GameRoom.create_room(get_player(sid), room_name, player_count).room_info
 
 
 @sio_on("join_room")
 def on_join_room(sid, room_name):
     GameRoom.verify_room_name(room_name)
-    player = get_player(sid)
-    return GameRoom.join_room(sid, player, room_name).room_info
+    return GameRoom.join_room(get_player(sid), room_name).room_info
 
 
 @sio_on("leave_room")
 def on_leave_room(sid):
-    player = get_player(sid)
-    return GameRoom.leave_room(sid, player).room_info
+    return GameRoom.leave_room(get_player(sid)).room_info
 
 
 @sio_on("start_game")
 def on_start_game(sid, room_name, form_data):
-    player = get_player(sid)
-    game_room = GameRoom.get_player_room(player)
+    game_room = GameRoom.get_player_room(get_player(sid))
     if game_room is None or room_name != game_room.room_name:
         raise Exception(f"Player is not in room {room_name}!")
     game_options = GameOptions(
