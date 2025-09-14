@@ -6,16 +6,23 @@ from .name_sid import verify_name, get_player, try_get_player, set_player, remov
 from .player_info import Player
 from .game_room import GameRoom
 
+import logging
+
+logger = logging.getLogger(__name__)
+
 
 @sio_on("connect")
 def connect(sid, environ, auth=None):
-    pass
+    logger.info(f"Client connecting with sid {sid}")
 
 
 @sio_on("disconnect")
 def disconnect(sid, reason):
+    logger.info(f"Client disconnecting with sid {sid}, reason {reason}")
     player = try_get_player(sid)
-    if player is not None:
+    if player is None:
+        logger.info(f"Client {sid} had no set name")
+    else:
         GameRoom.try_disconnect(player)
     remove_sid(sid)
 
