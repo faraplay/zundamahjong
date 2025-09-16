@@ -12,7 +12,10 @@ def sio_on(event: str):
     def sio_on_decorator(handler: Callable):
         def wrapped_handler(sid: str, *args):
             try:
-                return handler(sid, *args)
+                logger.debug(f"Received event {event}")
+                return_value = handler(sid, *args)
+                logger.debug(f"Handler for event {event} returned {repr(return_value)}")
+                return return_value
             except Exception as e:
                 logger.error(e)
                 sio.send(str(e), to=sid)
