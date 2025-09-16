@@ -470,6 +470,58 @@ class RoundTest(unittest.TestCase):
         self.assertEqual(player, 3)
         self.assertEqual(action, Action(action_type=ActionType.RON))
 
+    def test_priority_with_none(self):
+        round = Round(tiles=test_deck4)
+        round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        actions = [
+            None,
+            Action(action_type=ActionType.CHI_C),
+            Action(action_type=ActionType.PON),
+            Action(action_type=ActionType.RON),
+        ]
+        player, action = round.get_priority_action(actions)
+        self.assertEqual(player, 3)
+        self.assertEqual(action, Action(action_type=ActionType.RON))
+
+    def test_priority_strong_call_and_none(self):
+        round = Round(tiles=test_deck4)
+        round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        actions = [
+            None,
+            None,
+            None,
+            Action(action_type=ActionType.RON),
+        ]
+        player, action = round.get_priority_action(actions)
+        self.assertEqual(player, 3)
+        self.assertEqual(action, Action(action_type=ActionType.RON))
+
+    def test_priority_weak_call_and_none(self):
+        round = Round(tiles=test_deck4)
+        round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        actions = [
+            None,
+            Action(action_type=ActionType.CHI_C),
+            None,
+            None,
+        ]
+        player, action = round.get_priority_action(actions)
+        self.assertEqual(player, None)
+        self.assertEqual(action, None)
+
+    def test_priority_no_choice_all_none(self):
+        round = Round(tiles=test_deck4)
+        round.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
+        actions = [
+            None,
+            None,
+            None,
+            None,
+        ]
+        player, action = round.get_priority_action(actions)
+        self.assertEqual(player, 1)
+        self.assertEqual(action, Action(action_type=ActionType.DRAW))
+
     def test_priority_bad_action(self):
         round = Round(tiles=test_deck4)
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
@@ -482,6 +534,19 @@ class RoundTest(unittest.TestCase):
         player, action = round.get_priority_action(actions)
         self.assertEqual(player, 1)
         self.assertEqual(action, Action(action_type=ActionType.CHI_C))
+
+    def test_priority_bad_action_and_none(self):
+        round = Round(tiles=test_deck4)
+        round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        actions = [
+            None,
+            Action(action_type=ActionType.CHI_C),
+            Action(action_type=ActionType.PON),
+            Action(action_type=ActionType.OPEN_KAN),
+        ]
+        player, action = round.get_priority_action(actions)
+        self.assertEqual(player, 2)
+        self.assertEqual(action, Action(action_type=ActionType.PON))
 
     def test_priority_current_player(self):
         round = Round(tiles=test_deck4)
