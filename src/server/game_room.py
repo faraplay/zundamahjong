@@ -10,6 +10,7 @@ from .player_info import Player, PlayerConnection
 from .game_controller import GameController
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 rooms: dict[str, GameRoom] = {}
 player_rooms: dict[str, GameRoom] = {}
