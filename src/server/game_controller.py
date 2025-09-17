@@ -11,9 +11,7 @@ class GameController:
     def __init__(self, players: list[Player], options: GameOptions):
         self._players = players
         self._game = Game(options=options)
-        self._submitted_actions = []
-        self.set_default_submitted_actions()
-        # self._game.round.display_info()
+        self.reset_submitted_actions()
 
     def get_player_index(self, player: Player):
         try:
@@ -98,31 +96,19 @@ class GameController:
         for index, player in enumerate(self._players):
             sio.emit("info", self._info(index), to=player.id)
 
-    def set_default_submitted_actions(self):
-        if self._game.round.status == RoundStatus.END:
-            self._submitted_actions = [None] * self._game.player_count
-        else:
-            self._submitted_actions = [
-                (
-                    action_set.default
-                    if len(action_set.actions) == 1
-                    and (action_set.default.action_type != ActionType.DISCARD)
-                    else None
-                )
-                for action_set in self._game.round.allowed_actions
-            ]
-
-    def _resolve_action(self):
-        player, action = self._game.round.get_priority_action(self._submitted_actions)
-        self._game.round.do_action(player, action)
-        # self._game.round.display_info()
+    def reset_submitted_actions(self):
+        self._submitted_actions = [None] * self._game.player_count
 
     def try_resolve_actions(self):
         action_resolve_count = 0
-        while all(action is not None for action in self._submitted_actions):
-            self._resolve_action()
+        while self._game.round.status != RoundStatus.END:
+            playeraction = self._game.round.get_priority_action(self._submitted_actions)
+            if playeraction is None:
+                break
+            self._game.round.do_action(*playeraction)
+            self._submitted_actions = [None] * self._game.player_count
             action_resolve_count += 1
-            self.set_default_submitted_actions()
+
         if action_resolve_count > 0:
             self.emit_info_all()
 
@@ -137,7 +123,7 @@ class GameController:
         if not self._game.can_start_next_round:
             raise Exception("Cannot start next round!")
         self._game.start_next_round()
-        self.set_default_submitted_actions()
+        self.reset_submitted_actions()
         # print("Starting next round...")
         # self._game.round.display_info()
         self.emit_info_all()

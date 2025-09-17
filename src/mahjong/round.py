@@ -224,7 +224,7 @@ class Round:
             if validated_actions[player] == action:
                 return player, action
             elif validated_actions[player] is None:
-                return None, None
+                return None
         assert False
 
     def _previous_player(self, player: int):

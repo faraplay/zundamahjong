@@ -505,9 +505,8 @@ class RoundTest(unittest.TestCase):
             None,
             None,
         ]
-        player, action = round.get_priority_action(actions)
-        self.assertEqual(player, None)
-        self.assertEqual(action, None)
+        playeraction = round.get_priority_action(actions)
+        self.assertEqual(playeraction, None)
 
     def test_priority_no_choice_all_none(self):
         round = Round(tiles=test_deck4)
