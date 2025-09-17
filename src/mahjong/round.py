@@ -85,7 +85,7 @@ class Round:
         self._current_player = sub_round
         self._status = RoundStatus.START
         self._last_tile: Tile = 0
-        self._history: deque[tuple[int, Action]] = deque()
+        self._history: list[tuple[int, Action]] = []
         self._win_info = None
 
         self._calculate_allowed_actions()
@@ -157,7 +157,7 @@ class Round:
         return len(self._deck.tiles) - self._options.end_wall_count
 
     @property
-    def history(self) -> Sequence[tuple[int, Action]]:
+    def history(self) -> list[tuple[int, Action]]:
         return self._history
 
     @property

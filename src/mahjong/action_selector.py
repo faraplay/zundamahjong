@@ -24,4 +24,4 @@ class ActionSelector:
             self._round.do_action(*playeraction)
             self.reset_submitted_actions()
             action_resolve_count += 1
-        return self._round.history[-action_resolve_count:]
+        return self._round.history[len(self._round.history) - action_resolve_count :]
