@@ -9,6 +9,7 @@ from .game_room import GameRoom
 import logging
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 @sio_on("connect")
