@@ -1,22 +1,24 @@
 
 const socket = io();
 
-const ACTION_NOTHING = 0;
-const ACTION_DRAW = 1;
-const ACTION_DISCARD = 2;
-const ACTION_CHI_A = 3;
-const ACTION_CHI_B = 4;
-const ACTION_CHI_C = 5;
-const ACTION_PON = 6;
-const ACTION_OPEN_KAN = 7;
-const ACTION_ADD_KAN = 8;
-const ACTION_CLOSED_KAN = 9;
-const ACTION_FLOWER = 10;
-const ACTION_RON = 11;
-const ACTION_TSUMO = 12;
+const ACTION_PASS = 0;
+const ACTION_CONTINUE = 1;
+const ACTION_DRAW = 2;
+const ACTION_DISCARD = 3;
+const ACTION_CHI_A = 4;
+const ACTION_CHI_B = 5;
+const ACTION_CHI_C = 6;
+const ACTION_PON = 7;
+const ACTION_OPEN_KAN = 8;
+const ACTION_ADD_KAN = 9;
+const ACTION_CLOSED_KAN = 10;
+const ACTION_FLOWER = 11;
+const ACTION_RON = 12;
+const ACTION_TSUMO = 13;
 
 const action_types = [
-    "NOTHING",
+    "PASS",
+    "CONTINUE",
     "DRAW",
     "DISCARD",
     "CHI_A",
@@ -32,6 +34,7 @@ const action_types = [
 ];
 
 const action_supertypes = [
+    7,
     7,
     7,
     0,

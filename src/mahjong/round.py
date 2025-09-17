@@ -99,7 +99,7 @@ class Round:
                     self.do_action(
                         player, Action(action_type=ActionType.FLOWER, tile=tile)
                     )
-                self.do_action(player, Action(action_type=ActionType.NOTHING))
+                self.do_action(player, Action(action_type=ActionType.CONTINUE))
 
         for hand in self._hands:
             hand.sort()
@@ -235,12 +235,14 @@ class Round:
 
     @_register_allowed_actions(RoundStatus.START)
     def _allowed_actions_start(self, player: int, hand: Hand, last_tile: Tile):
-        actions = ActionSet()
         if self._current_player == player:
+            actions = ActionSet(ActionType.CONTINUE)
             for tile in hand.tiles:
                 if is_flower(tile):
                     actions.add(ActionType.FLOWER, tile)
-        return actions
+            return actions
+        else:
+            return ActionSet()
 
     @_register_allowed_actions(RoundStatus.PLAY)
     def _allowed_actions_play(self, player: int, hand: Hand, last_tile: Tile):
@@ -276,21 +278,25 @@ class Round:
 
     @_register_allowed_actions(RoundStatus.ADD_KAN_AFTER)
     def _allowed_actions_add_kan_after(self, player: int, hand: Hand, last_tile: Tile):
-        actions = ActionSet()
-        if self._current_player != player:
+        if self.current_player == player:
+            return ActionSet(ActionType.CONTINUE)
+        else:
+            actions = ActionSet()
             if hand.can_ron(last_tile):
                 actions.add(ActionType.RON)
-        return actions
+            return actions
 
     @_register_allowed_actions(RoundStatus.CLOSED_KAN_AFTER)
     def _allowed_actions_closed_kan_after(
         self, player: int, hand: Hand, last_tile: Tile
     ):
-        actions = ActionSet()
-        if self._current_player != player:
+        if self.current_player == player:
+            return ActionSet(ActionType.CONTINUE)
+        else:
+            actions = ActionSet()
             if hand.can_ron(last_tile):
                 actions.add(ActionType.RON)
-        return actions
+            return actions
 
     @_register_allowed_actions(RoundStatus.DISCARDED)
     def _allowed_actions_discarded(self, player: int, hand: Hand, last_tile: Tile):
@@ -316,18 +322,24 @@ class Round:
 
     @_register_allowed_actions(RoundStatus.LAST_DISCARDED)
     def _allowed_actions_last_discarded(self, player: int, hand: Hand, last_tile: Tile):
-        actions = ActionSet()
-        if self._current_player != player:
+        if self.current_player == player:
+            return ActionSet(ActionType.CONTINUE)
+        else:
+            actions = ActionSet()
             if hand.can_ron(last_tile):
                 actions.add(ActionType.RON)
-        return actions
+            return actions
 
     @_register_allowed_actions(RoundStatus.END)
     def _allowed_actions_end(self, player: int, hand: Hand, last_tile: Tile):
         return ActionSet()
 
-    @_register_do_action(ActionType.NOTHING)
-    def _nothing(self, player: int, tile: Tile):
+    @_register_do_action(ActionType.PASS)
+    def _pass(self, player: int, tile: Tile):
+        assert False
+
+    @_register_do_action(ActionType.CONTINUE)
+    def _continue(self, player: int, tile: Tile):
         if self._status == RoundStatus.START:
             self._flower_pass_count += 1
             if self._flower_pass_count >= self._player_count + 1:
@@ -454,7 +466,7 @@ class Round:
                 after_kan_count += 1
             elif action_type == ActionType.CLOSED_KAN:
                 after_kan_count += 1
-            elif action_type == ActionType.NOTHING:
+            elif action_type == ActionType.CONTINUE:
                 pass
             else:
                 break

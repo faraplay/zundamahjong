@@ -71,7 +71,7 @@ function setRoundInfo(round_info) {
 }
 
 function setPlayerInfo(player_info) {
-    const can_discard = player_info.actions.some(action => action.action_type == 2);
+    const can_discard = player_info.actions.some(action => action.action_type == ACTION_DISCARD);
     const last_tile = player_info.last_tile
 
     setHand(player_info.hand);

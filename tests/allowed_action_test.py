@@ -14,57 +14,57 @@ class AllowedActionTest(unittest.TestCase):
             ActionType.DISCARD,
         )
         self.assertEqual(
-            round.allowed_actions[1].default, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[1].default, Action(action_type=ActionType.PASS)
         )
         self.assertEqual(
-            round.allowed_actions[2].default, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[2].default, Action(action_type=ActionType.PASS)
         )
         self.assertEqual(
-            round.allowed_actions[3].default, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[3].default, Action(action_type=ActionType.PASS)
         )
 
     def test_auto_actions(self):
         round = Round(tiles=test_deck1)
         self.assertEqual(round.allowed_actions[0].auto, None)
         self.assertEqual(
-            round.allowed_actions[1].auto, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[1].auto, Action(action_type=ActionType.PASS)
         )
         self.assertEqual(
-            round.allowed_actions[2].auto, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[2].auto, Action(action_type=ActionType.PASS)
         )
         self.assertEqual(
-            round.allowed_actions[3].auto, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[3].auto, Action(action_type=ActionType.PASS)
         )
 
     def test_discarded_default_actions(self):
         round = Round(tiles=test_deck1)
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=9))
         self.assertEqual(
-            round.allowed_actions[0].default, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[0].default, Action(action_type=ActionType.PASS)
         )
         self.assertEqual(
             round.allowed_actions[1].default, Action(action_type=ActionType.DRAW)
         )
         self.assertEqual(
-            round.allowed_actions[2].default, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[2].default, Action(action_type=ActionType.PASS)
         )
         self.assertEqual(
-            round.allowed_actions[3].default, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[3].default, Action(action_type=ActionType.PASS)
         )
 
     def test_wrong_turn_nothing(self):
         round = Round(tiles=test_deck1)
         self.assertSetEqual(
             round.allowed_actions[1].actions,
-            {Action(action_type=ActionType.NOTHING)},
+            {Action(action_type=ActionType.PASS)},
         )
         self.assertSetEqual(
             round.allowed_actions[2].actions,
-            {Action(action_type=ActionType.NOTHING)},
+            {Action(action_type=ActionType.PASS)},
         )
         self.assertSetEqual(
             round.allowed_actions[3].actions,
-            {Action(action_type=ActionType.NOTHING)},
+            {Action(action_type=ActionType.PASS)},
         )
 
     def test_turn_discard_actions(self):
@@ -91,7 +91,7 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
         self.assertSetEqual(
             round.allowed_actions[0].actions,
-            {Action(action_type=ActionType.NOTHING)},
+            {Action(action_type=ActionType.PASS)},
         )
 
     def test_discard_self_cannot_pon(self):
@@ -99,7 +99,7 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=21))
         self.assertSetEqual(
             round.allowed_actions[0].actions,
-            {Action(action_type=ActionType.NOTHING)},
+            {Action(action_type=ActionType.PASS)},
         )
 
     def test_can_draw(self):
@@ -182,7 +182,7 @@ class AllowedActionTest(unittest.TestCase):
         self.assertSetEqual(
             round.allowed_actions[2].actions,
             {
-                Action(action_type=ActionType.NOTHING),
+                Action(action_type=ActionType.PASS),
                 Action(action_type=ActionType.RON),
             },
         )
@@ -216,7 +216,7 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(2, Action(action_type=ActionType.DISCARD, tile=11))
         self.assertSetEqual(
             round.allowed_actions[2].actions,
-            {Action(action_type=ActionType.NOTHING)},
+            {Action(action_type=ActionType.PASS)},
         )
 
     def test_can_chankan(self):
@@ -231,7 +231,7 @@ class AllowedActionTest(unittest.TestCase):
         self.assertSetEqual(
             round.allowed_actions[2].actions,
             {
-                Action(action_type=ActionType.NOTHING),
+                Action(action_type=ActionType.PASS),
                 Action(action_type=ActionType.RON),
             },
         )
@@ -241,7 +241,7 @@ class AllowedActionTest(unittest.TestCase):
         self.assertSetEqual(
             round.allowed_actions[0].actions,
             {
-                Action(action_type=ActionType.NOTHING),
+                Action(action_type=ActionType.CONTINUE),
                 Action(action_type=ActionType.FLOWER, tile=41),
                 Action(action_type=ActionType.FLOWER, tile=43),
             },
@@ -251,24 +251,24 @@ class AllowedActionTest(unittest.TestCase):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         self.assertSetEqual(
             round.allowed_actions[1].actions,
-            {Action(action_type=ActionType.NOTHING)},
+            {Action(action_type=ActionType.PASS)},
         )
 
     def test_manual_can_flower(self):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
-        round.do_action(0, Action(action_type=ActionType.NOTHING))
+        round.do_action(0, Action(action_type=ActionType.CONTINUE))
         round.do_action(1, Action(action_type=ActionType.FLOWER, tile=42))
-        round.do_action(1, Action(action_type=ActionType.NOTHING))
-        round.do_action(2, Action(action_type=ActionType.NOTHING))
-        round.do_action(3, Action(action_type=ActionType.NOTHING))
+        round.do_action(1, Action(action_type=ActionType.CONTINUE))
+        round.do_action(2, Action(action_type=ActionType.CONTINUE))
+        round.do_action(3, Action(action_type=ActionType.CONTINUE))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=44))
-        round.do_action(0, Action(action_type=ActionType.NOTHING))
-        round.do_action(1, Action(action_type=ActionType.NOTHING))
-        round.do_action(2, Action(action_type=ActionType.NOTHING))
-        round.do_action(3, Action(action_type=ActionType.NOTHING))
-        round.do_action(0, Action(action_type=ActionType.NOTHING))
+        round.do_action(0, Action(action_type=ActionType.CONTINUE))
+        round.do_action(1, Action(action_type=ActionType.CONTINUE))
+        round.do_action(2, Action(action_type=ActionType.CONTINUE))
+        round.do_action(3, Action(action_type=ActionType.CONTINUE))
+        round.do_action(0, Action(action_type=ActionType.CONTINUE))
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
         round.do_action(1, Action(action_type=ActionType.DRAW))
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))

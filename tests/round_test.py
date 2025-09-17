@@ -17,11 +17,11 @@ class RoundTest(unittest.TestCase):
         self.assertSequenceEqual(
             round.history,
             [
-                (0, Action(action_type=ActionType.NOTHING)),
-                (1, Action(action_type=ActionType.NOTHING)),
-                (2, Action(action_type=ActionType.NOTHING)),
-                (3, Action(action_type=ActionType.NOTHING)),
-                (0, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.CONTINUE)),
+                (1, Action(action_type=ActionType.CONTINUE)),
+                (2, Action(action_type=ActionType.CONTINUE)),
+                (3, Action(action_type=ActionType.CONTINUE)),
+                (0, Action(action_type=ActionType.CONTINUE)),
             ],
         )
 
@@ -170,7 +170,7 @@ class RoundTest(unittest.TestCase):
         self.assertCountEqual(
             round.get_calls(1), [Call(call_type=CallType.ADD_KAN, tiles=[9, 9, 9, 9])]
         )
-        round.do_action(1, Action(action_type=ActionType.NOTHING))
+        round.do_action(1, Action(action_type=ActionType.CONTINUE))
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(round.discard_tiles, [1, 2])
 
@@ -188,7 +188,7 @@ class RoundTest(unittest.TestCase):
             round.get_calls(2),
             [Call(call_type=CallType.CLOSED_KAN, tiles=[11, 11, 11, 11])],
         )
-        round.do_action(2, Action(action_type=ActionType.NOTHING))
+        round.do_action(2, Action(action_type=ActionType.CONTINUE))
         round.do_action(2, Action(action_type=ActionType.DISCARD, tile=13))
         self.assertSequenceEqual(round.discard_tiles, [1, 2, 13])
 
@@ -220,16 +220,16 @@ class RoundTest(unittest.TestCase):
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
         round.do_action(1, Action(action_type=ActionType.DRAW))
         round.do_action(1, Action(action_type=ActionType.ADD_KAN, tile=9))
-        round.do_action(1, Action(action_type=ActionType.NOTHING))
+        round.do_action(1, Action(action_type=ActionType.CONTINUE))
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         self.assertSequenceEqual(
             round.history,
             [
-                (0, Action(action_type=ActionType.NOTHING)),
-                (1, Action(action_type=ActionType.NOTHING)),
-                (2, Action(action_type=ActionType.NOTHING)),
-                (3, Action(action_type=ActionType.NOTHING)),
-                (0, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.CONTINUE)),
+                (1, Action(action_type=ActionType.CONTINUE)),
+                (2, Action(action_type=ActionType.CONTINUE)),
+                (3, Action(action_type=ActionType.CONTINUE)),
+                (0, Action(action_type=ActionType.CONTINUE)),
                 (0, Action(action_type=ActionType.DISCARD, tile=9)),
                 (1, Action(action_type=ActionType.PON)),
                 (1, Action(action_type=ActionType.DISCARD, tile=21)),
@@ -237,7 +237,7 @@ class RoundTest(unittest.TestCase):
                 (0, Action(action_type=ActionType.DISCARD, tile=1)),
                 (1, Action(action_type=ActionType.DRAW)),
                 (1, Action(action_type=ActionType.ADD_KAN, tile=9)),
-                (1, Action(action_type=ActionType.NOTHING)),
+                (1, Action(action_type=ActionType.CONTINUE)),
                 (1, Action(action_type=ActionType.DISCARD, tile=2)),
             ],
         )
@@ -298,17 +298,17 @@ class RoundTest(unittest.TestCase):
             [
                 (0, Action(action_type=ActionType.FLOWER, tile=41)),
                 (0, Action(action_type=ActionType.FLOWER, tile=43)),
-                (0, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.CONTINUE)),
                 (1, Action(action_type=ActionType.FLOWER, tile=42)),
-                (1, Action(action_type=ActionType.NOTHING)),
-                (2, Action(action_type=ActionType.NOTHING)),
-                (3, Action(action_type=ActionType.NOTHING)),
+                (1, Action(action_type=ActionType.CONTINUE)),
+                (2, Action(action_type=ActionType.CONTINUE)),
+                (3, Action(action_type=ActionType.CONTINUE)),
                 (0, Action(action_type=ActionType.FLOWER, tile=44)),
-                (0, Action(action_type=ActionType.NOTHING)),
-                (1, Action(action_type=ActionType.NOTHING)),
-                (2, Action(action_type=ActionType.NOTHING)),
-                (3, Action(action_type=ActionType.NOTHING)),
-                (0, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.CONTINUE)),
+                (1, Action(action_type=ActionType.CONTINUE)),
+                (2, Action(action_type=ActionType.CONTINUE)),
+                (3, Action(action_type=ActionType.CONTINUE)),
+                (0, Action(action_type=ActionType.CONTINUE)),
             ],
         )
 
@@ -323,17 +323,17 @@ class RoundTest(unittest.TestCase):
             [
                 (1, Action(action_type=ActionType.FLOWER, tile=41)),
                 (1, Action(action_type=ActionType.FLOWER, tile=43)),
-                (1, Action(action_type=ActionType.NOTHING)),
+                (1, Action(action_type=ActionType.CONTINUE)),
                 (2, Action(action_type=ActionType.FLOWER, tile=42)),
-                (2, Action(action_type=ActionType.NOTHING)),
-                (3, Action(action_type=ActionType.NOTHING)),
-                (0, Action(action_type=ActionType.NOTHING)),
+                (2, Action(action_type=ActionType.CONTINUE)),
+                (3, Action(action_type=ActionType.CONTINUE)),
+                (0, Action(action_type=ActionType.CONTINUE)),
                 (1, Action(action_type=ActionType.FLOWER, tile=44)),
-                (1, Action(action_type=ActionType.NOTHING)),
-                (2, Action(action_type=ActionType.NOTHING)),
-                (3, Action(action_type=ActionType.NOTHING)),
-                (0, Action(action_type=ActionType.NOTHING)),
-                (1, Action(action_type=ActionType.NOTHING)),
+                (1, Action(action_type=ActionType.CONTINUE)),
+                (2, Action(action_type=ActionType.CONTINUE)),
+                (3, Action(action_type=ActionType.CONTINUE)),
+                (0, Action(action_type=ActionType.CONTINUE)),
+                (1, Action(action_type=ActionType.CONTINUE)),
             ],
         )
 
@@ -343,16 +343,16 @@ class RoundTest(unittest.TestCase):
             round.history,
             [
                 (0, Action(action_type=ActionType.FLOWER, tile=41)),
-                (0, Action(action_type=ActionType.NOTHING)),
-                (1, Action(action_type=ActionType.NOTHING)),
-                (2, Action(action_type=ActionType.NOTHING)),
-                (3, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.CONTINUE)),
+                (1, Action(action_type=ActionType.CONTINUE)),
+                (2, Action(action_type=ActionType.CONTINUE)),
+                (3, Action(action_type=ActionType.CONTINUE)),
                 (0, Action(action_type=ActionType.FLOWER, tile=42)),
-                (0, Action(action_type=ActionType.NOTHING)),
-                (1, Action(action_type=ActionType.NOTHING)),
-                (2, Action(action_type=ActionType.NOTHING)),
-                (3, Action(action_type=ActionType.NOTHING)),
-                (0, Action(action_type=ActionType.NOTHING)),
+                (0, Action(action_type=ActionType.CONTINUE)),
+                (1, Action(action_type=ActionType.CONTINUE)),
+                (2, Action(action_type=ActionType.CONTINUE)),
+                (3, Action(action_type=ActionType.CONTINUE)),
+                (0, Action(action_type=ActionType.CONTINUE)),
             ],
         )
 
@@ -377,7 +377,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=44))
-        round.do_action(0, Action(action_type=ActionType.NOTHING))
+        round.do_action(0, Action(action_type=ActionType.CONTINUE))
         round.do_action(1, Action(action_type=ActionType.FLOWER, tile=42))
         self.assertCountEqual(
             round.get_hand(1), [2, 2, 2, 2, 6, 6, 6, 6, 12, 12, 12, 12, 35]
@@ -389,13 +389,13 @@ class RoundTest(unittest.TestCase):
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=44))
-        round.do_action(0, Action(action_type=ActionType.NOTHING))
+        round.do_action(0, Action(action_type=ActionType.CONTINUE))
         round.do_action(1, Action(action_type=ActionType.FLOWER, tile=42))
-        round.do_action(1, Action(action_type=ActionType.NOTHING))
-        round.do_action(2, Action(action_type=ActionType.NOTHING))
-        round.do_action(3, Action(action_type=ActionType.NOTHING))
-        round.do_action(0, Action(action_type=ActionType.NOTHING))
-        round.do_action(1, Action(action_type=ActionType.NOTHING))
+        round.do_action(1, Action(action_type=ActionType.CONTINUE))
+        round.do_action(2, Action(action_type=ActionType.CONTINUE))
+        round.do_action(3, Action(action_type=ActionType.CONTINUE))
+        round.do_action(0, Action(action_type=ActionType.CONTINUE))
+        round.do_action(1, Action(action_type=ActionType.CONTINUE))
         self.assertEqual(round.current_player, 0)
         self.assertEqual(round.status, RoundStatus.PLAY)
 
@@ -403,17 +403,17 @@ class RoundTest(unittest.TestCase):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
-        round.do_action(0, Action(action_type=ActionType.NOTHING))
+        round.do_action(0, Action(action_type=ActionType.CONTINUE))
         round.do_action(1, Action(action_type=ActionType.FLOWER, tile=42))
-        round.do_action(1, Action(action_type=ActionType.NOTHING))
-        round.do_action(2, Action(action_type=ActionType.NOTHING))
-        round.do_action(3, Action(action_type=ActionType.NOTHING))
+        round.do_action(1, Action(action_type=ActionType.CONTINUE))
+        round.do_action(2, Action(action_type=ActionType.CONTINUE))
+        round.do_action(3, Action(action_type=ActionType.CONTINUE))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=44))
-        round.do_action(0, Action(action_type=ActionType.NOTHING))
-        round.do_action(1, Action(action_type=ActionType.NOTHING))
-        round.do_action(2, Action(action_type=ActionType.NOTHING))
-        round.do_action(3, Action(action_type=ActionType.NOTHING))
-        round.do_action(0, Action(action_type=ActionType.NOTHING))
+        round.do_action(0, Action(action_type=ActionType.CONTINUE))
+        round.do_action(1, Action(action_type=ActionType.CONTINUE))
+        round.do_action(2, Action(action_type=ActionType.CONTINUE))
+        round.do_action(3, Action(action_type=ActionType.CONTINUE))
+        round.do_action(0, Action(action_type=ActionType.CONTINUE))
         self.assertEqual(round.current_player, 0)
         self.assertEqual(round.status, RoundStatus.PLAY)
 
@@ -421,17 +421,17 @@ class RoundTest(unittest.TestCase):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=41))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=43))
-        round.do_action(0, Action(action_type=ActionType.NOTHING))
+        round.do_action(0, Action(action_type=ActionType.CONTINUE))
         round.do_action(1, Action(action_type=ActionType.FLOWER, tile=42))
-        round.do_action(1, Action(action_type=ActionType.NOTHING))
-        round.do_action(2, Action(action_type=ActionType.NOTHING))
-        round.do_action(3, Action(action_type=ActionType.NOTHING))
+        round.do_action(1, Action(action_type=ActionType.CONTINUE))
+        round.do_action(2, Action(action_type=ActionType.CONTINUE))
+        round.do_action(3, Action(action_type=ActionType.CONTINUE))
         round.do_action(0, Action(action_type=ActionType.FLOWER, tile=44))
-        round.do_action(0, Action(action_type=ActionType.NOTHING))
-        round.do_action(1, Action(action_type=ActionType.NOTHING))
-        round.do_action(2, Action(action_type=ActionType.NOTHING))
-        round.do_action(3, Action(action_type=ActionType.NOTHING))
-        round.do_action(0, Action(action_type=ActionType.NOTHING))
+        round.do_action(0, Action(action_type=ActionType.CONTINUE))
+        round.do_action(1, Action(action_type=ActionType.CONTINUE))
+        round.do_action(2, Action(action_type=ActionType.CONTINUE))
+        round.do_action(3, Action(action_type=ActionType.CONTINUE))
+        round.do_action(0, Action(action_type=ActionType.CONTINUE))
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
         round.do_action(1, Action(action_type=ActionType.DRAW))
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
@@ -461,7 +461,7 @@ class RoundTest(unittest.TestCase):
         round = Round(tiles=test_deck4)
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
         actions = [
-            Action(action_type=ActionType.NOTHING),
+            Action(action_type=ActionType.PASS),
             Action(action_type=ActionType.CHI_C),
             Action(action_type=ActionType.PON),
             Action(action_type=ActionType.RON),
@@ -525,10 +525,10 @@ class RoundTest(unittest.TestCase):
         round = Round(tiles=test_deck4)
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
         actions = [
-            Action(action_type=ActionType.NOTHING),
+            Action(action_type=ActionType.PASS),
             Action(action_type=ActionType.CHI_C),
             Action(action_type=ActionType.RON),
-            Action(action_type=ActionType.NOTHING),
+            Action(action_type=ActionType.PASS),
         ]
         player, action = round.get_priority_action(actions)
         self.assertEqual(player, 1)
@@ -553,14 +553,14 @@ class RoundTest(unittest.TestCase):
         round.do_action(1, Action(action_type=ActionType.DRAW))
         round.do_action(1, Action(action_type=ActionType.CLOSED_KAN, tile=5))
         actions = [
-            Action(action_type=ActionType.NOTHING),
-            Action(action_type=ActionType.NOTHING),
-            Action(action_type=ActionType.NOTHING),
-            Action(action_type=ActionType.NOTHING),
+            Action(action_type=ActionType.PASS),
+            Action(action_type=ActionType.CONTINUE),
+            Action(action_type=ActionType.PASS),
+            Action(action_type=ActionType.PASS),
         ]
         player, action = round.get_priority_action(actions)
         self.assertEqual(player, 1)
-        self.assertEqual(action, Action(action_type=ActionType.NOTHING))
+        self.assertEqual(action, Action(action_type=ActionType.CONTINUE))
 
     def test_use_all_tiles(self):
         round = Round(tiles=test_deck4, options=GameOptions(end_wall_count=14))
@@ -609,7 +609,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=11))
         round.do_action(1, Action(action_type=ActionType.DRAW))
         round.do_action(1, Action(action_type=ActionType.CLOSED_KAN, tile=1))
-        round.do_action(1, Action(action_type=ActionType.NOTHING))
+        round.do_action(1, Action(action_type=ActionType.CONTINUE))
         round.do_action(1, Action(action_type=ActionType.FLOWER, tile=48))
         round.do_action(1, Action(action_type=ActionType.TSUMO))
         win = round.win_info
@@ -629,7 +629,7 @@ class RoundTest(unittest.TestCase):
     def test_not_tenhou_after_call(self):
         round = Round(tiles=test_deck_kan_tenhou)
         round.do_action(0, Action(action_type=ActionType.CLOSED_KAN, tile=16))
-        round.do_action(0, Action(action_type=ActionType.NOTHING))
+        round.do_action(0, Action(action_type=ActionType.CONTINUE))
         round.do_action(0, Action(action_type=ActionType.TSUMO))
         self.assertFalse(round.win_info.is_tenhou)
 
@@ -643,7 +643,7 @@ class RoundTest(unittest.TestCase):
     def test_not_chiihou_after_call(self):
         round = Round(tiles=test_deck_kan_tenhou)
         round.do_action(0, Action(action_type=ActionType.CLOSED_KAN, tile=16))
-        round.do_action(0, Action(action_type=ActionType.NOTHING))
+        round.do_action(0, Action(action_type=ActionType.CONTINUE))
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=11))
         round.do_action(1, Action(action_type=ActionType.DRAW))
         round.do_action(1, Action(action_type=ActionType.TSUMO))
