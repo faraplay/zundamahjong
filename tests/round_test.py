@@ -566,7 +566,7 @@ class RoundTest(unittest.TestCase):
     def test_use_all_tiles(self):
         round = Round(tiles=test_deck4, options=GameOptions(end_wall_count=14))
         while round.status != RoundStatus.END:
-            actions = [round.allowed_actions(player).default for player in range(4)]
+            actions = [action_set.default for action_set in round.allowed_actions]
             player, action = round.get_priority_action(actions)
             round.do_action(player, action)
         self.assertEqual(round.wall_count, 14)
@@ -575,7 +575,7 @@ class RoundTest(unittest.TestCase):
     def test_haitei(self):
         round = Round(tiles=test_deck_haitei, options=GameOptions(end_wall_count=14))
         while round.wall_count > 14:
-            actions = [round.allowed_actions(player).default for player in range(4)]
+            actions = [action_set.default for action_set in round.allowed_actions]
             player, action = round.get_priority_action(actions)
             round.do_action(player, action)
         self.assertEqual(round.current_player, 1)
@@ -588,7 +588,7 @@ class RoundTest(unittest.TestCase):
         round = Round(tiles=test_deck4, options=GameOptions(end_wall_count=14))
         round.do_action(0, Action(action_type=ActionType.CLOSED_KAN, tile=4))
         while round.wall_count > 14:
-            actions = [round.allowed_actions(player).default for player in range(4)]
+            actions = [action_set.default for action_set in round.allowed_actions]
             player, action = round.get_priority_action(actions)
             round.do_action(player, action)
         self.assertEqual(round.current_player, 0)

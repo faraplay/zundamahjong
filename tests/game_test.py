@@ -109,7 +109,7 @@ class GameTest(unittest.TestCase):
         self.assertEqual(game.draw_count, 0)
         round = game.round
         while round.status != RoundStatus.END:
-            actions = [round.allowed_actions(player).default for player in range(4)]
+            actions = [action_set.default for action_set in round.allowed_actions]
             player, action = round.get_priority_action(actions)
             round.do_action(player, action)
         self.assertEqual(game.draw_count, 0)
@@ -118,7 +118,7 @@ class GameTest(unittest.TestCase):
         self.assertEqual(game.draw_count, 1)
         round = game.round
         while round.status != RoundStatus.END:
-            actions = [round.allowed_actions(player).default for player in range(4)]
+            actions = [action_set.default for action_set in round.allowed_actions]
             player, action = round.get_priority_action(actions)
             round.do_action(player, action)
         self.assertEqual(game.draw_count, 1)
@@ -136,7 +136,7 @@ class GameTest(unittest.TestCase):
         self.assertEqual(game.draw_count, 0)
         round = game.round
         while round.status != RoundStatus.END:
-            actions = [round.allowed_actions(player).default for player in range(4)]
+            actions = [action_set.default for action_set in round.allowed_actions]
             player, action = round.get_priority_action(actions)
             round.do_action(player, action)
         self.assertEqual(game.draw_count, 0)
@@ -145,7 +145,7 @@ class GameTest(unittest.TestCase):
         self.assertEqual(game.draw_count, 1)
         round = game.round
         while round.status != RoundStatus.END:
-            actions = [round.allowed_actions(player).default for player in range(4)]
+            actions = [action_set.default for action_set in round.allowed_actions]
             player, action = round.get_priority_action(actions)
             round.do_action(player, action)
         self.assertEqual(game.draw_count, 1)

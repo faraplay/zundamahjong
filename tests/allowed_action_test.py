@@ -10,51 +10,54 @@ class AllowedActionTest(unittest.TestCase):
     def test_play_default_actions(self):
         round = Round(tiles=test_deck1)
         self.assertEqual(
-            round.allowed_actions(0).default.action_type,
+            round.allowed_actions[0].default.action_type,
             ActionType.DISCARD,
         )
         self.assertEqual(
-            round.allowed_actions(1).default, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[1].default, Action(action_type=ActionType.NOTHING)
         )
         self.assertEqual(
-            round.allowed_actions(2).default, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[2].default, Action(action_type=ActionType.NOTHING)
         )
         self.assertEqual(
-            round.allowed_actions(3).default, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[3].default, Action(action_type=ActionType.NOTHING)
         )
 
     def test_discarded_default_actions(self):
         round = Round(tiles=test_deck1)
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=9))
         self.assertEqual(
-            round.allowed_actions(0).default, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[0].default, Action(action_type=ActionType.NOTHING)
         )
         self.assertEqual(
-            round.allowed_actions(1).default, Action(action_type=ActionType.DRAW)
+            round.allowed_actions[1].default, Action(action_type=ActionType.DRAW)
         )
         self.assertEqual(
-            round.allowed_actions(2).default, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[2].default, Action(action_type=ActionType.NOTHING)
         )
         self.assertEqual(
-            round.allowed_actions(3).default, Action(action_type=ActionType.NOTHING)
+            round.allowed_actions[3].default, Action(action_type=ActionType.NOTHING)
         )
 
     def test_wrong_turn_nothing(self):
         round = Round(tiles=test_deck1)
         self.assertSetEqual(
-            round.allowed_actions(1).actions, {Action(action_type=ActionType.NOTHING)}
+            round.allowed_actions[1].actions,
+            {Action(action_type=ActionType.NOTHING)},
         )
         self.assertSetEqual(
-            round.allowed_actions(2).actions, {Action(action_type=ActionType.NOTHING)}
+            round.allowed_actions[2].actions,
+            {Action(action_type=ActionType.NOTHING)},
         )
         self.assertSetEqual(
-            round.allowed_actions(3).actions, {Action(action_type=ActionType.NOTHING)}
+            round.allowed_actions[3].actions,
+            {Action(action_type=ActionType.NOTHING)},
         )
 
     def test_turn_discard_actions(self):
         round = Round(tiles=test_deck1)
         self.assertSetEqual(
-            round.allowed_actions(0).actions,
+            round.allowed_actions[0].actions,
             {
                 Action(action_type=ActionType.DISCARD, tile=1),
                 Action(action_type=ActionType.DISCARD, tile=2),
@@ -74,21 +77,23 @@ class AllowedActionTest(unittest.TestCase):
         round = Round(tiles=test_deck1)
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=1))
         self.assertSetEqual(
-            round.allowed_actions(0).actions, {Action(action_type=ActionType.NOTHING)}
+            round.allowed_actions[0].actions,
+            {Action(action_type=ActionType.NOTHING)},
         )
 
     def test_discard_self_cannot_pon(self):
         round = Round(tiles=test_deck1)
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=21))
         self.assertSetEqual(
-            round.allowed_actions(0).actions, {Action(action_type=ActionType.NOTHING)}
+            round.allowed_actions[0].actions,
+            {Action(action_type=ActionType.NOTHING)},
         )
 
     def test_can_draw(self):
         round = Round(tiles=test_deck1)
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=17))
         self.assertSetEqual(
-            round.allowed_actions(1).actions,
+            round.allowed_actions[1].actions,
             {Action(action_type=ActionType.DRAW)},
         )
 
@@ -96,7 +101,7 @@ class AllowedActionTest(unittest.TestCase):
         round = Round(tiles=test_deck1)
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=5))
         self.assertSetEqual(
-            round.allowed_actions(1).actions,
+            round.allowed_actions[1].actions,
             {
                 Action(action_type=ActionType.DRAW),
                 Action(action_type=ActionType.CHI_A),
@@ -109,7 +114,7 @@ class AllowedActionTest(unittest.TestCase):
         round = Round(tiles=test_deck1)
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=9))
         self.assertSetEqual(
-            round.allowed_actions(1).actions,
+            round.allowed_actions[1].actions,
             {
                 Action(action_type=ActionType.DRAW),
                 Action(action_type=ActionType.CHI_C),
@@ -123,7 +128,7 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=9))
         round.do_action(1, Action(action_type=ActionType.CHI_C))
         self.assertSetEqual(
-            round.allowed_actions(1).actions,
+            round.allowed_actions[1].actions,
             {
                 Action(action_type=ActionType.DISCARD, tile=1),
                 Action(action_type=ActionType.DISCARD, tile=2),
@@ -142,7 +147,7 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=9))
         round.do_action(1, Action(action_type=ActionType.PON))
         self.assertSetEqual(
-            round.allowed_actions(1).actions,
+            round.allowed_actions[1].actions,
             {
                 Action(action_type=ActionType.DISCARD, tile=1),
                 Action(action_type=ActionType.DISCARD, tile=2),
@@ -162,7 +167,7 @@ class AllowedActionTest(unittest.TestCase):
         round = Round(tiles=test_deck2)
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
         self.assertSetEqual(
-            round.allowed_actions(2).actions,
+            round.allowed_actions[2].actions,
             {
                 Action(action_type=ActionType.NOTHING),
                 Action(action_type=ActionType.RON),
@@ -176,7 +181,7 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         round.do_action(2, Action(action_type=ActionType.DRAW))
         self.assertSetEqual(
-            round.allowed_actions(2).actions,
+            round.allowed_actions[2].actions,
             {
                 Action(action_type=ActionType.DISCARD, tile=11),
                 Action(action_type=ActionType.DISCARD, tile=12),
@@ -197,7 +202,8 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(2, Action(action_type=ActionType.DRAW))
         round.do_action(2, Action(action_type=ActionType.DISCARD, tile=11))
         self.assertSetEqual(
-            round.allowed_actions(2).actions, {Action(action_type=ActionType.NOTHING)}
+            round.allowed_actions[2].actions,
+            {Action(action_type=ActionType.NOTHING)},
         )
 
     def test_can_chankan(self):
@@ -210,7 +216,7 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(1, Action(action_type=ActionType.DRAW))
         round.do_action(1, Action(action_type=ActionType.ADD_KAN, tile=13))
         self.assertSetEqual(
-            round.allowed_actions(2).actions,
+            round.allowed_actions[2].actions,
             {
                 Action(action_type=ActionType.NOTHING),
                 Action(action_type=ActionType.RON),
@@ -220,7 +226,7 @@ class AllowedActionTest(unittest.TestCase):
     def test_start_flowers(self):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         self.assertSetEqual(
-            round.allowed_actions(0).actions,
+            round.allowed_actions[0].actions,
             {
                 Action(action_type=ActionType.NOTHING),
                 Action(action_type=ActionType.FLOWER, tile=41),
@@ -231,7 +237,8 @@ class AllowedActionTest(unittest.TestCase):
     def test_start_wrong_player_flowers(self):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         self.assertSetEqual(
-            round.allowed_actions(1).actions, {Action(action_type=ActionType.NOTHING)}
+            round.allowed_actions[1].actions,
+            {Action(action_type=ActionType.NOTHING)},
         )
 
     def test_manual_can_flower(self):
@@ -254,7 +261,7 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         round.do_action(2, Action(action_type=ActionType.DRAW))
         self.assertSetEqual(
-            round.allowed_actions(2).actions,
+            round.allowed_actions[2].actions,
             {
                 Action(action_type=ActionType.DISCARD, tile=3),
                 Action(action_type=ActionType.DISCARD, tile=7),
@@ -275,7 +282,7 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(1, Action(action_type=ActionType.DISCARD, tile=2))
         round.do_action(2, Action(action_type=ActionType.DRAW))
         self.assertSetEqual(
-            round.allowed_actions(2).actions,
+            round.allowed_actions[2].actions,
             {
                 Action(action_type=ActionType.FLOWER, tile=45),
             },

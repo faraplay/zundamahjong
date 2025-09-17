@@ -66,7 +66,7 @@ class GameController:
         else:
             actions = [
                 action.model_dump()
-                for action in self._game.round.allowed_actions(index).actions
+                for action in self._game.round.allowed_actions[index].actions
             ]
         action_selected = self._submitted_actions[index] is not None
         return {
@@ -102,18 +102,14 @@ class GameController:
         if self._game.round.status == RoundStatus.END:
             self._submitted_actions = [None] * self._game.player_count
         else:
-            allowed_actions = [
-                self._game.round.allowed_actions(player)
-                for player in range(self._game.player_count)
-            ]
             self._submitted_actions = [
                 (
-                    actions.default
-                    if len(actions.actions) == 1
-                    and (actions.default.action_type != ActionType.DISCARD)
+                    action_set.default
+                    if len(action_set.actions) == 1
+                    and (action_set.default.action_type != ActionType.DISCARD)
                     else None
                 )
-                for actions in allowed_actions
+                for action_set in self._game.round.allowed_actions
             ]
 
     def _resolve_action(self):
