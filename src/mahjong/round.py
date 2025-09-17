@@ -185,6 +185,17 @@ class Round:
             )
             for player in range(self._player_count)
         )
+        self._all_allowed_actions = sorted(
+            (
+                (player, action)
+                for player, action_set in enumerate(self._allowed_actions)
+                for action in action_set.actions
+            ),
+            key=lambda playeraction: (
+                -playeraction[1].action_type,
+                (playeraction[0] - self._current_player) % self._player_count,
+            ),
+        )
 
     def do_action(self, player: int, action: Action):
         if action not in self.allowed_actions[player].actions:
@@ -201,23 +212,20 @@ class Round:
         validated_actions: list[Optional[Action]] = []
         for player, action in enumerate(actions):
             allowed_actions = self.allowed_actions[player]
-            if action is not None and action not in allowed_actions.actions:
+            if action is None:
+                valid_action = allowed_actions.auto
+            elif action not in allowed_actions.actions:
                 valid_action = allowed_actions.default
             else:
                 valid_action = action
             validated_actions.append(valid_action)
 
-        best_action_player, best_action = (
-            self._current_player,
-            validated_actions[self._current_player],
-        )
-        for index in range(1, self._player_count):
-            player = (self._current_player + index) % self._player_count
-            action = validated_actions[player]
-            if action.action_type > best_action.action_type:
-                best_action_player, best_action = player, action
-
-        return best_action_player, best_action
+        for player, action in self._all_allowed_actions:
+            if validated_actions[player] == action:
+                return player, action
+            elif validated_actions[player] is None:
+                return None, None
+        assert False
 
     def _previous_player(self, player: int):
         return (player - 1) % self._player_count

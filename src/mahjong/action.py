@@ -47,6 +47,13 @@ class ActionSet:
         return self._default
 
     @property
+    def auto(self):
+        if len(self._actions) == 1 and self._default.action_type != ActionType.DISCARD:
+            return self._default
+        else:
+            return None
+
+    @property
     def actions(self) -> Set[Action]:
         return self._actions
 

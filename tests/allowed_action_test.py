@@ -23,6 +23,19 @@ class AllowedActionTest(unittest.TestCase):
             round.allowed_actions[3].default, Action(action_type=ActionType.NOTHING)
         )
 
+    def test_auto_actions(self):
+        round = Round(tiles=test_deck1)
+        self.assertEqual(round.allowed_actions[0].auto, None)
+        self.assertEqual(
+            round.allowed_actions[1].auto, Action(action_type=ActionType.NOTHING)
+        )
+        self.assertEqual(
+            round.allowed_actions[2].auto, Action(action_type=ActionType.NOTHING)
+        )
+        self.assertEqual(
+            round.allowed_actions[3].auto, Action(action_type=ActionType.NOTHING)
+        )
+
     def test_discarded_default_actions(self):
         round = Round(tiles=test_deck1)
         round.do_action(0, Action(action_type=ActionType.DISCARD, tile=9))
