@@ -1,4 +1,4 @@
-from src.mahjong.action import Action, ActionType
+from src.mahjong.action import Action
 from src.mahjong.game_options import GameOptions
 from src.mahjong.round import RoundStatus
 from src.mahjong.game import Game
@@ -11,9 +11,27 @@ class GameController:
     def __init__(self, players: list[Player], options: GameOptions):
         self._players = players
         self._game = Game(options=options)
-        self.reset_submitted_actions()
 
-    def get_player_index(self, player: Player):
+    def emit_info(self, player: Player):
+        index = self._get_player_index(player)
+        sio.emit("info", self._info(index), to=player.id)
+
+    def emit_info_all(self):
+        for index, player in enumerate(self._players):
+            sio.emit("info", self._info(index), to=player.id)
+
+    def submit_action(self, player: Player, action: Action):
+        index = self._get_player_index(player)
+        self._game.submit_action(index, action)
+
+    def start_next_round(self, player: Player):
+        self._get_player_index(player)
+        if not self._game.can_start_next_round:
+            raise Exception("Cannot start next round!")
+        self._game.start_next_round()
+        self.emit_info_all()
+
+    def _get_player_index(self, player: Player):
         try:
             return self._players.index(player)
         except ValueError:
@@ -87,43 +105,3 @@ class GameController:
                 self._game.scoring.model_dump() if self._game.scoring else None
             ),
         }
-
-    def emit_info(self, player: Player):
-        index = self.get_player_index(player)
-        sio.emit("info", self._info(index), to=player.id)
-
-    def emit_info_all(self):
-        for index, player in enumerate(self._players):
-            sio.emit("info", self._info(index), to=player.id)
-
-    def reset_submitted_actions(self):
-        self._submitted_actions = [None] * self._game.player_count
-
-    def try_resolve_actions(self):
-        action_resolve_count = 0
-        while self._game.round.status != RoundStatus.END:
-            playeraction = self._game.round.get_priority_action(self._submitted_actions)
-            if playeraction is None:
-                break
-            self._game.round.do_action(*playeraction)
-            self._submitted_actions = [None] * self._game.player_count
-            action_resolve_count += 1
-
-        if action_resolve_count > 0:
-            self.emit_info_all()
-
-    def submit_action(self, player: Player, action: Action):
-        index = self.get_player_index(player)
-        self._submitted_actions[index] = action
-        # print(self._submitted_actions)
-        self.try_resolve_actions()
-
-    def start_next_round(self, player: Player):
-        self.get_player_index(player)
-        if not self._game.can_start_next_round:
-            raise Exception("Cannot start next round!")
-        self._game.start_next_round()
-        self.reset_submitted_actions()
-        # print("Starting next round...")
-        # self._game.round.display_info()
-        self.emit_info_all()
