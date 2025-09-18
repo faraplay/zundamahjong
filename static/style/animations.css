@@ -1,0 +1,13 @@
+@keyframes discardAnimation {
+    from {
+        transform: translateX(9cqw);
+    }
+    to {
+        transform: none;
+    }
+}
+
+.animate_discard
+{
+    animation: discardAnimation 250ms ease-out 0s 1 normal backwards;
+}
