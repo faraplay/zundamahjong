@@ -1,3 +1,4 @@
+from threading import Lock
 from src.mahjong.action import Action
 from src.mahjong.game_options import GameOptions
 from src.mahjong.round import RoundStatus
@@ -11,29 +12,33 @@ class GameController:
     def __init__(self, players: list[Player], options: GameOptions):
         self._players = players
         self._game = Game(options=options)
+        self._lock = Lock()
 
     def emit_info(self, player: Player):
-        index = self._get_player_index(player)
-        sio.emit("info", self._info(index), to=player.id)
-
-    def emit_info_all(self):
-        for index, player in enumerate(self._players):
+        with self._lock:
+            index = self._get_player_index(player)
             sio.emit("info", self._info(index), to=player.id)
 
+    def emit_info_all(self):
+        with self._lock:
+            self._emit_info_all_inner()
+
     def submit_action(self, player: Player, action: Action, history_index: int):
-        player_index = self._get_player_index(player)
-        performed_actions = self._game.submit_action(
-            player_index, action, history_index
-        )
-        if performed_actions is not None and len(performed_actions) > 0:
-            self.emit_info_all()
+        with self._lock:
+            player_index = self._get_player_index(player)
+            performed_actions = self._game.submit_action(
+                player_index, action, history_index
+            )
+            if performed_actions is not None and len(performed_actions) > 0:
+                self._emit_info_all_inner()
 
     def start_next_round(self, player: Player):
-        self._get_player_index(player)
-        if not self._game.can_start_next_round:
-            raise Exception("Cannot start next round!")
-        self._game.start_next_round()
-        self.emit_info_all()
+        with self._lock:
+            self._get_player_index(player)
+            if not self._game.can_start_next_round:
+                raise Exception("Cannot start next round!")
+            self._game.start_next_round()
+            self._emit_info_all_inner()
 
     def _get_player_index(self, player: Player):
         try:
@@ -109,3 +114,7 @@ class GameController:
                 self._game.scoring.model_dump() if self._game.scoring else None
             ),
         }
+
+    def _emit_info_all_inner(self):
+        for index, player in enumerate(self._players):
+            sio.emit("info", self._info(index), to=player.id)
