@@ -5,7 +5,7 @@ function sendAction(e, action) {
     e.preventDefault();
     disableActions();
     const action_history_index = round_history.length;
-    socket.emit('action', my_player, action, () => {
+    socket.emit('action', my_player, action, action_history_index, () => {
         if (action_history_index == round_history.length) {
             actions_div.classList.add('hidden');
         }

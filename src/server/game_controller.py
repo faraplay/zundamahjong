@@ -20,9 +20,13 @@ class GameController:
         for index, player in enumerate(self._players):
             sio.emit("info", self._info(index), to=player.id)
 
-    def submit_action(self, player: Player, action: Action):
-        index = self._get_player_index(player)
-        self._game.submit_action(index, action)
+    def submit_action(self, player: Player, action: Action, history_index: int):
+        player_index = self._get_player_index(player)
+        performed_actions = self._game.submit_action(
+            player_index, action, history_index
+        )
+        if performed_actions is not None and len(performed_actions) > 0:
+            self.emit_info_all()
 
     def start_next_round(self, player: Player):
         self._get_player_index(player)
@@ -84,7 +88,7 @@ class GameController:
                 action.model_dump()
                 for action in self._game.round.allowed_actions[index].actions
             ]
-        action_selected = self._submitted_actions[index] is not None
+        action_selected = False
         return {
             "hand": hand,
             "last_tile": self._game.round.last_tile,

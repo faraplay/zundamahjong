@@ -8,7 +8,9 @@ class ActionSelector:
         self._player_count = round._player_count
         self.reset_submitted_actions()
 
-    def submit_action(self, player_index: int, action: Action):
+    def submit_action(self, player_index: int, action: Action, history_index: int):
+        if history_index != len(self._round.history):
+            return None
         self._submitted_actions[player_index] = action
         return self._resolve_actions()
 

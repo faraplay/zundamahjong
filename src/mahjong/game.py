@@ -79,8 +79,8 @@ class Game:
             and not self.is_dealer_repeat
         )
 
-    def submit_action(self, player_index: int, action: Action):
-        return self._action_selector.submit_action(player_index, action)
+    def submit_action(self, player_index: int, action: Action, history_index: int):
+        return self._action_selector.submit_action(player_index, action, history_index)
 
     def start_next_round(self, deck_tiles: Optional[list[int]] = None):
         if not self.can_start_next_round:

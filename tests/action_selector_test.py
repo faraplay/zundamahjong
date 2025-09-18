@@ -12,7 +12,7 @@ class ActionSelectorTest(unittest.TestCase):
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         history_updates = action_selector.submit_action(
-            0, Action(action_type=ActionType.DISCARD, tile=13)
+            0, Action(action_type=ActionType.DISCARD, tile=13), len(round.history)
         )
         self.assertSequenceEqual(
             history_updates, [(0, Action(action_type=ActionType.DISCARD, tile=13))]
@@ -24,22 +24,22 @@ class ActionSelectorTest(unittest.TestCase):
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         action_selector.submit_action(
-            0, Action(action_type=ActionType.DISCARD, tile=13)
+            0, Action(action_type=ActionType.DISCARD, tile=13), len(round.history)
         )
         history_updates = action_selector.submit_action(
-            0, Action(action_type=ActionType.PASS)
-        )
-        self.assertSequenceEqual(history_updates, [])
-        history_updates = action_selector.submit_action(
-            1, Action(action_type=ActionType.CHI_C)
+            0, Action(action_type=ActionType.PASS), len(round.history)
         )
         self.assertSequenceEqual(history_updates, [])
         history_updates = action_selector.submit_action(
-            2, Action(action_type=ActionType.PON)
+            1, Action(action_type=ActionType.CHI_C), len(round.history)
         )
         self.assertSequenceEqual(history_updates, [])
         history_updates = action_selector.submit_action(
-            3, Action(action_type=ActionType.RON)
+            2, Action(action_type=ActionType.PON), len(round.history)
+        )
+        self.assertSequenceEqual(history_updates, [])
+        history_updates = action_selector.submit_action(
+            3, Action(action_type=ActionType.RON), len(round.history)
         )
         self.assertSequenceEqual(
             history_updates, [(3, Action(action_type=ActionType.RON))]
@@ -49,10 +49,10 @@ class ActionSelectorTest(unittest.TestCase):
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         action_selector.submit_action(
-            0, Action(action_type=ActionType.DISCARD, tile=13)
+            0, Action(action_type=ActionType.DISCARD, tile=13), len(round.history)
         )
         history_updates = action_selector.submit_action(
-            3, Action(action_type=ActionType.RON)
+            3, Action(action_type=ActionType.RON), len(round.history)
         )
         self.assertSequenceEqual(
             history_updates, [(3, Action(action_type=ActionType.RON))]
@@ -62,7 +62,7 @@ class ActionSelectorTest(unittest.TestCase):
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         history_updates = action_selector.submit_action(
-            0, Action(action_type=ActionType.DISCARD, tile=1)
+            0, Action(action_type=ActionType.DISCARD, tile=1), len(round.history)
         )
         self.assertSequenceEqual(
             history_updates,
@@ -76,18 +76,18 @@ class ActionSelectorTest(unittest.TestCase):
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         action_selector.submit_action(
-            0, Action(action_type=ActionType.DISCARD, tile=13)
+            0, Action(action_type=ActionType.DISCARD, tile=13), len(round.history)
         )
         history_updates = action_selector.submit_action(
-            3, Action(action_type=ActionType.PASS)
-        )
-        self.assertSequenceEqual(history_updates, [])
-        history_updates = action_selector.submit_action(
-            1, Action(action_type=ActionType.CHI_C)
+            3, Action(action_type=ActionType.PASS), len(round.history)
         )
         self.assertSequenceEqual(history_updates, [])
         history_updates = action_selector.submit_action(
-            2, Action(action_type=ActionType.RON)
+            1, Action(action_type=ActionType.CHI_C), len(round.history)
+        )
+        self.assertSequenceEqual(history_updates, [])
+        history_updates = action_selector.submit_action(
+            2, Action(action_type=ActionType.RON), len(round.history)
         )
         self.assertSequenceEqual(
             history_updates, [(1, Action(action_type=ActionType.CHI_C))]
@@ -97,7 +97,7 @@ class ActionSelectorTest(unittest.TestCase):
         round = Round(tiles=test_deck_one_discard_option)
         action_selector = ActionSelector(round)
         history_updates = action_selector.submit_action(
-            0, Action(action_type=ActionType.CLOSED_KAN, tile=11)
+            0, Action(action_type=ActionType.CLOSED_KAN, tile=11), len(round.history)
         )
         self.assertSequenceEqual(
             history_updates,
@@ -111,22 +111,22 @@ class ActionSelectorTest(unittest.TestCase):
         round = Round(tiles=test_deck_one_discard_option)
         action_selector = ActionSelector(round)
         action_selector.submit_action(
-            0, Action(action_type=ActionType.CLOSED_KAN, tile=11)
+            0, Action(action_type=ActionType.CLOSED_KAN, tile=11), len(round.history)
         )
         action_selector.submit_action(
-            0, Action(action_type=ActionType.CLOSED_KAN, tile=12)
+            0, Action(action_type=ActionType.CLOSED_KAN, tile=12), len(round.history)
         )
         action_selector.submit_action(
-            0, Action(action_type=ActionType.CLOSED_KAN, tile=13)
+            0, Action(action_type=ActionType.CLOSED_KAN, tile=13), len(round.history)
         )
         action_selector.submit_action(
-            0, Action(action_type=ActionType.DISCARD, tile=32)
+            0, Action(action_type=ActionType.DISCARD, tile=32), len(round.history)
         )
         action_selector.submit_action(
-            1, Action(action_type=ActionType.DISCARD, tile=14)
+            1, Action(action_type=ActionType.DISCARD, tile=14), len(round.history)
         )
         history_updates = action_selector.submit_action(
-            0, Action(action_type=ActionType.PON)
+            0, Action(action_type=ActionType.PON), len(round.history)
         )
         self.assertSequenceEqual(
             history_updates, [(0, Action(action_type=ActionType.PON))]
