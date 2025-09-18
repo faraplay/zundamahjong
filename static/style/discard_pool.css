@@ -27,3 +27,17 @@
 {
     top: calc(52cqw + 3*var(--tile-width) + var(--player-discard-gap));
 }
+
+@keyframes discardAnimation {
+    from {
+        transform: translateX(9cqw);
+    }
+    to {
+        transform: none;
+    }
+}
+
+#discard_pool .player_discards > *:last-child
+{
+    animation: discardAnimation 250ms ease-out 0s 1 normal none;
+}
