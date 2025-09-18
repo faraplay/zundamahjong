@@ -11,3 +11,17 @@
 {
     animation: discardAnimation 250ms ease-out 0s 1 normal backwards;
 }
+
+@keyframes callAnimation {
+    from {
+        transform: translateX(-18cqw);
+    }
+    to {
+        transform: none;
+    }
+}
+
+.animate_call
+{
+    animation: callAnimation 250ms ease-out 0s 1 normal backwards;
+}

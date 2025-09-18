@@ -8,6 +8,16 @@ function setAnimation(player, action) {
             discarded_tile_element.classList.add("animate");
             discarded_tile_element.classList.add("animate_discard");
             break;
+        case ACTION_CHI_A:
+        case ACTION_CHI_B:
+        case ACTION_CHI_C:
+        case ACTION_PON:
+        case ACTION_OPEN_KAN:
+            const call_element = document.querySelector(
+                `#calls_list .player_calls.player_${player} > *:last-child`
+            );
+            call_element.classList.add("animate");
+            call_element.classList.add("animate_call");
     }
 }
 
