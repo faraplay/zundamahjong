@@ -1,27 +1,61 @@
+.animate
+{
+    --animation-duration: 250ms;
+    --animation-delay: 0ms;
+}
+
+@keyframes drawAnimation {
+    from {
+        visibility: hidden;
+        transform: translateX(9cqw) rotateX(-90deg);
+    }
+    to {
+        visibility: visible;
+        transform: none;
+    }
+}
+
+.animate_draw
+{
+    transform-origin: 0cqw 4cqw 2cqw;
+    animation:
+        drawAnimation var(--animation-duration) ease-out
+        var(--animation-delay) 1 normal backwards;
+}
+
 @keyframes discardAnimation {
     from {
+        visibility: hidden;
         transform: translateX(9cqw);
     }
     to {
+        visibility: visible;
         transform: none;
     }
 }
 
 .animate_discard
 {
-    animation: discardAnimation 250ms ease-out 0s 1 normal backwards;
+    animation:
+        discardAnimation var(--animation-duration) ease-out
+        var(--animation-delay) 1 normal backwards;
 }
+
 
 @keyframes callAnimation {
     from {
+        visibility: hidden;
         transform: translateX(-18cqw);
     }
     to {
+        visibility: visible;
         transform: none;
     }
 }
 
 .animate_call
 {
-    animation: callAnimation 250ms ease-out 0s 1 normal backwards;
+    animation:
+        callAnimation var(--animation-duration) ease-out
+        var(--animation-delay) 1 normal backwards;
 }

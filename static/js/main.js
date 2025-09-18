@@ -25,7 +25,6 @@ socket.on('info', (info) => {
 
     setGameInfo(info.game_info);
     setRoundInfo(info.round_info);
-    setAnimations(info.history_updates);
     setPlayerInfo(info.player_info);
 
     setWinInfo(info.win_info);
@@ -37,5 +36,6 @@ socket.on('info', (info) => {
 
     setTableHands(info);
 
+    setAnimations(info.history_updates);
     showScreen("game_screen");
 })
