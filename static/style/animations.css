@@ -59,3 +59,22 @@
         callAnimation var(--animation-duration) ease-out
         var(--animation-delay) 1 normal backwards;
 }
+
+
+@keyframes addKanAnimation {
+    from {
+        visibility: hidden;
+        transform: translateY(-24cqw);
+    }
+    to {
+        visibility: visible;
+        transform: none;
+    }
+}
+
+.animate_add_kan
+{
+    animation:
+        addKanAnimation var(--animation-duration) ease-out
+        var(--animation-delay) 1 normal backwards;
+}

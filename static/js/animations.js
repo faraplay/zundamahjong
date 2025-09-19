@@ -1,43 +1,133 @@
+function add_animation(element, animation_style, duration_milliseconds, delay_milliseconds) {
+    element.classList.add("animate");
+    element.classList.add(animation_style);
+    element.style.setProperty("--animation-duration", `${duration_milliseconds}ms`);
+    element.style.setProperty("--animation-delay", `${delay_milliseconds}ms`);
+    return duration_milliseconds;
+}
+
 function setAnimation(player, action, delay_milliseconds) {
     console.log(player, action);
-    let duration_milliseconds;
     switch (action.action_type) {
         case ACTION_DRAW:
-            duration_milliseconds = 250;
-            const drawn_tile_element = document.querySelector(
-                `#table_hands .table_hand_outer.player_${player} .table_hand > *:last-child`
-            );
-            drawn_tile_element.classList.add("animate");
-            drawn_tile_element.classList.add("animate_draw");
-            drawn_tile_element.style.setProperty("--animation-duration", `${duration_milliseconds}ms`);
-            drawn_tile_element.style.setProperty("--animation-delay", `${delay_milliseconds}ms`);
-            break;
+            return setDrawAnimation(player, action, delay_milliseconds);
         case ACTION_DISCARD:
-            duration_milliseconds = 250;
-            const discarded_tile_element = document.querySelector(
-                `#discard_pool .player_discards.player_${player} > *:last-child`
-            );
-            discarded_tile_element.classList.add("animate");
-            discarded_tile_element.classList.add("animate_discard");
-            discarded_tile_element.style.setProperty("--animation-duration", `${duration_milliseconds}ms`);
-            discarded_tile_element.style.setProperty("--animation-delay", `${delay_milliseconds}ms`);
-            break;
+            return setDiscardAnimation(player, action, delay_milliseconds);
         case ACTION_CHI_A:
         case ACTION_CHI_B:
         case ACTION_CHI_C:
         case ACTION_PON:
+            return setCallAnimation(player, action, delay_milliseconds);
         case ACTION_OPEN_KAN:
-            duration_milliseconds = 250;
-            const call_element = document.querySelector(
-                `#calls_list .player_calls.player_${player} > *:last-child`
-            );
-            call_element.classList.add("animate");
-            call_element.classList.add("animate_call");
-            call_element.style.setProperty("--animation-duration", `${duration_milliseconds}ms`);
-            call_element.style.setProperty("--animation-delay", `${delay_milliseconds}ms`);
-            break;
+        case ACTION_CLOSED_KAN:
+            return setNewKanAnimation(player, action, delay_milliseconds);
+        case ACTION_ADD_KAN:
+            return setAddKanAnimation(player, action, delay_milliseconds);
+        case ACTION_FLOWER:
+            return setFlowerAnimation(player, action, delay_milliseconds);
     }
-    return duration_milliseconds;
+}
+
+function setDrawAnimation(player, action, delay_milliseconds) {
+    const drawn_tile_element = document.querySelector(
+        `#table_hands .table_hand_outer.player_${player} .table_hand > *:last-child`
+    );
+    return add_animation(
+        drawn_tile_element,
+        "animate_draw",
+        250,
+        delay_milliseconds
+    );
+}
+
+function setDiscardAnimation(player, action, delay_milliseconds) {
+    const discarded_tile_element = document.querySelector(
+        `#discard_pool .player_discards.player_${player} > *:last-child`
+    );
+    return add_animation(
+        discarded_tile_element,
+        "animate_discard",
+        250,
+        delay_milliseconds
+    );
+}
+
+function setCallAnimation(player, action, delay_milliseconds) {
+    const call_element = document.querySelector(
+        `#calls_list .player_calls.player_${player} > *:last-child`
+    );
+    return add_animation(
+        call_element,
+        "animate_call",
+        250,
+        delay_milliseconds
+    );
+}
+
+function setNewKanAnimation(player, action, delay_milliseconds) {
+    const open_kan_element = document.querySelector(
+        `#calls_list .player_calls.player_${player} > *:last-child`
+    );
+    const drawn_tile_element = document.querySelector(
+        `#table_hands .table_hand_outer.player_${player} .table_hand > *:last-child`
+    );
+    add_animation(
+        open_kan_element,
+        "animate_call",
+        250,
+        delay_milliseconds
+    );
+    add_animation(
+        drawn_tile_element,
+        "animate_draw",
+        250,
+        delay_milliseconds + 250
+    );
+    return 500
+}
+
+function setAddKanAnimation(player, action, delay_milliseconds) {
+    const add_kan_tile = document.querySelector(
+        `.tile_id_${action.tile}`
+    )
+    const drawn_tile_element = document.querySelector(
+        `#table_hands .table_hand_outer.player_${player} .table_hand > *:last-child`
+    );
+    add_animation(
+        add_kan_tile,
+        "animate_add_kan",
+        250,
+        delay_milliseconds
+    );
+    add_animation(
+        drawn_tile_element,
+        "animate_draw",
+        250,
+        delay_milliseconds + 250
+    );
+    return 500
+}
+
+function setFlowerAnimation(player, action, delay_milliseconds) {
+    const flower_element = document.querySelector(
+        `.tile_id_${action.tile}`
+    );
+    const flower_drawn_tile_element = document.querySelector(
+        `#table_hands .table_hand_outer.player_${player} .table_hand > *:last-child`
+    );
+    add_animation(
+        flower_element,
+        "animate_call",
+        250,
+        delay_milliseconds
+    );
+    add_animation(
+        flower_drawn_tile_element,
+        "animate_draw",
+        250,
+        delay_milliseconds + 250
+    );
+    return 250;
 }
 
 function unsetAnimation(animated_element) {

@@ -13,6 +13,7 @@ const player_flowers_elements = [0, 1, 2, 3].map(
 
 function createTableTileElement(tile) {
     const tile_element = createTileElement(tile);
+    tile_element.classList.add(`tile_id_${tile}`)
     tile_element.firstChild.classList.add('tile_face');
     tile_element.firstChild.classList.add('tile_front');
     for (const class_name of ['tile_back', 'tile_left', 'tile_right', 'tile_top', 'tile_bottom']) {
