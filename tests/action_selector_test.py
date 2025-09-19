@@ -12,10 +12,10 @@ class ActionSelectorTest(unittest.TestCase):
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         history_updates = action_selector.submit_action(
-            0, Action(action_type=ActionType.DISCARD, tile=13), len(round.history)
+            0, Action(action_type=ActionType.DISCARD, tile=52), len(round.history)
         )
         self.assertSequenceEqual(
-            history_updates, [(0, Action(action_type=ActionType.DISCARD, tile=13))]
+            history_updates, [(0, Action(action_type=ActionType.DISCARD, tile=52))]
         )
         self.assertEqual(round.current_player, 0)
         self.assertEqual(round.status, RoundStatus.DISCARDED)
@@ -24,7 +24,7 @@ class ActionSelectorTest(unittest.TestCase):
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         action_selector.submit_action(
-            0, Action(action_type=ActionType.DISCARD, tile=13), len(round.history)
+            0, Action(action_type=ActionType.DISCARD, tile=52), len(round.history)
         )
         history_updates = action_selector.submit_action(
             0, Action(action_type=ActionType.PASS), len(round.history)
@@ -49,7 +49,7 @@ class ActionSelectorTest(unittest.TestCase):
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         action_selector.submit_action(
-            0, Action(action_type=ActionType.DISCARD, tile=13), len(round.history)
+            0, Action(action_type=ActionType.DISCARD, tile=52), len(round.history)
         )
         history_updates = action_selector.submit_action(
             3, Action(action_type=ActionType.RON), len(round.history)
@@ -62,12 +62,12 @@ class ActionSelectorTest(unittest.TestCase):
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         history_updates = action_selector.submit_action(
-            0, Action(action_type=ActionType.DISCARD, tile=1), len(round.history)
+            0, Action(action_type=ActionType.DISCARD, tile=4), len(round.history)
         )
         self.assertSequenceEqual(
             history_updates,
             [
-                (0, Action(action_type=ActionType.DISCARD, tile=1)),
+                (0, Action(action_type=ActionType.DISCARD, tile=4)),
                 (1, Action(action_type=ActionType.DRAW)),
             ],
         )
@@ -76,7 +76,7 @@ class ActionSelectorTest(unittest.TestCase):
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         action_selector.submit_action(
-            0, Action(action_type=ActionType.DISCARD, tile=13), len(round.history)
+            0, Action(action_type=ActionType.DISCARD, tile=52), len(round.history)
         )
         history_updates = action_selector.submit_action(
             3, Action(action_type=ActionType.PASS), len(round.history)
@@ -97,12 +97,12 @@ class ActionSelectorTest(unittest.TestCase):
         round = Round(tiles=test_deck_one_discard_option)
         action_selector = ActionSelector(round)
         history_updates = action_selector.submit_action(
-            0, Action(action_type=ActionType.CLOSED_KAN, tile=11), len(round.history)
+            0, Action(action_type=ActionType.CLOSED_KAN, tile=44), len(round.history)
         )
         self.assertSequenceEqual(
             history_updates,
             [
-                (0, Action(action_type=ActionType.CLOSED_KAN, tile=11)),
+                (0, Action(action_type=ActionType.CLOSED_KAN, tile=44)),
                 (0, Action(action_type=ActionType.CONTINUE)),
             ],
         )
@@ -111,19 +111,19 @@ class ActionSelectorTest(unittest.TestCase):
         round = Round(tiles=test_deck_one_discard_option)
         action_selector = ActionSelector(round)
         action_selector.submit_action(
-            0, Action(action_type=ActionType.CLOSED_KAN, tile=11), len(round.history)
+            0, Action(action_type=ActionType.CLOSED_KAN, tile=44), len(round.history)
         )
         action_selector.submit_action(
-            0, Action(action_type=ActionType.CLOSED_KAN, tile=12), len(round.history)
+            0, Action(action_type=ActionType.CLOSED_KAN, tile=48), len(round.history)
         )
         action_selector.submit_action(
-            0, Action(action_type=ActionType.CLOSED_KAN, tile=13), len(round.history)
+            0, Action(action_type=ActionType.CLOSED_KAN, tile=52), len(round.history)
         )
         action_selector.submit_action(
-            0, Action(action_type=ActionType.DISCARD, tile=32), len(round.history)
+            0, Action(action_type=ActionType.DISCARD, tile=128), len(round.history)
         )
         action_selector.submit_action(
-            1, Action(action_type=ActionType.DISCARD, tile=14), len(round.history)
+            1, Action(action_type=ActionType.DISCARD, tile=56), len(round.history)
         )
         history_updates = action_selector.submit_action(
             0, Action(action_type=ActionType.PON), len(round.history)
