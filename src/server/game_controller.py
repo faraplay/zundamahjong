@@ -13,15 +13,13 @@ class GameController:
         self._players = players
         self._game = Game(options=options)
         self._lock = Lock()
+        with self._lock:
+            self._emit_info_all_inner(self._game.round.history)
 
     def emit_info(self, player: Player):
         with self._lock:
             index = self._get_player_index(player)
             sio.emit("info", self._info(index, []), to=player.id)
-
-    def emit_info_all(self):
-        with self._lock:
-            self._emit_info_all_inner()
 
     def submit_action(self, player: Player, action: Action, history_index: int):
         with self._lock:
@@ -38,7 +36,7 @@ class GameController:
             if not self._game.can_start_next_round:
                 raise Exception("Cannot start next round!")
             self._game.start_next_round()
-            self._emit_info_all_inner()
+            self._emit_info_all_inner(self._game.round.history)
 
     def _get_player_index(self, player: Player):
         try:

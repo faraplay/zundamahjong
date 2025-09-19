@@ -25,6 +25,8 @@ function setAnimation(player, action, delay_milliseconds) {
             return setAddKanAnimation(player, action, delay_milliseconds);
         case ACTION_FLOWER:
             return setFlowerAnimation(player, action, delay_milliseconds);
+        default:
+            return delay_milliseconds;
     }
 }
 
