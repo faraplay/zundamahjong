@@ -1,8 +1,15 @@
 function add_animation(element, animation_style, duration_milliseconds, delay_milliseconds) {
     element.classList.add("animate");
-    element.classList.add(animation_style);
-    element.style.setProperty("--animation-duration", `${duration_milliseconds}ms`);
-    element.style.setProperty("--animation-delay", `${delay_milliseconds}ms`);
+    animation = element.style.getPropertyValue("animation");
+    if (animation) {
+        animation = ",\n" + animation;
+    }
+    element.style.setProperty(
+        "animation",
+        `${animation_style} ${duration_milliseconds}ms ease-out `
+        + `${delay_milliseconds}ms 1 normal backwards`
+        + animation
+    )
     return duration_milliseconds;
 }
 
@@ -26,7 +33,7 @@ function setAnimation(player, action, delay_milliseconds) {
         case ACTION_FLOWER:
             return setFlowerAnimation(player, action, delay_milliseconds);
         default:
-            return delay_milliseconds;
+            return 0;
     }
 }
 
@@ -36,7 +43,7 @@ function setDrawAnimation(player, action, delay_milliseconds) {
     );
     return add_animation(
         drawn_tile_element,
-        "animate_draw",
+        "drawAnimation",
         250,
         delay_milliseconds
     );
@@ -48,7 +55,7 @@ function setDiscardAnimation(player, action, delay_milliseconds) {
     );
     return add_animation(
         discarded_tile_element,
-        "animate_discard",
+        "discardAnimation",
         250,
         delay_milliseconds
     );
@@ -60,7 +67,7 @@ function setCallAnimation(player, action, delay_milliseconds) {
     );
     return add_animation(
         call_element,
-        "animate_call",
+        "callAnimation",
         250,
         delay_milliseconds
     );
@@ -75,13 +82,13 @@ function setNewKanAnimation(player, action, delay_milliseconds) {
     );
     add_animation(
         open_kan_element,
-        "animate_call",
+        "callAnimation",
         250,
         delay_milliseconds
     );
     add_animation(
         drawn_tile_element,
-        "animate_draw",
+        "drawAnimation",
         250,
         delay_milliseconds + 250
     );
@@ -97,13 +104,13 @@ function setAddKanAnimation(player, action, delay_milliseconds) {
     );
     add_animation(
         add_kan_tile,
-        "animate_add_kan",
+        "addKanAnimation",
         250,
         delay_milliseconds
     );
     add_animation(
         drawn_tile_element,
-        "animate_draw",
+        "drawAnimation",
         250,
         delay_milliseconds + 250
     );
@@ -119,17 +126,17 @@ function setFlowerAnimation(player, action, delay_milliseconds) {
     );
     add_animation(
         flower_element,
-        "animate_call",
+        "callAnimation",
         250,
         delay_milliseconds
     );
     add_animation(
         flower_drawn_tile_element,
-        "animate_draw",
+        "drawAnimation",
         250,
         delay_milliseconds + 250
     );
-    return 250;
+    return 500;
 }
 
 function unsetAnimation(animated_element) {
@@ -137,6 +144,7 @@ function unsetAnimation(animated_element) {
     animated_element.classList.remove(
         classes.filter(className => className.startsWith("animate"))
     );
+    animated_element.style.setProperty("animation", "");
 }
 
 function setAnimations(history_updates) {
@@ -144,7 +152,7 @@ function setAnimations(history_updates) {
     for (const animated_element of animated_elements) {
         unsetAnimation(animated_element);
     }
-    var delay_milliseconds = 0;
+    let delay_milliseconds = 0;
     for (const history_item of history_updates) {
         delay_milliseconds += setAnimation(
             history_item.player_index, history_item.action, delay_milliseconds);

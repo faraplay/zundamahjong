@@ -1,26 +1,14 @@
-.animate
-{
-    --animation-duration: 250ms;
-    --animation-delay: 0ms;
-}
-
 @keyframes drawAnimation {
     from {
+        transform-origin: 0cqw 4cqw 2cqw;
         visibility: hidden;
         transform: translateX(9cqw) rotateX(-90deg);
     }
     to {
+        transform-origin: 0cqw 4cqw 2cqw;
         visibility: visible;
         transform: none;
     }
-}
-
-.animate_draw
-{
-    transform-origin: 0cqw 4cqw 2cqw;
-    animation:
-        drawAnimation var(--animation-duration) ease-out
-        var(--animation-delay) 1 normal backwards;
 }
 
 @keyframes discardAnimation {
@@ -34,14 +22,6 @@
     }
 }
 
-.animate_discard
-{
-    animation:
-        discardAnimation var(--animation-duration) ease-out
-        var(--animation-delay) 1 normal backwards;
-}
-
-
 @keyframes callAnimation {
     from {
         visibility: hidden;
@@ -53,14 +33,6 @@
     }
 }
 
-.animate_call
-{
-    animation:
-        callAnimation var(--animation-duration) ease-out
-        var(--animation-delay) 1 normal backwards;
-}
-
-
 @keyframes addKanAnimation {
     from {
         visibility: hidden;
@@ -70,11 +42,4 @@
         visibility: visible;
         transform: none;
     }
-}
-
-.animate_add_kan
-{
-    animation:
-        addKanAnimation var(--animation-duration) ease-out
-        var(--animation-delay) 1 normal backwards;
 }
