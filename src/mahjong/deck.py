@@ -5,18 +5,22 @@ from collections import deque
 from .tile import Tile
 
 four_player_deck: list[Tile] = (
-    [1, 2, 3, 4, 5, 6, 7, 8, 9]
-    + [11, 12, 13, 14, 15, 16, 17, 18, 19]
-    + [21, 22, 23, 24, 25, 26, 27, 28, 29]
-    + [31, 32, 33, 34, 35, 36, 37]
-) * 4 + [41, 42, 43, 44, 45, 46, 47, 48]
+    list(range(4, 40))
+    + list(range(44, 80))
+    + list(range(84, 120))
+    + list(range(124, 152))
+    + list(range(164, 196, 4))
+)
 
 three_player_deck: list[Tile] = (
-    [1, 9]
-    + [11, 12, 13, 14, 15, 16, 17, 18, 19]
-    + [21, 22, 23, 24, 25, 26, 27, 28, 29]
-    + [31, 32, 33, 34, 35, 36, 37]
-) * 4 + [41, 42, 43, 45, 46, 47]
+    list(range(4, 8))
+    + list(range(36, 40))
+    + list(range(44, 80))
+    + list(range(84, 120))
+    + list(range(124, 152))
+    + list(range(164, 176, 4))
+    + list(range(180, 192, 4))
+)
 
 
 class Deck:
