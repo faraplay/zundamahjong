@@ -5,7 +5,7 @@ from collections.abc import Sequence, Callable
 from enum import Enum
 
 from .exceptions import InvalidMoveException
-from .tile import Tile, is_flower
+from .tile import Tile, tile_is_flower
 from .deck import Deck, four_player_deck, three_player_deck
 from .discard_pool import DiscardPool
 from .hand import Hand
@@ -238,7 +238,7 @@ class Round:
         if self._current_player == player:
             actions = ActionSet(ActionType.CONTINUE)
             for tile in hand.tiles:
-                if is_flower(tile):
+                if tile_is_flower(tile):
                     actions.add(ActionType.FLOWER, tile)
             return actions
         else:
@@ -258,7 +258,7 @@ class Round:
                         actions.add(ActionType.ADD_KAN, tile)
                     if hand.can_closed_kan(tile):
                         actions.add(ActionType.CLOSED_KAN, tile)
-                    if is_flower(tile):
+                    if tile_is_flower(tile):
                         actions.add(ActionType.FLOWER, tile)
                 if hand.can_tsumo():
                     actions.add(ActionType.TSUMO)
