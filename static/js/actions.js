@@ -18,17 +18,17 @@ function createDisambiguationActionButtonElement(action, last_discard) {
     action_item.classList.add('disambig_action_button');
     switch (action.action_type) {
         case ACTION_CHI_A:
-            for (const tile of [last_discard, last_discard + 1, last_discard + 2]) {
+            for (const tile of [last_discard, last_discard + 4, last_discard + 8]) {
                 action_item.appendChild(createStraightTileElement(tile))
             }
             break;
         case ACTION_CHI_B:
-            for (const tile of [last_discard - 1, last_discard, last_discard + 1]) {
+            for (const tile of [last_discard - 4, last_discard, last_discard + 4]) {
                 action_item.appendChild(createStraightTileElement(tile))
             }
             break;
         case ACTION_CHI_C:
-            for (const tile of [last_discard - 2, last_discard - 1, last_discard]) {
+            for (const tile of [last_discard - 8, last_discard - 4, last_discard]) {
                 action_item.appendChild(createStraightTileElement(tile))
             }
             break;

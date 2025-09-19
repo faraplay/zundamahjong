@@ -1,6 +1,6 @@
 from collections.abc import Sequence
 
-from .tile import Tile, orphans
+from .tile import Tile, get_tile_values, orphans, remove_tile_value
 from .call import Call, CallType
 
 
@@ -13,22 +13,37 @@ def formed_hand_possibilities(tiles: Sequence[Tile]):
     if len(tiles) == 14:
         formed_hands.extend(form_seven_pairs(tiles))
         formed_hands.extend(form_thirteen_orphans(tiles))
-    return formed_hands
+    return [reconstruct_formed_hand(tiles, formed_hand) for formed_hand in formed_hands]
 
 
-def standard_formed_hand_possibilities(tiles: Sequence[Tile]):
-    if len(tiles) % 3 != 2:
+def reconstruct_formed_hand(tiles: Sequence[Tile], tile_value_calls: list[Call]):
+    tiles_copy = list(tiles)
+    return [
+        Call(
+            call_type=tile_value_call.call_type,
+            tiles=[
+                remove_tile_value(tiles_copy, tile_value)
+                for tile_value in tile_value_call.tiles
+            ],
+        )
+        for tile_value_call in tile_value_calls
+    ]
+
+
+def standard_formed_hand_possibilities(tiles: Sequence[Tile]) -> list[list[Call]]:
+    tile_values = get_tile_values(tiles)
+    if len(tile_values) % 3 != 2:
         return []
     suits: list[list[Tile]] = [[] for _ in range(4)]
-    for tile in sorted(tiles):
-        if tile < 10:
-            suits[0].append(tile)
-        elif tile < 20:
-            suits[1].append(tile)
-        elif tile < 30:
-            suits[2].append(tile)
+    for tile_value in sorted(tile_values):
+        if tile_value < 10:
+            suits[0].append(tile_value)
+        elif tile_value < 20:
+            suits[1].append(tile_value)
+        elif tile_value < 30:
+            suits[2].append(tile_value)
         else:
-            suits[3].append(tile)
+            suits[3].append(tile_value)
     if sum(len(suit) % 3 != 0 for suit in suits) != 1:
         return []
     formed_hands: list[list[Call]] = [[]]
@@ -138,8 +153,10 @@ def split_suit_into_3melds_and_pair(tiles: Sequence[Tile]) -> list[list[Call]]:
 
 
 def form_seven_pairs(tiles: Sequence[Tile]) -> list[list[Call]]:
-    assert len(tiles) == 14
-    tile_counts = dict((tile, tiles.count(tile)) for tile in set(tiles))
+    tile_values = get_tile_values(tiles)
+    if len(tile_values) != 14:
+        return []
+    tile_counts = dict((tile, tile_values.count(tile)) for tile in set(tile_values))
     if all(count == 2 for count in tile_counts.values()):
         return [
             [
@@ -152,15 +169,22 @@ def form_seven_pairs(tiles: Sequence[Tile]) -> list[list[Call]]:
 
 
 def form_thirteen_orphans(tiles: Sequence[Tile]) -> list[list[Call]]:
-    assert len(tiles) == 14
-    tiles_list = list(tiles)
+    tile_values = get_tile_values(tiles)
+    if len(tile_values) != 14:
+        return []
+    tiles_list = list(tile_values)
     try:
         for tile in orphans:
             tiles_list.remove(tile)
         assert len(tiles_list) == 1
         if tiles_list[0] in orphans:
             return [
-                [Call(call_type=CallType.THIRTEEN_ORPHANS, tiles=sorted(list(tiles)))]
+                [
+                    Call(
+                        call_type=CallType.THIRTEEN_ORPHANS,
+                        tiles=sorted(list(tile_values)),
+                    )
+                ]
             ]
         else:
             return []
