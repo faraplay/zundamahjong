@@ -132,12 +132,12 @@ function setWinInfo(win_info) {
 }
 
 
-function setScoringInfo(scoring_info) {
+function setScoringInfo(scoring_info, player_names) {
     if (scoring_info) {
         yakus_element.replaceChildren(
             ...Object.entries(scoring_info.yaku_hans).map(createYakuElement)
         );
-        win_player_indicator.textContent = `Player ${scoring_info.win_player} wins!`;
+        win_player_indicator.textContent = `${player_names[scoring_info.win_player]} wins!`;
         total_han_element.textContent = `${scoring_info.han_total} han`;
         tsumo_or_ron_element.textContent = scoring_info.lose_player ? "Ron" : "Tsumo";
         total_score_element.textContent =
