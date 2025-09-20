@@ -3,5 +3,11 @@ import preact from '@preact/preset-vite'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: "/zundamahjong/",
   plugins: [preact()],
+  build: {
+    outDir: "../client_build",
+    emptyOutDir: true,
+    minify: false,
+  }
 })

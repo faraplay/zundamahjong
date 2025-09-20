@@ -1,5 +1,17 @@
+import os
 from werkzeug import run_simple
-from src.server import debug_app
+from werkzeug.middleware.shared_data import SharedDataMiddleware
+from src.server import app
 
 if __name__ == "__main__":
-    run_simple("localhost", 5000, debug_app, use_reloader=True, threaded=True)
+    debug_path = "/zundamahjong"
+    app = SharedDataMiddleware(
+        app,
+        {
+            debug_path: os.path.join(os.path.dirname(__file__), "client_build/"),
+            f"{debug_path}/": os.path.join(
+                os.path.dirname(__file__), "client_build/index.html"
+            ),
+        },
+    )
+    run_simple("localhost", 5000, app, use_reloader=True, threaded=True)
