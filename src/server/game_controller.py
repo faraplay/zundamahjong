@@ -1,4 +1,5 @@
-from src.mahjong.action import Action, ActionType
+from threading import Lock
+from src.mahjong.action import Action
 from src.mahjong.game_options import GameOptions
 from src.mahjong.round import RoundStatus
 from src.mahjong.game import Game
@@ -11,11 +12,33 @@ class GameController:
     def __init__(self, players: list[Player], options: GameOptions):
         self._players = players
         self._game = Game(options=options)
-        self._submitted_actions = []
-        self.set_default_submitted_actions()
-        # self._game.round.display_info()
+        self._lock = Lock()
+        with self._lock:
+            self._emit_info_all_inner(self._game.round.history)
 
-    def get_player_index(self, player: Player):
+    def emit_info(self, player: Player):
+        with self._lock:
+            index = self._get_player_index(player)
+            sio.emit("info", self._info(index, []), to=player.id)
+
+    def submit_action(self, player: Player, action: Action, history_index: int):
+        with self._lock:
+            player_index = self._get_player_index(player)
+            history_updates = self._game.submit_action(
+                player_index, action, history_index
+            )
+            if history_updates is not None and len(history_updates) > 0:
+                self._emit_info_all_inner(history_updates)
+
+    def start_next_round(self, player: Player):
+        with self._lock:
+            self._get_player_index(player)
+            if not self._game.can_start_next_round:
+                raise Exception("Cannot start next round!")
+            self._game.start_next_round()
+            self._emit_info_all_inner(self._game.round.history)
+
+    def _get_player_index(self, player: Player):
         try:
             return self._players.index(player)
         except ValueError:
@@ -66,9 +89,9 @@ class GameController:
         else:
             actions = [
                 action.model_dump()
-                for action in self._game.round.allowed_actions(index).actions
+                for action in self._game.round.allowed_actions[index].actions
             ]
-        action_selected = self._submitted_actions[index] is not None
+        action_selected = False
         return {
             "hand": hand,
             "last_tile": self._game.round.last_tile,
@@ -76,13 +99,20 @@ class GameController:
             "action_selected": action_selected,
         }
 
-    def _info(self, index: int):
+    def _info(self, index: int, history_updates: list[tuple[int, Action]]):
         return {
             "player_count": self._game.player_count,
             "player_index": index,
             "is_game_end": self._game.is_game_end,
             "game_info": self._game_info(),
             "round_info": self._round_info(),
+            "history_updates": [
+                {
+                    "player_index": history_item[0],
+                    "action": history_item[1].model_dump(),
+                }
+                for history_item in history_updates
+            ],
             "player_info": self._player_info(index),
             "win_info": self._game.win.model_dump() if self._game.win else None,
             "scoring_info": (
@@ -90,58 +120,6 @@ class GameController:
             ),
         }
 
-    def emit_info(self, player: Player):
-        index = self.get_player_index(player)
-        sio.emit("info", self._info(index), to=player.id)
-
-    def emit_info_all(self):
+    def _emit_info_all_inner(self, history_updates: list[tuple[int, Action]] = []):
         for index, player in enumerate(self._players):
-            sio.emit("info", self._info(index), to=player.id)
-
-    def set_default_submitted_actions(self):
-        if self._game.round.status == RoundStatus.END:
-            self._submitted_actions = [None] * self._game.player_count
-        else:
-            allowed_actions = [
-                self._game.round.allowed_actions(player)
-                for player in range(self._game.player_count)
-            ]
-            self._submitted_actions = [
-                (
-                    actions.default
-                    if len(actions.actions) == 1
-                    and (actions.default.action_type != ActionType.DISCARD)
-                    else None
-                )
-                for actions in allowed_actions
-            ]
-
-    def _resolve_action(self):
-        player, action = self._game.round.get_priority_action(self._submitted_actions)
-        self._game.round.do_action(player, action)
-        # self._game.round.display_info()
-
-    def try_resolve_actions(self):
-        action_resolve_count = 0
-        while all(action is not None for action in self._submitted_actions):
-            self._resolve_action()
-            action_resolve_count += 1
-            self.set_default_submitted_actions()
-        if action_resolve_count > 0:
-            self.emit_info_all()
-
-    def submit_action(self, player: Player, action: Action):
-        index = self.get_player_index(player)
-        self._submitted_actions[index] = action
-        # print(self._submitted_actions)
-        self.try_resolve_actions()
-
-    def start_next_round(self, player: Player):
-        self.get_player_index(player)
-        if not self._game.can_start_next_round:
-            raise Exception("Cannot start next round!")
-        self._game.start_next_round()
-        self.set_default_submitted_actions()
-        # print("Starting next round...")
-        # self._game.round.display_info()
-        self.emit_info_all()
+            sio.emit("info", self._info(index, history_updates), to=player.id)

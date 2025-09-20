@@ -1,0 +1,64 @@
+@keyframes showAnimation {
+    from {
+        visibility: hidden;
+    }
+    to {
+        visibility: visible;
+    }
+}
+
+@keyframes drawAnimation {
+    from {
+        visibility: hidden;
+        transform: translateX(9cqw) rotateX(-90deg);
+    }
+    to {
+        visibility: visible;
+        transform: none;
+    }
+}
+
+@keyframes discardAnimation {
+    from {
+        visibility: hidden;
+        transform: translateX(9cqw);
+    }
+    to {
+        visibility: visible;
+        transform: none;
+    }
+}
+
+@keyframes callAnimation {
+    from {
+        visibility: hidden;
+        transform: translateX(-18cqw);
+    }
+    to {
+        visibility: visible;
+        transform: none;
+    }
+}
+
+@keyframes addKanAnimation {
+    from {
+        visibility: hidden;
+        transform: translateY(-24cqw);
+    }
+    to {
+        visibility: visible;
+        transform: none;
+    }
+}
+
+@keyframes winAnimation {
+    from {
+        transform: rotateX(-90deg);
+    }
+    30% {
+        transform: translateY(4cqw) rotateX(-90deg);
+    }
+    to {
+        transform: translateY(4cqw);
+    }
+}

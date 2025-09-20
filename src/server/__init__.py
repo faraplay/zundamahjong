@@ -1,6 +1,7 @@
-import logging
+from .logger import create_server_logger, create_root_logger
 
-logging.basicConfig(filename="server.log", encoding="utf-8", level=logging.INFO)
+create_root_logger()
+create_server_logger(__name__)
 
 from .sio import app
 from . import main

@@ -29,8 +29,12 @@
     transform-style: preserve-3d;
 }
 
+.table_hand .tile_div {
+    transform-origin: 0cqw 4cqw 2cqw;
+}
+
 .table_hand.won_hand {
-    transform: none;
+    transform: translateY(4cqw);
 }
 
 #round_info.me_player_0:not(.status_7) .table_hand_outer.player_0,

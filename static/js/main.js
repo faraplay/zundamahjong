@@ -28,7 +28,7 @@ socket.on('info', (info) => {
     setPlayerInfo(info.player_info);
 
     setWinInfo(info.win_info);
-    setScoringInfo(info.scoring_info);
+    setScoringInfo(info.scoring_info, info.game_info.player_names);
 
     const score_diffs = info.scoring_info?.player_scores ?? Array(player_count).fill(0);
     setResults(info.game_info.player_names, info.game_info.player_scores, score_diffs);
@@ -36,5 +36,6 @@ socket.on('info', (info) => {
 
     setTableHands(info);
 
+    setAnimations(info.history_updates);
     showScreen("game_screen");
 })

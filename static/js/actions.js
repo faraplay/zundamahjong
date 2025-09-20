@@ -1,13 +1,13 @@
 const actions_div = document.getElementById('actions');
 const actions_disambiguation_div = document.getElementById('actions_disambiguation');
 
-function sendAction(e, action) {
-    e.preventDefault();
+function sendAction(action) {
     disableActions();
     const action_history_index = round_history.length;
-    socket.emit('action', my_player, action, () => {
+    socket.emit('action', my_player, action, action_history_index, () => {
         if (action_history_index == round_history.length) {
             actions_div.classList.add('hidden');
+            actions_disambiguation_div.classList.add('hidden');
         }
     });
 }
@@ -18,17 +18,17 @@ function createDisambiguationActionButtonElement(action, last_discard) {
     action_item.classList.add('disambig_action_button');
     switch (action.action_type) {
         case ACTION_CHI_A:
-            for (const tile of [last_discard, last_discard + 1, last_discard + 2]) {
+            for (const tile of [last_discard, last_discard + 4, last_discard + 8]) {
                 action_item.appendChild(createStraightTileElement(tile))
             }
             break;
         case ACTION_CHI_B:
-            for (const tile of [last_discard - 1, last_discard, last_discard + 1]) {
+            for (const tile of [last_discard - 4, last_discard, last_discard + 4]) {
                 action_item.appendChild(createStraightTileElement(tile))
             }
             break;
         case ACTION_CHI_C:
-            for (const tile of [last_discard - 2, last_discard - 1, last_discard]) {
+            for (const tile of [last_discard - 8, last_discard - 4, last_discard]) {
                 action_item.appendChild(createStraightTileElement(tile))
             }
             break;
@@ -38,7 +38,10 @@ function createDisambiguationActionButtonElement(action, last_discard) {
             action_item.appendChild(createStraightTileElement(action.tile))
             break;
     }
-    action_item.addEventListener('click', (e) => sendAction(e, action))
+    action_item.addEventListener('click', (e) => {
+        e.preventDefault();
+        sendAction(action);
+    })
     return action_item;
 }
 
@@ -81,6 +84,7 @@ function setActions(actions, last_discard) {
     actions_div.replaceChildren();
     actions_div.classList.remove('hidden');
     actions_disambiguation_div.replaceChildren();
+    actions_disambiguation_div.classList.remove('hidden');
     if (actions.length <= 1) {
         return;
     }
@@ -114,7 +118,10 @@ function setActions(actions, last_discard) {
         } else {
             const action = supertype_actions[0];
             action_supertype_item.addEventListener('click',
-                (e) => sendAction(e, action)
+                (e) => {
+                    e.preventDefault();
+                    sendAction(action);
+                }
             )
         }
         actions_div.appendChild(action_supertype_item);

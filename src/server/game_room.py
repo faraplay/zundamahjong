@@ -10,6 +10,7 @@ from .player_info import Player, PlayerConnection
 from .game_controller import GameController
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 rooms: dict[str, GameRoom] = {}
 player_rooms: dict[str, GameRoom] = {}
@@ -179,7 +180,6 @@ class GameRoom:
             if self.game_controller is not None:
                 raise Exception("Game is already in progress!")
             self.game_controller = GameController(self.joined_players, game_options)
-        self.game_controller.emit_info_all()
 
     def end_game(self):
         with rooms_lock:

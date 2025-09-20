@@ -6,19 +6,20 @@ from .tile import Tile
 
 
 class ActionType(IntEnum):
-    NOTHING = 0
-    DRAW = 1
-    DISCARD = 2
-    CHI_A = 3
-    CHI_B = 4
-    CHI_C = 5
-    PON = 6
-    OPEN_KAN = 7
-    ADD_KAN = 8
-    CLOSED_KAN = 9
-    FLOWER = 10
-    RON = 11
-    TSUMO = 12
+    PASS = 0
+    CONTINUE = 1
+    DRAW = 2
+    DISCARD = 3
+    CHI_A = 4
+    CHI_B = 5
+    CHI_C = 6
+    PON = 7
+    OPEN_KAN = 8
+    ADD_KAN = 9
+    CLOSED_KAN = 10
+    FLOWER = 11
+    RON = 12
+    TSUMO = 13
 
 
 call_action_types = {
@@ -38,13 +39,20 @@ class Action(BaseModel, frozen=True):
 
 
 class ActionSet:
-    def __init__(self, action_type: ActionType = ActionType.NOTHING, tile: Tile = 0):
+    def __init__(self, action_type: ActionType = ActionType.PASS, tile: Tile = 0):
         self._default = Action(action_type=action_type, tile=tile)
         self._actions = {self._default}
 
     @property
     def default(self):
         return self._default
+
+    @property
+    def auto(self):
+        if len(self._actions) == 1 and self._default.action_type != ActionType.DISCARD:
+            return self._default
+        else:
+            return None
 
     @property
     def actions(self) -> Set[Action]:

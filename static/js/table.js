@@ -13,6 +13,7 @@ const player_flowers_elements = [0, 1, 2, 3].map(
 
 function createTableTileElement(tile) {
     const tile_element = createTileElement(tile);
+    tile_element.classList.add(`tile_id_${tile}`)
     tile_element.firstChild.classList.add('tile_face');
     tile_element.firstChild.classList.add('tile_front');
     for (const class_name of ['tile_back', 'tile_left', 'tile_right', 'tile_top', 'tile_bottom']) {
@@ -27,12 +28,14 @@ function createTableTileElement(tile) {
 
 function setTableHands(info) {
     const known_hands = Array(info.player_count);
-    known_hands[info.player_index] = info.round_info.hand;
-    if (info.win_info?.win) {
-        known_hands[info.win_info.win.win_player] = info.win_info.win.hand;
+    known_hands[info.player_index] = info.player_info.hand;
+    console.log(info.win_info);
+    if (info.win_info) {
+        known_hands[info.win_info.win_player] = info.win_info.hand;
     }
+    console.log(known_hands);
     const hand_counts = info.round_info.hand_counts;
-    const win_player = info.win_info?.win?.win_player;
+    const win_player = info.win_info?.win_player;
     for (var player = 0; player < info.player_count; ++player) {
         const tiles = known_hands[player] ?? Array(hand_counts[player]).fill(0);
         table_hand_elements[player].replaceChildren(...tiles.map(createTableTileElement));

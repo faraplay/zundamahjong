@@ -2,10 +2,12 @@ from typing import Optional
 
 from .exceptions import InvalidOperationException
 from .tile import Tile
+from .action import Action
 from .game_options import GameOptions
 from .win import Win
 from .round import Round, RoundStatus
 from .scoring import Scoring, Scorer
+from .action_selector import ActionSelector
 
 
 class Game:
@@ -62,30 +64,34 @@ class Game:
         return self._round.status == RoundStatus.END and not self.is_game_end
 
     @property
+    def is_dealer_repeat(self):
+        if self._win is None:
+            return True
+        else:
+            return self._win.win_player == self.sub_round
+
+    @property
     def is_game_end(self):
         if self._round.status != RoundStatus.END:
             return False
         return (
             self._next_round() >= self._options.game_length
-            and not self.is_dealer_repeat()
+            and not self.is_dealer_repeat
         )
+
+    def submit_action(self, player_index: int, action: Action, history_index: int):
+        return self._action_selector.submit_action(player_index, action, history_index)
 
     def start_next_round(self, deck_tiles: Optional[list[int]] = None):
         if not self.can_start_next_round:
             raise InvalidOperationException()
-        if not self.is_dealer_repeat():
+        if not self.is_dealer_repeat:
             self._wind_round, self._sub_round = self._next_round()
         if self._win is None:
             self._draw_count += 1
         else:
             self._draw_count = 0
         self._create_round(deck_tiles)
-
-    def is_dealer_repeat(self):
-        if self._win is None:
-            return True
-        else:
-            return self._win.win_player == self.sub_round
 
     def _next_round(self):
         next_wind_round = self._wind_round
@@ -109,6 +115,7 @@ class Game:
         )
         self._win = None
         self._scoring = None
+        self._action_selector = ActionSelector(self._round)
 
     def _calculate_win_score(self):
         self._win = self._round.win_info

@@ -27,7 +27,7 @@ class GameTest(unittest.TestCase):
 
     def test_auto_calculate_score(self):
         game = Game(first_deck_tiles=test_deck2)
-        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=52))
         game.round.do_action(2, Action(action_type=ActionType.RON))
         self.assertIsNotNone(game.win)
         self.assertSequenceEqual(game.player_scores, game.scoring.player_scores)
@@ -41,7 +41,7 @@ class GameTest(unittest.TestCase):
 
     def test_dealer_nonrepeat_next_round(self):
         game = Game(first_deck_tiles=test_deck2)
-        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=52))
         game.round.do_action(2, Action(action_type=ActionType.RON))
         game.start_next_round(test_deck2)
         self.assertEqual(game.wind_round, 0)
@@ -51,16 +51,16 @@ class GameTest(unittest.TestCase):
         game = Game(
             first_deck_tiles=test_deck2, options=GameOptions(game_length=(2, 0))
         )
-        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=52))
         game.round.do_action(2, Action(action_type=ActionType.RON))
         game.start_next_round(test_deck2)
-        game.round.do_action(1, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(1, Action(action_type=ActionType.DISCARD, tile=52))
         game.round.do_action(3, Action(action_type=ActionType.RON))
         game.start_next_round(test_deck2)
-        game.round.do_action(2, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(2, Action(action_type=ActionType.DISCARD, tile=52))
         game.round.do_action(0, Action(action_type=ActionType.RON))
         game.start_next_round(test_deck2)
-        game.round.do_action(3, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(3, Action(action_type=ActionType.DISCARD, tile=52))
         game.round.do_action(1, Action(action_type=ActionType.RON))
         game.start_next_round(test_deck2)
         self.assertEqual(game.wind_round, 1)
@@ -71,7 +71,7 @@ class GameTest(unittest.TestCase):
         game = Game(
             first_deck_tiles=test_deck2, options=GameOptions(game_length=(0, 1))
         )
-        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=52))
         game.round.do_action(2, Action(action_type=ActionType.RON))
         self.assertTrue(game.is_game_end)
 
@@ -79,7 +79,7 @@ class GameTest(unittest.TestCase):
         game = Game(
             first_deck_tiles=test_deck2, options=GameOptions(game_length=(0, 1))
         )
-        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=52))
         game.round.do_action(2, Action(action_type=ActionType.RON))
         with self.assertRaises(InvalidOperationException):
             game.start_next_round()
@@ -88,19 +88,19 @@ class GameTest(unittest.TestCase):
         game = Game(
             first_deck_tiles=test_deck2, options=GameOptions(game_length=(1, 0))
         )
-        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(0, Action(action_type=ActionType.DISCARD, tile=52))
         game.round.do_action(2, Action(action_type=ActionType.RON))
         game.start_next_round(test_deck2)
-        game.round.do_action(1, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(1, Action(action_type=ActionType.DISCARD, tile=52))
         game.round.do_action(3, Action(action_type=ActionType.RON))
         game.start_next_round(test_deck2)
-        game.round.do_action(2, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(2, Action(action_type=ActionType.DISCARD, tile=52))
         game.round.do_action(0, Action(action_type=ActionType.RON))
         game.start_next_round(test_deck6)
         game.round.do_action(3, Action(action_type=ActionType.TSUMO))
         self.assertFalse(game.is_game_end)
         game.start_next_round(test_deck2)
-        game.round.do_action(3, Action(action_type=ActionType.DISCARD, tile=13))
+        game.round.do_action(3, Action(action_type=ActionType.DISCARD, tile=52))
         game.round.do_action(1, Action(action_type=ActionType.RON))
         self.assertTrue(game.is_game_end)
 
@@ -109,7 +109,7 @@ class GameTest(unittest.TestCase):
         self.assertEqual(game.draw_count, 0)
         round = game.round
         while round.status != RoundStatus.END:
-            actions = [round.allowed_actions(player).default for player in range(4)]
+            actions = [action_set.default for action_set in round.allowed_actions]
             player, action = round.get_priority_action(actions)
             round.do_action(player, action)
         self.assertEqual(game.draw_count, 0)
@@ -118,7 +118,7 @@ class GameTest(unittest.TestCase):
         self.assertEqual(game.draw_count, 1)
         round = game.round
         while round.status != RoundStatus.END:
-            actions = [round.allowed_actions(player).default for player in range(4)]
+            actions = [action_set.default for action_set in round.allowed_actions]
             player, action = round.get_priority_action(actions)
             round.do_action(player, action)
         self.assertEqual(game.draw_count, 1)
@@ -136,7 +136,7 @@ class GameTest(unittest.TestCase):
         self.assertEqual(game.draw_count, 0)
         round = game.round
         while round.status != RoundStatus.END:
-            actions = [round.allowed_actions(player).default for player in range(4)]
+            actions = [action_set.default for action_set in round.allowed_actions]
             player, action = round.get_priority_action(actions)
             round.do_action(player, action)
         self.assertEqual(game.draw_count, 0)
@@ -145,7 +145,7 @@ class GameTest(unittest.TestCase):
         self.assertEqual(game.draw_count, 1)
         round = game.round
         while round.status != RoundStatus.END:
-            actions = [round.allowed_actions(player).default for player in range(4)]
+            actions = [action_set.default for action_set in round.allowed_actions]
             player, action = round.get_priority_action(actions)
             round.do_action(player, action)
         self.assertEqual(game.draw_count, 1)

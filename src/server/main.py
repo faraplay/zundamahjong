@@ -9,6 +9,7 @@ from .game_room import GameRoom
 import logging
 
 logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
 
 
 @sio_on("connect")
@@ -28,7 +29,7 @@ def disconnect(sid, reason):
 
 
 @sio_on("action")
-def handle_action(sid, player_data, action_data):
+def handle_action(sid, player_data, action_data, history_index):
     player = Player.model_validate(player_data)
     game_room = GameRoom.get_player_room(player)
     if game_room is None:
@@ -36,7 +37,7 @@ def handle_action(sid, player_data, action_data):
     if game_room.game_controller is None:
         raise Exception("Game room has no active game!")
     action = Action.model_validate(action_data)
-    game_room.game_controller.submit_action(player, action)
+    game_room.game_controller.submit_action(player, action, history_index)
 
 
 @sio_on("next_round")
