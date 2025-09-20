@@ -10,7 +10,10 @@ function createHandTileElement(tile) {
         'action_type': ACTION_DISCARD,
         'tile': tile
     };
-    button.addEventListener('click', (e) => sendAction(e, action));
+    button.addEventListener('click', (e) => {
+        e.preventDefault();
+        sendAction(action);
+    });
     return button;
 }
 
