@@ -1,11 +1,18 @@
+@keyframes showAnimation {
+    from {
+        visibility: hidden;
+    }
+    to {
+        visibility: visible;
+    }
+}
+
 @keyframes drawAnimation {
     from {
-        transform-origin: 0cqw 4cqw 2cqw;
         visibility: hidden;
         transform: translateX(9cqw) rotateX(-90deg);
     }
     to {
-        transform-origin: 0cqw 4cqw 2cqw;
         visibility: visible;
         transform: none;
     }
@@ -40,6 +47,15 @@
     }
     to {
         visibility: visible;
+        transform: none;
+    }
+}
+
+@keyframes winAnimation {
+    from {
+        transform: rotateX(-90deg);
+    }
+    to {
         transform: none;
     }
 }

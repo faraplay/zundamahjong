@@ -7,34 +7,10 @@ function add_animation(element, animation_style, duration_milliseconds, delay_mi
     element.style.setProperty(
         "animation",
         `${animation_style} ${duration_milliseconds}ms ease-out `
-        + `${delay_milliseconds}ms 1 normal backwards`
+        + `${delay_milliseconds}ms 1 normal both`
         + animation
     )
     return duration_milliseconds;
-}
-
-function setAnimation(player, action, delay_milliseconds) {
-    console.log(player, action);
-    switch (action.action_type) {
-        case ACTION_DRAW:
-            return setDrawAnimation(player, action, delay_milliseconds);
-        case ACTION_DISCARD:
-            return setDiscardAnimation(player, action, delay_milliseconds);
-        case ACTION_CHI_A:
-        case ACTION_CHI_B:
-        case ACTION_CHI_C:
-        case ACTION_PON:
-            return setCallAnimation(player, action, delay_milliseconds);
-        case ACTION_OPEN_KAN:
-        case ACTION_CLOSED_KAN:
-            return setNewKanAnimation(player, action, delay_milliseconds);
-        case ACTION_ADD_KAN:
-            return setAddKanAnimation(player, action, delay_milliseconds);
-        case ACTION_FLOWER:
-            return setFlowerAnimation(player, action, delay_milliseconds);
-        default:
-            return 0;
-    }
 }
 
 function setDrawAnimation(player, action, delay_milliseconds) {
@@ -137,6 +113,52 @@ function setFlowerAnimation(player, action, delay_milliseconds) {
         delay_milliseconds + 250
     );
     return 500;
+}
+
+function setWinAnimation(player, action, delay_milliseconds) {
+    const win_hand_element = document.querySelector(
+        `.table_hand_outer.player_${player} .table_hand`
+    );
+    add_animation(
+        win_hand_element,
+        "winAnimation",
+        500,
+        delay_milliseconds
+    );
+    add_animation(
+        win_info,
+        "showAnimation",
+        0,
+        delay_milliseconds + 1000
+    )
+    return 1000;
+}
+
+function setAnimation(player, action, delay_milliseconds) {
+    console.log(player, action);
+    switch (action.action_type) {
+        case ACTION_DRAW:
+            return setDrawAnimation(player, action, delay_milliseconds);
+        case ACTION_DISCARD:
+            return setDiscardAnimation(player, action, delay_milliseconds);
+        case ACTION_CHI_A:
+        case ACTION_CHI_B:
+        case ACTION_CHI_C:
+        case ACTION_PON:
+            return setCallAnimation(player, action, delay_milliseconds);
+        case ACTION_OPEN_KAN:
+        case ACTION_CLOSED_KAN:
+            return setNewKanAnimation(player, action, delay_milliseconds);
+        case ACTION_ADD_KAN:
+            return setAddKanAnimation(player, action, delay_milliseconds);
+        case ACTION_FLOWER:
+            return setFlowerAnimation(player, action, delay_milliseconds);
+        case ACTION_RON:
+        case ACTION_TSUMO:
+            return setWinAnimation(player, action, delay_milliseconds);
+        default:
+            return 0;
+    }
 }
 
 function unsetAnimation(animated_element) {

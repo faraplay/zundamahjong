@@ -29,6 +29,10 @@
     transform-style: preserve-3d;
 }
 
+.table_hand .tile_div {
+    transform-origin: 0cqw 4cqw 2cqw;
+}
+
 .table_hand.won_hand {
     transform: none;
 }
