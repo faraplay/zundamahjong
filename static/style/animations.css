@@ -55,7 +55,10 @@
     from {
         transform: rotateX(-90deg);
     }
+    30% {
+        transform: translateY(4cqw) rotateX(-90deg);
+    }
     to {
-        transform: none;
+        transform: translateY(4cqw);
     }
 }
