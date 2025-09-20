@@ -13,24 +13,22 @@ class GameController:
         self._players = players
         self._game = Game(options=options)
         self._lock = Lock()
+        with self._lock:
+            self._emit_info_all_inner(self._game.round.history)
 
     def emit_info(self, player: Player):
         with self._lock:
             index = self._get_player_index(player)
-            sio.emit("info", self._info(index), to=player.id)
-
-    def emit_info_all(self):
-        with self._lock:
-            self._emit_info_all_inner()
+            sio.emit("info", self._info(index, []), to=player.id)
 
     def submit_action(self, player: Player, action: Action, history_index: int):
         with self._lock:
             player_index = self._get_player_index(player)
-            performed_actions = self._game.submit_action(
+            history_updates = self._game.submit_action(
                 player_index, action, history_index
             )
-            if performed_actions is not None and len(performed_actions) > 0:
-                self._emit_info_all_inner()
+            if history_updates is not None and len(history_updates) > 0:
+                self._emit_info_all_inner(history_updates)
 
     def start_next_round(self, player: Player):
         with self._lock:
@@ -38,7 +36,7 @@ class GameController:
             if not self._game.can_start_next_round:
                 raise Exception("Cannot start next round!")
             self._game.start_next_round()
-            self._emit_info_all_inner()
+            self._emit_info_all_inner(self._game.round.history)
 
     def _get_player_index(self, player: Player):
         try:
@@ -101,13 +99,20 @@ class GameController:
             "action_selected": action_selected,
         }
 
-    def _info(self, index: int):
+    def _info(self, index: int, history_updates: list[tuple[int, Action]]):
         return {
             "player_count": self._game.player_count,
             "player_index": index,
             "is_game_end": self._game.is_game_end,
             "game_info": self._game_info(),
             "round_info": self._round_info(),
+            "history_updates": [
+                {
+                    "player_index": history_item[0],
+                    "action": history_item[1].model_dump(),
+                }
+                for history_item in history_updates
+            ],
             "player_info": self._player_info(index),
             "win_info": self._game.win.model_dump() if self._game.win else None,
             "scoring_info": (
@@ -115,6 +120,6 @@ class GameController:
             ),
         }
 
-    def _emit_info_all_inner(self):
+    def _emit_info_all_inner(self, history_updates: list[tuple[int, Action]] = []):
         for index, player in enumerate(self._players):
-            sio.emit("info", self._info(index), to=player.id)
+            sio.emit("info", self._info(index, history_updates), to=player.id)

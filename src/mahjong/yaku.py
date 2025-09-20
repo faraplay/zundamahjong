@@ -3,9 +3,7 @@ from collections import Counter
 from collections.abc import Callable
 
 from .tile import (
-    is_flower,
     is_number,
-    is_orphan,
     terminals,
     winds,
     dragons,
@@ -38,8 +36,11 @@ class YakuCalculator:
         self._seat = (
             self._win.win_player - self._win.sub_round
         ) % self._win.player_count
-        self._flowers = set(self._win.flowers)
-        self._melds = self._formed_hand + self._win.calls
+        self._flowers = set(flower // 4 for flower in self._win.flowers)
+        self._melds = [
+            Call(call_type=call.call_type, tiles=[tile // 4 for tile in call.tiles])
+            for call in self._formed_hand + self._win.calls
+        ]
         self._hand_tiles = [tile for call in self._melds for tile in call.tiles]
         self._used_suits = set((tile // 10) * 10 for tile in self._hand_tiles)
         self._call_outsidenesses = set(
@@ -126,7 +127,7 @@ class YakuCalculator:
 
     @_register_yaku("THIRTEEN_ORPHANS", "Thirteen Orphans", 13)
     def _thirteen_orphans(self):
-        return int(self._formed_hand[0].call_type == CallType.THIRTEEN_ORPHANS)
+        return int(self._melds[0].call_type == CallType.THIRTEEN_ORPHANS)
 
     @_register_yaku("FOUR_QUADS", "Four Quads", 18)
     def _four_quads(self):
@@ -191,8 +192,8 @@ class YakuCalculator:
 
     @_register_yaku("SEVEN_PAIRS", "Seven Pairs", 3)
     def _seven_pairs(self):
-        return len(self._formed_hand) == 7 and int(
-            all(call.call_type == CallType.PAIR for call in self._formed_hand)
+        return len(self._melds) == 7 and int(
+            all(call.call_type == CallType.PAIR for call in self._melds)
         )
 
     def _is_outside_call(self, call: Call):
@@ -287,7 +288,7 @@ class YakuCalculator:
 
     @_register_yaku("EYES", "Eyes", 1)
     def _eyes(self):
-        pairs = [call for call in self._formed_hand if call.call_type == CallType.PAIR]
+        pairs = [call for call in self._melds if call.call_type == CallType.PAIR]
         if len(pairs) != 1:
             return 0
         tile = pairs[0].tiles[0]

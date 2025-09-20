@@ -36,5 +36,6 @@ socket.on('info', (info) => {
 
     setTableHands(info);
 
+    setAnimations(info.history_updates);
     showScreen("game_screen");
 })
