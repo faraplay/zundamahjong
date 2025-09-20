@@ -1,15 +1,17 @@
 function add_animation(element, animation_style, duration_milliseconds, delay_milliseconds) {
     element.classList.add("animate");
     animation = element.style.getPropertyValue("animation");
+    let fill_mode = "both";
     if (animation) {
-        animation = ",\n" + animation;
+        animation = animation + ",\n";
+        fill_mode = "forwards";
     }
     element.style.setProperty(
         "animation",
-        `${animation_style} ${duration_milliseconds}ms ease-out `
-        + `${delay_milliseconds}ms 1 normal both`
-        + animation
-    )
+        animation
+        + `${duration_milliseconds}ms ease-out ${delay_milliseconds}ms `
+        + `${fill_mode} ${animation_style}`
+    );
     return duration_milliseconds;
 }
 
