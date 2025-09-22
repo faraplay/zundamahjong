@@ -1,10 +1,7 @@
+import type { EmitFunc } from "../types/emit_func";
 import "./name_form.css";
 
-export function NameForm({
-  emit,
-}: {
-  emit: (event: string, ...args: any[]) => any;
-}) {
+export function NameForm({ emit }: { emit: EmitFunc }) {
   const onSubmit = (e: SubmitEvent) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
