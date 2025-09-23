@@ -51,6 +51,7 @@ export function GameOptionsForm({
         type="number"
         name="score_dealer_ron_base_value"
         value="1.5"
+        step="0.5"
       />
       <label for="score_dealer_tsumo_base_value">Dealer tsumo base score</label>
       <input
@@ -58,6 +59,7 @@ export function GameOptionsForm({
         type="number"
         name="score_dealer_tsumo_base_value"
         value="1.0"
+        step="0.5"
       />
       <label for="score_nondealer_ron_base_value">
         Nondealer ron base score
@@ -67,6 +69,7 @@ export function GameOptionsForm({
         type="number"
         name="score_nondealer_ron_base_value"
         value="1.0"
+        step="0.5"
       />
       <label for="score_nondealer_tsumo_nondealer_base_value">
         Nondealer-nondealer tsumo base score
@@ -76,6 +79,7 @@ export function GameOptionsForm({
         type="number"
         name="score_nondealer_tsumo_nondealer_base_value"
         value="0.5"
+        step="0.5"
       />
       <label for="score_nondealer_tsumo_dealer_base_value">
         Nondealer-dealer base score
@@ -85,6 +89,7 @@ export function GameOptionsForm({
         type="number"
         name="score_nondealer_tsumo_dealer_base_value"
         value="1.0"
+        step="0.5"
       />
       <button type="submit" id="start_game" disabled={!can_start}>
         Start game
