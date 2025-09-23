@@ -71,23 +71,20 @@ def on_set_name(sid, name):
 
 @sio_on("get_rooms")
 def on_get_rooms(sid):
-    sio.emit(
-        "rooms_info", [game_room.room_info for game_room in GameRoom.get_rooms()], sid
-    )
+    GameRoom.emit_rooms_list(sid)
 
 
 @sio_on("create_room")
 def on_create_room(sid, room_name, player_count):
     GameRoom.verify_player_count(player_count)
     GameRoom.verify_room_name(room_name)
-    game_room = GameRoom.create_room(get_player(sid), room_name, player_count)
-    sio.emit("room_info", game_room.room_info)
+    GameRoom.create_room(get_player(sid), room_name, player_count)
 
 
 @sio_on("join_room")
 def on_join_room(sid, room_name):
     GameRoom.verify_room_name(room_name)
-    return GameRoom.join_room(get_player(sid), room_name).room_info
+    GameRoom.join_room(get_player(sid), room_name)
 
 
 @sio_on("leave_room")

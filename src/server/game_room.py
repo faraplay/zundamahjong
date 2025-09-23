@@ -47,8 +47,10 @@ class GameRoom:
         }
 
     @classmethod
-    def get_rooms(cls):
-        return rooms.values()
+    def emit_rooms_list(cls, sid):
+        sio.emit(
+            "rooms_info", [game_room.room_info for game_room in rooms.values()], sid
+        )
 
     @classmethod
     def verify_room_name(cls, room_name):
@@ -82,6 +84,7 @@ class GameRoom:
             player_rooms[creator.id] = game_room
             rooms[room_name] = game_room
         logger.info(f"Player {creator.id} has created room {room_name}")
+        game_room.broadcast_room_info()
         return game_room
 
     @classmethod
