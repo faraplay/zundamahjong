@@ -61,12 +61,8 @@ def on_set_name(sid, name):
     set_player(sid, player)
     sio.emit("player_info", player.model_dump(), sid)
     game_room = GameRoom.try_reconnect(player)
-    if game_room is None:
-        return player.model_dump(), None, None
-    if game_room.game_controller is None:
-        return player.model_dump(), game_room.room_info, None
-    game_room.game_controller.emit_info(player)
-    return player.model_dump(), game_room.room_info, True
+    if game_room is not None and game_room.game_controller is not None:
+        game_room.game_controller.emit_info(player)
 
 
 @sio_on("get_rooms")

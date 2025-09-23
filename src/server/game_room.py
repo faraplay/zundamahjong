@@ -169,10 +169,14 @@ class GameRoom:
     def try_reconnect(cls, player: Player):
         with rooms_lock:
             game_room = player_rooms.get(player.id)
-            if game_room is None:
-                return None
-            game_room.get_player_connection(player).is_connected = True
-            return game_room
+            if game_room is not None:
+                game_room.get_player_connection(player).is_connected = True
+        sio.emit(
+            "room_info",
+            game_room.room_info if game_room is not None else None,
+            to=player.id,
+        )
+        return game_room
 
     def start_game(self, game_options: GameOptions):
         if game_options.player_count != self.player_count:
