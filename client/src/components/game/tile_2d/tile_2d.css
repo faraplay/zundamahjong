@@ -1,0 +1,51 @@
+.tile_2d.tile_div {
+  height: calc(var(--tile-height) * 9 / 8);
+  display: inline-block;
+  position: relative;
+}
+
+.tile_2d.tile_div .tile_back_layer,
+.tile_2d.tile_div .tile_middle_layer {
+  width: var(--tile-width);
+  height: var(--tile-height);
+  position: absolute;
+  border-radius: var(--tile-border-radius);
+}
+
+.tile_2d.tile_div .tile_back_layer {
+  bottom: calc(var(--tile-height) * 1 / 8);
+  background-color: color-mix(
+    in srgb,
+    var(--tile-back-color),
+    black var(--tile-side-darken-percent)
+  );
+}
+
+.tile_2d.tile_div .tile_middle_layer {
+  bottom: calc(var(--tile-height) * 1 / 8 * 0.7);
+  background-color: color-mix(
+    in srgb,
+    var(--tile-front-color),
+    black var(--tile-side-darken-percent)
+  );
+}
+
+.tile_2d.tile_div .tile {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  border-radius: var(--tile-border-radius);
+  border-color: var(--tile-front-color);
+}
+
+.tile_2d.tile_div::after {
+  --border-width: 1px;
+  content: "";
+  width: calc(100% - 2 * var(--border-width));
+  height: calc(100% - 2 * var(--border-width));
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  border-radius: var(--tile-border-radius);
+  border: var(--border-width) solid var(--tile-border-color);
+}
