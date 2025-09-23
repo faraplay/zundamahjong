@@ -1,4 +1,4 @@
-import type { EmitFunc } from "../types/emit_func";
+import type { EmitFunc } from "../../types/emit_func";
 import "./name_form.css";
 
 export function NameForm({ emit }: { emit: EmitFunc }) {

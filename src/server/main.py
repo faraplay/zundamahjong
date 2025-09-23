@@ -59,6 +59,7 @@ def on_set_name(sid, name):
     verify_name(name)
     player = Player.from_name(name)
     set_player(sid, player)
+    sio.emit("player_info", player.model_dump(), sid)
     game_room = GameRoom.try_reconnect(player)
     if game_room is None:
         return player.model_dump(), None, None
@@ -70,7 +71,9 @@ def on_set_name(sid, name):
 
 @sio_on("get_rooms")
 def on_get_rooms(sid):
-    return [game_room.room_info for game_room in GameRoom.get_rooms()]
+    sio.emit(
+        "rooms_info", [game_room.room_info for game_room in GameRoom.get_rooms()], sid
+    )
 
 
 @sio_on("create_room")
