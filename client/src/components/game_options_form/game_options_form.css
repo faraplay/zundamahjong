@@ -1,0 +1,8 @@
+#game_options_form {
+  width: 40cqw;
+  margin-inline: auto;
+  margin-block: 5cqw;
+  display: grid;
+  grid-template-columns: auto auto;
+  overflow: scroll;
+}

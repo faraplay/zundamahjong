@@ -10,6 +10,8 @@ import { JoinRoomForm } from "./components/join_room_form/join_room_form";
 import { CreateRoomForm } from "./components/create_room_form/create_room_form";
 
 import "./app.css";
+import { RoomInfo } from "./components/room_info/room_info";
+import { GameOptionsForm } from "./components/game_options_form/game_options_form";
 
 export function App() {
   const socket = useRef() as MutableRef<Socket>;
@@ -18,6 +20,7 @@ export function App() {
 
   const [myPlayer, setMyPlayer] = useState<Player | undefined>();
   const [rooms, setRooms] = useState<Array<Room>>([]);
+  const [myRoom, setMyRoom] = useState<Room | undefined>();
   useEffect(() => {
     socket.current = io();
 
@@ -27,6 +30,10 @@ export function App() {
     socket.current.on("rooms_info", (rooms: Array<Room>) => {
       setRooms(rooms);
     });
+    socket.current.on("room_info", (room: Room) => {
+      setMyRoom(room);
+    });
+
     return () => {
       socket.current.disconnect();
     };
@@ -41,11 +48,28 @@ export function App() {
       </Emitter.Provider>
     );
   }
+  if (!myRoom) {
+    return (
+      <Emitter.Provider value={emit}>
+        <div id="lobby_screen" class="screen">
+          <JoinRoomForm rooms={rooms} />
+          <CreateRoomForm />
+        </div>
+      </Emitter.Provider>
+    );
+  }
   return (
     <Emitter.Provider value={emit}>
-      <div id="lobby_screen" class="screen">
-        <JoinRoomForm rooms={rooms} />
-        <CreateRoomForm />
+      <div id="room_screen" class="screen">
+        <RoomInfo room={myRoom} />
+        {myRoom && myRoom.joined_players[0].id == myPlayer.id ? (
+          <GameOptionsForm
+            player_count={myRoom.player_count}
+            can_start={myRoom.joined_players.length == myRoom.player_count}
+          />
+        ) : (
+          <></>
+        )}
       </div>
     </Emitter.Provider>
   );

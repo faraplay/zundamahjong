@@ -121,7 +121,7 @@ class GameRoom:
                 raise Exception("Game already in progress!")
             player_connection = game_room.get_player_connection(player)
             game_room._remove_player(player_connection)
-            # broadcast
+        sio.emit("room_info", None, to=player.id)
         game_room.broadcast_room_info()
         return game_room
 

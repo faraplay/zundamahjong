@@ -89,14 +89,14 @@ def on_join_room(sid, room_name):
 
 @sio_on("leave_room")
 def on_leave_room(sid):
-    return GameRoom.leave_room(get_player(sid)).room_info
+    GameRoom.leave_room(get_player(sid))
 
 
 @sio_on("start_game")
-def on_start_game(sid, room_name, form_data):
+def on_start_game(sid, form_data):
     game_room = GameRoom.get_player_room(get_player(sid))
-    if game_room is None or room_name != game_room.room_name:
-        raise Exception(f"Player is not in room {room_name}!")
+    if game_room is None:
+        raise Exception(f"Player is not in a room!")
     game_options = GameOptions(
         player_count=form_data["player_count"],
         game_length=(
