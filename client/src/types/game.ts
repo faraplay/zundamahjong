@@ -1,8 +1,8 @@
-export type Tile = number;
+import type { TileId } from "./tile.ts";
 
 export type Discard = {
   player: number;
-  tile: Tile;
+  tile: TileId;
 };
 
 export const enum CallType {
@@ -17,7 +17,7 @@ export const enum CallType {
 
 export type Call = {
   call_type: CallType;
-  tiles: Tile[];
+  tiles: TileId[];
 };
 
 export const enum ActionType {
@@ -39,7 +39,7 @@ export const enum ActionType {
 
 export type Action = {
   action_type: ActionType;
-  tile: Tile;
+  tile: TileId;
 };
 
 export type HistoryItem = {
@@ -73,22 +73,22 @@ export type RoundInfo = {
   hand_counts: number[];
   discards: Discard[];
   calls: Call[][];
-  flowers: Tile[][];
+  flowers: TileId[][];
   history: HistoryItem[];
 };
 
 export type PlayerInfo = {
-  hand: Tile[];
-  last_tile: Tile;
+  hand: TileId[];
+  last_tile: TileId;
   actions: Action[];
 };
 
 export type Win = {
   win_player: number;
   lose_player: number | undefined;
-  hand: Tile[];
+  hand: TileId[];
   calls: Call[];
-  flowers: Tile[];
+  flowers: TileId[];
 };
 
 export type Scoring = {
