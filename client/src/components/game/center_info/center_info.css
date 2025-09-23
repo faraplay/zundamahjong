@@ -92,13 +92,11 @@
   background-color: rgb(138, 138, 138);
 }
 
-#round_info:is(.status_1, .status_2)
-  #table_center_info
-  .turn_indicator.current_player {
+:is(.status_1, .status_2) #table_center_info .turn_indicator.current_player {
   background-color: rgb(23, 230, 116);
 }
 
-#round_info:is(.status_3, .status_4, .status_5, .status_6)
+:is(.status_3, .status_4, .status_5, .status_6)
   #table_center_info
   .turn_indicator.current_player {
   background-color: rgb(243, 158, 36);
