@@ -1,7 +1,11 @@
-import type { EmitFunc } from "../../types/emit_func";
+import { useContext } from "preact/hooks";
+
+import { Emitter } from "../emitter/emitter";
+
 import "./name_form.css";
 
-export function NameForm({ emit }: { emit: EmitFunc }) {
+export function NameForm() {
+  const emit = useContext(Emitter);
   const onSubmit = (e: SubmitEvent) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);

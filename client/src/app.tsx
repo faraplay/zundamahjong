@@ -4,6 +4,7 @@ import { io, Socket } from "socket.io-client";
 import type { Player } from "./types/player";
 import type { Room } from "./types/room";
 
+import { Emitter } from "./components/emitter/emitter";
 import { NameForm } from "./components/name_form/name_form";
 import { JoinRoomForm } from "./components/join_room_form/join_room_form";
 import { CreateRoomForm } from "./components/create_room_form/create_room_form";
@@ -12,6 +13,9 @@ import "./app.css";
 
 export function App() {
   const socket = useRef() as MutableRef<Socket>;
+  const emit = (event: string, ...args: any[]) =>
+    socket.current.emit(event, ...args);
+
   const [myPlayer, setMyPlayer] = useState<Player | undefined>();
   const [rooms, setRooms] = useState<Array<Room>>([]);
   useEffect(() => {
@@ -30,17 +34,19 @@ export function App() {
 
   if (!myPlayer) {
     return (
-      <div id="name_screen" class="screen">
-        <NameForm
-          emit={(event, ...args) => socket.current.emit(event, ...args)}
-        />
-      </div>
+      <Emitter.Provider value={emit}>
+        <div id="name_screen" class="screen">
+          <NameForm />
+        </div>
+      </Emitter.Provider>
     );
   }
   return (
-    <div id="lobby_screen" class="screen">
-      <JoinRoomForm rooms={rooms} />
-      <CreateRoomForm />
-    </div>
+    <Emitter.Provider value={emit}>
+      <div id="lobby_screen" class="screen">
+        <JoinRoomForm rooms={rooms} />
+        <CreateRoomForm />
+      </div>
+    </Emitter.Provider>
   );
 }
