@@ -10,6 +10,7 @@
     "lint": "eslint . && prettier --write ."
   },
   "dependencies": {
+    "@fontsource/chiron-goround-tc": "^5.2.2",
     "preact": "^10.27.2",
     "socket.io-client": "^4.8.1"
   },

@@ -1,0 +1,9 @@
+/* chiron-goround-tc-chinese-traditional-600-normal */
+@font-face {
+  font-family: "Chiron GoRound TC";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url(@fontsource/chiron-goround-tc/files/chiron-goround-tc-chinese-traditional-600-normal.woff2)
+    format("woff2");
+}

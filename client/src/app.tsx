@@ -3,24 +3,29 @@ import { io, Socket } from "socket.io-client";
 
 import type { Player } from "./types/player";
 import type { Room } from "./types/room";
+import type { AllInfo } from "./types/game";
 
 import { Emitter } from "./components/emitter/emitter";
 import { NameForm } from "./components/name_form/name_form";
 import { JoinRoomForm } from "./components/join_room_form/join_room_form";
 import { CreateRoomForm } from "./components/create_room_form/create_room_form";
-
-import "./app.css";
 import { RoomInfo } from "./components/room_info/room_info";
 import { GameOptionsForm } from "./components/game_options_form/game_options_form";
+
+import { GameScreen } from "./components/game/game_screen/game_screen";
+
+import "./fonts.css";
+import "./app.css";
 
 export function App() {
   const socket = useRef() as MutableRef<Socket>;
   const emit = (event: string, ...args: any[]) =>
     socket.current.emit(event, ...args);
 
-  const [myPlayer, setMyPlayer] = useState<Player | undefined>();
+  const [myPlayer, setMyPlayer] = useState<Player>();
   const [rooms, setRooms] = useState<Array<Room>>([]);
-  const [myRoom, setMyRoom] = useState<Room | undefined>();
+  const [myRoom, setMyRoom] = useState<Room>();
+  const [info, setInfo] = useState<AllInfo>();
   useEffect(() => {
     socket.current = io();
 
@@ -32,6 +37,9 @@ export function App() {
     });
     socket.current.on("room_info", (room: Room) => {
       setMyRoom(room);
+    });
+    socket.current.on("info", (info: AllInfo) => {
+      setInfo(info);
     });
 
     return () => {
@@ -58,19 +66,26 @@ export function App() {
       </Emitter.Provider>
     );
   }
+  if (!info) {
+    return (
+      <Emitter.Provider value={emit}>
+        <div id="room_screen" class="screen">
+          <RoomInfo room={myRoom} />
+          {myRoom && myRoom.joined_players[0].id == myPlayer.id ? (
+            <GameOptionsForm
+              player_count={myRoom.player_count}
+              can_start={myRoom.joined_players.length == myRoom.player_count}
+            />
+          ) : (
+            <></>
+          )}
+        </div>
+      </Emitter.Provider>
+    );
+  }
   return (
     <Emitter.Provider value={emit}>
-      <div id="room_screen" class="screen">
-        <RoomInfo room={myRoom} />
-        {myRoom && myRoom.joined_players[0].id == myPlayer.id ? (
-          <GameOptionsForm
-            player_count={myRoom.player_count}
-            can_start={myRoom.joined_players.length == myRoom.player_count}
-          />
-        ) : (
-          <></>
-        )}
-      </div>
+      <GameScreen info={info} />
     </Emitter.Provider>
   );
 }
