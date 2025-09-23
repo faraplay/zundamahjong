@@ -80,7 +80,8 @@ def on_get_rooms(sid):
 def on_create_room(sid, room_name, player_count):
     GameRoom.verify_player_count(player_count)
     GameRoom.verify_room_name(room_name)
-    return GameRoom.create_room(get_player(sid), room_name, player_count).room_info
+    game_room = GameRoom.create_room(get_player(sid), room_name, player_count)
+    sio.emit("room_info", game_room.room_info)
 
 
 @sio_on("join_room")
