@@ -29,8 +29,8 @@ def disconnect(sid, reason):
 
 
 @sio_on("action")
-def handle_action(sid, player_data, action_data, history_index):
-    player = Player.model_validate(player_data)
+def handle_action(sid, action_data, history_index):
+    player = get_player(sid)
     game_room = GameRoom.get_player_room(player)
     if game_room is None:
         raise Exception("Player is not in a game room!")

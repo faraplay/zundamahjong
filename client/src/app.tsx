@@ -26,6 +26,7 @@ export function App() {
   const [rooms, setRooms] = useState<Array<Room>>([]);
   const [myRoom, setMyRoom] = useState<Room>();
   const [info, setInfo] = useState<AllInfo>();
+  const [actionSubmitted, setActionSubmitted] = useState<boolean>(false);
   useEffect(() => {
     socket.current = io();
 
@@ -40,6 +41,7 @@ export function App() {
     });
     socket.current.on("info", (info: AllInfo) => {
       setInfo(info);
+      setActionSubmitted(false);
     });
 
     return () => {
@@ -85,7 +87,11 @@ export function App() {
   }
   return (
     <Emitter.Provider value={emit}>
-      <GameScreen info={info} />
+      <GameScreen
+        info={info}
+        actionSubmitted={actionSubmitted}
+        setActionSubmitted={setActionSubmitted}
+      />
     </Emitter.Provider>
   );
 }
