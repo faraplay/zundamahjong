@@ -3,6 +3,7 @@ import type { TileId } from "../../../types/tile";
 
 import { CenterInfo } from "../center_info/center_info";
 import { TableCalls } from "../table_calls/table_calls";
+import { TableDiscards } from "../table_discards/table_discards";
 import { TableFlowers } from "../table_flowers/table_flowers";
 import { TableHand } from "../table_hand/table_hand";
 
@@ -16,6 +17,15 @@ export function Table({ info }: { info: AllInfo }) {
   known_hands[info.player_index] = info.player_info.hand;
   if (info.win_info) {
     known_hands[info.win_info.win_player] = info.win_info.hand;
+  }
+
+  const player_discards: TileId[][] = [];
+  for (let player_index = 0; player_index < info.player_count; ++player_index) {
+    player_discards.push(
+      info.round_info.discards
+        .filter((discard) => discard.player == player_index)
+        .map((discard) => discard.tile),
+    );
   }
   return (
     <div id="table">
@@ -37,6 +47,11 @@ export function Table({ info }: { info: AllInfo }) {
       <div id="flowers_list">
         {info.round_info.flowers.map((tiles, index) => (
           <TableFlowers player_index={index} tiles={tiles} />
+        ))}
+      </div>
+      <div id="discard_pool">
+        {player_discards.map((tiles, index) => (
+          <TableDiscards player_index={index} tiles={tiles} />
         ))}
       </div>
     </div>
