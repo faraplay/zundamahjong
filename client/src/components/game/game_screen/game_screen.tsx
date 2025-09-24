@@ -7,6 +7,7 @@ import { Emitter } from "../../emitter/emitter";
 
 import { EmitAction } from "../emit_action/emit_action";
 import { Hand } from "../hand/hand";
+import { ActionMenu } from "../action_menu/action_menu";
 import { Table } from "../table/table";
 
 export function GameScreen({
@@ -33,6 +34,7 @@ export function GameScreen({
           actions={info.player_info.actions}
           actionSubmitted={actionSubmitted}
         />
+        <ActionMenu actions={info.player_info.actions} />
         <Table info={info} />
       </div>
     </EmitAction.Provider>
