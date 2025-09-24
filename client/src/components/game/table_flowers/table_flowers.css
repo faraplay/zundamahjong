@@ -1,0 +1,23 @@
+#flowers_list {
+  display: contents;
+}
+
+.player_flowers {
+  --player-flowers-right: 33cqw;
+  --player-flowers-bottom: 17cqw;
+  --player-flowers-width: calc(4.1 * var(--tile-width));
+  width: var(--player-flowers-width);
+  height: 0;
+  position: absolute;
+  right: var(--player-flowers-right);
+  bottom: var(--player-flowers-bottom);
+  display: flex;
+  flex-direction: row-reverse;
+  flex-wrap: wrap-reverse;
+  align-items: flex-end;
+  transform-origin: calc(
+      var(--player-flowers-width) + var(--player-flowers-right) - 50cqw
+    )
+    calc(var(--player-flowers-bottom) - 50cqw);
+  transform-style: preserve-3d;
+}
