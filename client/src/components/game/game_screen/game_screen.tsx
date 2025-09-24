@@ -1,4 +1,4 @@
-import { useContext } from "preact/hooks";
+import { useContext, useState } from "preact/hooks";
 
 import type { Action } from "../../../types/action";
 import { RoundStatus, type AllInfo } from "../../../types/game";
@@ -10,6 +10,7 @@ import { Hand } from "../hand/hand";
 import { ActionMenu } from "../action_menu/action_menu";
 import { Table } from "../table/table";
 import { WinInfo } from "../win_info/win_info";
+import { Results } from "../results/results";
 
 export function GameScreen({
   info,
@@ -20,11 +21,20 @@ export function GameScreen({
   actionSubmitted: boolean;
   setActionSubmitted: (_: boolean) => void;
 }) {
+  const [seeResults, setSeeResults] = useState(false);
   const emit = useContext(Emitter);
   const emit_action = (action: Action) => {
     setActionSubmitted(true);
     emit("action", action, info.round_info.history.length);
   };
+  const winOverlay =
+    info.round_info.status != RoundStatus.END ? (
+      <></>
+    ) : !seeResults ? (
+      <WinInfo info={info} goToResults={() => setSeeResults(true)} />
+    ) : (
+      <Results info={info} closeResults={() => setSeeResults(false)} />
+    );
   return (
     <EmitAction.Provider value={emit_action}>
       <div
@@ -44,11 +54,7 @@ export function GameScreen({
           />
         )}
         <Table info={info} />
-        {info.round_info.status == RoundStatus.END ? (
-          <WinInfo info={info} />
-        ) : (
-          <></>
-        )}
+        {winOverlay}
       </div>
     </EmitAction.Provider>
   );

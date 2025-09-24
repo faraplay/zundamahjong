@@ -6,7 +6,13 @@ import { WinTotalScore } from "../win_total_score/win_total_score";
 
 import "./win_info.css";
 
-export function WinInfo({ info }: { info: AllInfo }) {
+export function WinInfo({
+  info,
+  goToResults,
+}: {
+  info: AllInfo;
+  goToResults: () => void;
+}) {
   return (
     <div id="win_info">
       <WinHand win_info={info.win_info} />
@@ -28,6 +34,7 @@ export function WinInfo({ info }: { info: AllInfo }) {
             : ""
         }
         scoring_info={info.scoring_info}
+        goToResults={goToResults}
       />
     </div>
   );

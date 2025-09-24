@@ -5,9 +5,11 @@ import "./win_total_score.css";
 export function WinTotalScore({
   win_player_name,
   scoring_info,
+  goToResults,
 }: {
   win_player_name: string;
   scoring_info: Scoring | null;
+  goToResults: () => void;
 }) {
   if (!scoring_info) {
     return (
@@ -29,7 +31,7 @@ export function WinTotalScore({
       <div id="total_score">
         {scoring_info.player_scores[scoring_info.win_player]}
       </div>
-      <button type="button" id="see_results">
+      <button type="button" id="see_results" onClick={goToResults}>
         Next
       </button>
     </div>

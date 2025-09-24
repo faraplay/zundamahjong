@@ -41,8 +41,8 @@ def handle_action(sid, action_data, history_index):
 
 
 @sio_on("next_round")
-def start_next_round(sid, player_data):
-    player = Player.model_validate(player_data)
+def start_next_round(sid):
+    player = get_player(sid)
     game_room = GameRoom.get_player_room(player)
     if game_room is None:
         raise Exception("Player is not in a game room!")
