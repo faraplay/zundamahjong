@@ -61,6 +61,9 @@ export function ActionMenu({
   const [actionDisambigMenuProps, setActionDisambigMenuProps] =
     useState<ActionDisambigMenuProps | null>(null);
   console.log(actions);
+  if (actions.length <= 1) {
+    return <></>;
+  }
   const action_buckets: Action[][] = [[], [], [], [], [], [], [], []];
   for (const action of actions) {
     const action_supertype = getActionSupertype(action.action_type);
