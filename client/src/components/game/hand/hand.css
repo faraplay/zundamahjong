@@ -1,6 +1,5 @@
 #hand {
   --tile-width: 5cqw;
-  --tile-border-radius: calc(var(--tile-width) * 0.1);
 }
 
 #hand {

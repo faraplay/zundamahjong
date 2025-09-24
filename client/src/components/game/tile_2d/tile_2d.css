@@ -1,3 +1,8 @@
+.tile_2d {
+  --tile-width: 5cqw;
+  --tile-border-radius: calc(var(--tile-width) * 0.1);
+}
+
 .tile_2d.tile_div {
   height: calc(var(--tile-height) * 9 / 8);
   display: inline-block;

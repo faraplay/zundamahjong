@@ -34,7 +34,14 @@ export function GameScreen({
           actions={info.player_info.actions}
           actionSubmitted={actionSubmitted}
         />
-        <ActionMenu actions={info.player_info.actions} />
+        {actionSubmitted ? (
+          <></>
+        ) : (
+          <ActionMenu
+            actions={info.player_info.actions}
+            last_discard={info.player_info.last_tile}
+          />
+        )}
         <Table info={info} />
       </div>
     </EmitAction.Provider>
