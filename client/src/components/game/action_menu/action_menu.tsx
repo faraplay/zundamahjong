@@ -16,13 +16,14 @@ import {
 } from "../action_disambig_menu/action_disambig_menu";
 
 function ActionMenuItem({
-  actionDisambigMenuProps,
-  setActionDisambigMenuProps,
+  action_supertype,
+  actions,
+  setDisambig,
 }: {
-  actionDisambigMenuProps: ActionDisambigMenuProps;
-  setActionDisambigMenuProps: (value: ActionDisambigMenuProps | null) => void;
+  action_supertype: ActionSupertype;
+  actions: ReadonlyArray<Action>;
+  setDisambig: () => void;
 }) {
-  const { action_supertype, actions } = actionDisambigMenuProps;
   if (action_supertype == 0 || actions.length == 0) {
     return <></>;
   }
@@ -36,7 +37,7 @@ function ActionMenuItem({
         }
       : (e: Event) => {
           e.preventDefault();
-          setActionDisambigMenuProps(actionDisambigMenuProps);
+          setDisambig();
         };
   return (
     <button
@@ -67,28 +68,26 @@ export function ActionMenu({
   }
 
   if (!actionDisambigMenuProps) {
-    return (
-      <div id="actions">
-        {action_buckets
-          .map((actions, bucket_index) => (
-            <ActionMenuItem
-              actionDisambigMenuProps={{
-                action_supertype: bucket_index as ActionSupertype,
-                actions: actions,
-                last_discard: last_discard,
-              }}
-              setActionDisambigMenuProps={setActionDisambigMenuProps}
-            />
-          ))
-          .reverse()}
-      </div>
-    );
+    const actionMenuItems = action_buckets.map((actions, bucket_index) => (
+      <ActionMenuItem
+        action_supertype={bucket_index as ActionSupertype}
+        actions={actions}
+        setDisambig={() =>
+          setActionDisambigMenuProps({
+            action_supertype: bucket_index as ActionSupertype,
+            actions: actions,
+            last_discard: last_discard,
+          })
+        }
+      />
+    ));
+    return <div id="actions">{actionMenuItems.reverse()}</div>;
   } else {
     return (
       <div id="actions_disambiguation">
         <ActionDisambigMenu
           props={actionDisambigMenuProps}
-          setActionDisambigMenuProps={setActionDisambigMenuProps}
+          unsetDisambig={() => setActionDisambigMenuProps(null)}
         />
       </div>
     );

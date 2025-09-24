@@ -14,16 +14,16 @@ import { EmitAction } from "../emit_action/emit_action";
 function ActionDisambigMenuItem({
   action,
   last_discard,
-  setActionDisambigMenuProps,
+  unsetDisambig,
 }: {
   action: Action;
   last_discard: TileId;
-  setActionDisambigMenuProps: (value: ActionDisambigMenuProps | null) => void;
+  unsetDisambig: () => void;
 }) {
   const emit_action = useContext(EmitAction);
   const onClick = (e: Event) => {
     e.preventDefault();
-    setActionDisambigMenuProps(null);
+    unsetDisambig();
     emit_action(action);
   };
   return (
@@ -62,10 +62,10 @@ export type ActionDisambigMenuProps = {
 
 export function ActionDisambigMenu({
   props,
-  setActionDisambigMenuProps,
+  unsetDisambig,
 }: {
   props: ActionDisambigMenuProps;
-  setActionDisambigMenuProps: (value: ActionDisambigMenuProps | null) => void;
+  unsetDisambig: () => void;
 }) {
   const { action_supertype, actions, last_discard } = props;
   const sorted_actions =
@@ -79,7 +79,7 @@ export function ActionDisambigMenu({
         <ActionDisambigMenuItem
           action={action}
           last_discard={last_discard}
-          setActionDisambigMenuProps={setActionDisambigMenuProps}
+          unsetDisambig={unsetDisambig}
         />
       ))}
     </div>
