@@ -2,9 +2,9 @@ import type { TileId } from "../../../types/tile";
 
 import { TileImage } from "../tile_image/tile_image";
 
-import "./table_tile.css";
+import "./tile_3d.css";
 
-export function TableTile({ tile }: { tile: TileId }) {
+export function Tile3D({ tile }: { tile: TileId }) {
   return (
     <div key={tile} class={`tile_div tile_id_${tile}`}>
       <span class="tile_face tile_back" />
