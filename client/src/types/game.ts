@@ -1,4 +1,5 @@
 import type { TileId } from "./tile.ts";
+import type { Action } from "./action.ts";
 
 export type Discard = {
   player: number;
@@ -18,28 +19,6 @@ export const enum CallType {
 export type Call = {
   call_type: CallType;
   tiles: TileId[];
-};
-
-export const enum ActionType {
-  PASS = 0,
-  CONTINUE = 1,
-  DRAW = 2,
-  DISCARD = 3,
-  CHI_A = 4,
-  CHI_B = 5,
-  CHI_C = 6,
-  PON = 7,
-  OPEN_KAN = 8,
-  ADD_KAN = 9,
-  CLOSED_KAN = 10,
-  FLOWER = 11,
-  RON = 12,
-  TSUMO = 13,
-}
-
-export type Action = {
-  action_type: ActionType;
-  tile: TileId;
 };
 
 export type HistoryItem = {

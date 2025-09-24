@@ -1,5 +1,5 @@
 import { useContext } from "preact/hooks";
-import { ActionType, type Action } from "../../../types/game";
+import { ActionType, type Action } from "../../../types/action";
 import type { TileId } from "../../../types/tile";
 
 import { Tile2D } from "../tile_2d/tile_2d";

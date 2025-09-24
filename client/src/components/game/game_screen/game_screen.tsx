@@ -1,6 +1,7 @@
 import { useContext } from "preact/hooks";
 
-import type { Action, AllInfo } from "../../../types/game";
+import type { Action } from "../../../types/action";
+import type { AllInfo } from "../../../types/game";
 
 import { Emitter } from "../../emitter/emitter";
 
