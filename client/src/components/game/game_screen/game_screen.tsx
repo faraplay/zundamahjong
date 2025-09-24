@@ -1,7 +1,7 @@
 import { useContext } from "preact/hooks";
 
 import type { Action } from "../../../types/action";
-import type { AllInfo } from "../../../types/game";
+import { RoundStatus, type AllInfo } from "../../../types/game";
 
 import { Emitter } from "../../emitter/emitter";
 
@@ -9,6 +9,7 @@ import { EmitAction } from "../emit_action/emit_action";
 import { Hand } from "../hand/hand";
 import { ActionMenu } from "../action_menu/action_menu";
 import { Table } from "../table/table";
+import { WinInfo } from "../win_info/win_info";
 
 export function GameScreen({
   info,
@@ -43,6 +44,11 @@ export function GameScreen({
           />
         )}
         <Table info={info} />
+        {info.round_info.status == RoundStatus.END ? (
+          <WinInfo info={info} />
+        ) : (
+          <></>
+        )}
       </div>
     </EmitAction.Provider>
   );

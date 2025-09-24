@@ -1,5 +1,4 @@
 .tile_2d {
-  --tile-width: 5cqw;
   --tile-border-radius: calc(var(--tile-width) * 0.1);
   --tile-side-darken-percent: 8%;
 }

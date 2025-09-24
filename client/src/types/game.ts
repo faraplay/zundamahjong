@@ -64,7 +64,7 @@ export type PlayerInfo = {
 
 export type Win = {
   win_player: number;
-  lose_player: number | undefined;
+  lose_player: number | null;
   hand: TileId[];
   calls: Call[];
   flowers: TileId[];
@@ -72,7 +72,7 @@ export type Win = {
 
 export type Scoring = {
   win_player: number;
-  lose_player: number | undefined;
+  lose_player: number | null;
   yaku_hans: { [yaku: string]: number };
   han_total: number;
   player_scores: number[];
@@ -86,6 +86,6 @@ export type AllInfo = {
   round_info: RoundInfo;
   history_updates: HistoryItem[];
   player_info: PlayerInfo;
-  win_info: Win;
-  scoring_info: Scoring;
+  win_info: Win | null;
+  scoring_info: Scoring | null;
 };

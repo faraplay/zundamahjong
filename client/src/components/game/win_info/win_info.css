@@ -1,0 +1,27 @@
+#win_info {
+  --tile-width: 4cqw;
+  width: 86cqw;
+  height: calc(900cqw / 16 - 14cqw);
+  position: absolute;
+  left: 0;
+  top: 0;
+  z-index: 2;
+  margin: 3cqw;
+  padding: 4cqw;
+  background-color: rgba(180, 180, 180, 80%);
+}
+
+#win_info * {
+  font-family: "Contrail One", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+#yakus {
+  width: 81cqw;
+  height: 25cqw;
+  margin: 2.5cqw;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: wrap;
+}
