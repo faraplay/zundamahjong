@@ -28,13 +28,7 @@ function ResultItem({
   );
 }
 
-export function Results({
-  info,
-  closeResults,
-}: {
-  info: AllInfo;
-  closeResults: () => void;
-}) {
+export function Results({ info }: { info: AllInfo }) {
   const emit = useContext(Emitter);
   const player_scores = info.game_info.player_scores;
   const score_diffs =
@@ -55,7 +49,6 @@ export function Results({
   }
   const onClick = (e: Event) => {
     e.preventDefault();
-    closeResults();
     emit("next_round");
   };
   return (

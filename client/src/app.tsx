@@ -3,7 +3,7 @@ import { io, Socket } from "socket.io-client";
 
 import type { Player } from "./types/player";
 import type { Room } from "./types/room";
-import type { AllInfo } from "./types/game";
+import { RoundStatus, type AllInfo } from "./types/game";
 
 import { Emitter } from "./components/emitter/emitter";
 import { NameForm } from "./components/name_form/name_form";
@@ -27,6 +27,8 @@ export function App() {
   const [myRoom, setMyRoom] = useState<Room>();
   const [info, setInfo] = useState<AllInfo>();
   const [actionSubmitted, setActionSubmitted] = useState<boolean>(false);
+  const [seeResults, setSeeResults] = useState(false);
+
   useEffect(() => {
     socket.current = io();
 
@@ -42,6 +44,9 @@ export function App() {
     socket.current.on("info", (info: AllInfo) => {
       setInfo(info);
       setActionSubmitted(false);
+      if (info.round_info.status != RoundStatus.END) {
+        setSeeResults(false);
+      }
     });
 
     return () => {
@@ -90,7 +95,9 @@ export function App() {
       <GameScreen
         info={info}
         actionSubmitted={actionSubmitted}
-        setActionSubmitted={setActionSubmitted}
+        setActionSubmitted={() => setActionSubmitted(true)}
+        seeResults={seeResults}
+        goToResults={() => setSeeResults(true)}
       />
     </Emitter.Provider>
   );

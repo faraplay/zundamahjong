@@ -16,24 +16,27 @@ export function GameScreen({
   info,
   actionSubmitted,
   setActionSubmitted,
+  seeResults,
+  goToResults,
 }: {
   info: AllInfo;
   actionSubmitted: boolean;
-  setActionSubmitted: (_: boolean) => void;
+  setActionSubmitted: () => void;
+  seeResults: boolean;
+  goToResults: () => void;
 }) {
-  const [seeResults, setSeeResults] = useState(false);
   const emit = useContext(Emitter);
   const emit_action = (action: Action) => {
-    setActionSubmitted(true);
+    setActionSubmitted();
     emit("action", action, info.round_info.history.length);
   };
   const winOverlay =
     info.round_info.status != RoundStatus.END ? (
       <></>
     ) : !seeResults ? (
-      <WinInfo info={info} goToResults={() => setSeeResults(true)} />
+      <WinInfo info={info} goToResults={goToResults} />
     ) : (
-      <Results info={info} closeResults={() => setSeeResults(false)} />
+      <Results info={info} />
     );
   return (
     <EmitAction.Provider value={emit_action}>
