@@ -5,7 +5,7 @@ import "./tile_image.css";
 export function TileImage({ tile }: { tile: TileId }) {
   return (
     <img
-      class="tile"
+      class="tile_image"
       src={getTileUrl(tile)}
       alt={getTileString(tile)}
       width={60}

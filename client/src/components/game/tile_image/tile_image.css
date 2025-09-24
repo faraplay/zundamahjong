@@ -1,14 +1,14 @@
-.tile {
+:root {
+  --tile-front-color: white;
+  --tile-back-color: purple;
+  --tile-border-color: rgba(0, 0, 0, 0.3);
+}
+
+.tile_image {
   --tile-padding: calc(var(--tile-width) * 0.02);
-  --inner-tile-width: calc(
-    var(--tile-width) - 2 * var(--tile-border-width) - 2 * var(--tile-padding)
-  );
-  --inner-tile-height: calc(
-    var(--tile-height) - 2 * var(--tile-border-width) - 2 * var(--tile-padding)
-  );
-  width: var(--inner-tile-width);
-  height: var(--inner-tile-height);
-  border: var(--tile-border-width) solid var(--tile-border-color);
+  box-sizing: border-box;
+  width: var(--tile-width);
+  height: var(--tile-height);
   padding: var(--tile-padding);
   background-color: var(--tile-front-color);
 }

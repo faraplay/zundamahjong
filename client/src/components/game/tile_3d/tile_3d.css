@@ -1,19 +1,9 @@
-:root {
-  --tile-front-color: white;
-  --tile-back-color: purple;
-  --tile-border-color: rgba(0, 0, 0, 0.3);
-  --tile-side-darken-percent: 8%;
-}
-
-.tile_div {
+#table .tile_div {
   --tile-height: calc(var(--tile-width) * 4 / 3);
   --tile-depth: calc(var(--tile-width) * 2 / 3);
   --tile-border-width: 1px;
   width: var(--tile-width);
   height: var(--tile-height);
-}
-
-#table .tile_div {
   transform-style: preserve-3d;
 }
 
@@ -38,8 +28,9 @@
 
 #table .tile_face::after {
   content: "";
-  width: calc(100% - 2 * var(--tile-border-width));
-  height: calc(100% - 2 * var(--tile-border-width));
+  box-sizing: border-box;
+  width: 100%;
+  height: 100%;
   position: absolute;
   left: 0;
   top: 0;
@@ -83,5 +74,14 @@
 }
 
 #table .tile_front {
+  --tile-face-darken-percent: 0%;
+  width: var(--tile-width);
+  height: var(--tile-height);
   transform: translateZ(var(--tile-depth));
+}
+
+#table .tile_front .tile_image {
+  position: absolute;
+  left: 0;
+  top: 0;
 }
