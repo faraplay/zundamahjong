@@ -1,0 +1,25 @@
+#calls_list {
+  display: contents;
+}
+
+.player_calls {
+  --player-calls-right: 16cqw;
+  --player-calls-bottom: 11cqw;
+  width: 0;
+  height: 0;
+  position: absolute;
+  right: var(--player-calls-right);
+  bottom: var(--player-calls-bottom);
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: flex-end;
+  transform-origin: calc(var(--player-calls-right) - 50cqw)
+    calc(var(--player-calls-bottom) - 50cqw);
+  transform-style: preserve-3d;
+}
+
+.player_calls .call {
+  display: flex;
+  flex-direction: row;
+  transform-style: preserve-3d;
+}

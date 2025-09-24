@@ -2,6 +2,7 @@ import type { AllInfo } from "../../../types/game";
 import type { TileId } from "../../../types/tile";
 
 import { CenterInfo } from "../center_info/center_info";
+import { TableCalls } from "../table_calls/table_calls";
 import { TableHand } from "../table_hand/table_hand";
 
 import "./table.css";
@@ -25,6 +26,11 @@ export function Table({ info }: { info: AllInfo }) {
       <div id="table_hands">
         {known_hands.map((hand, index) => (
           <TableHand player_index={index} tiles={hand} />
+        ))}
+      </div>
+      <div id="calls_list">
+        {info.round_info.calls.map((player_calls, index) => (
+          <TableCalls player_index={index} calls={player_calls} />
         ))}
       </div>
     </div>
