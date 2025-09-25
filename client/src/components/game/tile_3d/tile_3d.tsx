@@ -6,7 +6,7 @@ import "./tile_3d.css";
 
 export function Tile3D({ tile }: { tile: TileId }) {
   return (
-    <div key={tile} class={`tile_div tile_id_${tile}`}>
+    <div class={`tile_div tile_id_${tile}`}>
       <span class="tile_face tile_back" />
       <span class="tile_face tile_left" />
       <span class="tile_face tile_right" />
@@ -16,5 +16,15 @@ export function Tile3D({ tile }: { tile: TileId }) {
         <TileImage tile={tile} />
       </span>
     </div>
+  );
+}
+
+export function Tile3DList({ tiles }: { tiles: ReadonlyArray<TileId> }) {
+  return (
+    <>
+      {tiles.map((tile) => (
+        <Tile3D key={tile} tile={tile} />
+      ))}
+    </>
   );
 }

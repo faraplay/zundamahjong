@@ -13,3 +13,13 @@ export function Tile2D({ tile }: { tile: TileId }) {
     </span>
   );
 }
+
+export function Tile2DList({ tiles }: { tiles: ReadonlyArray<TileId> }) {
+  return (
+    <>
+      {tiles.map((tile) => (
+        <Tile2D key={tile} tile={tile} />
+      ))}
+    </>
+  );
+}

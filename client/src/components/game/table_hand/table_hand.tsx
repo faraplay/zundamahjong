@@ -1,5 +1,5 @@
 import type { TileId } from "../../../types/tile";
-import { Tile3D } from "../tile_3d/tile_3d";
+import { Tile3DList } from "../tile_3d/tile_3d";
 
 import "./table_hand.css";
 
@@ -13,9 +13,7 @@ export function TableHand({
   return (
     <div class={`table_hand_outer player_${player_index}`}>
       <div class="table_hand">
-        {tiles.map((tile) => (
-          <Tile3D tile={tile} />
-        ))}
+        <Tile3DList tiles={tiles} />
       </div>
     </div>
   );

@@ -32,15 +32,15 @@ function ActionDisambigMenuItem({
         switch (action.action_type) {
           case ActionType.CHI_A:
             return [last_discard, last_discard + 4, last_discard + 8].map(
-              (tile) => <Tile2D tile={tile as TileId} />,
+              (tile) => <Tile2D key={tile} tile={tile as TileId} />,
             );
           case ActionType.CHI_B:
             return [last_discard - 4, last_discard, last_discard + 4].map(
-              (tile) => <Tile2D tile={tile as TileId} />,
+              (tile) => <Tile2D key={tile} tile={tile as TileId} />,
             );
           case ActionType.CHI_C:
             return [last_discard - 8, last_discard - 4, last_discard].map(
-              (tile) => <Tile2D tile={tile as TileId} />,
+              (tile) => <Tile2D key={tile} tile={tile as TileId} />,
             );
           case ActionType.ADD_KAN:
           case ActionType.CLOSED_KAN:
@@ -77,6 +77,7 @@ export function ActionDisambigMenu({
       <div class="disambig_text">Select an option</div>
       {sorted_actions.map((action) => (
         <ActionDisambigMenuItem
+          key={action}
           action={action}
           last_discard={last_discard}
           unsetDisambig={unsetDisambig}

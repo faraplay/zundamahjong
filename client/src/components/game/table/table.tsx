@@ -36,22 +36,22 @@ export function Table({ info }: { info: AllInfo }) {
       />
       <div id="table_hands">
         {known_hands.map((hand, index) => (
-          <TableHand player_index={index} tiles={hand} />
+          <TableHand key={index} player_index={index} tiles={hand} />
         ))}
       </div>
       <div id="calls_list">
         {info.round_info.calls.map((player_calls, index) => (
-          <TableCalls player_index={index} calls={player_calls} />
+          <TableCalls key={index} player_index={index} calls={player_calls} />
         ))}
       </div>
       <div id="flowers_list">
         {info.round_info.flowers.map((tiles, index) => (
-          <TableFlowers player_index={index} tiles={tiles} />
+          <TableFlowers key={index} player_index={index} tiles={tiles} />
         ))}
       </div>
       <div id="discard_pool">
         {player_discards.map((tiles, index) => (
-          <TableDiscards player_index={index} tiles={tiles} />
+          <TableDiscards key={index} player_index={index} tiles={tiles} />
         ))}
       </div>
     </div>

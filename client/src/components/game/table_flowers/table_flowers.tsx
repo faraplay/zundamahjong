@@ -1,6 +1,6 @@
 import type { TileId } from "../../../types/tile";
 
-import { Tile3D } from "../tile_3d/tile_3d";
+import { Tile3DList } from "../tile_3d/tile_3d";
 
 import "./table_flowers.css";
 
@@ -13,9 +13,7 @@ export function TableFlowers({
 }) {
   return (
     <div class={`player_flowers player_${player_index}`}>
-      {tiles.map((tile) => (
-        <Tile3D tile={tile} />
-      ))}
+      <Tile3DList tiles={tiles} />
     </div>
   );
 }

@@ -20,7 +20,7 @@ export function WinInfo({
         <>
           <div id="yakus">
             {Object.entries(info.scoring_info.yaku_hans).map(([yaku, han]) => (
-              <YakuInfo yaku={yaku} han={han} />
+              <YakuInfo key={yaku} yaku={yaku} han={han} />
             ))}
           </div>
         </>
