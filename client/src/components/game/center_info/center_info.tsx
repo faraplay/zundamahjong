@@ -22,11 +22,10 @@ function CenterInfoPlayer({
         {score == null ? "" : score}
       </span>
       <span
-        class={
-          `turn_indicator player_${player_index}` +
-          (is_current_player ? " current_player" : "")
-        }
-      ></span>
+        class={`turn_indicator player_${player_index}${
+          is_current_player ? " current_player" : ""
+        }`}
+      />
     </>
   );
 }
@@ -64,10 +63,9 @@ export function CenterInfo({
   return (
     <div id="table_center_info">
       <p id="wind_sub_round">
-        {player_winds[game_info.wind_round] +
-          String(game_info.sub_round + 1) +
-          "-" +
-          String(game_info.draw_count)}
+        {`${player_winds[game_info.wind_round]}${game_info.sub_round + 1}-${
+          game_info.draw_count
+        }`}
       </p>
       <p id="tiles_left">{tiles_left}</p>
       <div id="scores">

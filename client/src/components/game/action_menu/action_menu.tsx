@@ -24,11 +24,11 @@ function ActionMenuItem({
   actions: ReadonlyArray<Action>;
   setDisambig: () => void;
 }) {
+  const emit_action = useContext(EmitAction);
   if (action_supertype == 0 || actions.length == 0) {
     return <></>;
   }
   const supertypeString = getActionSupertypeString(action_supertype);
-  const emit_action = useContext(EmitAction);
   const onClick =
     actions.length == 1
       ? (e: Event) => {
@@ -73,26 +73,26 @@ export function ActionMenu({
   if (!actionDisambigMenuProps) {
     const actionMenuItems = action_buckets.map((actions, bucket_index) => (
       <ActionMenuItem
+        key={bucket_index}
         action_supertype={bucket_index as ActionSupertype}
         actions={actions}
         setDisambig={() =>
           setActionDisambigMenuProps({
             action_supertype: bucket_index as ActionSupertype,
-            actions: actions,
-            last_discard: last_discard,
+            actions,
+            last_discard,
           })
         }
       />
     ));
     return <div id="actions">{actionMenuItems.reverse()}</div>;
-  } else {
-    return (
-      <div id="actions_disambiguation">
-        <ActionDisambigMenu
-          props={actionDisambigMenuProps}
-          unsetDisambig={() => setActionDisambigMenuProps(null)}
-        />
-      </div>
-    );
   }
+  return (
+    <div id="actions_disambiguation">
+      <ActionDisambigMenu
+        props={actionDisambigMenuProps}
+        unsetDisambig={() => setActionDisambigMenuProps(null)}
+      />
+    </div>
+  );
 }

@@ -14,15 +14,11 @@ function addAnimation(
   let animation = element.style.getPropertyValue("animation");
   let fill_mode = "both";
   if (animation) {
-    animation = animation + ",\n";
+    animation += ",\n";
     fill_mode = "forwards";
   }
-  element.style.setProperty(
-    "animation",
-    animation +
-      `${duration_milliseconds}ms ease-out ${delay_milliseconds}ms ` +
-      `${fill_mode} ${animation_style}`,
-  );
+  animation += `${duration_milliseconds}ms ease-out ${delay_milliseconds}ms ${fill_mode} ${animation_style}`;
+  element.style.setProperty("animation", animation);
 }
 
 function setDrawAnimation(

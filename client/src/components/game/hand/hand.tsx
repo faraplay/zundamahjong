@@ -10,7 +10,7 @@ import { EmitAction } from "../emit_action/emit_action";
 function HandTile({ tile, canDiscard }: { tile: TileId; canDiscard: boolean }) {
   const action: Action = {
     action_type: ActionType.DISCARD,
-    tile: tile,
+    tile,
   };
   const emit_action = useContext(EmitAction);
   const submitAction = (e: Event) => {
@@ -43,6 +43,7 @@ export function Hand({
     <div id="hand">
       {tiles.map((tile) => (
         <HandTile
+          key={tile}
           tile={tile}
           canDiscard={
             !actionSubmitted &&
