@@ -4,6 +4,7 @@ import { io, Socket } from "socket.io-client";
 import type { Player } from "./types/player";
 import type { Room } from "./types/room";
 import { RoundStatus, type AllInfo } from "./types/game";
+import type { EmitFunc } from "./types/emit_func";
 
 import { Emitter } from "./components/emitter/emitter";
 import { NameForm } from "./components/name_form/name_form";
@@ -19,7 +20,7 @@ import "./app.css";
 
 export function App() {
   const socket = useRef() as MutableRef<Socket>;
-  const emit = (event: string, ...args: any[]) =>
+  const emit: EmitFunc = (event, ...args) =>
     socket.current.emit(event, ...args);
 
   const [myPlayer, setMyPlayer] = useState<Player>();
