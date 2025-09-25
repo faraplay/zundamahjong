@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "preact/hooks";
+import { useContext, useLayoutEffect } from "preact/hooks";
 
 import type { Action } from "../../../types/action";
 import { RoundStatus, type AllInfo } from "../../../types/game";
@@ -32,7 +32,7 @@ export function GameScreen({
     setActionSubmitted();
     emit("action", action, info.round_info.history.length);
   };
-  useEffect(() => {
+  useLayoutEffect(() => {
     setAnimations(info.history_updates);
   }, [info]);
   const winOverlay =
