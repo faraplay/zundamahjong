@@ -1,4 +1,4 @@
-import { useContext, useState } from "preact/hooks";
+import { useContext, useEffect } from "preact/hooks";
 
 import type { Action } from "../../../types/action";
 import { RoundStatus, type AllInfo } from "../../../types/game";
@@ -11,6 +11,8 @@ import { ActionMenu } from "../action_menu/action_menu";
 import { Table } from "../table/table";
 import { WinInfo } from "../win_info/win_info";
 import { Results } from "../results/results";
+
+import { setAnimations } from "./animations";
 
 export function GameScreen({
   info,
@@ -30,6 +32,9 @@ export function GameScreen({
     setActionSubmitted();
     emit("action", action, info.round_info.history.length);
   };
+  useEffect(() => {
+    setAnimations(info.history_updates);
+  }, [info]);
   const winOverlay =
     info.round_info.status != RoundStatus.END ? (
       <></>

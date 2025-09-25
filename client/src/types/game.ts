@@ -22,7 +22,7 @@ export type Call = {
 };
 
 export type HistoryItem = {
-  player: number;
+  player_index: number;
   action: Action;
 };
 
