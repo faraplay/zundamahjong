@@ -131,7 +131,7 @@ class GameRoom:
 
     def broadcast_game_end(self):
         for player in self.joined_players:
-            sio.emit("game_end", self.room_info, to=player.id)
+            sio.emit("info", None, to=player.id)
 
     def get_player_connection(self, player: Player):
         return next(
