@@ -12,6 +12,7 @@ export function NameForm() {
     const name = formData.get("name");
     if (name) {
       emit("set_name", name);
+      emit("get_rooms");
     }
   };
   return (

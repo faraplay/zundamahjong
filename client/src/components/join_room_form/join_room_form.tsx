@@ -1,4 +1,4 @@
-import { useContext, useEffect } from "preact/hooks";
+import { useContext } from "preact/hooks";
 import type { Room } from "../../types/room";
 
 import "./join_room_form.css";
@@ -34,11 +34,6 @@ export function JoinRoomForm({ rooms }: { rooms: Array<Room> }) {
     e.preventDefault();
     emit("get_rooms");
   };
-
-  // Refresh rooms list on mount
-  useEffect(() => {
-    emit("get_rooms");
-  }, [emit]);
 
   return (
     <form id="join_room_form" action="" onSubmit={onSubmit}>

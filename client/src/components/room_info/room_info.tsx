@@ -13,6 +13,7 @@ export function RoomInfo({ room }: { room: Room }) {
   const leaveRoom = (e: MouseEvent) => {
     e.preventDefault();
     emit("leave_room");
+    emit("get_rooms");
   };
   return (
     <>

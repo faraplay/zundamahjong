@@ -9,7 +9,6 @@ export function CreateRoomForm() {
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const room_name = formData.get("room_name");
     const player_count = Number(formData.get("player_count"));
-    console.log(room_name, player_count);
     if (!room_name) return;
     if (!(player_count == 3 || player_count == 4)) return;
     emit("create_room", room_name, player_count);
