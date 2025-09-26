@@ -1,0 +1,51 @@
+.avatar_display {
+  width: 41cqw;
+  height: 46.25cqw;
+  position: absolute;
+  left: 10cqw;
+  top: 5cqw;
+  display: flex;
+  flex-wrap: wrap;
+
+  .avatar_selector {
+    width: 20cqw;
+    height: 20cqw;
+    position: relative;
+
+    .avatar_selector_image {
+      width: 20cqw;
+      height: 16cqw;
+      position: absolute;
+      left: 0;
+      top: 0;
+      border: 1px solid navy;
+      object-fit: cover;
+      object-position: top left;
+    }
+
+    .avatar_selector_player_name {
+      width: 20cqw;
+      height: 4cqw;
+      position: absolute;
+      left: 0;
+      top: 16cqw;
+      text-align: center;
+    }
+
+    .avatar_selector_decrease,
+    .avatar_selector_increase {
+      width: 4cqw;
+      height: 3cqw;
+      position: absolute;
+      bottom: 0cqw;
+    }
+
+    .avatar_selector_decrease {
+      left: 0cqw;
+    }
+
+    .avatar_selector_increase {
+      right: 0cqw;
+    }
+  }
+}

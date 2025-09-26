@@ -20,6 +20,8 @@ import { GameScreen } from "./components/game/game_screen/game_screen";
 
 import "./fonts.css";
 import "./app.css";
+import { AvatarDisplay } from "./components/avatar_selector/avatar_selector";
+import { type AvatarIdDict } from "./types/avatars";
 
 export function App() {
   const [errors, setErrors] = useState<{
@@ -30,6 +32,7 @@ export function App() {
   const [myPlayer, setMyPlayer] = useState<Player>();
   const [rooms, setRooms] = useState<Array<Room>>([]);
   const [myRoom, setMyRoom] = useState<Room>();
+  const [avatars, setAvatars] = useState<AvatarIdDict>({});
 
   const [info, setInfo] = useState<AllInfo>();
   const [actionSubmitted, setActionSubmitted] = useState<boolean>(false);
@@ -59,6 +62,9 @@ export function App() {
     socket.current.on("room_info", (room: Room) => {
       setMyRoom(room);
     });
+    socket.current.on("room_avatars", (avatars: AvatarIdDict) => {
+      setAvatars(avatars);
+    });
     socket.current.on("info", (info: AllInfo) => {
       setInfo(info);
       setActionSubmitted(false);
@@ -76,6 +82,7 @@ export function App() {
     myPlayer,
     myRoom,
     rooms,
+    avatars,
     info,
     actionSubmitted,
     setActionSubmitted,
@@ -102,6 +109,7 @@ function getScreen(
   myPlayer: Player | undefined,
   myRoom: Room | undefined,
   rooms: Room[],
+  avatars: AvatarIdDict,
   info: AllInfo | undefined,
   actionSubmitted: boolean,
   setActionSubmitted: (value: boolean) => void,
@@ -127,6 +135,11 @@ function getScreen(
     return (
       <div id="room_screen" class="screen">
         <RoomInfo room={myRoom} />
+        <AvatarDisplay
+          myPlayer={myPlayer}
+          players={myRoom.joined_players}
+          avatars={avatars}
+        />
         {myRoom && myRoom.joined_players[0].id == myPlayer.id ? (
           <GameOptionsForm
             player_count={myRoom.player_count}
