@@ -1,4 +1,5 @@
 import logging
+import logging.handlers
 
 
 def create_server_logger(name: str):
@@ -9,11 +10,15 @@ def create_server_logger(name: str):
         datefmt="%d/%b/%Y %H:%M:%S",
     )
 
-    debug_handler = logging.FileHandler("server_debug.log", encoding="utf-8")
+    debug_handler = logging.handlers.RotatingFileHandler(
+        "server_debug.log", maxBytes=1024 * 1024, backupCount=5, encoding="utf-8"
+    )
     debug_handler.setLevel(logging.DEBUG)
     debug_handler.setFormatter(formatter)
 
-    info_handler = logging.FileHandler("server_info.log", encoding="utf-8")
+    info_handler = logging.handlers.RotatingFileHandler(
+        "server_info.log", maxBytes=1024 * 1024, backupCount=5, encoding="utf-8"
+    )
     info_handler.setLevel(logging.INFO)
     info_handler.setFormatter(formatter)
 
@@ -29,7 +34,9 @@ def create_root_logger():
         datefmt="%d/%b/%Y %H:%M:%S",
     )
 
-    info_handler = logging.FileHandler("info.log", encoding="utf-8")
+    info_handler = logging.handlers.RotatingFileHandler(
+        "info.log", maxBytes=1024 * 1024, backupCount=5, encoding="utf-8"
+    )
     info_handler.setLevel(logging.INFO)
     info_handler.setFormatter(formatter)
 
