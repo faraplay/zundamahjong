@@ -1,0 +1,27 @@
+#discard_pool {
+  display: contents;
+}
+
+#discard_pool .player_discards {
+  --player-discard-gap: 1cqw;
+  width: calc(6 * var(--tile-width) + 1cqw);
+  height: calc(3 * (4 / 3) * var(--tile-width));
+  position: absolute;
+  left: calc(50cqw - 3 * var(--tile-width));
+  top: calc(50cqw + 3 * var(--tile-width) + var(--player-discard-gap));
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  align-content: flex-start;
+  transform-origin: calc(3 * var(--tile-width))
+    calc(-1 * var(--player-discard-gap) - 3 * var(--tile-width));
+  transform-style: preserve-3d;
+}
+
+.me_player_0 #discard_pool .player_discards.player_0,
+.me_player_1 #discard_pool .player_discards.player_1,
+.me_player_2 #discard_pool .player_discards.player_2,
+.me_player_3 #discard_pool .player_discards.player_3 {
+  top: calc(52cqw + 3 * var(--tile-width) + var(--player-discard-gap));
+}

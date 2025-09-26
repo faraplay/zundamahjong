@@ -1,0 +1,16 @@
+#join_room_form {
+  width: 40cqw;
+  margin-inline: auto;
+  margin-block: 5cqw;
+}
+
+#join_room_room_name {
+  width: 40cqw;
+  height: 20cqw;
+}
+
+#join_room_buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 1cqw;
+}

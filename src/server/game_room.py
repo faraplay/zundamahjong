@@ -47,8 +47,10 @@ class GameRoom:
         }
 
     @classmethod
-    def get_rooms(cls):
-        return rooms.values()
+    def emit_rooms_list(cls, sid):
+        sio.emit(
+            "rooms_info", [game_room.room_info for game_room in rooms.values()], sid
+        )
 
     @classmethod
     def verify_room_name(cls, room_name):
@@ -82,6 +84,7 @@ class GameRoom:
             player_rooms[creator.id] = game_room
             rooms[room_name] = game_room
         logger.info(f"Player {creator.id} has created room {room_name}")
+        game_room.broadcast_room_info()
         return game_room
 
     @classmethod
@@ -118,7 +121,7 @@ class GameRoom:
                 raise Exception("Game already in progress!")
             player_connection = game_room.get_player_connection(player)
             game_room._remove_player(player_connection)
-            # broadcast
+        sio.emit("room_info", None, to=player.id)
         game_room.broadcast_room_info()
         return game_room
 
@@ -166,10 +169,14 @@ class GameRoom:
     def try_reconnect(cls, player: Player):
         with rooms_lock:
             game_room = player_rooms.get(player.id)
-            if game_room is None:
-                return None
-            game_room.get_player_connection(player).is_connected = True
-            return game_room
+            if game_room is not None:
+                game_room.get_player_connection(player).is_connected = True
+        sio.emit(
+            "room_info",
+            game_room.room_info if game_room is not None else None,
+            to=player.id,
+        )
+        return game_room
 
     def start_game(self, game_options: GameOptions):
         if game_options.player_count != self.player_count:

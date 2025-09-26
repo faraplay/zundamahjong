@@ -55,7 +55,7 @@ class GameController:
 
     def _round_info(self):
         history = [
-            {"player": action[0], "action": action[1].model_dump()}
+            {"player_index": action[0], "action": action[1].model_dump()}
             for action in self._game.round.history
         ]
         hand_counts = [

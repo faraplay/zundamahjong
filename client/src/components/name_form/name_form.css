@@ -1,0 +1,9 @@
+#name_form {
+  width: 40cqw;
+  margin-inline: auto;
+  margin-block: 5cqw;
+}
+
+#name_form > div {
+  margin: 2cqw;
+}

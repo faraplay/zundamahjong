@@ -29,8 +29,8 @@ def disconnect(sid, reason):
 
 
 @sio_on("action")
-def handle_action(sid, player_data, action_data, history_index):
-    player = Player.model_validate(player_data)
+def handle_action(sid, action_data, history_index):
+    player = get_player(sid)
     game_room = GameRoom.get_player_room(player)
     if game_room is None:
         raise Exception("Player is not in a game room!")
@@ -41,8 +41,8 @@ def handle_action(sid, player_data, action_data, history_index):
 
 
 @sio_on("next_round")
-def start_next_round(sid, player_data):
-    player = Player.model_validate(player_data)
+def start_next_round(sid):
+    player = get_player(sid)
     game_room = GameRoom.get_player_room(player)
     if game_room is None:
         raise Exception("Player is not in a game room!")
@@ -59,43 +59,40 @@ def on_set_name(sid, name):
     verify_name(name)
     player = Player.from_name(name)
     set_player(sid, player)
+    sio.emit("player_info", player.model_dump(), sid)
     game_room = GameRoom.try_reconnect(player)
-    if game_room is None:
-        return player.model_dump(), None, None
-    if game_room.game_controller is None:
-        return player.model_dump(), game_room.room_info, None
-    game_room.game_controller.emit_info(player)
-    return player.model_dump(), game_room.room_info, True
+    if game_room is not None and game_room.game_controller is not None:
+        game_room.game_controller.emit_info(player)
 
 
 @sio_on("get_rooms")
 def on_get_rooms(sid):
-    return [game_room.room_info for game_room in GameRoom.get_rooms()]
+    GameRoom.emit_rooms_list(sid)
 
 
 @sio_on("create_room")
 def on_create_room(sid, room_name, player_count):
     GameRoom.verify_player_count(player_count)
     GameRoom.verify_room_name(room_name)
-    return GameRoom.create_room(get_player(sid), room_name, player_count).room_info
+    GameRoom.create_room(get_player(sid), room_name, player_count)
 
 
 @sio_on("join_room")
 def on_join_room(sid, room_name):
     GameRoom.verify_room_name(room_name)
-    return GameRoom.join_room(get_player(sid), room_name).room_info
+    GameRoom.join_room(get_player(sid), room_name)
 
 
 @sio_on("leave_room")
 def on_leave_room(sid):
-    return GameRoom.leave_room(get_player(sid)).room_info
+    GameRoom.leave_room(get_player(sid))
 
 
 @sio_on("start_game")
-def on_start_game(sid, room_name, form_data):
+def on_start_game(sid, form_data):
     game_room = GameRoom.get_player_room(get_player(sid))
-    if game_room is None or room_name != game_room.room_name:
-        raise Exception(f"Player is not in room {room_name}!")
+    if game_room is None:
+        raise Exception(f"Player is not in a room!")
     game_options = GameOptions(
         player_count=form_data["player_count"],
         game_length=(
