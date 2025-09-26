@@ -13,6 +13,7 @@ import { WinInfo } from "../win_info/win_info";
 import { Results } from "../results/results";
 
 import { setAnimations } from "./animations";
+import { PlayerIcons } from "../player_icon/player_icon";
 
 export function GameScreen({
   info,
@@ -48,6 +49,7 @@ export function GameScreen({
       <div
         class={`me_player_${info.player_index} status_${info.round_info.status}`}
       >
+        <PlayerIcons player_names={info.game_info.player_names} />
         <Hand
           tiles={info.player_info.hand}
           actions={info.player_info.actions}
