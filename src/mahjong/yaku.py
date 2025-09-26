@@ -274,6 +274,10 @@ class YakuCalculator:
     def _prevalent_wind(self):
         return self._yakuhai(self._win.wind_round + 31)
 
+    @_register_yaku("NORTH_WIND", "North Wind", 1)
+    def _north_wind(self):
+        return int(self._win.player_count == 3 and self._yakuhai(34))
+
     @_register_yaku("WHITE_DRAGON", "White Dragon", 1)
     def _white_dragon(self):
         return self._yakuhai(35)
@@ -334,9 +338,22 @@ class YakuCalculator:
 
     @_register_yaku("SET_OF_FLOWERS", "Set of Flowers", 2)
     def _set_of_flowers(self):
-        return int(
-            ({41, 42, 43, 44} <= self._flowers) or ({45, 46, 47, 48} <= self._flowers)
-        )
+        if self._win.player_count == 3:
+            return int(
+                (({41, 42, 43} <= self._flowers) + ({45, 46, 47} <= self._flowers)) == 1
+            )
+        else:
+            return int(
+                (
+                    ({41, 42, 43, 44} <= self._flowers)
+                    + ({45, 46, 47, 48} <= self._flowers)
+                )
+                == 1
+            )
+
+    @_register_yaku("FIVE_FLOWERS", "Five Flowers", 2)
+    def _five_flowers(self):
+        return int(self._win.player_count == 3 and len(self._flowers) == 5)
 
     @_register_yaku("SEVEN_FLOWERS", "Seven Flowers", 2)
     def _seven_flowers(self):
@@ -344,7 +361,10 @@ class YakuCalculator:
 
     @_register_yaku("TWO_SETS_OF_FLOWERS", "Two Sets of Flowers", 8)
     def _two_sets_of_flowers(self):
-        return int(len(self._flowers) == 8)
+        if self._win.player_count == 3:
+            return int(len(self._flowers) == 6)
+        else:
+            return int(len(self._flowers) == 8)
 
     @_register_yaku("DRAW", "Draw", 1)
     def _draw(self):

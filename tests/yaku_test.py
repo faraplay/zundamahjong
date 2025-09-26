@@ -157,7 +157,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(
             yaku_mults,
-            {"SEAT_FLOWER": 2, "SET_OF_FLOWERS": 1, "TWO_SETS_OF_FLOWERS": 1},
+            {"SEAT_FLOWER": 2, "TWO_SETS_OF_FLOWERS": 1},
         )
 
     def test_draw(self):
