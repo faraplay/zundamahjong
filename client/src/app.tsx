@@ -3,7 +3,7 @@ import { io, Socket } from "socket.io-client";
 
 import type { ErrorMessage } from "./types/error_message";
 import type { Player } from "./types/player";
-import type { Room } from "./types/room";
+import type { AvatarRoom, Room } from "./types/room";
 import { RoundStatus, type AllInfo } from "./types/game";
 import type { EmitFunc } from "./types/emit_func";
 
@@ -14,14 +14,13 @@ import { NameForm } from "./components/name_form/name_form";
 import { JoinRoomForm } from "./components/join_room_form/join_room_form";
 import { CreateRoomForm } from "./components/create_room_form/create_room_form";
 import { RoomInfo } from "./components/room_info/room_info";
+import { AvatarDisplay } from "./components/avatar_selector/avatar_selector";
 import { GameOptionsForm } from "./components/game_options_form/game_options_form";
 
 import { GameScreen } from "./components/game/game_screen/game_screen";
 
 import "./fonts.css";
 import "./app.css";
-import { AvatarDisplay } from "./components/avatar_selector/avatar_selector";
-import { type AvatarIdDict } from "./types/avatars";
 
 export function App() {
   const [errors, setErrors] = useState<{
@@ -30,9 +29,8 @@ export function App() {
   }>({ currentIndex: 0, list: [] });
 
   const [myPlayer, setMyPlayer] = useState<Player>();
-  const [rooms, setRooms] = useState<Array<Room>>([]);
-  const [myRoom, setMyRoom] = useState<Room>();
-  const [avatars, setAvatars] = useState<AvatarIdDict>({});
+  const [rooms, setRooms] = useState<Room[]>([]);
+  const [myRoom, setMyRoom] = useState<AvatarRoom>();
 
   const [info, setInfo] = useState<AllInfo>();
   const [actionSubmitted, setActionSubmitted] = useState<boolean>(false);
@@ -59,11 +57,8 @@ export function App() {
     socket.current.on("rooms_info", (rooms: Array<Room>) => {
       setRooms(rooms);
     });
-    socket.current.on("room_info", (room: Room) => {
+    socket.current.on("room_info", (room: AvatarRoom) => {
       setMyRoom(room);
-    });
-    socket.current.on("room_avatars", (avatars: AvatarIdDict) => {
-      setAvatars(avatars);
     });
     socket.current.on("info", (info: AllInfo) => {
       setInfo(info);
@@ -82,7 +77,6 @@ export function App() {
     myPlayer,
     myRoom,
     rooms,
-    avatars,
     info,
     actionSubmitted,
     setActionSubmitted,
@@ -107,9 +101,8 @@ export function App() {
 
 function getScreen(
   myPlayer: Player | undefined,
-  myRoom: Room | undefined,
+  myRoom: AvatarRoom | undefined,
   rooms: Room[],
-  avatars: AvatarIdDict,
   info: AllInfo | undefined,
   actionSubmitted: boolean,
   setActionSubmitted: (value: boolean) => void,
@@ -138,7 +131,7 @@ function getScreen(
         <AvatarDisplay
           myPlayer={myPlayer}
           players={myRoom.joined_players}
-          avatars={avatars}
+          avatars={myRoom.avatars}
         />
         {myRoom && myRoom.joined_players[0].id == myPlayer.id ? (
           <GameOptionsForm

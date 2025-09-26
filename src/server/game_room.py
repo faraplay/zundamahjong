@@ -48,6 +48,10 @@ class GameRoom:
             "joined_players": [player.model_dump() for player in self.joined_players],
         }
 
+    @property
+    def room_avatar_info(self):
+        return {**self.room_info, "avatars": self.avatars}
+
     @classmethod
     def emit_rooms_list(cls, sid):
         sio.emit(
@@ -135,8 +139,7 @@ class GameRoom:
 
     def broadcast_room_info(self):
         for player in self.joined_players:
-            sio.emit("room_info", self.room_info, to=player.id)
-            sio.emit("room_avatars", self.avatars, to=player.id)
+            sio.emit("room_info", self.room_avatar_info, to=player.id)
 
     def broadcast_game_end(self):
         for player in self.joined_players:
