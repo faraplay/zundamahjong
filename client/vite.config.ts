@@ -8,7 +8,10 @@ export default defineConfig({
   build: {
     outDir: "../client_build",
     emptyOutDir: true,
-    minify: false,
+    assetsInlineLimit: (filePath) =>
+      filePath.endsWith(".svg") &&
+      !filePath.includes("/flower/") &&
+      !filePath.includes("/season/"),
   },
   server: {
     proxy: {
