@@ -1,0 +1,22 @@
+.error_list {
+  width: 90cqw;
+  position: absolute;
+  left: 5cqw;
+  bottom: 0;
+  z-index: 100;
+
+  .error_list_item {
+    padding: 0.5cqw;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+    border: 1px solid black;
+    background-color: rgb(255, 0, 0, 30%);
+
+    button {
+      border-radius: 0.5cqw;
+      border: 1px solid rgb(0, 0, 0, 70%);
+      background-color: rgb(255, 255, 255, 30%);
+    }
+  }
+}
