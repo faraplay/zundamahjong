@@ -46,9 +46,10 @@ export function App() {
     socket.current.on("message", (message: string) => {
       console.log(message);
       setErrors((errors) => {
-        errors.list.push({ index: errors.currentIndex, message });
-        errors.currentIndex++;
-        return errors;
+        return {
+          currentIndex: errors.currentIndex + 1,
+          list: errors.list.concat([{ index: errors.currentIndex, message }]),
+        };
       });
     });
     socket.current.on("player_info", (player: Player) => {
