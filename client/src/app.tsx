@@ -147,6 +147,8 @@ function getScreen(
   }
   return (
     <GameScreen
+      players={myRoom.joined_players}
+      playerAvatarIds={myRoom.avatars}
       info={info}
       actionSubmitted={actionSubmitted}
       setActionSubmitted={() => setActionSubmitted(true)}
