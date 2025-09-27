@@ -46,7 +46,12 @@ export function GameScreen({
     info.round_info.status != RoundStatus.END ? (
       <></>
     ) : !seeResults ? (
-      <WinInfo info={info} goToResults={goToResults} />
+      <WinInfo
+        players={players}
+        playerAvatarIds={playerAvatarIds}
+        info={info}
+        goToResults={goToResults}
+      />
     ) : (
       <Results
         players={players}
