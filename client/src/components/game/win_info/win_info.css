@@ -8,20 +8,45 @@
   z-index: 2;
   margin: 3cqw;
   padding: 4cqw;
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: auto auto auto;
   background-color: rgba(180, 180, 180, 80%);
-}
 
-#win_info * {
-  font-family: "Contrail One", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
+  * {
+    font-family: "Contrail One", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+  }
 
-#yakus {
-  width: 81cqw;
-  height: 25cqw;
-  margin: 2.5cqw;
-  display: flex;
-  flex-direction: column;
-  flex-wrap: wrap;
+  .avatar {
+    grid-column: 1/2;
+    grid-row: 2/4;
+    box-sizing: border-box;
+    width: 25cqw;
+    height: 40cqw;
+    padding: 1cqw;
+    object-fit: contain;
+  }
+
+  #win_hand {
+    grid-column: 1/3;
+    grid-row: 1/2;
+  }
+
+  #yakus {
+    grid-column: 2/3;
+    grid-row: 2/3;
+    width: 54cqw;
+    height: 25cqw;
+    margin: 2.5cqw;
+    display: flex;
+    flex-direction: column;
+    flex-wrap: wrap;
+  }
+
+  #win_totals {
+    grid-column: 2/3;
+    grid-row: 3/4;
+  }
 }

@@ -13,14 +13,21 @@ import { WinInfo } from "../win_info/win_info";
 import { Results } from "../results/results";
 
 import { setAnimations } from "./animations";
+import { PlayerIcons } from "../player_icon/player_icon";
+import type { AvatarIdDict } from "../../../types/avatars";
+import type { Player } from "../../../types/player";
 
 export function GameScreen({
+  players,
+  playerAvatarIds,
   info,
   actionSubmitted,
   setActionSubmitted,
   seeResults,
   goToResults,
 }: {
+  players: Player[];
+  playerAvatarIds: AvatarIdDict;
   info: AllInfo;
   actionSubmitted: boolean;
   setActionSubmitted: () => void;
@@ -39,15 +46,25 @@ export function GameScreen({
     info.round_info.status != RoundStatus.END ? (
       <></>
     ) : !seeResults ? (
-      <WinInfo info={info} goToResults={goToResults} />
+      <WinInfo
+        players={players}
+        playerAvatarIds={playerAvatarIds}
+        info={info}
+        goToResults={goToResults}
+      />
     ) : (
-      <Results info={info} />
+      <Results
+        players={players}
+        playerAvatarIds={playerAvatarIds}
+        info={info}
+      />
     );
   return (
     <EmitAction.Provider value={emit_action}>
       <div
         class={`me_player_${info.player_index} status_${info.round_info.status}`}
       >
+        <PlayerIcons players={players} playerAvatarIds={playerAvatarIds} />
         <Hand
           tiles={info.player_info.hand}
           actions={info.player_info.actions}

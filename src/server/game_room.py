@@ -30,6 +30,8 @@ class GameRoom:
         self.joined_player_connections: list[PlayerConnection] = [
             PlayerConnection(player=creator)
         ]
+        self.avatars = {creator.id: 0}
+        self.avatar_lock = Lock()
 
     @property
     def joined_players(self):
@@ -45,6 +47,10 @@ class GameRoom:
             "player_count": self.player_count,
             "joined_players": [player.model_dump() for player in self.joined_players],
         }
+
+    @property
+    def room_avatar_info(self):
+        return {**self.room_info, "avatars": self.avatars}
 
     @classmethod
     def emit_rooms_list(cls, sid):
@@ -97,14 +103,20 @@ class GameRoom:
                 raise Exception(f"Game already in progress!")
             if len(game_room.joined_players) >= game_room.player_count:
                 raise Exception(f"Room {game_room.room_name} is full!")
-            game_room.joined_player_connections.append(PlayerConnection(player=player))
+            with game_room.avatar_lock:
+                game_room.joined_player_connections.append(
+                    PlayerConnection(player=player)
+                )
+                game_room.avatars[player.id] = 0
             player_rooms[player.id] = game_room
         # broadcast new player to room
         game_room.broadcast_room_info()
         return game_room
 
     def _remove_player(self, player_connection: PlayerConnection):
-        self.joined_player_connections.remove(player_connection)
+        with self.avatar_lock:
+            self.joined_player_connections.remove(player_connection)
+            self.avatars.pop(player_connection.player.id)
         player_rooms.pop(player_connection.player.id)
         if len(self.joined_players) == 0:
             logger.info(f"Room {self.room_name} is now empty, removing from rooms dict")
@@ -127,7 +139,7 @@ class GameRoom:
 
     def broadcast_room_info(self):
         for player in self.joined_players:
-            sio.emit("room_info", self.room_info, to=player.id)
+            sio.emit("room_info", self.room_avatar_info, to=player.id)
 
     def broadcast_game_end(self):
         for player in self.joined_players:
@@ -162,7 +174,9 @@ class GameRoom:
                     )
                     for player in game_room.joined_players:
                         player_rooms.pop(player.id)
-                    game_room.joined_player_connections.clear()
+                    with game_room.avatar_lock:
+                        game_room.joined_player_connections.clear()
+                        game_room.avatars.clear()
                     rooms.pop(game_room.room_name)
 
     @classmethod
@@ -173,10 +187,17 @@ class GameRoom:
                 game_room.get_player_connection(player).is_connected = True
         sio.emit(
             "room_info",
-            game_room.room_info if game_room is not None else None,
+            game_room.room_avatar_info if game_room is not None else None,
             to=player.id,
         )
         return game_room
+
+    @classmethod
+    def set_avatar(cls, player: Player, avatar: int):
+        game_room = cls.get_player_room(player)
+        with game_room.avatar_lock:
+            game_room.avatars[player.id] = avatar
+        game_room.broadcast_room_info()
 
     def start_game(self, game_options: GameOptions):
         if game_options.player_count != self.player_count:

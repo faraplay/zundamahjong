@@ -88,6 +88,13 @@ def on_leave_room(sid):
     GameRoom.leave_room(get_player(sid))
 
 
+@sio_on("set_avatar")
+def on_set_avatar(sid, avatar):
+    if not isinstance(avatar, int):
+        raise Exception("Avatar code is not an integer!")
+    GameRoom.set_avatar(get_player(sid), avatar)
+
+
 @sio_on("start_game")
 def on_start_game(sid, form_data):
     game_room = GameRoom.get_player_room(get_player(sid))

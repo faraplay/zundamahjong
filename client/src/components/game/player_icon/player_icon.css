@@ -1,0 +1,59 @@
+.player_icon {
+  position: absolute;
+  transform: none !important;
+  z-index: 1;
+
+  .player_icon_image {
+    box-sizing: border-box;
+    width: 8cqw;
+    height: 8cqw;
+    border-radius: 0.5cqw;
+    border: 0.2cqw solid navy;
+    background-color: rgba(4, 39, 92, 0.4);
+  }
+
+  .player_icon_name {
+    width: 8cqw;
+    height: 1.3cqw;
+    background-color: rgba(50, 50, 50, 70%);
+    text-align: center;
+    color: white;
+    font-size: 1cqw;
+    font-family: "Chiron GoRound TC", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+  }
+}
+
+.me_player_0 .player_icon.player_0,
+.me_player_1 .player_icon.player_1,
+.me_player_2 .player_icon.player_2,
+.me_player_3 .player_icon.player_3 {
+  left: 20cqw;
+  top: 35cqw;
+}
+
+.me_player_0 .player_icon.player_1,
+.me_player_1 .player_icon.player_2,
+.me_player_2 .player_icon.player_3,
+.me_player_3 .player_icon.player_0 {
+  left: 88cqw;
+  top: 12cqw;
+}
+
+.me_player_0 .player_icon.player_2,
+.me_player_1 .player_icon.player_3,
+.me_player_2 .player_icon.player_0,
+.me_player_3 .player_icon.player_1 {
+  left: 70cqw;
+  top: 1cqw;
+}
+
+.me_player_0 .player_icon.player_3,
+.me_player_1 .player_icon.player_0,
+.me_player_2 .player_icon.player_1,
+.me_player_3 .player_icon.player_2 {
+  left: 2cqw;
+  top: 12cqw;
+}
