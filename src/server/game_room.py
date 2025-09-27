@@ -187,7 +187,7 @@ class GameRoom:
                 game_room.get_player_connection(player).is_connected = True
         sio.emit(
             "room_info",
-            game_room.room_info if game_room is not None else None,
+            game_room.room_avatar_info if game_room is not None else None,
             to=player.id,
         )
         return game_room
