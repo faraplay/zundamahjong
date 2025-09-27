@@ -48,7 +48,11 @@ export function GameScreen({
     ) : !seeResults ? (
       <WinInfo info={info} goToResults={goToResults} />
     ) : (
-      <Results info={info} />
+      <Results
+        players={players}
+        playerAvatarIds={playerAvatarIds}
+        info={info}
+      />
     );
   return (
     <EmitAction.Provider value={emit_action}>
