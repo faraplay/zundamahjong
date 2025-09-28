@@ -11,13 +11,20 @@ export function WinTotalScore({
   scoring_info: Scoring | null;
   goToResults: () => void;
 }) {
+  const onSeeResultsClick = (e: Event) => {
+    e.preventDefault();
+    goToResults();
+  };
+  const seeResultsButton = (
+    <button type="button" id="see_results" onClick={onSeeResultsClick}>
+      Next
+    </button>
+  );
   if (!scoring_info) {
     return (
       <div id="win_totals">
         <div id="win_player">The round is a draw...</div>
-        <button type="button" id="see_results">
-          Next
-        </button>
+        {seeResultsButton}
       </div>
     );
   }
@@ -31,9 +38,7 @@ export function WinTotalScore({
       <div id="total_score">
         {scoring_info.player_scores[scoring_info.win_player]}
       </div>
-      <button type="button" id="see_results" onClick={goToResults}>
-        Next
-      </button>
+      {seeResultsButton}
     </div>
   );
 }
