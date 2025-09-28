@@ -1,8 +1,8 @@
 from threading import Lock
-from src.mahjong.action import Action
-from src.mahjong.game_options import GameOptions
-from src.mahjong.round import RoundStatus
-from src.mahjong.game import Game
+from ..mahjong.action import Action
+from ..mahjong.game_options import GameOptions
+from ..mahjong.round import RoundStatus
+from ..mahjong.game import Game
 
 from .sio import sio
 from .player_info import Player
