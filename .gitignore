@@ -3,5 +3,7 @@
 *.egg-info
 /*.log
 /*.log.*
+/.direnv/
 /client_build/
 /dist/
+/result
