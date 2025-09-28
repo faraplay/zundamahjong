@@ -6,7 +6,7 @@ import "./table_calls.css";
 
 function TableCall({ call }: { call: Call }) {
   return (
-    <span class="call">
+    <span class={`call call_type_${call.call_type}`}>
       <Tile3DList tiles={call.tiles} />
     </span>
   );

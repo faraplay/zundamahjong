@@ -16,10 +16,18 @@
   transform-origin: calc(var(--player-calls-right) - 50cqw)
     calc(var(--player-calls-bottom) - 50cqw);
   transform-style: preserve-3d;
-}
 
-.player_calls .call {
-  display: flex;
-  flex-direction: row;
-  transform-style: preserve-3d;
+  .call {
+    display: flex;
+    flex-direction: row;
+    transform-style: preserve-3d;
+
+    &.call_type_5 {
+      > :nth-child(1),
+      > :nth-child(4) {
+        transform: translate3d(var(--tile-width), 0, var(--tile-depth))
+          rotateY(180deg);
+      }
+    }
+  }
 }
