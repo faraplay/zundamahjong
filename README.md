@@ -5,7 +5,7 @@ To setup the Python virtual environment and install dependencies, run
 ```sh
 python -m venv .venv
 source .venv/bin/activate
-pip install -r requirements.txt
+pip install -e ".[dev]"
 ```
 
 To install the Node.js dependencies, navigate to the `client` folder with
@@ -52,7 +52,7 @@ source .venv/bin/activate
 ```
 
 ```sh
-gunicorn --workers 1 --threads 100 --bind 127.0.0.1:5000 src.server:app
+gunicorn --workers 1 --threads 100 --bind 127.0.0.1:5000 zundamahjong.server:app
 ```
 
 To build the client, open a shell in the `client` folder and run

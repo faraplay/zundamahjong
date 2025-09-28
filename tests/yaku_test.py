@@ -2,10 +2,10 @@ from typing import Optional
 
 from unittest import TestCase
 
-from src.mahjong.tile import Tile
-from src.mahjong.call import Call, CallType
-from src.mahjong.yaku import Win
-from src.mahjong.yaku import YakuCalculator
+from zundamahjong.mahjong.tile import Tile
+from zundamahjong.mahjong.call import Call, CallType
+from zundamahjong.mahjong.yaku import Win
+from zundamahjong.mahjong.yaku import YakuCalculator
 
 
 def get_yaku_mults(

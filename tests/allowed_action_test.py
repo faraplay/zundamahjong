@@ -1,8 +1,8 @@
 import unittest
 
-from src.mahjong.action import Action, ActionType
-from src.mahjong.game_options import GameOptions
-from src.mahjong.round import Round
+from zundamahjong.mahjong.action import Action, ActionType
+from zundamahjong.mahjong.game_options import GameOptions
+from zundamahjong.mahjong.round import Round
 from tests.decks import test_deck1, test_deck2, test_deck3
 
 

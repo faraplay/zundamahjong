@@ -1,7 +1,7 @@
 import os
 from werkzeug import run_simple
 from werkzeug.middleware.shared_data import SharedDataMiddleware
-from src.server import app
+from zundamahjong.server import app
 
 if __name__ == "__main__":
     debug_path = "/zundamahjong"

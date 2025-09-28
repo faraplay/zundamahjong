@@ -1,9 +1,9 @@
 import unittest
 
-from src.mahjong.call import Call, CallType
-from src.mahjong.yaku import Win
-from src.mahjong.game_options import GameOptions
-from src.mahjong.scoring import Scorer
+from zundamahjong.mahjong.call import Call, CallType
+from zundamahjong.mahjong.yaku import Win
+from zundamahjong.mahjong.game_options import GameOptions
+from zundamahjong.mahjong.scoring import Scorer
 
 
 class ScoringTest(unittest.TestCase):

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from src.mahjong.call import Call, CallType
+from zundamahjong.mahjong.call import Call, CallType
 from tests.yaku_test import get_yaku_mults
 
 

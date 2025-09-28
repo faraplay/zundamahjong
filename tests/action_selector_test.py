@@ -1,8 +1,8 @@
 import unittest
 
-from src.mahjong.action import Action, ActionType
-from src.mahjong.round import Round, RoundStatus
-from src.mahjong.action_selector import ActionSelector
+from zundamahjong.mahjong.action import Action, ActionType
+from zundamahjong.mahjong.round import Round, RoundStatus
+from zundamahjong.mahjong.action_selector import ActionSelector
 
 from tests.decks import *
 

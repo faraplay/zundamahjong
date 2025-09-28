@@ -3,7 +3,7 @@ from threading import Lock
 from typing import Optional
 import logging
 
-from src.mahjong.game_options import GameOptions
+from ..mahjong.game_options import GameOptions
 
 from .sio import sio
 from .player_info import Player, PlayerConnection

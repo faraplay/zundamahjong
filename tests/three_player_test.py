@@ -1,10 +1,10 @@
 import unittest
 
-from src.mahjong.call import Call, CallType
-from src.mahjong.game_options import GameOptions
-from src.mahjong.game import Game
-from src.mahjong.win import Win
-from src.mahjong.yaku import YakuCalculator
+from zundamahjong.mahjong.call import Call, CallType
+from zundamahjong.mahjong.game_options import GameOptions
+from zundamahjong.mahjong.game import Game
+from zundamahjong.mahjong.win import Win
+from zundamahjong.mahjong.yaku import YakuCalculator
 
 from tests.decks import *
 
