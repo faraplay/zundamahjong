@@ -1,11 +1,14 @@
 import { useContext, useLayoutEffect } from "preact/hooks";
 
+import type { Player } from "../../../types/player";
+import type { AvatarIdDict } from "../../../types/avatars";
 import type { Action } from "../../../types/action";
 import { RoundStatus, type AllInfo } from "../../../types/game";
 
 import { Emitter } from "../../emitter/emitter";
-
 import { EmitAction } from "../emit_action/emit_action";
+
+import { PlayerIcons } from "../player_icon/player_icon";
 import { Hand } from "../hand/hand";
 import { ActionMenu } from "../action_menu/action_menu";
 import { Table } from "../table/table";
@@ -13,9 +16,8 @@ import { WinInfo } from "../win_info/win_info";
 import { Results } from "../results/results";
 
 import { setAnimations } from "./animations";
-import { PlayerIcons } from "../player_icon/player_icon";
-import type { AvatarIdDict } from "../../../types/avatars";
-import type { Player } from "../../../types/player";
+
+import "./game_screen.css";
 
 export function GameScreen({
   players,
@@ -62,7 +64,7 @@ export function GameScreen({
   return (
     <EmitAction.Provider value={emit_action}>
       <div
-        class={`me_player_${info.player_index} status_${info.round_info.status}`}
+        class={`game_screen me_player_${info.player_index} status_${info.round_info.status}`}
       >
         <PlayerIcons players={players} playerAvatarIds={playerAvatarIds} />
         <Hand

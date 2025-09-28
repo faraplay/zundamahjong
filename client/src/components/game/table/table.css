@@ -4,39 +4,23 @@
   height: 100cqw;
   position: absolute;
   top: calc(50% - 50cqw);
-  background-color: mediumaquamarine;
+  background-image: radial-gradient(rgb(59, 206, 150), rgb(46, 161, 117));
   transform: perspective(130cqw) rotateX(45deg) translateY(-8cqw);
   transform-style: preserve-3d;
-}
 
-.me_player_0 {
-  --me-player: 0;
-}
+  .player_0 {
+    transform: rotate(calc(0deg + var(--me-player) * 90deg));
+  }
 
-.me_player_1 {
-  --me-player: 1;
-}
+  .player_1 {
+    transform: rotate(calc(-90deg + var(--me-player) * 90deg));
+  }
 
-.me_player_2 {
-  --me-player: 2;
-}
+  .player_2 {
+    transform: rotate(calc(-180deg + var(--me-player) * 90deg));
+  }
 
-.me_player_3 {
-  --me-player: 3;
-}
-
-.player_0 {
-  transform: rotate(calc(0deg + var(--me-player) * 90deg));
-}
-
-.player_1 {
-  transform: rotate(calc(-90deg + var(--me-player) * 90deg));
-}
-
-.player_2 {
-  transform: rotate(calc(-180deg + var(--me-player) * 90deg));
-}
-
-.player_3 {
-  transform: rotate(calc(-270deg + var(--me-player) * 90deg));
+  .player_3 {
+    transform: rotate(calc(-270deg + var(--me-player) * 90deg));
+  }
 }

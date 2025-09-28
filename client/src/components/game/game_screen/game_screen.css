@@ -1,0 +1,24 @@
+.game_screen {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  left: 0;
+  top: 0;
+  background-color: rgb(35, 36, 35);
+
+  &.me_player_0 {
+    --me-player: 0;
+  }
+
+  &.me_player_1 {
+    --me-player: 1;
+  }
+
+  &.me_player_2 {
+    --me-player: 2;
+  }
+
+  &.me_player_3 {
+    --me-player: 3;
+  }
+}
