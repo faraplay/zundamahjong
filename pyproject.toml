@@ -1,0 +1,18 @@
+[project]
+name = "zundamahjong"
+dynamic = ["version"]
+
+dependencies = [
+  "python-socketio",
+  "pydantic",
+]
+
+[project.optional-dependencies]
+dev = ["werkzeug"]
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.package-dir]
+zundamahjong = "src"

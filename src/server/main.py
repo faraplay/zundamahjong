@@ -1,5 +1,5 @@
-from src.mahjong.action import Action
-from src.mahjong.game_options import GameOptions
+from ..mahjong.action import Action
+from ..mahjong.game_options import GameOptions
 
 from .sio import sio, sio_on
 from .name_sid import verify_name, get_player, try_get_player, set_player, remove_sid
