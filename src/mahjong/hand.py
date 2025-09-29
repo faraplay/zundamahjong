@@ -3,6 +3,7 @@ from collections.abc import Sequence
 from .tile import (
     Tile,
     TileValue,
+    N,
     get_tile_value,
     get_tile_values,
     remove_tile_value,
@@ -159,7 +160,7 @@ class Hand:
 
     def can_closed_kan(self, tile: Tile):
         tile_value = get_tile_value(tile)
-        return tile % 4 == 0 and self.tile_values.count(tile_value) >= 4
+        return tile % N == 0 and self.tile_values.count(tile_value) >= 4
 
     def closed_kan(self, tile: Tile):
         assert self.can_closed_kan(tile)
