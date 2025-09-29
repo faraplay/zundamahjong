@@ -10,25 +10,27 @@ TileValue = int
 # 31-37 are ESWNWhGR
 # 41-48 are flowers
 
+N = 4
+
 
 def get_tile_values(tiles: list[Tile]) -> list[TileValue]:
-    return [tile // 4 for tile in tiles]
+    return [tile // N for tile in tiles]
 
 
 def remove_tile_value(tiles: list[Tile], tile_value: TileValue):
     for tile in tiles:
-        if tile // 4 == tile_value:
+        if tile // N == tile_value:
             tiles.remove(tile)
             return tile
     raise Exception(f"Tile value {tile_value} not found in hand!")
 
 
-def is_number(tile: Tile):
+def is_number(tile: TileValue):
     return tile < 30
 
 
 def tile_is_flower(tile: Tile):
-    return tile // 4 > 40
+    return tile // N > 40
 
 
 orphans = {1, 9, 11, 19, 21, 29, 31, 32, 33, 34, 35, 36, 37}
@@ -39,4 +41,4 @@ green_tiles = {22, 23, 24, 26, 28, 36}
 
 
 def is_orphan(tile: Tile):
-    return tile // 4 in orphans
+    return tile // N in orphans

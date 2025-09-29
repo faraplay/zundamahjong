@@ -2,25 +2,26 @@ from collections.abc import Iterable
 from random import shuffle
 from collections import deque
 
-from .tile import Tile
+from .tile import Tile, N
 
-four_player_deck: list[Tile] = (
-    list(range(4, 40))
-    + list(range(44, 80))
-    + list(range(84, 120))
-    + list(range(124, 152))
-    + list(range(164, 196, 4))
-)
+four_player_deck: list[Tile] = [
+    tile_value * N + r
+    for tile_value in (
+        list(range(1, 10))
+        + list(range(11, 20))
+        + list(range(21, 30))
+        + list(range(31, 38))
+    )
+    for r in range(4)
+] + [tile_value * N for tile_value in (list(range(41, 49)))]
 
-three_player_deck: list[Tile] = (
-    list(range(4, 8))
-    + list(range(36, 40))
-    + list(range(44, 80))
-    + list(range(84, 120))
-    + list(range(124, 152))
-    + list(range(164, 176, 4))
-    + list(range(180, 192, 4))
-)
+three_player_deck: list[Tile] = [
+    tile_value * N + r
+    for tile_value in (
+        [1, 9] + list(range(11, 20)) + list(range(21, 30)) + list(range(31, 38))
+    )
+    for r in range(4)
+] + [tile_value * N for tile_value in [41, 42, 43, 45, 46, 47]]
 
 
 class Deck:
