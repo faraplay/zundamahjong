@@ -2,16 +2,16 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from .tile import Tile
+from .tile import TileId
 from .call import Call
 
 
 class Win(BaseModel):
     win_player: int
     lose_player: Optional[int]
-    hand: list[Tile]
+    hand: list[TileId]
     calls: list[Call]
-    flowers: list[Tile]
+    flowers: list[TileId]
 
     player_count: int
     wind_round: int

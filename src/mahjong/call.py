@@ -1,7 +1,7 @@
 from enum import IntEnum
 from pydantic import BaseModel
 
-from .tile import Tile
+from .tile import TileId
 
 
 class CallType(IntEnum):
@@ -16,4 +16,4 @@ class CallType(IntEnum):
 
 class Call(BaseModel):
     call_type: CallType
-    tiles: list[Tile]
+    tiles: list[TileId]

@@ -2,9 +2,9 @@ from collections.abc import Iterable
 from random import shuffle
 from collections import deque
 
-from .tile import Tile, N
+from .tile import TileId, N
 
-four_player_deck: list[Tile] = [
+four_player_deck: list[TileId] = [
     tile_value * N + r
     for tile_value in (
         list(range(1, 10))
@@ -15,7 +15,7 @@ four_player_deck: list[Tile] = [
     for r in range(4)
 ] + [tile_value * N for tile_value in (list(range(41, 49)))]
 
-three_player_deck: list[Tile] = [
+three_player_deck: list[TileId] = [
     tile_value * N + r
     for tile_value in (
         [1, 9] + list(range(11, 20)) + list(range(21, 30)) + list(range(31, 38))
@@ -25,11 +25,11 @@ three_player_deck: list[Tile] = [
 
 
 class Deck:
-    def __init__(self, tiles: Iterable[Tile]):
+    def __init__(self, tiles: Iterable[TileId]):
         self._tiles = deque(tiles)
 
     @classmethod
-    def shuffled_deck(cls, tiles: list[Tile]):
+    def shuffled_deck(cls, tiles: list[TileId]):
         new_deck = tiles.copy()
         shuffle(new_deck)
         return cls(new_deck)

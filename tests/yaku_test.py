@@ -2,7 +2,7 @@ from typing import Optional
 
 from unittest import TestCase
 
-from src.mahjong.tile import Tile
+from src.mahjong.tile import TileId
 from src.mahjong.call import Call, CallType
 from src.mahjong.yaku import Win
 from src.mahjong.yaku import YakuCalculator
@@ -14,7 +14,7 @@ def get_yaku_mults(
     lose_player: Optional[int],
     formed_hand: list[Call],
     calls: list[Call],
-    flowers: list[Tile],
+    flowers: list[TileId],
     player_count: int = 4,
     wind_round: int = 0,
     sub_round: int = 0,
