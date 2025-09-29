@@ -10,7 +10,7 @@ TileValue = int
 # 31-37 are ESWNWhGR
 # 41-48 are flowers
 
-N = 4
+N = 10
 
 
 def get_tile_value(tile: Tile) -> TileValue:

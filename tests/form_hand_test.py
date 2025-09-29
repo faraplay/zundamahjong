@@ -5,90 +5,90 @@ from src.mahjong.form_hand import is_winning, formed_hand_possibilities
 
 class FormHandTest(unittest.TestCase):
     def test_wrong_size_hand(self):
-        tiles = [4, 5, 6, 7]
+        tiles = [10, 11, 12, 13]
         self.assertFalse(is_winning(tiles))
 
     def test_wrong_size_suits(self):
-        tiles = [8, 9, 10, 11, 60, 61, 62, 63]
+        tiles = [20, 21, 22, 23, 150, 151, 152, 153]
         self.assertFalse(is_winning(tiles))
 
     def test_number_pair(self):
-        tiles = [20, 21]
+        tiles = [50, 51]
         self.assertTrue(is_winning(tiles))
 
     def test_honor_pair(self):
-        tiles = [124, 125]
+        tiles = [310, 311]
         self.assertTrue(is_winning(tiles))
 
     def test_number_run(self):
-        tiles = [4, 8, 12, 20, 21]
+        tiles = [10, 20, 30, 50, 51]
         self.assertTrue(is_winning(tiles))
 
     def test_number_run_unsorted(self):
-        tiles = [8, 20, 12, 4, 21]
+        tiles = [20, 50, 30, 10, 51]
         self.assertTrue(is_winning(tiles))
 
     def test_number_bad_run(self):
-        tiles = [4, 8, 9, 12, 16]
+        tiles = [10, 20, 21, 30, 40]
         self.assertFalse(is_winning(tiles))
 
     def test_number_triple_run(self):
-        tiles = [4, 5, 6, 8, 9, 10, 12, 13, 14, 32, 33]
+        tiles = [10, 11, 12, 20, 21, 22, 30, 31, 32, 80, 81]
         self.assertEqual(len(formed_hand_possibilities(tiles)), 2)
 
     def test_number_double_run(self):
-        tiles = [12, 13, 16, 17, 20, 21, 24, 25]
+        tiles = [30, 31, 40, 41, 50, 51, 60, 61]
         self.assertEqual(len(formed_hand_possibilities(tiles)), 2)
 
     def test_honor_run(self):
-        tiles = [8, 9, 124, 128, 132]
+        tiles = [20, 21, 310, 320, 330]
         self.assertFalse(is_winning(tiles))
 
     def test_number_overlapping_run(self):
-        tiles = [8, 9, 12, 16, 17, 20, 21, 22, 24, 25, 28]
+        tiles = [20, 21, 30, 40, 41, 50, 51, 52, 60, 61, 70]
         self.assertEqual(len(formed_hand_possibilities(tiles)), 1)
 
     def test_number_pon_run(self):
-        tiles = [12, 13, 14, 16, 20, 24, 25, 26]
+        tiles = [30, 31, 32, 40, 50, 60, 61, 62]
         self.assertEqual(len(formed_hand_possibilities(tiles)), 2)
 
     def test_many_suits_win(self):
-        tiles = [16, 20, 24, 44, 45, 46, 104, 108, 109, 110, 112, 132, 133, 134]
+        tiles = [40, 50, 60, 110, 111, 112, 260, 270, 271, 272, 280, 330, 331, 332]
         self.assertTrue(is_winning(tiles))
 
     def test_many_suits_not_win(self):
-        tiles = [16, 20, 24, 44, 45, 46, 104, 105, 108, 109, 112, 132, 133, 134]
+        tiles = [40, 50, 60, 110, 111, 112, 260, 261, 270, 271, 280, 330, 331, 332]
         self.assertFalse(is_winning(tiles))
 
     def test_nine_gates(self):
-        tiles = [4, 5, 6, 8, 12, 16, 20, 24, 28, 32, 36, 37, 38]
+        tiles = [10, 11, 12, 20, 30, 40, 50, 60, 70, 80, 90, 91, 92]
         for tile in range(1, 10):
             self.assertTrue(is_winning(tiles + [tile]))
 
     def test_seven_pairs(self):
-        tiles = [4, 5, 20, 21, 36, 37, 52, 53, 60, 61, 108, 109, 140, 141]
+        tiles = [10, 11, 50, 51, 90, 91, 130, 131, 150, 151, 270, 271, 350, 351]
         self.assertTrue(is_winning(tiles))
 
     def test_seven_pairs_repeat(self):
-        tiles = [4, 5, 20, 21, 36, 37, 52, 53, 54, 55, 108, 109, 140, 141]
+        tiles = [10, 11, 50, 51, 90, 91, 130, 131, 132, 133, 270, 271, 350, 351]
         self.assertFalse(is_winning(tiles))
 
     def test_four_pairs(self):
-        tiles = [4, 5, 60, 61, 116, 117, 132, 133]
+        tiles = [10, 11, 150, 151, 290, 291, 330, 331]
         self.assertFalse(is_winning(tiles))
 
     def test_ryanpeikou(self):
-        tiles = [8, 9, 12, 13, 16, 17, 60, 61, 64, 65, 68, 69, 144, 145]
+        tiles = [20, 21, 30, 31, 40, 41, 150, 151, 160, 161, 170, 171, 360, 361]
         self.assertEqual(len(formed_hand_possibilities(tiles)), 2)
 
     def test_thirteen_orphans(self):
-        tiles = [4, 36, 44, 76, 77, 84, 116, 124, 128, 132, 136, 140, 144, 148]
+        tiles = [10, 90, 110, 190, 191, 210, 290, 310, 320, 330, 340, 350, 360, 370]
         self.assertTrue(is_winning(tiles))
 
     def test_eleven_orphans(self):
-        tiles = [4, 36, 44, 76, 77, 84, 116, 124, 128, 132, 133, 134, 144, 148]
+        tiles = [10, 90, 110, 190, 191, 210, 290, 310, 320, 330, 331, 332, 360, 370]
         self.assertFalse(is_winning(tiles))
 
     def test_thirteen_orphans_and_other(self):
-        tiles = [4, 36, 44, 52, 76, 84, 116, 124, 128, 132, 136, 140, 144, 148]
+        tiles = [10, 90, 110, 130, 190, 210, 290, 310, 320, 330, 340, 350, 360, 370]
         self.assertFalse(is_winning(tiles))

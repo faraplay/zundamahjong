@@ -40,13 +40,13 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
             flowers=[],
         )
@@ -57,15 +57,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[164],
+            flowers=[410],
         )
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1})
 
@@ -74,15 +74,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[176],
+            flowers=[440],
             sub_round=1,
         )
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1})
@@ -92,15 +92,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[164, 180],
+            flowers=[410, 450],
         )
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 2})
 
@@ -109,15 +109,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[164, 168, 172, 176],
+            flowers=[410, 420, 430, 440],
         )
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1})
 
@@ -126,15 +126,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[164, 168, 172, 176, 184, 188, 192],
+            flowers=[410, 420, 430, 440, 460, 470, 480],
         )
         self.assertDictEqual(
             yaku_mults, {"SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1, "SEVEN_FLOWERS": 1}
@@ -145,15 +145,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[164, 168, 172, 176, 180, 184, 188, 192],
+            flowers=[410, 420, 430, 440, 450, 460, 470, 480],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -165,15 +165,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[168],
+            flowers=[420],
             draw_count=1,
         )
         self.assertDictEqual(
@@ -186,15 +186,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[168],
+            flowers=[420],
             after_flower_count=1,
         )
         self.assertDictEqual(
@@ -207,15 +207,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[168],
+            flowers=[420],
             after_kan_count=1,
         )
         self.assertDictEqual(
@@ -228,15 +228,15 @@ class YakuTest(TestCase):
             win_player=1,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[128, 129, 130]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[320, 321, 322]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[176],
+            flowers=[440],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -248,15 +248,15 @@ class YakuTest(TestCase):
             win_player=2,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[128, 129, 130]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[320, 321, 322]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[176],
+            flowers=[440],
             sub_round=1,
         )
         self.assertDictEqual(
@@ -269,15 +269,15 @@ class YakuTest(TestCase):
             win_player=1,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[124, 125, 126]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[310, 311, 312]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[176],
+            flowers=[440],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -289,15 +289,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[140, 141, 142]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[350, 351, 352]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -309,15 +309,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[144, 145, 146]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[360, 361, 362]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -329,15 +329,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[148, 149, 150]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[370, 371, 372]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -349,15 +349,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[32, 33]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[80, 81]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(yaku_mults, {"EYES": 1})
 
@@ -366,15 +366,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
             calls=[
-                Call(call_type=CallType.CLOSED_KAN, tiles=[76, 77, 78, 79]),
+                Call(call_type=CallType.CLOSED_KAN, tiles=[190, 191, 192, 193]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(yaku_mults, {"NO_CALLS": 1})
 
@@ -383,15 +383,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
             calls=[
-                Call(call_type=CallType.CLOSED_KAN, tiles=[76, 77, 78, 79]),
+                Call(call_type=CallType.CLOSED_KAN, tiles=[190, 191, 192, 193]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(yaku_mults, {"NO_CALLS": 1})
 
@@ -400,15 +400,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[168],
+            flowers=[420],
             is_chankan=True,
         )
         self.assertDictEqual(yaku_mults, {"ROBBING_A_KAN": 1})
@@ -418,15 +418,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[168],
+            flowers=[420],
             is_haitei=True,
         )
         self.assertDictEqual(yaku_mults, {"UNDER_THE_SEA": 1})
@@ -436,15 +436,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[168],
+            flowers=[420],
             is_houtei=True,
         )
         self.assertDictEqual(yaku_mults, {"UNDER_THE_RIVER": 1})
@@ -454,15 +454,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PAIR, tiles=[4, 5]),
+                Call(call_type=CallType.PAIR, tiles=[10, 11]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[6, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[56, 60, 64]),
-                Call(call_type=CallType.CHI, tiles=[61, 65, 68]),
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[12, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[140, 150, 160]),
+                Call(call_type=CallType.CHI, tiles=[151, 161, 170]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(yaku_mults, {"ALL_RUNS": 1})
 
@@ -471,15 +471,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[12, 13, 14]),
-                Call(call_type=CallType.CHI, tiles=[16, 20, 24]),
-                Call(call_type=CallType.PAIR, tiles=[92, 93]),
+                Call(call_type=CallType.PON, tiles=[30, 31, 32]),
+                Call(call_type=CallType.CHI, tiles=[40, 50, 60]),
+                Call(call_type=CallType.PAIR, tiles=[230, 231]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[60, 61, 62]),
-                Call(call_type=CallType.CHI, tiles=[63, 64, 68]),
+                Call(call_type=CallType.PON, tiles=[150, 151, 152]),
+                Call(call_type=CallType.CHI, tiles=[153, 160, 170]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(yaku_mults, {"ALL_SIMPLES": 1})
 
@@ -488,15 +488,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[84, 88, 92]),
-                Call(call_type=CallType.CHI, tiles=[96, 100, 104]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[210, 220, 230]),
+                Call(call_type=CallType.CHI, tiles=[240, 250, 260]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[108, 112, 116]),
+                Call(call_type=CallType.CHI, tiles=[270, 280, 290]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(yaku_mults, {"PURE_STRAIGHT": 1})
 
@@ -505,15 +505,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[4, 5, 6]),
-                Call(call_type=CallType.PON, tiles=[60, 61, 62]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.PON, tiles=[10, 11, 12]),
+                Call(call_type=CallType.PON, tiles=[150, 151, 152]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[92, 93, 94]),
+                Call(call_type=CallType.PON, tiles=[230, 231, 232]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(yaku_mults, {"ALL_TRIPLETS": 1})
 
@@ -522,15 +522,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[20, 24, 28]),
-                Call(call_type=CallType.PON, tiles=[36, 37, 38]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[50, 60, 70]),
+                Call(call_type=CallType.PON, tiles=[90, 91, 92]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[13, 16, 21]),
+                Call(call_type=CallType.CHI, tiles=[31, 40, 51]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(yaku_mults, {"HALF_FLUSH": 1})
 
@@ -539,15 +539,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[20, 24, 28]),
-                Call(call_type=CallType.PON, tiles=[36, 37, 38]),
-                Call(call_type=CallType.PAIR, tiles=[13, 14]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[50, 60, 70]),
+                Call(call_type=CallType.PON, tiles=[90, 91, 92]),
+                Call(call_type=CallType.PAIR, tiles=[31, 32]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[15, 16, 21]),
+                Call(call_type=CallType.CHI, tiles=[33, 40, 51]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(yaku_mults, {"FULL_FLUSH": 1})
 
@@ -556,16 +556,16 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PAIR, tiles=[12, 13]),
-                Call(call_type=CallType.PAIR, tiles=[16, 17]),
-                Call(call_type=CallType.PAIR, tiles=[36, 37]),
-                Call(call_type=CallType.PAIR, tiles=[60, 61]),
-                Call(call_type=CallType.PAIR, tiles=[84, 85]),
-                Call(call_type=CallType.PAIR, tiles=[88, 89]),
-                Call(call_type=CallType.PAIR, tiles=[124, 125]),
+                Call(call_type=CallType.PAIR, tiles=[30, 31]),
+                Call(call_type=CallType.PAIR, tiles=[40, 41]),
+                Call(call_type=CallType.PAIR, tiles=[90, 91]),
+                Call(call_type=CallType.PAIR, tiles=[150, 151]),
+                Call(call_type=CallType.PAIR, tiles=[210, 211]),
+                Call(call_type=CallType.PAIR, tiles=[220, 221]),
+                Call(call_type=CallType.PAIR, tiles=[310, 311]),
             ],
             calls=[],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(yaku_mults, {"SEVEN_PAIRS": 1})
 
@@ -574,15 +574,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[44, 48, 52]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[110, 120, 130]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[108, 112, 116]),
+                Call(call_type=CallType.CHI, tiles=[270, 280, 290]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -594,15 +594,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[44, 48, 52]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[116, 117]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[110, 120, 130]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[290, 291]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[108, 112, 118]),
+                Call(call_type=CallType.CHI, tiles=[270, 280, 292]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -614,15 +614,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[5, 9, 13]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[11, 21, 31]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -634,15 +634,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[4, 8, 12]),
-                Call(call_type=CallType.CHI, tiles=[5, 9, 13]),
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
+                Call(call_type=CallType.CHI, tiles=[11, 21, 31]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[93, 97, 101]),
+                Call(call_type=CallType.CHI, tiles=[231, 241, 251]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -654,15 +654,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[12, 16, 20]),
-                Call(call_type=CallType.CHI, tiles=[52, 56, 60]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.CHI, tiles=[30, 40, 50]),
+                Call(call_type=CallType.CHI, tiles=[130, 140, 150]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -674,15 +674,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[36, 37, 38]),
-                Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.PON, tiles=[90, 91, 92]),
+                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[116, 117, 118]),
+                Call(call_type=CallType.PON, tiles=[290, 291, 292]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(
             yaku_mults,
@@ -694,15 +694,15 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[4, 5, 6]),
-                Call(call_type=CallType.PON, tiles=[44, 45, 46]),
-                Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-                Call(call_type=CallType.PAIR, tiles=[132, 133]),
+                Call(call_type=CallType.PON, tiles=[10, 11, 12]),
+                Call(call_type=CallType.PON, tiles=[110, 111, 112]),
+                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                Call(call_type=CallType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[116, 117, 118]),
+                Call(call_type=CallType.PON, tiles=[290, 291, 292]),
             ],
-            flowers=[168],
+            flowers=[420],
         )
         self.assertDictEqual(
             yaku_mults,
