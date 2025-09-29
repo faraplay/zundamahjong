@@ -3,6 +3,7 @@ from collections import Counter
 from collections.abc import Callable
 
 from .tile import (
+    get_tile_value,
     is_number,
     terminals,
     winds,
@@ -36,9 +37,12 @@ class YakuCalculator:
         self._seat = (
             self._win.win_player - self._win.sub_round
         ) % self._win.player_count
-        self._flowers = set(flower // 4 for flower in self._win.flowers)
+        self._flowers = set(get_tile_value(flower) for flower in self._win.flowers)
         self._melds = [
-            Call(call_type=call.call_type, tiles=[tile // 4 for tile in call.tiles])
+            Call(
+                call_type=call.call_type,
+                tiles=[get_tile_value(tile) for tile in call.tiles],
+            )
             for call in self._formed_hand + self._win.calls
         ]
         self._hand_tiles = [tile for call in self._melds for tile in call.tiles]

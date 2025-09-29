@@ -3,6 +3,7 @@ from collections.abc import Sequence
 from .tile import (
     Tile,
     TileValue,
+    get_tile_value,
     get_tile_values,
     remove_tile_value,
     tile_is_flower,
@@ -61,7 +62,7 @@ class Hand:
         self.sort()
 
     def can_chi_a(self, tile: Tile):
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         return (
             is_number(tile_value)
             and (tile_value + 1) in self.tile_values
@@ -70,13 +71,13 @@ class Hand:
 
     def chi_a(self, tile: Tile):
         assert self.can_chi_a(tile)
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         tile_1 = self.remove_tile_value(tile_value + 1)
         tile_2 = self.remove_tile_value(tile_value + 2)
         self._calls.append(Call(call_type=CallType.CHI, tiles=[tile, tile_1, tile_2]))
 
     def can_chi_b(self, tile: Tile):
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         return (
             is_number(tile_value)
             and (tile_value - 1) in self.tile_values
@@ -85,13 +86,13 @@ class Hand:
 
     def chi_b(self, tile: Tile):
         assert self.can_chi_b(tile)
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         tile_m1 = self.remove_tile_value(tile_value - 1)
         tile_1 = self.remove_tile_value(tile_value + 1)
         self._calls.append(Call(call_type=CallType.CHI, tiles=[tile_m1, tile, tile_1]))
 
     def can_chi_c(self, tile: Tile):
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         return (
             is_number(tile_value)
             and (tile_value - 2) in self.tile_values
@@ -100,29 +101,29 @@ class Hand:
 
     def chi_c(self, tile: Tile):
         assert self.can_chi_c(tile)
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         tile_m2 = self.remove_tile_value(tile_value - 2)
         tile_m1 = self.remove_tile_value(tile_value - 1)
         self._calls.append(Call(call_type=CallType.CHI, tiles=[tile_m2, tile_m1, tile]))
 
     def can_pon(self, tile: Tile):
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         return self.tile_values.count(tile_value) >= 2
 
     def pon(self, tile: Tile):
         assert self.can_pon(tile)
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         tile_a = self.remove_tile_value(tile_value)
         tile_b = self.remove_tile_value(tile_value)
         self._calls.append(Call(call_type=CallType.PON, tiles=[tile, tile_a, tile_b]))
 
     def can_open_kan(self, tile: Tile):
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         return self.tile_values.count(tile_value) >= 3
 
     def open_kan(self, tile: Tile):
         assert self.can_open_kan(tile)
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         tile_a = self.remove_tile_value(tile_value)
         tile_b = self.remove_tile_value(tile_value)
         tile_c = self.remove_tile_value(tile_value)
@@ -133,19 +134,21 @@ class Hand:
         self._draw_from_back()
 
     def can_add_kan(self, tile: Tile):
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         return tile in self._tiles and any(
-            call.call_type == CallType.PON and call.tiles[0] // 4 == tile_value
+            call.call_type == CallType.PON
+            and get_tile_value(call.tiles[0]) == tile_value
             for call in self._calls
         )
 
     def add_kan(self, tile: Tile):
         assert self.can_add_kan(tile)
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         pon_index, pon_call = next(
             (index, call)
             for index, call in enumerate(self._calls)
-            if call.call_type == CallType.PON and call.tiles[0] // 4 == tile_value
+            if call.call_type == CallType.PON
+            and get_tile_value(call.tiles[0]) == tile_value
         )
         self._tiles.remove(tile)
         self._calls[pon_index] = Call(
@@ -155,7 +158,7 @@ class Hand:
         self._draw_from_back()
 
     def can_closed_kan(self, tile: Tile):
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         return tile % 4 == 0 and self.tile_values.count(tile_value) >= 4
 
     def closed_kan(self, tile: Tile):
