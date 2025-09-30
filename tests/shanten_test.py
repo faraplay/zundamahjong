@@ -98,3 +98,12 @@ class ShantenTest(unittest.TestCase):
         datas = []
         for _ in range(1000):
             datas.append(suit_shanten_data([2, 3, 3, 4, 4, 4, 5, 5, 6]))
+
+    def test_shanten_long_times_1000(self):
+        datas = []
+        for _ in range(1000):
+            datas.append(
+                suit_shanten_data(
+                    [2, 3, 3, 4, 4, 4, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 9, 9, 9]
+                )
+            )

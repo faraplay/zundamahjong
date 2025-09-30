@@ -36,6 +36,11 @@ def suit_shanten_data(tile_values: list[TileValue]):
             index += 1
         return -1
 
+    def popped(tiles: list[TileValue], index: int):
+        tiles_copy = tiles.copy()
+        tiles_copy.pop(index)
+        return tiles_copy
+
     def get_pair_useful_tiles(tiles: list[TileValue]):
         # Returns bitflags of the tiles that help make a pair
         # Assumes tiles is not empty!
@@ -80,108 +85,108 @@ def suit_shanten_data(tile_values: list[TileValue]):
                 pair_useful_tile_count,
                 useful_tiles | pair_useful_tiles,
             )
-
         if meld_count >= 4:
+            # no point trying to make a 5th meld
             return
 
+        if first_index >= length:
+            # no tiles to check
+            return
+
+        if data[4 * 2 + 1][0] == 14:
+            # we've already reached the best we can do, so stop
+            return
+
+        current_tile = unmelded_tiles[first_index]
+        tiles_left1 = popped(unmelded_tiles, first_index)
         current_index = first_index
-        while current_index < length:
-            tile = unmelded_tiles[current_index]
-
-            # try a incomplete meld with just 1 tile
-            remaining_tiles = unmelded_tiles.copy()
-            remaining_tiles.pop(current_index)
-            my_useful_tiles = 0b111_110_000_000 >> tile
-            try_group(
-                remaining_tiles,
-                current_index,
-                meld_count + 1,
-                useful_tile_count + 1,
-                useful_tiles | my_useful_tiles,
-            )
-            if not current_index + 1 < length:
-                # we've checked the last tile
-                return
-
-            # see if the tile immediately after the current tile is the same
-            if remaining_tiles[current_index] == tile:
-                # try an incomplete meld with more than one of the current tile
-                remaining_tiles.pop(current_index)
+        while True:
+            # see if we have more than one of current_tile
+            if (
+                current_index + 1 < length
+                and tiles_left1[current_index] == current_tile
+            ):
+                tiles_left2 = popped(tiles_left1, current_index)
                 if (
                     current_index + 2 < length
-                    and remaining_tiles[current_index] == tile
+                    and tiles_left2[current_index] == current_tile
                 ):
-                    remaining_tiles.pop(current_index)
                     # no point trying two of the current tile if a third exists
                     try_group(
-                        remaining_tiles,
+                        popped(tiles_left2, current_index),
                         current_index,
                         meld_count + 1,
                         useful_tile_count + 3,
                         useful_tiles,
                     )
                 else:
-                    my_useful_tiles = 0b1_000_000_000 >> tile
                     try_group(
-                        remaining_tiles,
+                        tiles_left2,
                         current_index,
                         meld_count + 1,
                         useful_tile_count + 2,
-                        useful_tiles | my_useful_tiles,
+                        useful_tiles | (0b1_000_000_000 >> current_tile),
                     )
-                # remaining_tiles has been mangled, need to reconstruct it
-                remaining_tiles = unmelded_tiles.copy()
-                remaining_tiles.pop(current_index)
 
             # find next different tile
-            different_index = find_different_tile_index(
-                remaining_tiles, tile, current_index
+            diff_index1 = find_different_tile_index(
+                tiles_left1, current_tile, current_index
             )
-            if different_index == -1:
-                # all later tiles are the same as this one
-                return
-            next_different_tile = remaining_tiles.pop(different_index)
-            if next_different_tile == tile + 2:
-                # try an incomplete meld with tile, tile + 2
-                my_useful_tiles = 0b100_000_000 >> tile
-                try_group(
-                    remaining_tiles,
-                    current_index,
-                    meld_count + 1,
-                    useful_tile_count + 2,
-                    useful_tiles | my_useful_tiles,
-                )
-            elif next_different_tile == tile + 1:
-                # try an incomplete meld with tile, tile + 1
-                my_useful_tiles = 0b10_010_000_000 >> tile
-                try_group(
-                    remaining_tiles,
-                    current_index,
-                    meld_count + 1,
-                    useful_tile_count + 2,
-                    useful_tiles | my_useful_tiles,
-                )
-                # find next next different tile
-                different_index_2 = find_different_tile_index(
-                    remaining_tiles, next_different_tile, different_index
-                )
-                if different_index_2 != -1:
-                    next_different_tile_2 = remaining_tiles.pop(different_index_2)
-                    if next_different_tile_2 == tile + 2:
-                        # no point trying (tile, tile+2) when tile+1 exists
-                        # just try using the meld tile, tile+1, tile+2
-                        try_group(
-                            remaining_tiles,
-                            current_index,
-                            meld_count + 1,
-                            useful_tile_count + 3,
-                            useful_tiles,
-                        )
+            if diff_index1 != -1:
+                diff_tile1 = tiles_left1[diff_index1]
+                tiles_left2 = popped(tiles_left1, diff_index1)
+                if diff_tile1 == current_tile + 1:
+                    # find next next different tile
+                    diff_index2 = find_different_tile_index(
+                        tiles_left2, diff_tile1, diff_index1
+                    )
+                    if diff_index2 != -1:
+                        diff_tile2 = tiles_left2[diff_index2]
+                        if diff_tile2 == current_tile + 2:
+                            # no point trying (tile, tile+2) when tile+1 exists
+                            # just try using the meld tile, tile+1, tile+2
+                            try_group(
+                                popped(tiles_left2, diff_index2),
+                                current_index,
+                                meld_count + 1,
+                                useful_tile_count + 3,
+                                useful_tiles,
+                            )
+                    # try an incomplete meld with tile, tile + 1
+                    try_group(
+                        tiles_left2,
+                        current_index,
+                        meld_count + 1,
+                        useful_tile_count + 2,
+                        useful_tiles | (0b10_010_000_000 >> current_tile),
+                    )
+                elif diff_tile1 == current_tile + 2:
+                    # try an incomplete meld with tile, tile + 2
+                    try_group(
+                        tiles_left2,
+                        current_index,
+                        meld_count + 1,
+                        useful_tile_count + 2,
+                        useful_tiles | (0b100_000_000 >> current_tile),
+                    )
 
-            # move on to the next different tile
-            # note that different_index was for the list remaining_tiles,
-            # which had the current tile removed, so we need to add 1
-            current_index = different_index + 1
+            # try a incomplete meld with just 1 tile
+            try_group(
+                tiles_left1,
+                current_index,
+                meld_count + 1,
+                useful_tile_count + 1,
+                useful_tiles | (0b111_110_000_000 >> current_tile),
+            )
+
+            if diff_index1 != -1:
+                # move on to the next different tile
+                # edit tiles_left1 in place
+                tiles_left1[diff_index1] = current_tile
+                current_tile = diff_tile1
+                current_index = diff_index1 + 1
+            else:
+                return
 
     def update_data(data_index, useful_tile_count, useful_tiles):
         if useful_tile_count > data[data_index][0]:
