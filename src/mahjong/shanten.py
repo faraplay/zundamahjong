@@ -6,19 +6,19 @@ from src.mahjong.tile import TileValue
 
 
 def suit_shanten_data(tile_values: list[TileValue]):
-    data = {
+    data = [
         # i * 2 + j: (number of useful tiles, bitflags of which tiles get you closer)
-        0 * 2 + 0: [0, 0b000_000_000],
-        0 * 2 + 1: [0, 0b000_000_000],  # 1 pair
-        1 * 2 + 0: [0, 0b000_000_000],  # 1 meld
-        1 * 2 + 1: [0, 0b000_000_000],  # 1 meld 1 pair
-        2 * 2 + 0: [0, 0b000_000_000],
-        2 * 2 + 1: [0, 0b000_000_000],
-        3 * 2 + 0: [0, 0b000_000_000],
-        3 * 2 + 1: [0, 0b000_000_000],
-        4 * 2 + 0: [0, 0b000_000_000],
-        4 * 2 + 1: [0, 0b000_000_000],  # 4 melds 1 pair
-    }
+        [0, 0b000_000_000],
+        [0, 0b000_000_000],  # 1 pair
+        [0, 0b000_000_000],  # 1 meld
+        [0, 0b000_000_000],  # 1 meld 1 pair
+        [0, 0b000_000_000],
+        [0, 0b000_000_000],
+        [0, 0b000_000_000],
+        [0, 0b000_000_000],
+        [0, 0b000_000_000],
+        [0, 0b000_000_000],  # 4 melds 1 pair
+    ]
 
     def find_different_tile_index(
         tiles: list[TileValue], tile: TileValue, start_index: int
@@ -219,6 +219,6 @@ def suit_shanten_data(tile_values: list[TileValue]):
         useful_tile_count=0,
         useful_tiles=0b000_000_000,
     )
-    for datum in data.values():
+    for datum in data:
         datum[1] &= 0b111_111_111
     return data
