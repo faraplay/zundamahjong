@@ -41,6 +41,12 @@ def suit_shanten_data(tile_values: list[TileValue]):
         tiles_copy.pop(index)
         return tiles_copy
 
+    def popped2(tiles: list[TileValue], index: int):
+        tiles_copy = tiles.copy()
+        tiles_copy.pop(index)
+        tiles_copy.pop(index)
+        return tiles_copy
+
     def get_pair_useful_tiles(tiles: list[TileValue]):
         # Returns bitflags of the tiles that help make a pair
         # Assumes tiles is not empty!
@@ -101,19 +107,20 @@ def suit_shanten_data(tile_values: list[TileValue]):
         tiles_left1 = popped(unmelded_tiles, first_index)
         current_index = first_index
         while True:
-            # see if we have more than one of current_tile
+            # see if we have two of current_tile
             if (
                 current_index + 1 < length
                 and tiles_left1[current_index] == current_tile
             ):
-                tiles_left2 = popped(tiles_left1, current_index)
+                # see if we have three of current_tile
                 if (
                     current_index + 2 < length
-                    and tiles_left2[current_index] == current_tile
+                    and tiles_left1[current_index + 1] == current_tile
                 ):
                     # no point trying two of the current tile if a third exists
+                    # so we only try the meld of three
                     try_group(
-                        popped(tiles_left2, current_index),
+                        popped2(tiles_left1, current_index),
                         current_index,
                         meld_count + 1,
                         useful_tile_count + 3,
@@ -121,7 +128,7 @@ def suit_shanten_data(tile_values: list[TileValue]):
                     )
                 else:
                     try_group(
-                        tiles_left2,
+                        popped(tiles_left1, current_index),
                         current_index,
                         meld_count + 1,
                         useful_tile_count + 2,
