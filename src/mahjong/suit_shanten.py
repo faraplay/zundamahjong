@@ -1,11 +1,104 @@
 from src.mahjong.tile import TileValue
 
-# Given a list of tiles of a suit
-# return the number of extra tiles needed to create i melds and j pairs (0<=i<=4, 0<=j<=1)
-# determine which tiles get you 1 closer
+
+def honours_shanten_data(tiles: list[TileValue]):
+    # Expects values from 1 to 7 (need to subtract 30)
+    tile_freqs = [tiles.count(tile) for tile in range(8)]
+    data = [
+        [0, 0b0000_000],
+        [0, 0b0000_000],
+        [0, 0b0000_000],
+        [0, 0b0000_000],
+        [0, 0b0000_000],
+        [0, 0b0000_000],
+        [0, 0b0000_000],
+        [0, 0b0000_000],
+        [0, 0b0000_000],
+        [0, 0b0000_000],
+    ]
+
+    # remove triplets, keeping track of how many you remove
+    triplet_count = 0
+    current_tile = 1
+    while current_tile < 8:
+        if tile_freqs[current_tile] >= 3:
+            triplet_count += 1
+            tile_freqs[current_tile] -= 3
+        else:
+            current_tile += 1
+
+    # get masks for the tiles with frequencies 1 and 2
+    tile1_count = 0
+    useful_tiles1 = 0b0000_000
+    tile2_count = 0
+    useful_tiles2 = 0b0000_000
+    current_tile = 1
+    while current_tile < 8:
+        freq = tile_freqs[current_tile]
+        if freq == 2:
+            tile2_count += 1
+            useful_tiles2 |= 0b1_0000_000 >> current_tile
+        elif freq == 1:
+            tile1_count += 1
+            useful_tiles1 |= 0b1_0000_000 >> current_tile
+        current_tile += 1
+
+    meld_count = 0
+    used_tile_count = 0
+    useful_tiles = 0b0000_000
+    # first we use complete triplets for our melds
+    while meld_count < triplet_count:
+        # there are still triplets left over so we can fill a pair
+        data[meld_count * 2 + 1] = [used_tile_count + 2, useful_tiles]
+        if meld_count >= 4:
+            return data
+        # use a triplet to fill a meld
+        meld_count += 1
+        used_tile_count += 3
+        data[meld_count * 2] = [used_tile_count, useful_tiles]
+
+    # next we use pairs for our melds
+    while meld_count < triplet_count + tile2_count:
+        # there are still pairs left over so we can fill a pair
+        data[meld_count * 2 + 1] = [used_tile_count + 2, useful_tiles]
+        if meld_count >= 4:
+            return data
+        # use a pair to fill a meld
+        # now we have an incomplete meld so any tile with freq 2 is useful
+        useful_tiles = useful_tiles2
+        meld_count += 1
+        used_tile_count += 2
+        data[meld_count * 2] = [used_tile_count, useful_tiles]
+
+    # next we use singles for our melds
+    # we will have an incomplete meld using a single so any tile with
+    # freq 1 or 2 is useful
+    useful_tiles |= useful_tiles1
+    while meld_count < triplet_count + tile2_count + tile1_count:
+        data[meld_count * 2 + 1] = [used_tile_count + 1, useful_tiles]
+        if meld_count >= 4:
+            return data
+        # use a single to fill a meld
+        meld_count += 1
+        used_tile_count += 1
+        data[meld_count * 2] = [used_tile_count, useful_tiles]
+
+    # we have no tiles left to fill melds
+    # so any tile is useful
+    useful_tiles = 0b1111_111
+    while True:
+        data[meld_count * 2 + 1] = [used_tile_count, useful_tiles]
+        if meld_count >= 4:
+            return data
+        # add an empty meld
+        meld_count += 1
+        data[meld_count * 2] = [used_tile_count, useful_tiles]
 
 
 def suit_shanten_data(tile_values: list[TileValue]):
+    # Given a list of tiles of a suit
+    # return the number of tiles used in creating i melds and j pairs (0<=i<=4, 0<=j<=1)
+    # and determine which tiles get you 1 closer
     data = [
         # i * 2 + j: (number of useful tiles, bitflags of which tiles get you closer)
         [0, 0b000_000_000],

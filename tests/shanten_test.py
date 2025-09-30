@@ -1,9 +1,99 @@
 import unittest
 
-from src.mahjong.suit_shanten import suit_shanten_data
+from src.mahjong.suit_shanten import honours_shanten_data, suit_shanten_data
 
 
 class ShantenTest(unittest.TestCase):
+    def test_honours_shanten_1(self):
+        data = honours_shanten_data([1])
+        self.assertEqual(
+            data,
+            [
+                [0, 0b0000_000],
+                [1, 0b1000_000],
+                [1, 0b1000_000],
+                [1, 0b1111_111],
+                [1, 0b1111_111],
+                [1, 0b1111_111],
+                [1, 0b1111_111],
+                [1, 0b1111_111],
+                [1, 0b1111_111],
+                [1, 0b1111_111],
+            ],
+        )
+
+    def test_honours_shanten_112(self):
+        data = honours_shanten_data([1, 1, 2])
+        self.assertEqual(
+            data,
+            [
+                [0, 0b0000_000],
+                [2, 0b0000_000],
+                [2, 0b1000_000],
+                [3, 0b1100_000],
+                [3, 0b1100_000],
+                [3, 0b1111_111],
+                [3, 0b1111_111],
+                [3, 0b1111_111],
+                [3, 0b1111_111],
+                [3, 0b1111_111],
+            ],
+        )
+
+    def test_honours_shanten_11123(self):
+        data = honours_shanten_data([1, 1, 1, 2, 3])
+        self.assertEqual(
+            data,
+            [
+                [0, 0b0000_000],
+                [2, 0b0000_000],
+                [3, 0b0000_000],
+                [4, 0b0110_000],
+                [4, 0b0110_000],
+                [5, 0b0110_000],
+                [5, 0b0110_000],
+                [5, 0b1111_111],
+                [5, 0b1111_111],
+                [5, 0b1111_111],
+            ],
+        )
+
+    def test_honours_shanten_112234(self):
+        data = honours_shanten_data([1, 1, 2, 2, 3, 4])
+        self.assertEqual(
+            data,
+            [
+                [0, 0b0000_000],
+                [2, 0b0000_000],
+                [2, 0b1100_000],
+                [4, 0b1100_000],
+                [4, 0b1100_000],
+                [5, 0b1111_000],
+                [5, 0b1111_000],
+                [6, 0b1111_000],
+                [6, 0b1111_000],
+                [6, 0b1111_111],
+            ],
+        )
+
+    def test_honours_shanten_11112234(self):
+        data = honours_shanten_data([1, 1, 1, 1, 2, 2, 3, 4])
+        self.assertEqual(
+            data,
+            [
+                [0, 0b0000_000],
+                [2, 0b0000_000],
+                [3, 0b0000_000],
+                [5, 0b0000_000],
+                [5, 0b0100_000],
+                [6, 0b1111_000],
+                [6, 0b1111_000],
+                [7, 0b1111_000],
+                [7, 0b1111_000],
+                [8, 0b1111_000],
+            ],
+        )
+
     def test_suit_shanten_1(self):
         data = suit_shanten_data([1])
         self.assertEqual(
