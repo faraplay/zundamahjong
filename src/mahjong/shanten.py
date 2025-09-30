@@ -23,17 +23,18 @@ def suit_shanten_data(tile_values: list[TileValue]):
         4 * 2 + 1: [0, 0b000_000_000],  # 4 melds 1 pair
     }
 
-    def find_different_tile(
-        tiles: list[TileValue], current_index: int, tile: TileValue
+    def find_different_tile_index(
+        tiles: list[TileValue], tile: TileValue, start_index: int
     ):
+        "Returns the first index of a tile that is different, or -1 if not found"
         next_tile = 0
-        index = current_index + 1
+        index = start_index
         while index < len(tiles):
             next_tile = tiles[index]
             if next_tile != tile:
-                break
+                return index
             index += 1
-        return index, next_tile
+        return -1
 
     def get_pair_useful_tiles(tiles: list[TileValue]):
         # Returns bitflags of the tiles that help make a pair
@@ -62,11 +63,13 @@ def suit_shanten_data(tile_values: list[TileValue]):
         # Tries to make melds, updates the data accordingly
         # Does not meld any tiles in tiles[:first_index]
 
+        length = len(unmelded_tiles)
+
         # update data for current melds
         update_data(meld_count * 2, useful_tile_count, useful_tiles)
 
         # update data for current melds + a pair from leftover tiles
-        if len(unmelded_tiles) > 0:
+        if length > 0:
             pair_useful_tiles = get_pair_useful_tiles(unmelded_tiles)
             if pair_useful_tiles != 0:
                 pair_useful_tile_count = useful_tile_count + 1
@@ -80,13 +83,11 @@ def suit_shanten_data(tile_values: list[TileValue]):
 
         if meld_count >= 4:
             return
-        for current_index in range(first_index, len(unmelded_tiles)):
+
+        current_index = first_index
+        while current_index < length:
             tile = unmelded_tiles[current_index]
-            next_tile = (
-                unmelded_tiles[current_index + 1]
-                if current_index + 1 < len(unmelded_tiles)
-                else 0
-            )
+
             # try a incomplete meld with just 1 tile
             remaining_tiles = unmelded_tiles.copy()
             remaining_tiles.pop(current_index)
@@ -98,17 +99,22 @@ def suit_shanten_data(tile_values: list[TileValue]):
                 useful_tile_count + 1,
                 useful_tiles | my_useful_tiles,
             )
-            # try an incomplete meld with more than one of the same tile
-            if next_tile == tile:
+            if not current_index + 1 < length:
+                # we've checked the last tile
+                return
+
+            # see if the tile immediately after the current tile is the same
+            if remaining_tiles[current_index] == tile:
+                # try an incomplete meld with more than one of the current tile
                 remaining_tiles.pop(current_index)
-                # no point trying two tiles if the third exists
                 if (
-                    current_index + 2 < len(unmelded_tiles)
-                    and unmelded_tiles[current_index + 2] == tile
+                    current_index + 2 < length
+                    and remaining_tiles[current_index] == tile
                 ):
                     remaining_tiles.pop(current_index)
+                    # no point trying two of the current tile if a third exists
                     try_group(
-                        unmelded_tiles[current_index + 3 :],
+                        remaining_tiles,
                         current_index,
                         meld_count + 1,
                         useful_tile_count + 3,
@@ -117,24 +123,27 @@ def suit_shanten_data(tile_values: list[TileValue]):
                 else:
                     my_useful_tiles = 0b1_000_000_000 >> tile
                     try_group(
-                        unmelded_tiles[current_index + 2 :],
+                        remaining_tiles,
                         current_index,
                         meld_count + 1,
                         useful_tile_count + 2,
                         useful_tiles | my_useful_tiles,
                     )
+                # remaining_tiles has been mangled, need to reconstruct it
+                remaining_tiles = unmelded_tiles.copy()
+                remaining_tiles.pop(current_index)
 
-            # remaining_tiles has been mangled, need to reconstruct it
-            remaining_tiles = unmelded_tiles.copy()
-            remaining_tiles.pop(current_index)
             # find next different tile
-            different_index, next_different_tile = find_different_tile(
-                unmelded_tiles, current_index, tile
+            different_index = find_different_tile_index(
+                remaining_tiles, tile, current_index
             )
+            if different_index == -1:
+                # all later tiles are the same as this one
+                return
+            next_different_tile = remaining_tiles.pop(different_index)
             if next_different_tile == tile + 2:
                 # try an incomplete meld with tile, tile + 2
                 my_useful_tiles = 0b100_000_000 >> tile
-                remaining_tiles.remove(next_different_tile)
                 try_group(
                     remaining_tiles,
                     current_index,
@@ -145,7 +154,6 @@ def suit_shanten_data(tile_values: list[TileValue]):
             elif next_different_tile == tile + 1:
                 # try an incomplete meld with tile, tile + 1
                 my_useful_tiles = 0b10_010_000_000 >> tile
-                remaining_tiles.remove(next_different_tile)
                 try_group(
                     remaining_tiles,
                     current_index,
@@ -154,20 +162,26 @@ def suit_shanten_data(tile_values: list[TileValue]):
                     useful_tiles | my_useful_tiles,
                 )
                 # find next next different tile
-                _, next_different_tile_2 = find_different_tile(
-                    unmelded_tiles, different_index, next_different_tile
+                different_index_2 = find_different_tile_index(
+                    remaining_tiles, next_different_tile, different_index
                 )
-                if next_different_tile_2 == tile + 2:
-                    # no point trying (tile, tile+2) when tile+1 exists
-                    # just try using the meld tile, tile+1, tile+2
-                    remaining_tiles.remove(next_different_tile_2)
-                    try_group(
-                        remaining_tiles,
-                        current_index,
-                        meld_count + 1,
-                        useful_tile_count + 3,
-                        useful_tiles,
-                    )
+                if different_index_2 != -1:
+                    next_different_tile_2 = remaining_tiles.pop(different_index_2)
+                    if next_different_tile_2 == tile + 2:
+                        # no point trying (tile, tile+2) when tile+1 exists
+                        # just try using the meld tile, tile+1, tile+2
+                        try_group(
+                            remaining_tiles,
+                            current_index,
+                            meld_count + 1,
+                            useful_tile_count + 3,
+                            useful_tiles,
+                        )
+
+            # move on to the next different tile
+            # note that different_index was for the list remaining_tiles,
+            # which had the current tile removed, so we need to add 1
+            current_index = different_index + 1
 
     def update_data(data_index, useful_tile_count, useful_tiles):
         if useful_tile_count > data[data_index][0]:
