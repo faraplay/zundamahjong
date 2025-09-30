@@ -5,6 +5,7 @@ from src.server import app
 
 if __name__ == "__main__":
     debug_path = "/zundamahjong"
+    debug_port = int(os.getenv("DEBUG_SERVER_PORT", 5000))
     app = SharedDataMiddleware(
         app,
         {
@@ -14,4 +15,4 @@ if __name__ == "__main__":
             ),
         },
     )
-    run_simple("localhost", 5000, app, use_reloader=True, threaded=True)
+    run_simple("localhost", debug_port, app, use_reloader=True, threaded=True)
