@@ -22,46 +22,21 @@ def suit_shanten_data(tile_values: list[TileValue]):
 
     tile_freqs = [tile_values.count(tile) for tile in range(10)]
 
-    def find_different_tile_index(
-        tiles: list[TileValue], tile: TileValue, start_index: int
-    ):
-        "Returns the first index of a tile that is different, or -1 if not found"
-        next_tile = 0
-        index = start_index
-        while index < len(tiles):
-            next_tile = tiles[index]
-            if next_tile != tile:
-                return index
-            index += 1
-        return -1
-
-    def popped(tiles: list[TileValue], index: int):
-        tiles_copy = tiles.copy()
-        tiles_copy.pop(index)
-        return tiles_copy
-
-    def popped2(tiles: list[TileValue], index: int):
-        tiles_copy = tiles.copy()
-        tiles_copy.pop(index)
-        tiles_copy.pop(index)
-        return tiles_copy
-
-    def get_pair_useful_tiles(tiles: list[TileValue]):
-        # Returns bitflags of the tiles that help make a pair
-        # Assumes tiles is not empty!
-        # Assumes tiles is sorted
-        # Basically, if tiles contains a pair then it returns 0
-        # Otherwise it returns bitflags of tiles
-        length = len(tiles)
-        current_index = 1
-        useful_tiles = 0b1_000_000_000 >> tiles[0]
-        while current_index < length:
-            tile = tiles[current_index]
-            if tile == tiles[current_index - 1]:
-                return 0b000_000_000
-            useful_tiles |= 0b1_000_000_000 >> tile
-            current_index += 1
-        return useful_tiles
+    def get_pair_useful_tiles(tile_freqs: list[int]):
+        # Returns number of used tiles and bitflags of useful tiles for making a pair
+        useful_tiles = 0b000_000_000
+        current_tile = 1
+        while current_tile < 10:
+            freq = tile_freqs[current_tile]
+            if freq >= 2:
+                return 2, 0b000_000_000
+            if freq == 1:
+                useful_tiles |= 0b1_000_000_000 >> current_tile
+            current_tile += 1
+        if useful_tiles:
+            return 1, useful_tiles
+        else:
+            return 0, 0b111_111_111
 
     def update_data(data_index, used_tile_count, useful_tiles):
         if used_tile_count > data[data_index][0]:
@@ -83,17 +58,7 @@ def suit_shanten_data(tile_values: list[TileValue]):
         # (but it does use them for pairs)
 
         # determine if there are existing pairs in unmelded tiles
-        pair_used_tile_count = min(max(unmelded_freqs), 2)
-        if pair_used_tile_count == 0:
-            pair_useful_tiles = 0b111_111_111
-        elif pair_used_tile_count == 1:
-            pair_useful_tiles = sum(
-                0b1_000_000_000 >> tile
-                for (tile, freq) in enumerate(unmelded_freqs)
-                if freq
-            )
-        else:
-            pair_useful_tiles = 0b000_000_000
+        pair_used_tile_count, pair_useful_tiles = get_pair_useful_tiles(unmelded_freqs)
 
         # update data for current melds
         update_data(meld_count * 2, used_tile_count, useful_tiles)
