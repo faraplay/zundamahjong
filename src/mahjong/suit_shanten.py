@@ -20,6 +20,8 @@ def suit_shanten_data(tile_values: list[TileValue]):
         [0, 0b000_000_000],  # 4 melds 1 pair
     ]
 
+    tile_freqs = [tile_values.count(tile) for tile in range(10)]
+
     def find_different_tile_index(
         tiles: list[TileValue], tile: TileValue, start_index: int
     ):
@@ -61,42 +63,43 @@ def suit_shanten_data(tile_values: list[TileValue]):
             current_index += 1
         return useful_tiles
 
-    def update_data(data_index, useful_tile_count, useful_tiles):
-        if useful_tile_count > data[data_index][0]:
-            data[data_index][0] = useful_tile_count
+    def update_data(data_index, used_tile_count, useful_tiles):
+        if used_tile_count > data[data_index][0]:
+            data[data_index][0] = used_tile_count
             data[data_index][1] = useful_tiles
-        elif useful_tile_count == data[data_index][0]:
+        elif used_tile_count == data[data_index][0]:
             data[data_index][1] |= useful_tiles
 
     def try_group(
-        unmelded_tiles: list[TileValue],
-        first_index: int,
+        # unmelded_tiles: list[TileValue],
+        unmelded_freqs: list[int],
+        first_tile: TileValue,
         meld_count: int,
-        useful_tile_count: int,
+        used_tile_count: int,
         useful_tiles: int,
     ):
         # Tries to make melds, updates the data accordingly
         # Does not meld any tiles in tiles[:first_index]
         # (but it does use them for pairs)
 
-        length = len(unmelded_tiles)
-
         # determine if there are existing pairs in unmelded tiles
-        if len(unmelded_tiles) == 0:
+        pair_used_tile_count = min(max(unmelded_freqs), 2)
+        if pair_used_tile_count == 0:
             pair_useful_tiles = 0b111_111_111
-            pair_useful_tile_count = 0
+        elif pair_used_tile_count == 1:
+            pair_useful_tiles = sum(
+                0b1_000_000_000 >> tile
+                for (tile, freq) in enumerate(unmelded_freqs)
+                if freq
+            )
         else:
-            pair_useful_tiles = get_pair_useful_tiles(unmelded_tiles)
-            if pair_useful_tiles != 0:
-                pair_useful_tile_count = 1
-            else:
-                pair_useful_tile_count = 2
+            pair_useful_tiles = 0b000_000_000
 
         # update data for current melds
-        update_data(meld_count * 2, useful_tile_count, useful_tiles)
+        update_data(meld_count * 2, used_tile_count, useful_tiles)
         update_data(
             meld_count * 2 + 1,
-            useful_tile_count + pair_useful_tile_count,
+            used_tile_count + pair_used_tile_count,
             useful_tiles | pair_useful_tiles,
         )
 
@@ -105,118 +108,106 @@ def suit_shanten_data(tile_values: list[TileValue]):
             return
         # update data for current melds + empty melds
         for meld_count_more in range(meld_count + 1, 5):
-            update_data(meld_count_more * 2, useful_tile_count, 0b111_111_111)
+            update_data(meld_count_more * 2, used_tile_count, 0b111_111_111)
             update_data(
                 meld_count_more * 2 + 1,
-                useful_tile_count + pair_useful_tile_count,
+                used_tile_count + pair_used_tile_count,
                 0b111_111_111,
             )
-
-        if first_index >= length:
-            # no tiles to check
-            return
 
         if data[4 * 2 + 1][0] == 14:
             # we've already reached the best we can do, so stop
             return
 
-        current_tile = unmelded_tiles[first_index]
-        tiles_left1 = popped(unmelded_tiles, first_index)
-        current_index = first_index
-        while True:
-            # see if we have two of current_tile
-            if (
-                current_index + 1 < length
-                and tiles_left1[current_index] == current_tile
-            ):
-                # see if we have three of current_tile
-                if (
-                    current_index + 2 < length
-                    and tiles_left1[current_index + 1] == current_tile
-                ):
-                    # no point trying two of the current tile if a third exists
-                    # so we only try the meld of three
+        freqs_copy = unmelded_freqs.copy()
+        for current_tile in range(first_tile, 10):
+            # skip if we have none of current tile
+            if unmelded_freqs[current_tile] == 0:
+                continue
+
+            freqs_copy[current_tile] -= 1
+
+            # see if we have three of current_tile
+            if unmelded_freqs[current_tile] >= 3:
+                # no point trying two of the current tile if a third exists
+                # so we only try the meld of three
+                freqs_copy[current_tile] -= 2
+                try_group(
+                    freqs_copy,
+                    current_tile,
+                    meld_count + 1,
+                    used_tile_count + 3,
+                    useful_tiles,
+                )
+                freqs_copy[current_tile] += 2
+            # see if we have two of current tile
+            elif unmelded_freqs[current_tile] == 2:
+                freqs_copy[current_tile] -= 1
+                try_group(
+                    freqs_copy,
+                    current_tile,
+                    meld_count + 1,
+                    used_tile_count + 2,
+                    useful_tiles | (0b1_000_000_000 >> current_tile),
+                )
+                freqs_copy[current_tile] += 1
+
+            # see if we have any of the nextnext tile
+            if current_tile + 2 < 10 and unmelded_freqs[current_tile + 2]:
+                freqs_copy[current_tile + 2] -= 1
+                # see if we have any of the next tile
+                if unmelded_freqs[current_tile + 1]:
+                    # no point trying (tile, tile+2) when tile+1 exists
+                    # just try using the meld tile, tile+1, tile+2
+                    freqs_copy[current_tile + 1] -= 1
                     try_group(
-                        popped2(tiles_left1, current_index),
-                        current_index,
+                        freqs_copy,
+                        current_tile,
                         meld_count + 1,
-                        useful_tile_count + 3,
+                        used_tile_count + 3,
                         useful_tiles,
                     )
+                    freqs_copy[current_tile + 1] += 1
                 else:
-                    try_group(
-                        popped(tiles_left1, current_index),
-                        current_index,
-                        meld_count + 1,
-                        useful_tile_count + 2,
-                        useful_tiles | (0b1_000_000_000 >> current_tile),
-                    )
-
-            # find next different tile
-            diff_index1 = find_different_tile_index(
-                tiles_left1, current_tile, current_index
-            )
-            if diff_index1 != -1:
-                diff_tile1 = tiles_left1[diff_index1]
-                tiles_left2 = popped(tiles_left1, diff_index1)
-                if diff_tile1 == current_tile + 1:
-                    # find next next different tile
-                    diff_index2 = find_different_tile_index(
-                        tiles_left2, diff_tile1, diff_index1
-                    )
-                    if diff_index2 != -1:
-                        diff_tile2 = tiles_left2[diff_index2]
-                        if diff_tile2 == current_tile + 2:
-                            # no point trying (tile, tile+2) when tile+1 exists
-                            # just try using the meld tile, tile+1, tile+2
-                            try_group(
-                                popped(tiles_left2, diff_index2),
-                                current_index,
-                                meld_count + 1,
-                                useful_tile_count + 3,
-                                useful_tiles,
-                            )
-                    # try an incomplete meld with tile, tile + 1
-                    try_group(
-                        tiles_left2,
-                        current_index,
-                        meld_count + 1,
-                        useful_tile_count + 2,
-                        useful_tiles | (0b10_010_000_000 >> current_tile),
-                    )
-                elif diff_tile1 == current_tile + 2:
                     # try an incomplete meld with tile, tile + 2
                     try_group(
-                        tiles_left2,
-                        current_index,
+                        freqs_copy,
+                        current_tile,
                         meld_count + 1,
-                        useful_tile_count + 2,
+                        used_tile_count + 2,
                         useful_tiles | (0b100_000_000 >> current_tile),
                     )
+                freqs_copy[current_tile + 2] += 1
+
+            # see if we have any of the next tile
+            if current_tile + 1 < 10 and unmelded_freqs[current_tile + 1]:
+                freqs_copy[current_tile + 1] -= 1
+                # try an incomplete meld with tile, tile + 1
+                try_group(
+                    freqs_copy,
+                    current_tile,
+                    meld_count + 1,
+                    used_tile_count + 2,
+                    useful_tiles | (0b10_010_000_000 >> current_tile),
+                )
+                freqs_copy[current_tile + 1] += 1
 
             # try a incomplete meld with just 1 tile
             try_group(
-                tiles_left1,
-                current_index,
+                freqs_copy,
+                current_tile,
                 meld_count + 1,
-                useful_tile_count + 1,
+                used_tile_count + 1,
                 useful_tiles | (0b111_110_000_000 >> current_tile),
             )
 
-            if diff_index1 != -1:
-                # move on to the next different tile
-                # edit tiles_left1 in place
-                tiles_left1[diff_index1] = current_tile
-                current_tile = diff_tile1
-                current_index = diff_index1 + 1
-            else:
-                return
+            freqs_copy[current_tile] += 1
 
     try_group(
-        unmelded_tiles=sorted(tile_values),
-        first_index=0,
+        unmelded_freqs=tile_freqs,
+        first_tile=1,
         meld_count=0,
-        useful_tile_count=0,
+        used_tile_count=0,
         useful_tiles=0b000_000_000,
     )
     for datum in data:
