@@ -6,9 +6,6 @@ from src.mahjong.tile import TileValue
 
 
 def suit_shanten_data(tile_values: list[TileValue]):
-    # Note we assume that we already have at least one tile for every meld we make
-    # This looks stupid when we look at one suit but is valid when we combine all suits
-    # (except for when the only helpful tiles are ones we already have 4 of)
     data = {
         # i * 2 + j: (number of useful tiles, bitflags of which tiles get you closer)
         0 * 2 + 0: [0, 0b000_000_000],
@@ -64,6 +61,13 @@ def suit_shanten_data(tile_values: list[TileValue]):
             current_index += 1
         return useful_tiles
 
+    def update_data(data_index, useful_tile_count, useful_tiles):
+        if useful_tile_count > data[data_index][0]:
+            data[data_index][0] = useful_tile_count
+            data[data_index][1] = useful_tiles
+        elif useful_tile_count == data[data_index][0]:
+            data[data_index][1] |= useful_tiles
+
     def try_group(
         unmelded_tiles: list[TileValue],
         first_index: int,
@@ -73,27 +77,40 @@ def suit_shanten_data(tile_values: list[TileValue]):
     ):
         # Tries to make melds, updates the data accordingly
         # Does not meld any tiles in tiles[:first_index]
+        # (but it does use them for pairs)
 
         length = len(unmelded_tiles)
 
-        # update data for current melds
-        update_data(meld_count * 2, useful_tile_count, useful_tiles)
-
-        # update data for current melds + a pair from leftover tiles
-        if length > 0:
+        # determine if there are existing pairs in unmelded tiles
+        if len(unmelded_tiles) == 0:
+            pair_useful_tiles = 0b111_111_111
+            pair_useful_tile_count = 0
+        else:
             pair_useful_tiles = get_pair_useful_tiles(unmelded_tiles)
             if pair_useful_tiles != 0:
-                pair_useful_tile_count = useful_tile_count + 1
+                pair_useful_tile_count = 1
             else:
-                pair_useful_tile_count = useful_tile_count + 2
-            update_data(
-                meld_count * 2 + 1,
-                pair_useful_tile_count,
-                useful_tiles | pair_useful_tiles,
-            )
+                pair_useful_tile_count = 2
+
+        # update data for current melds
+        update_data(meld_count * 2, useful_tile_count, useful_tiles)
+        update_data(
+            meld_count * 2 + 1,
+            useful_tile_count + pair_useful_tile_count,
+            useful_tiles | pair_useful_tiles,
+        )
+
         if meld_count >= 4:
             # no point trying to make a 5th meld
             return
+        # update data for current melds + empty melds
+        for meld_count_more in range(meld_count + 1, 5):
+            update_data(meld_count_more * 2, useful_tile_count, 0b111_111_111)
+            update_data(
+                meld_count_more * 2 + 1,
+                useful_tile_count + pair_useful_tile_count,
+                0b111_111_111,
+            )
 
         if first_index >= length:
             # no tiles to check
@@ -194,13 +211,6 @@ def suit_shanten_data(tile_values: list[TileValue]):
                 current_index = diff_index1 + 1
             else:
                 return
-
-    def update_data(data_index, useful_tile_count, useful_tiles):
-        if useful_tile_count > data[data_index][0]:
-            data[data_index][0] = useful_tile_count
-            data[data_index][1] = useful_tiles
-        elif useful_tile_count == data[data_index][0]:
-            data[data_index][1] |= useful_tiles
 
     try_group(
         unmelded_tiles=sorted(tile_values),
