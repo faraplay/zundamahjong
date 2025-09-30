@@ -1,11 +1,13 @@
 from collections.abc import Sequence
 
 from .tile import (
-    Tile,
+    TileId,
     TileValue,
+    N,
+    get_tile_value,
     get_tile_values,
     remove_tile_value,
-    tile_is_flower,
+    tile_id_is_flower,
     is_number,
 )
 from .deck import Deck
@@ -16,12 +18,12 @@ from .form_hand import is_winning
 class Hand:
     def __init__(self, deck: Deck):
         self._deck = deck
-        self._tiles: list[Tile] = []
+        self._tiles: list[TileId] = []
         self._calls: list[Call] = []
-        self._flowers: list[Tile] = []
+        self._flowers: list[TileId] = []
 
     @property
-    def tiles(self) -> Sequence[Tile]:
+    def tiles(self) -> Sequence[TileId]:
         return self._tiles
 
     @property
@@ -33,7 +35,7 @@ class Hand:
         return self._calls
 
     @property
-    def flowers(self) -> Sequence[Tile]:
+    def flowers(self) -> Sequence[TileId]:
         return self._flowers
 
     def remove_tile_value(self, tile_value: TileValue):
@@ -52,77 +54,77 @@ class Hand:
     def _draw_from_back(self):
         self._tiles.append(self._deck.popleft())
 
-    def can_discard(self, tile: Tile):
+    def can_discard(self, tile: TileId):
         return tile in self._tiles
 
-    def discard(self, tile: Tile):
+    def discard(self, tile: TileId):
         assert self.can_discard(tile)
         self._tiles.remove(tile)
         self.sort()
 
-    def can_chi_a(self, tile: Tile):
-        tile_value = tile // 4
+    def can_chi_a(self, tile: TileId):
+        tile_value = get_tile_value(tile)
         return (
             is_number(tile_value)
             and (tile_value + 1) in self.tile_values
             and (tile_value + 2) in self.tile_values
         )
 
-    def chi_a(self, tile: Tile):
+    def chi_a(self, tile: TileId):
         assert self.can_chi_a(tile)
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         tile_1 = self.remove_tile_value(tile_value + 1)
         tile_2 = self.remove_tile_value(tile_value + 2)
         self._calls.append(Call(call_type=CallType.CHI, tiles=[tile, tile_1, tile_2]))
 
-    def can_chi_b(self, tile: Tile):
-        tile_value = tile // 4
+    def can_chi_b(self, tile: TileId):
+        tile_value = get_tile_value(tile)
         return (
             is_number(tile_value)
             and (tile_value - 1) in self.tile_values
             and (tile_value + 1) in self.tile_values
         )
 
-    def chi_b(self, tile: Tile):
+    def chi_b(self, tile: TileId):
         assert self.can_chi_b(tile)
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         tile_m1 = self.remove_tile_value(tile_value - 1)
         tile_1 = self.remove_tile_value(tile_value + 1)
         self._calls.append(Call(call_type=CallType.CHI, tiles=[tile_m1, tile, tile_1]))
 
-    def can_chi_c(self, tile: Tile):
-        tile_value = tile // 4
+    def can_chi_c(self, tile: TileId):
+        tile_value = get_tile_value(tile)
         return (
             is_number(tile_value)
             and (tile_value - 2) in self.tile_values
             and (tile_value - 1) in self.tile_values
         )
 
-    def chi_c(self, tile: Tile):
+    def chi_c(self, tile: TileId):
         assert self.can_chi_c(tile)
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         tile_m2 = self.remove_tile_value(tile_value - 2)
         tile_m1 = self.remove_tile_value(tile_value - 1)
         self._calls.append(Call(call_type=CallType.CHI, tiles=[tile_m2, tile_m1, tile]))
 
-    def can_pon(self, tile: Tile):
-        tile_value = tile // 4
+    def can_pon(self, tile: TileId):
+        tile_value = get_tile_value(tile)
         return self.tile_values.count(tile_value) >= 2
 
-    def pon(self, tile: Tile):
+    def pon(self, tile: TileId):
         assert self.can_pon(tile)
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         tile_a = self.remove_tile_value(tile_value)
         tile_b = self.remove_tile_value(tile_value)
         self._calls.append(Call(call_type=CallType.PON, tiles=[tile, tile_a, tile_b]))
 
-    def can_open_kan(self, tile: Tile):
-        tile_value = tile // 4
+    def can_open_kan(self, tile: TileId):
+        tile_value = get_tile_value(tile)
         return self.tile_values.count(tile_value) >= 3
 
-    def open_kan(self, tile: Tile):
+    def open_kan(self, tile: TileId):
         assert self.can_open_kan(tile)
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         tile_a = self.remove_tile_value(tile_value)
         tile_b = self.remove_tile_value(tile_value)
         tile_c = self.remove_tile_value(tile_value)
@@ -132,20 +134,22 @@ class Hand:
         self.sort()
         self._draw_from_back()
 
-    def can_add_kan(self, tile: Tile):
-        tile_value = tile // 4
+    def can_add_kan(self, tile: TileId):
+        tile_value = get_tile_value(tile)
         return tile in self._tiles and any(
-            call.call_type == CallType.PON and call.tiles[0] // 4 == tile_value
+            call.call_type == CallType.PON
+            and get_tile_value(call.tiles[0]) == tile_value
             for call in self._calls
         )
 
-    def add_kan(self, tile: Tile):
+    def add_kan(self, tile: TileId):
         assert self.can_add_kan(tile)
-        tile_value = tile // 4
+        tile_value = get_tile_value(tile)
         pon_index, pon_call = next(
             (index, call)
             for index, call in enumerate(self._calls)
-            if call.call_type == CallType.PON and call.tiles[0] // 4 == tile_value
+            if call.call_type == CallType.PON
+            and get_tile_value(call.tiles[0]) == tile_value
         )
         self._tiles.remove(tile)
         self._calls[pon_index] = Call(
@@ -154,11 +158,11 @@ class Hand:
         self.sort()
         self._draw_from_back()
 
-    def can_closed_kan(self, tile: Tile):
-        tile_value = tile // 4
-        return tile % 4 == 0 and self.tile_values.count(tile_value) >= 4
+    def can_closed_kan(self, tile: TileId):
+        tile_value = get_tile_value(tile)
+        return tile % N == 0 and self.tile_values.count(tile_value) >= 4
 
-    def closed_kan(self, tile: Tile):
+    def closed_kan(self, tile: TileId):
         assert self.can_closed_kan(tile)
         self._tiles.remove(tile)
         self._tiles.remove(tile + 1)
@@ -173,17 +177,17 @@ class Hand:
         self.sort()
         self._draw_from_back()
 
-    def can_ron(self, tile: Tile):
+    def can_ron(self, tile: TileId):
         return is_winning(self._tiles + [tile])
 
     def can_tsumo(self):
         return is_winning(self._tiles)
 
     def flowers_in_hand(self):
-        return [tile for tile in self._tiles if tile_is_flower(tile)]
+        return [tile for tile in self._tiles if tile_id_is_flower(tile)]
 
-    def flower(self, tile: Tile):
-        assert tile_is_flower(tile)
+    def flower(self, tile: TileId):
+        assert tile_id_is_flower(tile)
         assert tile in self._tiles
         self._tiles.remove(tile)
         self._flowers.append(tile)

@@ -16,19 +16,19 @@ class ThreePlayerTest(unittest.TestCase):
 
     def test_north_yaku(self):
         formed_hand = [
-            Call(call_type=CallType.CHI, tiles=[84, 88, 92]),
-            Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-            Call(call_type=CallType.PON, tiles=[136, 137, 138]),
-            Call(call_type=CallType.PAIR, tiles=[132, 133]),
+            Call(call_type=CallType.CHI, tiles=[210, 220, 230]),
+            Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+            Call(call_type=CallType.PON, tiles=[340, 341, 342]),
+            Call(call_type=CallType.PAIR, tiles=[330, 331]),
         ]
         win = Win(
             win_player=0,
             lose_player=None,
             hand=[tile for call in formed_hand for tile in call.tiles],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[172],
+            flowers=[430],
             player_count=3,
             wind_round=0,
             sub_round=0,
@@ -41,19 +41,19 @@ class ThreePlayerTest(unittest.TestCase):
 
     def test_one_set_of_flowers(self):
         formed_hand = [
-            Call(call_type=CallType.CHI, tiles=[84, 88, 92]),
-            Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-            Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-            Call(call_type=CallType.PAIR, tiles=[132, 133]),
+            Call(call_type=CallType.CHI, tiles=[210, 220, 230]),
+            Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+            Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+            Call(call_type=CallType.PAIR, tiles=[330, 331]),
         ]
         win = Win(
             win_player=0,
             lose_player=None,
             hand=[tile for call in formed_hand for tile in call.tiles],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[164, 168, 172],
+            flowers=[410, 420, 430],
             player_count=3,
             wind_round=0,
             sub_round=0,
@@ -63,19 +63,19 @@ class ThreePlayerTest(unittest.TestCase):
 
     def test_five_flowers(self):
         formed_hand = [
-            Call(call_type=CallType.CHI, tiles=[84, 88, 92]),
-            Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-            Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-            Call(call_type=CallType.PAIR, tiles=[132, 133]),
+            Call(call_type=CallType.CHI, tiles=[210, 220, 230]),
+            Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+            Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+            Call(call_type=CallType.PAIR, tiles=[330, 331]),
         ]
         win = Win(
             win_player=0,
             lose_player=None,
             hand=[tile for call in formed_hand for tile in call.tiles],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[164, 168, 172, 184, 188],
+            flowers=[410, 420, 430, 460, 470],
             player_count=3,
             wind_round=0,
             sub_round=0,
@@ -87,19 +87,19 @@ class ThreePlayerTest(unittest.TestCase):
 
     def test_one_set_of_flowers(self):
         formed_hand = [
-            Call(call_type=CallType.CHI, tiles=[84, 88, 92]),
-            Call(call_type=CallType.CHI, tiles=[60, 64, 68]),
-            Call(call_type=CallType.PON, tiles=[76, 77, 78]),
-            Call(call_type=CallType.PAIR, tiles=[132, 133]),
+            Call(call_type=CallType.CHI, tiles=[210, 220, 230]),
+            Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
+            Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+            Call(call_type=CallType.PAIR, tiles=[330, 331]),
         ]
         win = Win(
             win_player=0,
             lose_player=None,
             hand=[tile for call in formed_hand for tile in call.tiles],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[92, 96, 100]),
+                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
             ],
-            flowers=[164, 168, 172, 180, 184, 188],
+            flowers=[410, 420, 430, 450, 460, 470],
             player_count=3,
             wind_round=0,
             sub_round=0,

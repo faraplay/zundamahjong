@@ -2,7 +2,7 @@ from enum import IntEnum
 from collections.abc import Set
 from pydantic import BaseModel
 
-from .tile import Tile
+from .tile import TileId
 
 
 class ActionType(IntEnum):
@@ -35,11 +35,11 @@ call_action_types = {
 
 class Action(BaseModel, frozen=True):
     action_type: ActionType
-    tile: Tile = 0
+    tile: TileId = 0
 
 
 class ActionSet:
-    def __init__(self, action_type: ActionType = ActionType.PASS, tile: Tile = 0):
+    def __init__(self, action_type: ActionType = ActionType.PASS, tile: TileId = 0):
         self._default = Action(action_type=action_type, tile=tile)
         self._actions = {self._default}
 
@@ -58,5 +58,5 @@ class ActionSet:
     def actions(self) -> Set[Action]:
         return self._actions
 
-    def add(self, action_type: ActionType, tile: Tile = 0):
+    def add(self, action_type: ActionType, tile: TileId = 0):
         self._actions.add(Action(action_type=action_type, tile=tile))

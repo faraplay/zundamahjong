@@ -1,7 +1,7 @@
 from typing import Optional
 
 from .exceptions import InvalidOperationException
-from .tile import Tile
+from .tile import TileId
 from .action import Action
 from .game_options import GameOptions
 from .win import Win
@@ -14,7 +14,7 @@ class Game:
     def __init__(
         self,
         *,
-        first_deck_tiles: Optional[list[Tile]] = None,
+        first_deck_tiles: Optional[list[TileId]] = None,
         options: GameOptions = GameOptions(),
     ):
         self._player_count = options.player_count
@@ -101,7 +101,7 @@ class Game:
             next_sub_round = 0
         return next_wind_round, next_sub_round
 
-    def _create_round(self, deck_tiles: Optional[list[Tile]]):
+    def _create_round(self, deck_tiles: Optional[list[TileId]]):
         def on_round_end():
             self._calculate_win_score()
 

@@ -1,4 +1,4 @@
-import type { TileId } from "../../../types/tile";
+import { TileN, type TileId } from "../../../types/tile";
 import {
   ActionType,
   type Action,
@@ -31,17 +31,23 @@ function ActionDisambigMenuItem({
       {(function () {
         switch (action.action_type) {
           case ActionType.CHI_A:
-            return [last_discard, last_discard + 4, last_discard + 8].map(
-              (tile) => <Tile2D key={tile} tile={tile as TileId} />,
-            );
+            return [
+              last_discard,
+              last_discard + TileN,
+              last_discard + 2 * TileN,
+            ].map((tile) => <Tile2D key={tile} tile={tile as TileId} />);
           case ActionType.CHI_B:
-            return [last_discard - 4, last_discard, last_discard + 4].map(
-              (tile) => <Tile2D key={tile} tile={tile as TileId} />,
-            );
+            return [
+              last_discard - TileN,
+              last_discard,
+              last_discard + TileN,
+            ].map((tile) => <Tile2D key={tile} tile={tile as TileId} />);
           case ActionType.CHI_C:
-            return [last_discard - 8, last_discard - 4, last_discard].map(
-              (tile) => <Tile2D key={tile} tile={tile as TileId} />,
-            );
+            return [
+              last_discard - 2 * TileN,
+              last_discard - TileN,
+              last_discard,
+            ].map((tile) => <Tile2D key={tile} tile={tile as TileId} />);
           case ActionType.ADD_KAN:
           case ActionType.CLOSED_KAN:
           case ActionType.FLOWER:

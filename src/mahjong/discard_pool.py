@@ -3,12 +3,12 @@ from pydantic import BaseModel
 from collections import deque
 from collections.abc import Sequence
 
-from .tile import Tile
+from .tile import TileId
 
 
 class Discard(BaseModel):
     player: int
-    tile: Tile
+    tile: TileId
 
 
 class DiscardPool:
@@ -19,7 +19,7 @@ class DiscardPool:
     def discards(self) -> Sequence[Discard]:
         return self._discards
 
-    def append(self, player: int, tile: Tile):
+    def append(self, player: int, tile: TileId):
         self._discards.append(Discard(player=player, tile=tile))
 
     def pop(self):
