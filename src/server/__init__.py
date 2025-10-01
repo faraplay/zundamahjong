@@ -1,7 +1,10 @@
-from .logger import create_server_logger, create_root_logger
+from socketio import WSGIApp
+
+from . import main
+from .logger import create_root_logger, create_server_logger
+from .sio import sio
 
 create_root_logger()
 create_server_logger(__name__)
 
-from .sio import app
-from . import main
+app = WSGIApp(sio)

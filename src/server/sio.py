@@ -2,7 +2,7 @@ from collections.abc import Callable
 import logging
 from typing import Any
 
-from socketio import Server, WSGIApp
+from socketio import Server
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -30,6 +30,3 @@ def sio_on(event: str):
         return wrapped_handler
 
     return sio_on_decorator
-
-
-app = WSGIApp(sio)
