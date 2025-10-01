@@ -5,7 +5,7 @@ from src.mahjong.suit_shanten import honours_shanten_data, suit_shanten_data
 
 class ShantenTest(unittest.TestCase):
     def test_honours_shanten_1(self):
-        data = honours_shanten_data([1])
+        data = honours_shanten_data([1, 0, 0, 0, 0, 0, 0])
         self.assertEqual(
             data,
             [
@@ -23,7 +23,7 @@ class ShantenTest(unittest.TestCase):
         )
 
     def test_honours_shanten_112(self):
-        data = honours_shanten_data([1, 1, 2])
+        data = honours_shanten_data([2, 1, 0, 0, 0, 0, 0])
         self.assertEqual(
             data,
             [
@@ -41,7 +41,7 @@ class ShantenTest(unittest.TestCase):
         )
 
     def test_honours_shanten_11123(self):
-        data = honours_shanten_data([1, 1, 1, 2, 3])
+        data = honours_shanten_data([3, 1, 1, 0, 0, 0, 0])
         self.assertEqual(
             data,
             [
@@ -59,7 +59,7 @@ class ShantenTest(unittest.TestCase):
         )
 
     def test_honours_shanten_112234(self):
-        data = honours_shanten_data([1, 1, 2, 2, 3, 4])
+        data = honours_shanten_data([2, 2, 1, 1, 0, 0, 0])
         self.assertEqual(
             data,
             [
@@ -77,7 +77,7 @@ class ShantenTest(unittest.TestCase):
         )
 
     def test_honours_shanten_11112234(self):
-        data = honours_shanten_data([1, 1, 1, 1, 2, 2, 3, 4])
+        data = honours_shanten_data([4, 2, 1, 1, 0, 0, 0])
         self.assertEqual(
             data,
             [
@@ -95,7 +95,7 @@ class ShantenTest(unittest.TestCase):
         )
 
     def test_suit_shanten_1(self):
-        data = suit_shanten_data([1])
+        data = suit_shanten_data([1, 0, 0, 0, 0, 0, 0, 0, 0])
         self.assertEqual(
             data,
             [
@@ -113,7 +113,7 @@ class ShantenTest(unittest.TestCase):
         )
 
     def test_suit_shanten_5(self):
-        data = suit_shanten_data([5])
+        data = suit_shanten_data([0, 0, 0, 0, 1, 0, 0, 0, 0])
         self.assertEqual(
             data,
             [
@@ -131,7 +131,7 @@ class ShantenTest(unittest.TestCase):
         )
 
     def test_suit_shanten_34(self):
-        data = suit_shanten_data([3, 4])
+        data = suit_shanten_data([0, 0, 1, 1, 0, 0, 0, 0, 0])
         self.assertEqual(
             data,
             [
@@ -149,7 +149,7 @@ class ShantenTest(unittest.TestCase):
         )
 
     def test_suit_shanten_2344(self):
-        data = suit_shanten_data([2, 3, 4, 4])
+        data = suit_shanten_data([0, 1, 1, 2, 0, 0, 0, 0, 0])
         self.assertEqual(
             data,
             [
@@ -167,7 +167,7 @@ class ShantenTest(unittest.TestCase):
         )
 
     def test_suit_shanten_233444556(self):
-        data = suit_shanten_data([2, 3, 3, 4, 4, 4, 5, 5, 6])
+        data = suit_shanten_data([0, 1, 2, 3, 2, 1, 0, 0, 0])
         self.assertEqual(
             data,
             [
@@ -186,23 +186,22 @@ class ShantenTest(unittest.TestCase):
 
     def test_suit_shanten_times_1000(self):
         for _ in range(1000):
-            suit_shanten_data([2, 3, 3, 4, 4, 4, 5, 5, 6])
+            suit_shanten_data([0, 1, 2, 3, 2, 1, 0, 0, 0])
 
     def test_suit_shanten_long_times_1000(self):
         for _ in range(1000):
-            suit_shanten_data([2, 3, 3, 4, 4, 4, 5, 5, 6, 6, 6, 6, 7, 7, 7, 8, 9, 9, 9])
+            suit_shanten_data([0, 1, 2, 3, 2, 4, 3, 1, 3])
 
     def test_suit_shanten_all(self):
         def hand_from_code(hand_code):
             hand = []
-            for tile in range(1, 10):
-                for _ in range(hand_code % 5):
-                    hand.append(tile)
+            for _ in range(9):
+                hand.append(hand_code % 5)
                 hand_code //= 5
             return hand
 
         def code_from_hand(hand):
-            return sum(5 ** (i - 1) for i in hand)
+            return sum(count * 5**tile for tile, count in enumerate(hand))
 
         limit = 5**6
         datas = []
@@ -212,11 +211,11 @@ class ShantenTest(unittest.TestCase):
             datas.append(suit_shanten_data(hand))
 
         for hand_code, data in enumerate(datas):
-            for tile in range(1, 10):
-                if hand_from_code(hand_code).count(tile) == 4:
+            for tile in range(9):
+                if hand_from_code(hand_code)[tile] == 4:
                     continue
-                mask = 0b1_000_000_000 >> tile
-                added_hand_code = hand_code + (5 ** (tile - 1))
+                mask = 0b100_000_000 >> tile
+                added_hand_code = hand_code + 5**tile
                 if added_hand_code >= limit:
                     break
                 for k in range(10):

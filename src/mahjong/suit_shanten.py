@@ -1,9 +1,8 @@
 from src.mahjong.tile import TileValue
 
 
-def honours_shanten_data(tiles: list[TileValue]):
+def honours_shanten_data(tile_freqs: list[int]):
     # Expects values from 1 to 7 (need to subtract 30)
-    tile_freqs = [tiles.count(tile) for tile in range(8)]
     data = [
         [0, 0b0000_000],
         [0, 0b0000_000],
@@ -19,8 +18,8 @@ def honours_shanten_data(tiles: list[TileValue]):
 
     # remove triplets, keeping track of how many you remove
     triplet_count = 0
-    current_tile = 1
-    while current_tile < 8:
+    current_tile = 0
+    while current_tile < 7:
         if tile_freqs[current_tile] >= 3:
             triplet_count += 1
             tile_freqs[current_tile] -= 3
@@ -32,15 +31,15 @@ def honours_shanten_data(tiles: list[TileValue]):
     useful_tiles1 = 0b0000_000
     tile2_count = 0
     useful_tiles2 = 0b0000_000
-    current_tile = 1
-    while current_tile < 8:
+    current_tile = 0
+    while current_tile < 7:
         freq = tile_freqs[current_tile]
         if freq == 2:
             tile2_count += 1
-            useful_tiles2 |= 0b1_0000_000 >> current_tile
+            useful_tiles2 |= 0b1000_000 >> current_tile
         elif freq == 1:
             tile1_count += 1
-            useful_tiles1 |= 0b1_0000_000 >> current_tile
+            useful_tiles1 |= 0b1000_000 >> current_tile
         current_tile += 1
 
     meld_count = 0
@@ -95,7 +94,7 @@ def honours_shanten_data(tiles: list[TileValue]):
         data[meld_count * 2] = [used_tile_count, useful_tiles]
 
 
-def suit_shanten_data(tile_values: list[TileValue]):
+def suit_shanten_data(tile_freqs: list[int]):
     # Given a list of tiles of a suit
     # return the number of tiles used in creating i melds and j pairs (0<=i<=4, 0<=j<=1)
     # and determine which tiles get you 1 closer
@@ -113,18 +112,16 @@ def suit_shanten_data(tile_values: list[TileValue]):
         [0, 0b000_000_000],  # 4 melds 1 pair
     ]
 
-    tile_freqs = [tile_values.count(tile) for tile in range(10)]
-
     def get_pair_useful_tiles(tile_freqs: list[int]):
         # Returns number of used tiles and bitflags of useful tiles for making a pair
         useful_tiles = 0b000_000_000
-        current_tile = 1
-        while current_tile < 10:
+        current_tile = 0
+        while current_tile < 9:
             freq = tile_freqs[current_tile]
             if freq >= 2:
                 return 2, 0b000_000_000
             if freq == 1:
-                useful_tiles |= 0b1_000_000_000 >> current_tile
+                useful_tiles |= 0b100_000_000 >> current_tile
             current_tile += 1
         if useful_tiles:
             return 1, useful_tiles
@@ -178,7 +175,7 @@ def suit_shanten_data(tile_values: list[TileValue]):
             return
 
         freqs_copy = unmelded_freqs.copy()
-        for current_tile in range(first_tile, 10):
+        for current_tile in range(first_tile, 9):
             # skip if we have none of current tile
             if unmelded_freqs[current_tile] == 0:
                 continue
@@ -206,12 +203,12 @@ def suit_shanten_data(tile_values: list[TileValue]):
                     current_tile,
                     meld_count + 1,
                     used_tile_count + 2,
-                    useful_tiles | (0b1_000_000_000 >> current_tile),
+                    useful_tiles | (0b100_000_000 >> current_tile),
                 )
                 freqs_copy[current_tile] += 1
 
             # see if we have any of the nextnext tile
-            if current_tile + 2 < 10 and unmelded_freqs[current_tile + 2]:
+            if current_tile + 2 < 9 and unmelded_freqs[current_tile + 2]:
                 freqs_copy[current_tile + 2] -= 1
                 # see if we have any of the next tile
                 if unmelded_freqs[current_tile + 1]:
@@ -233,12 +230,12 @@ def suit_shanten_data(tile_values: list[TileValue]):
                         current_tile,
                         meld_count + 1,
                         used_tile_count + 2,
-                        useful_tiles | (0b100_000_000 >> current_tile),
+                        useful_tiles | (0b010_000_000 >> current_tile),
                     )
                 freqs_copy[current_tile + 2] += 1
 
             # see if we have any of the next tile
-            if current_tile + 1 < 10 and unmelded_freqs[current_tile + 1]:
+            if current_tile + 1 < 9 and unmelded_freqs[current_tile + 1]:
                 freqs_copy[current_tile + 1] -= 1
                 # try an incomplete meld with tile, tile + 1
                 try_group(
@@ -246,7 +243,7 @@ def suit_shanten_data(tile_values: list[TileValue]):
                     current_tile,
                     meld_count + 1,
                     used_tile_count + 2,
-                    useful_tiles | (0b10_010_000_000 >> current_tile),
+                    useful_tiles | (0b1_001_000_000 >> current_tile),
                 )
                 freqs_copy[current_tile + 1] += 1
 
@@ -256,14 +253,14 @@ def suit_shanten_data(tile_values: list[TileValue]):
                 current_tile,
                 meld_count + 1,
                 used_tile_count + 1,
-                useful_tiles | (0b111_110_000_000 >> current_tile),
+                useful_tiles | (0b11_111_000_000 >> current_tile),
             )
 
             freqs_copy[current_tile] += 1
 
     try_group(
         unmelded_freqs=tile_freqs,
-        first_tile=1,
+        first_tile=0,
         meld_count=0,
         used_tile_count=0,
         useful_tiles=0b000_000_000,
