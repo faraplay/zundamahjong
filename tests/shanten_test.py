@@ -1,6 +1,10 @@
 import unittest
 
-from src.mahjong.suit_shanten import honours_shanten_data, suit_shanten_data
+from src.mahjong.suit_shanten import (
+    honours_shanten_data,
+    suit_shanten_data,
+    calculate_shanten,
+)
 
 
 class ShantenTest(unittest.TestCase):
@@ -231,3 +235,39 @@ class ShantenTest(unittest.TestCase):
                             datas[added_hand_code][k][0],
                             f"hand is {hand_from_code(hand_code)}, tile is {tile}, k is {k}",
                         )
+
+    def test_shanten_1shanten_small(self):
+        shanten, useful_tiles = calculate_shanten([2, 3, 15, 32])
+        self.assertEqual(shanten, 1)
+        self.assertSetEqual(useful_tiles, {1, 4, 15, 32})
+
+    def test_shanten_1shanten(self):
+        shanten, useful_tiles = calculate_shanten(
+            [5, 6, 7, 8, 9, 17, 18, 19, 23, 24, 29, 29, 29]
+        )
+        self.assertEqual(shanten, 1)
+        self.assertSetEqual(useful_tiles, {4, 5, 6, 7, 8, 9, 22, 23, 24, 25})
+
+    def test_shanten_2shanten(self):
+        shanten, useful_tiles = calculate_shanten(
+            [7, 8, 12, 14, 18, 18, 23, 24, 24, 26, 27, 27, 28]
+        )
+        self.assertEqual(shanten, 2)
+        self.assertSetEqual(useful_tiles, {6, 9, 13, 18, 22, 24, 25})
+
+    def test_shanten_2shanten_allow7pairs(self):
+        shanten, useful_tiles = calculate_shanten(
+            [3, 4, 4, 11, 12, 13, 17, 17, 24, 26, 26, 35, 35]
+        )
+        self.assertEqual(shanten, 2)
+        self.assertSetEqual(useful_tiles, {2, 3, 4, 5, 11, 12, 13, 17, 24, 25, 26, 35})
+
+    def test_shanten_3shanten(self):
+        shanten, useful_tiles = calculate_shanten(
+            [14, 17, 18, 22, 24, 25, 26, 27, 28, 33, 35, 37, 37]
+        )
+        self.assertEqual(shanten, 3)
+        self.assertSetEqual(
+            useful_tiles,
+            {12, 13, 14, 15, 16, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 33, 35, 37},
+        )

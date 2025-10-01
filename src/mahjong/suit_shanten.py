@@ -268,3 +268,72 @@ def suit_shanten_data(tile_freqs: list[int]):
     for datum in data:
         datum[1] &= 0b111_111_111
     return data
+
+
+def calculate_shanten(tiles: list[TileValue]):
+    assert len(tiles) % 3 == 1
+    meld_count = (len(tiles) - 1) // 3
+
+    tile_freqs = [0] * 38
+    for tile in tiles:
+        tile_freqs[tile] += 1
+
+    def flag_to_tiles(flags: int, tile_end_offset: TileValue):
+        result: list[TileValue] = []
+        while flags != 0:
+            if (flags % 2) != 0:
+                result.append(tile_end_offset)
+            tile_end_offset -= 1
+            flags //= 2
+        return frozenset(result)
+
+    suit0_data = [
+        (datum[0], flag_to_tiles(datum[1], 9))
+        for datum in suit_shanten_data(tile_freqs[1:10])
+    ]
+    suit1_data = [
+        (datum[0], flag_to_tiles(datum[1], 19))
+        for datum in suit_shanten_data(tile_freqs[11:20])
+    ]
+    suit2_data = [
+        (datum[0], flag_to_tiles(datum[1], 29))
+        for datum in suit_shanten_data(tile_freqs[21:30])
+    ]
+    honours_data = [
+        (datum[0], flag_to_tiles(datum[1], 37))
+        for datum in honours_shanten_data(tile_freqs[31:38])
+    ]
+
+    def combine_data(
+        data1: list[tuple[int, frozenset[TileValue]]],
+        data2: list[tuple[int, frozenset[TileValue]]],
+    ):
+        data: list[tuple[int, frozenset[TileValue]]] = [(0, frozenset())] * 10
+        for k1, datum1 in enumerate(data1):
+            for k2, datum2 in enumerate(data2):
+                if (k1 % 2) == 1 and (k2 % 2) == 1:
+                    # both datums have a pair, skip
+                    continue
+                if k1 + k2 >= 10:
+                    # too many melds, skip this and all larger values of k2
+                    break
+                used_tile_count = datum1[0] + datum2[0]
+                useful_tiles_set = datum1[1] | datum2[1]
+                existing_datum = data[k1 + k2]
+                if used_tile_count > existing_datum[0]:
+                    data[k1 + k2] = (used_tile_count, useful_tiles_set)
+                elif used_tile_count == existing_datum[0]:
+                    data[k1 + k2] = (
+                        used_tile_count,
+                        existing_datum[1] | useful_tiles_set,
+                    )
+        return data
+
+    data = combine_data(
+        combine_data(suit0_data, suit1_data), combine_data(suit2_data, honours_data)
+    )
+    datum = data[meld_count * 2 + 1]
+    return (
+        meld_count * 3 + 1 - datum[0],
+        datum[1],
+    )
