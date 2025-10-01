@@ -399,3 +399,11 @@ def calculate_shanten(tiles: list[TileValue]):
         meld_count * 3 + 1 - datum[0],
         datum[1],
     )
+
+
+def check_tenpai(tiles: list[TileValue]):
+    shanten, waits = calculate_shanten(tiles)
+    if shanten == 0:
+        return waits
+    else:
+        return None
