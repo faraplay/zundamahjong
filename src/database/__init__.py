@@ -3,7 +3,7 @@ import hashlib
 import os
 import secrets
 
-from sqlalchemy import String, create_engine
+from sqlalchemy import String, create_engine, select
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 
 from ..server.sio import sio
@@ -42,6 +42,20 @@ def get_db(sid: str) -> Session:
         return session["db"]
 
 
+def login(sid: str, name: str, password: str):
+    db = get_db(sid)
+
+    user = db.execute(select(User).where(User.name == name)).scalar_one_or_none()
+
+    if user:
+        if not check_pw(password, user.password):
+            raise Exception("Incorrect password!")
+
+    elif password:
+        db.add(User(name=name, password=hash_pw(password)))
+        db.commit()
+
+
 def _hash_internal(password: str, salt: str, method: str) -> str:
     method, *args = method.split(":")
 
@@ -56,7 +70,7 @@ def _hash_internal(password: str, salt: str, method: str) -> str:
     ).hex()
 
 
-def hash_pw(password: str, salt: str | None, method: str | None) -> str:
+def hash_pw(password: str, salt: str | None = None, method: str | None = None) -> str:
     if not salt:
         salt = secrets.token_urlsafe(16)
 

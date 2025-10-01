@@ -1,6 +1,6 @@
 import logging
 
-from ..database import get_db
+from ..database import get_db, login
 from ..mahjong.action import Action
 from ..mahjong.game_options import GameOptions
 
@@ -57,8 +57,9 @@ def start_next_round(sid):
 
 
 @sio_on("set_name")
-def on_set_name(sid, name):
+def on_set_name(sid, name, password):
     verify_name(name)
+    login(sid, name, password)
     player = Player.from_name(name)
     set_player(sid, player)
     sio.emit("player_info", player.model_dump(), sid)
