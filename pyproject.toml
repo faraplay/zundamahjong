@@ -5,6 +5,7 @@ dynamic = ["version"]
 dependencies = [
   "python-socketio",
   "pydantic",
+  "sqlalchemy",
 ]
 
 [project.optional-dependencies]

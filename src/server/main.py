@@ -1,12 +1,13 @@
+import logging
+
+from ..database import get_db
 from ..mahjong.action import Action
 from ..mahjong.game_options import GameOptions
 
-from .sio import sio, sio_on
-from .name_sid import verify_name, get_player, try_get_player, set_player, remove_sid
-from .player_info import Player
 from .game_room import GameRoom
-
-import logging
+from .name_sid import get_player, remove_sid, set_player, try_get_player, verify_name
+from .player_info import Player
+from .sio import sio, sio_on
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -26,6 +27,7 @@ def disconnect(sid, reason):
     else:
         GameRoom.try_disconnect(player)
     remove_sid(sid)
+    get_db(sid).close()
 
 
 @sio_on("action")
