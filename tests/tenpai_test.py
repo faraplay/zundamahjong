@@ -7,6 +7,12 @@ class TenpaiTest(unittest.TestCase):
     def test_not_tenpai(self):
         self.assertIsNone(check_tenpai([1, 2, 4, 5, 6, 13, 14, 14, 15, 15, 16, 31, 32]))
 
+    def test_four_of_a_kind(self):
+        self.assertSetEqual(
+            check_tenpai([2, 2, 2, 2]),
+            {2},
+        )
+
     def test_ryanmen(self):
         self.assertSetEqual(
             check_tenpai([4, 5, 31, 31]),
