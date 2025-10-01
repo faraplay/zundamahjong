@@ -101,7 +101,7 @@ def on_set_avatar(sid, avatar):
 def on_start_game(sid, form_data):
     game_room = GameRoom.get_player_room(get_player(sid))
     if game_room is None:
-        raise Exception(f"Player is not in a room!")
+        raise Exception("Player is not in a room!")
     game_options = GameOptions(
         player_count=form_data["player_count"],
         game_length=(
