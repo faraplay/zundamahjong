@@ -1,4 +1,4 @@
-from src.mahjong.tile import TileValue
+from src.mahjong.tile import TileValue, all_tiles, orphans
 
 
 def honours_shanten_data(tile_freqs: list[int]):
@@ -270,14 +270,7 @@ def suit_shanten_data(tile_freqs: list[int]):
     return data
 
 
-def calculate_shanten(tiles: list[TileValue]):
-    assert len(tiles) % 3 == 1
-    meld_count = (len(tiles) - 1) // 3
-
-    tile_freqs = [0] * 38
-    for tile in tiles:
-        tile_freqs[tile] += 1
-
+def standard_shanten(tile_freqs: list[int], meld_count: int):
     def flag_to_tiles(flags: int, tile_end_offset: TileValue):
         result: list[TileValue] = []
         while flags != 0:
@@ -332,7 +325,76 @@ def calculate_shanten(tiles: list[TileValue]):
     data = combine_data(
         combine_data(suit0_data, suit1_data), combine_data(suit2_data, honours_data)
     )
-    datum = data[meld_count * 2 + 1]
+    return data[meld_count * 2 + 1]
+
+
+def seven_pairs_shanten(tile_freqs: list[int]):
+    tiles2 = set()
+    tiles2_count = 0
+    tiles1 = set()
+    tiles1_count = 0
+    for tile, freq in enumerate(tile_freqs):
+        if freq >= 2:
+            tiles2.add(tile)
+            tiles2_count += 1
+        elif freq == 1:
+            tiles1.add(tile)
+            tiles1_count += 1
+
+    if tiles2_count >= 7:
+        return (14, frozenset())
+
+    if tiles2_count + tiles1_count >= 7:
+        return (7 + tiles2_count, frozenset(tiles1))
+
+    return (tiles2_count * 2 + tiles1_count, all_tiles - tiles2)
+
+
+def thirteen_orphans_shanten(tile_freqs: list[int]):
+    my_orphans = set()
+    orphan_count = 0
+    pair_orphan_count = 0
+    for orphan in orphans:
+        freq = tile_freqs[orphan]
+        if freq >= 1:
+            my_orphans.add(orphan)
+            orphan_count += 1
+        if freq >= 2:
+            pair_orphan_count += 1
+    if pair_orphan_count > 0:
+        return (orphan_count + 1, orphans - my_orphans)
+    else:
+        return (orphan_count, orphans)
+
+
+def calculate_shanten(tiles: list[TileValue]):
+    assert len(tiles) % 3 == 1
+    meld_count = (len(tiles) - 1) // 3
+
+    tile_freqs = [0] * 38
+    for tile in tiles:
+        tile_freqs[tile] += 1
+
+    def combine_datum(
+        datum1: tuple[int, frozenset[TileValue]],
+        datum2: tuple[int, frozenset[TileValue]],
+    ):
+        if datum1[0] > datum2[0]:
+            return datum1
+        elif datum1[0] < datum2[0]:
+            return datum2
+        else:
+            return (datum1[0], datum1[1] | datum2[1])
+
+    datum = standard_shanten(tile_freqs, meld_count)
+    if len(tiles) == 13:
+        datum = combine_datum(
+            datum,
+            combine_datum(
+                seven_pairs_shanten(tile_freqs), thirteen_orphans_shanten(tile_freqs)
+            ),
+        )
+
     return (
         meld_count * 3 + 1 - datum[0],
         datum[1],
