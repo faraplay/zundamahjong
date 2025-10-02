@@ -1,17 +1,19 @@
 from collections.abc import Callable
 import logging
-from typing import Any
+from typing import Any, Optional
 
-from socketio import Server, WSGIApp
+from socketio import Server
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
-sio = Server(logger=logger, async_mode="threading")  # pyright: ignore[reportArgumentType]
+sio = Server(
+    logger=logger, async_mode="threading"
+)  # pyright: ignore[reportArgumentType]
 
 
 def sio_on(event: str):
-    def sio_on_decorator(handler: Callable[..., Any | None]):
+    def sio_on_decorator(handler: Callable[..., Optional[Any]]):
         def wrapped_handler(sid: str, *args):
             try:
                 logger.debug(
@@ -30,6 +32,3 @@ def sio_on(event: str):
         return wrapped_handler
 
     return sio_on_decorator
-
-
-app = WSGIApp(sio)

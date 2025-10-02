@@ -1,12 +1,13 @@
+import logging
+
+from ..database import close_db
 from ..mahjong.action import Action
 from ..mahjong.game_options import GameOptions
 
-from .sio import sio, sio_on
-from .name_sid import verify_name, get_player, try_get_player, set_player, remove_sid
-from .player_info import Player
 from .game_room import GameRoom
-
-import logging
+from .name_sid import get_player, remove_sid, set_player, try_get_player, verify_name
+from .player_info import Player
+from .sio import sio, sio_on
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -26,6 +27,7 @@ def disconnect(sid, reason):
     else:
         GameRoom.try_disconnect(player)
     remove_sid(sid)
+    close_db(sid)
 
 
 @sio_on("action")
@@ -55,10 +57,10 @@ def start_next_round(sid):
 
 
 @sio_on("set_name")
-def on_set_name(sid, name):
+def on_set_name(sid, name, password):
     verify_name(name)
     player = Player.from_name(name)
-    set_player(sid, player)
+    set_player(sid, player, password)
     sio.emit("player_info", player.model_dump(), sid)
     game_room = GameRoom.try_reconnect(player)
     if game_room is not None and game_room.game_controller is not None:
@@ -99,7 +101,7 @@ def on_set_avatar(sid, avatar):
 def on_start_game(sid, form_data):
     game_room = GameRoom.get_player_room(get_player(sid))
     if game_room is None:
-        raise Exception(f"Player is not in a room!")
+        raise Exception("Player is not in a room!")
     game_options = GameOptions(
         player_count=form_data["player_count"],
         game_length=(

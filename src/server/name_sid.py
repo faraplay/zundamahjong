@@ -1,5 +1,6 @@
 from threading import Lock
 
+from ..database.security import login
 from .sio import sio
 from .player_info import Player
 
@@ -28,10 +29,11 @@ def try_get_player(sid: str):
     return sid_to_player.get(sid)
 
 
-def set_player(sid: str, player: Player):
+def set_player(sid: str, player: Player, password: str):
     with player_sid_lock:
         if id_to_sid.get(player.id, sid) != sid:
             raise Exception(f"Id {player.id} is already in use!")
+        login(sid, player.name, password)
         old_player = sid_to_player.get(sid, None)
         if old_player:
             id_to_sid.pop(old_player.id)

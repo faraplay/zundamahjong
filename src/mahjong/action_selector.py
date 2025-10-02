@@ -15,7 +15,7 @@ class ActionSelector:
         return self._resolve_actions()
 
     def reset_submitted_actions(self):
-        self._submitted_actions = [None] * self._player_count
+        self._submitted_actions: list[Action | None] = [None] * self._player_count
 
     def _resolve_actions(self):
         action_resolve_count = 0

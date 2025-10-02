@@ -10,8 +10,9 @@ export function NameForm() {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const name = formData.get("name");
+    const password = formData.get("password");
     if (name) {
-      emit("set_name", name);
+      emit("set_name", name, password);
       emit("get_rooms");
     }
   };
@@ -21,6 +22,10 @@ export function NameForm() {
       <div>
         <label for="name_input">Name</label>
         <input id="name_input" name="name" type="text" />
+      </div>
+      <div>
+        <label for="password_input">Password</label>
+        <input id="password_input" name="password" type="password" />
       </div>
       <button type="submit">Set name</button>
     </form>
