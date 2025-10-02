@@ -1,6 +1,6 @@
 import logging
 
-from ..database import get_db
+from ..database import close_db
 from ..mahjong.action import Action
 from ..mahjong.game_options import GameOptions
 
@@ -27,7 +27,7 @@ def disconnect(sid, reason):
     else:
         GameRoom.try_disconnect(player)
     remove_sid(sid)
-    get_db(sid).close()
+    close_db(sid)
 
 
 @sio_on("action")

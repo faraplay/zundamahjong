@@ -1,6 +1,6 @@
 from threading import Lock
 
-from ..database import login
+from ..database.security import login
 from .sio import sio
 from .player_info import Player
 
