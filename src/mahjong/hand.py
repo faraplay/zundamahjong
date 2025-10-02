@@ -4,6 +4,7 @@ from src.mahjong.action import (
     Action,
     ActionType,
     AddKanAction,
+    ClosedKanAction,
     HandTileAction,
     OpenCallAction,
     OpenKanAction,
@@ -12,7 +13,6 @@ from src.mahjong.action import (
 from .tile import (
     TileId,
     TileValue,
-    N,
     get_tile_value,
     get_tile_values,
     remove_tile_value,
@@ -79,7 +79,7 @@ class Hand:
         if not is_number(discard_value):
             return actions
         # get lists of tiles with values discard_value-2, ..., discard_value+2
-        nearby_tiles = [[], [], [], [], []]
+        nearby_tiles: list[list[TileId]] = [[], [], [], [], []]
         for tile in self._tiles:
             value_diff = get_tile_value(tile) - discard_value
             if -2 <= value_diff <= 2:
@@ -233,7 +233,7 @@ class Hand:
                 same_tile_count += 1
                 if same_tile_count == 4:
                     actions.append(
-                        ClosedKanCall(tiles=self._tiles[index - 3 : index + 1])
+                        ClosedKanAction(tiles=self._tiles[index - 3 : index + 1])
                     )
             else:
                 same_tile_count = 1

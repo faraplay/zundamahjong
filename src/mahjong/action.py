@@ -72,7 +72,14 @@ class ClosedKanAction(BaseModel, frozen=True):
 
 
 Action = Annotated[
-    Union[SimpleAction, HandTileAction, OpenCallAction, AddKanAction, ClosedKanAction],
+    Union[
+        SimpleAction,
+        HandTileAction,
+        OpenCallAction,
+        OpenKanAction,
+        AddKanAction,
+        ClosedKanAction,
+    ],
     Field(discriminator="action_type"),
 ]
 
@@ -99,7 +106,16 @@ class ActionSet:
     def actions(self) -> Set[Action]:
         return self._actions
 
-    def add_simple_action(self, action_type: ActionType):
+    def add_simple_action(
+        self,
+        action_type: Literal[
+            ActionType.PASS,
+            ActionType.CONTINUE,
+            ActionType.DRAW,
+            ActionType.RON,
+            ActionType.TSUMO,
+        ],
+    ):
         self._actions.add(SimpleAction(action_type=action_type))
 
     def add_actions(self, actions: Iterable[Action]):

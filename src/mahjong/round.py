@@ -5,7 +5,7 @@ from collections.abc import Sequence, Callable
 from enum import Enum
 
 from .exceptions import InvalidMoveException
-from .tile import TileId, tile_id_is_flower
+from .tile import TileId
 from .deck import Deck, four_player_deck, three_player_deck
 from .discard_pool import DiscardPool
 from .hand import Hand
@@ -95,7 +95,7 @@ class Round:
         self._status = RoundStatus.START
         self._last_tile: TileId = 0
         self._history: list[tuple[int, Action]] = []
-        self._win_info = None
+        self._win_info: Optional[Win] = None
 
         self._calculate_allowed_actions()
 
@@ -263,7 +263,7 @@ class Round:
                 actions.add_actions(hand.get_closed_kans())
                 actions.add_actions(flower_actions)
                 if hand.can_tsumo():
-                    actions.add(ActionType.TSUMO)
+                    actions.add_simple_action(ActionType.TSUMO)
                 return actions
         else:
             return ActionSet()
@@ -287,7 +287,7 @@ class Round:
         else:
             actions = ActionSet()
             if hand.can_ron(last_tile):
-                actions.add(ActionType.RON)
+                actions.add_simple_action(ActionType.RON)
             return actions
 
     @_register_allowed_actions(RoundStatus.CLOSED_KAN_AFTER)
@@ -299,7 +299,7 @@ class Round:
         else:
             actions = ActionSet()
             if hand.can_ron(last_tile):
-                actions.add(ActionType.RON)
+                actions.add_simple_action(ActionType.RON)
             return actions
 
     @_register_allowed_actions(RoundStatus.DISCARDED)
@@ -314,7 +314,7 @@ class Round:
             actions.add_actions(hand.get_pons(last_tile))
             actions.add_actions(hand.get_open_kans(last_tile))
             if hand.can_ron(last_tile):
-                actions.add(ActionType.RON)
+                actions.add_simple_action(ActionType.RON)
         return actions
 
     @_register_allowed_actions(RoundStatus.LAST_DISCARDED)
@@ -326,7 +326,7 @@ class Round:
         else:
             actions = ActionSet()
             if hand.can_ron(last_tile):
-                actions.add(ActionType.RON)
+                actions.add_simple_action(ActionType.RON)
             return actions
 
     @_register_allowed_actions(RoundStatus.END)
