@@ -10,7 +10,8 @@ from .tile import (
     dragons,
     green_tiles,
 )
-from .call import Call, CallType
+from .meld import Meld, MeldType, TileValueMeld
+from .call import CallType, get_call_tiles, get_meld_type
 from .win import Win
 
 yaku_display_names: dict[str, str] = {}
@@ -30,7 +31,7 @@ def _register_yaku(name: str, display_name: str, han: int):
 
 
 class YakuCalculator:
-    def __init__(self, win: Win, formed_hand: list[Call]):
+    def __init__(self, win: Win, formed_hand: list[Meld]):
         self._win = win
         self._formed_hand = formed_hand
 
@@ -39,33 +40,39 @@ class YakuCalculator:
         ) % self._win.player_count
         self._flowers = set(get_tile_value(flower) for flower in self._win.flowers)
         self._melds = [
-            Call(
-                call_type=call.call_type,
-                tiles=[get_tile_value(tile) for tile in call.tiles],
+            TileValueMeld(
+                meld_type=meld.meld_type,
+                tiles=[get_tile_value(tile) for tile in meld.tiles],
             )
-            for call in self._formed_hand + self._win.calls
+            for meld in self._formed_hand
+        ] + [
+            TileValueMeld(
+                meld_type=get_meld_type(call.call_type),
+                tiles=[get_tile_value(tile) for tile in get_call_tiles(call)],
+            )
+            for call in self._win.calls
         ]
         self._hand_tiles = [tile for call in self._melds for tile in call.tiles]
         self._used_suits = set((tile // 10) * 10 for tile in self._hand_tiles)
         self._call_outsidenesses = set(
-            self._is_outside_call(call) for call in self._melds
+            self._is_outside_call(meld) for meld in self._melds
         )
         self._chi_start_tiles = Counter(
-            call.tiles[0] for call in self._melds if call.call_type == CallType.CHI
+            call.tiles[0] for call in self._melds if call.meld_type == MeldType.CHI
         )
         self._triplet_tiles = {
             call.tiles[0]
             for call in self._melds
-            if call.call_type in self._triplet_types
+            if call.meld_type in self._triplet_types
         }
 
     _triplet_types = {
-        CallType.PON,
-        CallType.OPEN_KAN,
-        CallType.ADD_KAN,
-        CallType.CLOSED_KAN,
+        MeldType.PON,
+        MeldType.OPEN_KAN,
+        MeldType.ADD_KAN,
+        MeldType.CLOSED_KAN,
     }
-    _kan_types = {CallType.OPEN_KAN, CallType.ADD_KAN, CallType.CLOSED_KAN}
+    _kan_types = {MeldType.OPEN_KAN, MeldType.ADD_KAN, MeldType.CLOSED_KAN}
     _number_suits = [0, 10, 20]
     _honour_suit = 30
 
@@ -131,11 +138,11 @@ class YakuCalculator:
 
     @_register_yaku("THIRTEEN_ORPHANS", "Thirteen Orphans", 13)
     def _thirteen_orphans(self):
-        return int(self._melds[0].call_type == CallType.THIRTEEN_ORPHANS)
+        return int(self._melds[0].meld_type == MeldType.THIRTEEN_ORPHANS)
 
     @_register_yaku("FOUR_QUADS", "Four Quads", 18)
     def _four_quads(self):
-        return int(sum(call.call_type in self._kan_types for call in self._melds) == 4)
+        return int(sum(call.meld_type in self._kan_types for call in self._melds) == 4)
 
     @_register_yaku("NINE_GATES", "Nine Gates", 11)
     def _nine_gates(self):
@@ -197,18 +204,18 @@ class YakuCalculator:
     @_register_yaku("SEVEN_PAIRS", "Seven Pairs", 3)
     def _seven_pairs(self):
         return len(self._melds) == 7 and int(
-            all(call.call_type == CallType.PAIR for call in self._melds)
+            all(call.meld_type == MeldType.PAIR for call in self._melds)
         )
 
-    def _is_outside_call(self, call: Call):
+    def _is_outside_call(self, meld: TileValueMeld):
         "Returns 2 if it contains a terminal, 1 if it contains an honor, 0 otherwise"
-        tile = call.tiles[0]
-        if call.call_type == CallType.CHI:
+        tile = meld.tiles[0]
+        if meld.meld_type == MeldType.CHI:
             if tile % 10 == 1 or tile % 10 == 7:
                 return 2
             else:
                 return 0
-        elif call.call_type == CallType.THIRTEEN_ORPHANS:
+        elif meld.meld_type == MeldType.THIRTEEN_ORPHANS:
             return 0
         else:
             if not is_number(tile):
@@ -265,7 +272,7 @@ class YakuCalculator:
     def _yakuhai(self, yaku_tile):
         return int(
             any(
-                (call.tiles[0] == yaku_tile and call.call_type != CallType.PAIR)
+                (call.tiles[0] == yaku_tile and call.meld_type != MeldType.PAIR)
                 for call in self._melds
             )
         )
@@ -296,7 +303,7 @@ class YakuCalculator:
 
     @_register_yaku("EYES", "Eyes", 1)
     def _eyes(self):
-        pairs = [call for call in self._melds if call.call_type == CallType.PAIR]
+        pairs = [call for call in self._melds if call.meld_type == MeldType.PAIR]
         if len(pairs) != 1:
             return 0
         tile = pairs[0].tiles[0]
