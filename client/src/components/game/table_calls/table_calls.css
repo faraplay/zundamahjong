@@ -22,6 +22,15 @@
     flex-direction: row;
     transform-style: preserve-3d;
 
+    .called_tile_div {
+      width: 4cqw;
+      display: flex;
+      flex-direction: row;
+      transform-style: preserve-3d;
+      transform-origin: left bottom;
+      transform: translateX(4cqw) rotateZ(-90deg);
+    }
+
     &.call_type_5 {
       > :nth-child(1),
       > :nth-child(4) {

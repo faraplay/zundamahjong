@@ -1,7 +1,7 @@
 from enum import IntEnum
 from collections.abc import Iterable, Set
 from typing import Annotated, Literal, Union
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, TypeAdapter
 
 
 from .tile import TileId
@@ -83,27 +83,28 @@ Action = Annotated[
     Field(discriminator="action_type"),
 ]
 
+action_adapter = TypeAdapter(Action)
 
-class ActionSet:
+
+class ActionList:
     def __init__(
         self, default_action: Action = SimpleAction(action_type=ActionType.PASS)
     ):
-        self._default = default_action
-        self._actions = {self._default}
+        self._actions = [default_action]
 
     @property
     def default(self):
-        return self._default
+        return self._actions[0]
 
     @property
     def auto(self):
-        if len(self._actions) == 1 and self._default.action_type != ActionType.DISCARD:
-            return self._default
+        if len(self._actions) == 1:
+            return self._actions[0]
         else:
             return None
 
     @property
-    def actions(self) -> Set[Action]:
+    def actions(self) -> list[Action]:
         return self._actions
 
     def add_simple_action(
@@ -116,7 +117,7 @@ class ActionSet:
             ActionType.TSUMO,
         ],
     ):
-        self._actions.add(SimpleAction(action_type=action_type))
+        self._actions.append(SimpleAction(action_type=action_type))
 
     def add_actions(self, actions: Iterable[Action]):
-        self._actions.update(actions)
+        self._actions.extend(actions)

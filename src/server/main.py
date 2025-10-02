@@ -1,4 +1,4 @@
-from ..mahjong.action import Action
+from ..mahjong.action import action_adapter
 from ..mahjong.game_options import GameOptions
 
 from .sio import sio, sio_on
@@ -36,7 +36,7 @@ def handle_action(sid, action_data, history_index):
         raise Exception("Player is not in a game room!")
     if game_room.game_controller is None:
         raise Exception("Game room has no active game!")
-    action = Action.model_validate(action_data)
+    action = action_adapter.validate_python(action_data)
     game_room.game_controller.submit_action(player, action, history_index)
 
 
