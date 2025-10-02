@@ -288,7 +288,7 @@ class Round:
             actions = ActionSet()
             if hand.can_ron(last_tile):
                 actions.add_simple_action(ActionType.RON)
-            return actions
+        return actions
 
     @_register_allowed_actions(RoundStatus.CLOSED_KAN_AFTER)
     def _allowed_actions_closed_kan_after(
@@ -300,7 +300,7 @@ class Round:
             actions = ActionSet()
             if hand.can_ron(last_tile):
                 actions.add_simple_action(ActionType.RON)
-            return actions
+        return actions
 
     @_register_allowed_actions(RoundStatus.DISCARDED)
     def _allowed_actions_discarded(self, player: int, hand: Hand, last_tile: TileId):
@@ -327,7 +327,7 @@ class Round:
             actions = ActionSet()
             if hand.can_ron(last_tile):
                 actions.add_simple_action(ActionType.RON)
-            return actions
+        return actions
 
     @_register_allowed_actions(RoundStatus.END)
     def _allowed_actions_end(self, player: int, hand: Hand, last_tile: TileId):
