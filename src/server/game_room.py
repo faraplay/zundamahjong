@@ -72,7 +72,7 @@ class GameRoom:
         if not isinstance(player_count, int):
             raise Exception(f"Player count {player_count} is not an integer!")
         if not (player_count == 3 or player_count == 4):
-            raise Exception(f"Player count is not 3 or 4!")
+            raise Exception("Player count is not 3 or 4!")
 
     @classmethod
     def get_player_room(cls, player: Player):
@@ -100,7 +100,7 @@ class GameRoom:
                 raise Exception(f"Player {player.id} is already in a room!")
             game_room = rooms[room_name]
             if game_room.game_controller:
-                raise Exception(f"Game already in progress!")
+                raise Exception("Game already in progress!")
             if len(game_room.joined_players) >= game_room.player_count:
                 raise Exception(f"Room {game_room.room_name} is full!")
             with game_room.avatar_lock:
@@ -195,6 +195,8 @@ class GameRoom:
     @classmethod
     def set_avatar(cls, player: Player, avatar: int):
         game_room = cls.get_player_room(player)
+        if game_room is None:
+            raise Exception("Player is not in a room!")
         with game_room.avatar_lock:
             game_room.avatars[player.id] = avatar
         game_room.broadcast_room_info()
@@ -210,6 +212,8 @@ class GameRoom:
             self.game_controller = GameController(self.joined_players, game_options)
 
     def end_game(self):
+        if self.game_controller is None:
+            raise Exception("Game hasn't started!")
         with rooms_lock:
             if not self.game_controller._game.is_game_end:
                 raise Exception("Game is not over yet!")
