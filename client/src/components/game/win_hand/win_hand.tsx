@@ -1,4 +1,5 @@
-import type { Call, Win } from "../../../types/game";
+import { getCallTiles, type Call } from "../../../types/call";
+import type { Win } from "../../../types/game";
 
 import { Tile2DList } from "../tile_2d/tile_2d";
 
@@ -7,7 +8,7 @@ import "./win_hand.css";
 function WinCall({ call }: { call: Call }) {
   return (
     <span class="call">
-      <Tile2DList tiles={call.tiles} />
+      <Tile2DList tiles={getCallTiles(call)} />
     </span>
   );
 }
@@ -17,7 +18,7 @@ export function WinHand({ win_info }: { win_info: Win | null }) {
     return <></>;
   }
   const win_hand_width = win_info.calls.reduce(
-    (partial_sum, call) => partial_sum + call.tiles.length + 0.5,
+    (partial_sum, call) => partial_sum + getCallTiles(call).length + 0.5,
     win_info.hand.length,
   );
   const flowerOverlap = win_hand_width + win_info.flowers.length >= 21.5;

@@ -36,3 +36,13 @@ export type ClosedKanCall = {
 };
 
 export type Call = OpenCall | OpenKanCall | AddKanCall | ClosedKanCall;
+
+export function getCallTiles(call: Call) {
+  if (call.call_type == CallType.CLOSED_KAN) {
+    return call.tiles;
+  }
+  if (call.call_type == CallType.ADD_KAN) {
+    return [call.added_tile, call.called_tile, ...call.other_tiles];
+  }
+  return [call.called_tile, ...call.other_tiles];
+}
