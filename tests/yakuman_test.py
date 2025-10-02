@@ -1,6 +1,13 @@
 from unittest import TestCase
 
-from src.mahjong.call import Call, CallType
+from src.mahjong.call import (
+    AddKanCall,
+    CallType,
+    ClosedKanCall,
+    OpenCall,
+    OpenKanCall,
+)
+from src.mahjong.meld import Meld, MeldType
 from tests.yaku_test import get_yaku_mults
 
 
@@ -10,11 +17,11 @@ class YakumanTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.CHI, tiles=[230, 240, 250]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[],
             flowers=[420],
@@ -27,11 +34,11 @@ class YakumanTest(TestCase):
             win_player=1,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.CHI, tiles=[230, 240, 250]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[],
             flowers=[430],
@@ -44,13 +51,18 @@ class YakumanTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.PON, tiles=[350, 351, 352]),
-                Call(call_type=CallType.PON, tiles=[230, 231, 232]),
-                Call(call_type=CallType.PAIR, tiles=[360, 361]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.PON, tiles=[350, 351, 352]),
+                Meld(meld_type=MeldType.PON, tiles=[230, 231, 232]),
+                Meld(meld_type=MeldType.PAIR, tiles=[360, 361]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[370, 371, 372]),
+                OpenCall(
+                    call_type=CallType.PON,
+                    called_player_index=3,
+                    called_tile=370,
+                    other_tiles=(371, 372),
+                ),
             ],
             flowers=[420],
         )
@@ -63,13 +75,18 @@ class YakumanTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.PON, tiles=[350, 351, 352]),
-                Call(call_type=CallType.PON, tiles=[360, 361, 362]),
-                Call(call_type=CallType.PAIR, tiles=[230, 231]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.PON, tiles=[350, 351, 352]),
+                Meld(meld_type=MeldType.PON, tiles=[360, 361, 362]),
+                Meld(meld_type=MeldType.PAIR, tiles=[230, 231]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[370, 371, 372]),
+                OpenCall(
+                    call_type=CallType.PON,
+                    called_player_index=3,
+                    called_tile=370,
+                    other_tiles=(371, 372),
+                ),
             ],
             flowers=[420],
         )
@@ -88,13 +105,18 @@ class YakumanTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[20, 30, 40]),
-                Call(call_type=CallType.PON, tiles=[330, 331, 332]),
-                Call(call_type=CallType.PON, tiles=[340, 341, 342]),
-                Call(call_type=CallType.PAIR, tiles=[310, 311]),
+                Meld(meld_type=MeldType.CHI, tiles=[20, 30, 40]),
+                Meld(meld_type=MeldType.PON, tiles=[330, 331, 332]),
+                Meld(meld_type=MeldType.PON, tiles=[340, 341, 342]),
+                Meld(meld_type=MeldType.PAIR, tiles=[310, 311]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[320, 321, 322]),
+                OpenCall(
+                    call_type=CallType.PON,
+                    called_player_index=3,
+                    called_tile=320,
+                    other_tiles=(321, 322),
+                ),
             ],
             flowers=[420],
         )
@@ -111,13 +133,18 @@ class YakumanTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[310, 311, 312]),
-                Call(call_type=CallType.PON, tiles=[330, 331, 332]),
-                Call(call_type=CallType.PON, tiles=[340, 341, 342]),
-                Call(call_type=CallType.PAIR, tiles=[30, 31]),
+                Meld(meld_type=MeldType.PON, tiles=[310, 311, 312]),
+                Meld(meld_type=MeldType.PON, tiles=[330, 331, 332]),
+                Meld(meld_type=MeldType.PON, tiles=[340, 341, 342]),
+                Meld(meld_type=MeldType.PAIR, tiles=[30, 31]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[320, 321, 322]),
+                OpenCall(
+                    call_type=CallType.PON,
+                    called_player_index=3,
+                    called_tile=320,
+                    other_tiles=(321, 322),
+                ),
             ],
             flowers=[420],
         )
@@ -137,13 +164,15 @@ class YakumanTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[10, 11, 12]),
-                Call(call_type=CallType.PON, tiles=[150, 151, 152]),
-                Call(call_type=CallType.PON, tiles=[230, 231, 232]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12]),
+                Meld(meld_type=MeldType.PON, tiles=[150, 151, 152]),
+                Meld(meld_type=MeldType.PON, tiles=[230, 231, 232]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CLOSED_KAN, tiles=[190, 191, 192, 193]),
+                ClosedKanCall(
+                    call_type=CallType.CLOSED_KAN, tiles=(190, 191, 192, 193)
+                ),
             ],
             flowers=[420],
         )
@@ -156,13 +185,18 @@ class YakumanTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[360, 361, 362]),
-                Call(call_type=CallType.PON, tiles=[330, 331, 332]),
-                Call(call_type=CallType.PON, tiles=[340, 341, 342]),
-                Call(call_type=CallType.PAIR, tiles=[350, 351]),
+                Meld(meld_type=MeldType.PON, tiles=[360, 361, 362]),
+                Meld(meld_type=MeldType.PON, tiles=[330, 331, 332]),
+                Meld(meld_type=MeldType.PON, tiles=[340, 341, 342]),
+                Meld(meld_type=MeldType.PAIR, tiles=[350, 351]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[320, 321, 322]),
+                OpenCall(
+                    call_type=CallType.PON,
+                    called_player_index=3,
+                    called_tile=320,
+                    other_tiles=(321, 322),
+                ),
             ],
             flowers=[420],
         )
@@ -180,13 +214,18 @@ class YakumanTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[220, 230, 240]),
-                Call(call_type=CallType.PON, tiles=[231, 232, 233]),
-                Call(call_type=CallType.CHI, tiles=[280, 281, 282]),
-                Call(call_type=CallType.PAIR, tiles=[360, 361]),
+                Meld(meld_type=MeldType.CHI, tiles=[220, 230, 240]),
+                Meld(meld_type=MeldType.PON, tiles=[231, 232, 233]),
+                Meld(meld_type=MeldType.CHI, tiles=[280, 281, 282]),
+                Meld(meld_type=MeldType.PAIR, tiles=[360, 361]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[260, 261, 262]),
+                OpenCall(
+                    call_type=CallType.PON,
+                    called_player_index=3,
+                    called_tile=260,
+                    other_tiles=(261, 262),
+                ),
             ],
             flowers=[420],
         )
@@ -197,13 +236,18 @@ class YakumanTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[10, 11, 12]),
-                Call(call_type=CallType.PON, tiles=[110, 111, 112]),
-                Call(call_type=CallType.PON, tiles=[290, 291, 292]),
-                Call(call_type=CallType.PAIR, tiles=[210, 211]),
+                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12]),
+                Meld(meld_type=MeldType.PON, tiles=[110, 111, 112]),
+                Meld(meld_type=MeldType.PON, tiles=[290, 291, 292]),
+                Meld(meld_type=MeldType.PAIR, tiles=[210, 211]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
+                OpenCall(
+                    call_type=CallType.PON,
+                    called_player_index=3,
+                    called_tile=190,
+                    other_tiles=(191, 192),
+                ),
             ],
             flowers=[420],
         )
@@ -216,8 +260,8 @@ class YakumanTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(
-                    call_type=CallType.THIRTEEN_ORPHANS,
+                Meld(
+                    meld_type=MeldType.THIRTEEN_ORPHANS,
                     tiles=[
                         4,
                         36,
@@ -246,13 +290,25 @@ class YakumanTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.OPEN_KAN, tiles=[10, 11, 12, 13]),
-                Call(call_type=CallType.ADD_KAN, tiles=[150, 151, 152, 153]),
-                Call(call_type=CallType.ADD_KAN, tiles=[230, 231, 232, 233]),
-                Call(call_type=CallType.CLOSED_KAN, tiles=[190, 191, 192, 193]),
+                OpenKanCall(
+                    called_player_index=0, called_tile=10, other_tiles=(11, 12, 13)
+                ),
+                AddKanCall(
+                    called_player_index=0,
+                    called_tile=150,
+                    added_tile=151,
+                    other_tiles=(152, 153),
+                ),
+                AddKanCall(
+                    called_player_index=0,
+                    called_tile=230,
+                    added_tile=231,
+                    other_tiles=(232, 233),
+                ),
+                ClosedKanCall(tiles=(190, 191, 192, 193)),
             ],
             flowers=[420],
         )
@@ -263,11 +319,11 @@ class YakumanTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[10, 11, 12]),
-                Call(call_type=CallType.CHI, tiles=[20, 30, 40]),
-                Call(call_type=CallType.CHI, tiles=[41, 50, 60]),
-                Call(call_type=CallType.CHI, tiles=[70, 80, 90]),
-                Call(call_type=CallType.PAIR, tiles=[91, 92]),
+                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12]),
+                Meld(meld_type=MeldType.CHI, tiles=[20, 30, 40]),
+                Meld(meld_type=MeldType.CHI, tiles=[41, 50, 60]),
+                Meld(meld_type=MeldType.CHI, tiles=[70, 80, 90]),
+                Meld(meld_type=MeldType.PAIR, tiles=[91, 92]),
             ],
             calls=[],
             flowers=[420],
@@ -281,11 +337,11 @@ class YakumanTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[50, 60, 70]),
-                Call(call_type=CallType.PON, tiles=[90, 91, 92]),
-                Call(call_type=CallType.PAIR, tiles=[31, 32]),
-                Call(call_type=CallType.CHI, tiles=[33, 40, 51]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[50, 60, 70]),
+                Meld(meld_type=MeldType.PON, tiles=[90, 91, 92]),
+                Meld(meld_type=MeldType.PAIR, tiles=[31, 32]),
+                Meld(meld_type=MeldType.CHI, tiles=[33, 40, 51]),
             ],
             calls=[],
             flowers=[420],

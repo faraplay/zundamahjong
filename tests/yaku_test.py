@@ -3,7 +3,8 @@ from typing import Optional
 from unittest import TestCase
 
 from src.mahjong.tile import TileId
-from src.mahjong.call import Call, CallType
+from src.mahjong.meld import Meld, MeldType
+from src.mahjong.call import Call, CallType, ClosedKanCall, OpenCall
 from src.mahjong.yaku import Win
 from src.mahjong.yaku import YakuCalculator
 
@@ -12,7 +13,7 @@ def get_yaku_mults(
     *,
     win_player: int = 0,
     lose_player: Optional[int],
-    formed_hand: list[Call],
+    formed_hand: list[Meld],
     calls: list[Call],
     flowers: list[TileId],
     player_count: int = 4,
@@ -23,7 +24,7 @@ def get_yaku_mults(
     win = Win(
         win_player=win_player,
         lose_player=lose_player,
-        hand=[tile for call in formed_hand for tile in call.tiles],
+        hand=[tile for meld in formed_hand for tile in meld.tiles],
         calls=calls,
         flowers=flowers,
         player_count=player_count,
@@ -40,13 +41,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[],
         )
@@ -57,13 +63,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[410],
         )
@@ -74,13 +85,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[440],
             sub_round=1,
@@ -92,13 +108,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[410, 450],
         )
@@ -109,13 +130,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[410, 420, 430, 440],
         )
@@ -126,13 +152,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[410, 420, 430, 440, 460, 470, 480],
         )
@@ -145,13 +176,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[410, 420, 430, 440, 450, 460, 470, 480],
         )
@@ -165,13 +201,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[420],
             draw_count=1,
@@ -186,13 +227,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[420],
             after_flower_count=1,
@@ -207,13 +253,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[420],
             after_kan_count=1,
@@ -228,13 +279,18 @@ class YakuTest(TestCase):
             win_player=1,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[320, 321, 322]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[320, 321, 322]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=0,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[440],
         )
@@ -248,13 +304,18 @@ class YakuTest(TestCase):
             win_player=2,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[320, 321, 322]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[320, 321, 322]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=1,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[440],
             sub_round=1,
@@ -269,13 +330,18 @@ class YakuTest(TestCase):
             win_player=1,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[310, 311, 312]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[310, 311, 312]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[440],
         )
@@ -289,13 +355,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[350, 351, 352]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[350, 351, 352]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[420],
         )
@@ -309,13 +380,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[360, 361, 362]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[360, 361, 362]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[420],
         )
@@ -329,13 +405,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[370, 371, 372]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[370, 371, 372]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[420],
         )
@@ -349,13 +430,28 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[80, 81]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[80, 81]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=10,
+                    other_tiles=(20, 30),
+                ),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=150,
+                    other_tiles=(160, 170),
+                ),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[420],
         )
@@ -366,14 +462,13 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[230, 240, 250]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
             ],
-            calls=[
-                Call(call_type=CallType.CLOSED_KAN, tiles=[190, 191, 192, 193]),
-            ],
+            calls=[],
             flowers=[420],
         )
         self.assertDictEqual(yaku_mults, {"NO_CALLS": 1})
@@ -383,13 +478,13 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[230, 240, 250]),
             ],
             calls=[
-                Call(call_type=CallType.CLOSED_KAN, tiles=[190, 191, 192, 193]),
+                ClosedKanCall(tiles=(190, 191, 192, 193)),
             ],
             flowers=[420],
         )
@@ -400,13 +495,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[420],
             is_chankan=True,
@@ -418,13 +518,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[420],
             is_haitei=True,
@@ -436,13 +541,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[420],
             is_houtei=True,
@@ -454,13 +564,33 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PAIR, tiles=[10, 11]),
+                Meld(meld_type=MeldType.PAIR, tiles=[10, 11]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[12, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[140, 150, 160]),
-                Call(call_type=CallType.CHI, tiles=[151, 161, 170]),
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=12,
+                    other_tiles=(0, 30),
+                ),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=140,
+                    other_tiles=(150, 160),
+                ),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=151,
+                    other_tiles=(161, 170),
+                ),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[420],
         )
@@ -471,13 +601,23 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[30, 31, 32]),
-                Call(call_type=CallType.CHI, tiles=[40, 50, 60]),
-                Call(call_type=CallType.PAIR, tiles=[230, 231]),
+                Meld(meld_type=MeldType.PON, tiles=[30, 31, 32]),
+                Meld(meld_type=MeldType.CHI, tiles=[40, 50, 60]),
+                Meld(meld_type=MeldType.PAIR, tiles=[230, 231]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[150, 151, 152]),
-                Call(call_type=CallType.CHI, tiles=[153, 160, 170]),
+                OpenCall(
+                    call_type=CallType.PON,
+                    called_player_index=3,
+                    called_tile=150,
+                    other_tiles=(151, 152),
+                ),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=153,
+                    other_tiles=(160, 170),
+                ),
             ],
             flowers=[420],
         )
@@ -488,13 +628,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[210, 220, 230]),
-                Call(call_type=CallType.CHI, tiles=[240, 250, 260]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230]),
+                Meld(meld_type=MeldType.CHI, tiles=[240, 250, 260]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[270, 280, 290]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=270,
+                    other_tiles=(280, 290),
+                ),
             ],
             flowers=[420],
         )
@@ -505,13 +650,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[10, 11, 12]),
-                Call(call_type=CallType.PON, tiles=[150, 151, 152]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12]),
+                Meld(meld_type=MeldType.PON, tiles=[150, 151, 152]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[230, 231, 232]),
+                OpenCall(
+                    call_type=CallType.PON,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(231, 232),
+                ),
             ],
             flowers=[420],
         )
@@ -522,13 +672,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[50, 60, 70]),
-                Call(call_type=CallType.PON, tiles=[90, 91, 92]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[50, 60, 70]),
+                Meld(meld_type=MeldType.PON, tiles=[90, 91, 92]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[31, 40, 51]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=31,
+                    other_tiles=(40, 51),
+                ),
             ],
             flowers=[420],
         )
@@ -539,13 +694,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[50, 60, 70]),
-                Call(call_type=CallType.PON, tiles=[90, 91, 92]),
-                Call(call_type=CallType.PAIR, tiles=[31, 32]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[50, 60, 70]),
+                Meld(meld_type=MeldType.PON, tiles=[90, 91, 92]),
+                Meld(meld_type=MeldType.PAIR, tiles=[31, 32]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[33, 40, 51]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=33,
+                    other_tiles=(40, 51),
+                ),
             ],
             flowers=[420],
         )
@@ -556,13 +716,13 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PAIR, tiles=[30, 31]),
-                Call(call_type=CallType.PAIR, tiles=[40, 41]),
-                Call(call_type=CallType.PAIR, tiles=[90, 91]),
-                Call(call_type=CallType.PAIR, tiles=[150, 151]),
-                Call(call_type=CallType.PAIR, tiles=[210, 211]),
-                Call(call_type=CallType.PAIR, tiles=[220, 221]),
-                Call(call_type=CallType.PAIR, tiles=[310, 311]),
+                Meld(meld_type=MeldType.PAIR, tiles=[30, 31]),
+                Meld(meld_type=MeldType.PAIR, tiles=[40, 41]),
+                Meld(meld_type=MeldType.PAIR, tiles=[90, 91]),
+                Meld(meld_type=MeldType.PAIR, tiles=[150, 151]),
+                Meld(meld_type=MeldType.PAIR, tiles=[210, 211]),
+                Meld(meld_type=MeldType.PAIR, tiles=[220, 221]),
+                Meld(meld_type=MeldType.PAIR, tiles=[310, 311]),
             ],
             calls=[],
             flowers=[420],
@@ -574,13 +734,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[110, 120, 130]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[110, 120, 130]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[270, 280, 290]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=270,
+                    other_tiles=(280, 290),
+                ),
             ],
             flowers=[420],
         )
@@ -594,13 +759,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[110, 120, 130]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[290, 291]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[110, 120, 130]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[290, 291]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[270, 280, 292]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=270,
+                    other_tiles=(280, 292),
+                ),
             ],
             flowers=[420],
         )
@@ -614,13 +784,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[11, 21, 31]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[11, 21, 31]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[420],
         )
@@ -634,13 +809,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[10, 20, 30]),
-                Call(call_type=CallType.CHI, tiles=[11, 21, 31]),
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[11, 21, 31]),
+                Meld(meld_type=MeldType.CHI, tiles=[230, 240, 250]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[231, 241, 251]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=231,
+                    other_tiles=(241, 251),
+                ),
             ],
             flowers=[420],
         )
@@ -654,13 +834,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.CHI, tiles=[30, 40, 50]),
-                Call(call_type=CallType.CHI, tiles=[130, 140, 150]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[30, 40, 50]),
+                Meld(meld_type=MeldType.CHI, tiles=[130, 140, 150]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.CHI, tiles=[230, 240, 250]),
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
             ],
             flowers=[420],
         )
@@ -674,13 +859,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[90, 91, 92]),
-                Call(call_type=CallType.CHI, tiles=[150, 160, 170]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.PON, tiles=[90, 91, 92]),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[290, 291, 292]),
+                OpenCall(
+                    call_type=CallType.PON,
+                    called_player_index=3,
+                    called_tile=290,
+                    other_tiles=(291, 292),
+                ),
             ],
             flowers=[420],
         )
@@ -694,13 +884,18 @@ class YakuTest(TestCase):
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Call(call_type=CallType.PON, tiles=[10, 11, 12]),
-                Call(call_type=CallType.PON, tiles=[110, 111, 112]),
-                Call(call_type=CallType.PON, tiles=[190, 191, 192]),
-                Call(call_type=CallType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12]),
+                Meld(meld_type=MeldType.PON, tiles=[110, 111, 112]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
             ],
             calls=[
-                Call(call_type=CallType.PON, tiles=[290, 291, 292]),
+                OpenCall(
+                    call_type=CallType.PON,
+                    called_player_index=3,
+                    called_tile=290,
+                    other_tiles=(291, 292),
+                ),
             ],
             flowers=[420],
         )
