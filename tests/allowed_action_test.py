@@ -136,7 +136,7 @@ class AllowedActionTest(unittest.TestCase):
             ],
         )
 
-    def test_can_pon_kan(self):
+    def test_can_pon_open_kan(self):
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=90))
         self.assertSequenceEqual(
@@ -146,6 +146,73 @@ class AllowedActionTest(unittest.TestCase):
                 OpenCallAction(action_type=ActionType.CHII, other_tiles=(71, 81)),
                 OpenCallAction(action_type=ActionType.PON, other_tiles=(91, 92)),
                 OpenKanAction(other_tiles=(91, 92, 93)),
+            ],
+        )
+
+    def test_can_add_kan(self):
+        round = Round(tiles=test_deck1)
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=90))
+        round.do_action(
+            1, OpenCallAction(action_type=ActionType.PON, other_tiles=(91, 92))
+        )
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=213))
+        round.do_action(
+            0, OpenCallAction(action_type=ActionType.PON, other_tiles=(210, 211))
+        )
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        self.assertSequenceEqual(
+            round.allowed_actions[1].actions,
+            [
+                HandTileAction(action_type=ActionType.DISCARD, tile=13),
+                HandTileAction(action_type=ActionType.DISCARD, tile=11),
+                HandTileAction(action_type=ActionType.DISCARD, tile=21),
+                HandTileAction(action_type=ActionType.DISCARD, tile=31),
+                HandTileAction(action_type=ActionType.DISCARD, tile=41),
+                HandTileAction(action_type=ActionType.DISCARD, tile=51),
+                HandTileAction(action_type=ActionType.DISCARD, tile=61),
+                HandTileAction(action_type=ActionType.DISCARD, tile=71),
+                HandTileAction(action_type=ActionType.DISCARD, tile=81),
+                HandTileAction(action_type=ActionType.DISCARD, tile=93),
+                HandTileAction(action_type=ActionType.DISCARD, tile=171),
+                AddKanAction(
+                    tile=93,
+                    pon_call=OpenCall(
+                        call_type=CallType.PON,
+                        called_player_index=0,
+                        called_tile=90,
+                        other_tiles=(91, 92),
+                    ),
+                ),
+            ],
+        )
+
+    def test_can_closed_kan(self):
+        round = Round(tiles=test_deck1)
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
+        round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
+        self.assertSequenceEqual(
+            round.allowed_actions[2].actions,
+            [
+                HandTileAction(action_type=ActionType.DISCARD, tile=22),
+                HandTileAction(action_type=ActionType.DISCARD, tile=110),
+                HandTileAction(action_type=ActionType.DISCARD, tile=111),
+                HandTileAction(action_type=ActionType.DISCARD, tile=112),
+                HandTileAction(action_type=ActionType.DISCARD, tile=113),
+                HandTileAction(action_type=ActionType.DISCARD, tile=130),
+                HandTileAction(action_type=ActionType.DISCARD, tile=131),
+                HandTileAction(action_type=ActionType.DISCARD, tile=132),
+                HandTileAction(action_type=ActionType.DISCARD, tile=133),
+                HandTileAction(action_type=ActionType.DISCARD, tile=150),
+                HandTileAction(action_type=ActionType.DISCARD, tile=151),
+                HandTileAction(action_type=ActionType.DISCARD, tile=152),
+                HandTileAction(action_type=ActionType.DISCARD, tile=153),
+                HandTileAction(action_type=ActionType.DISCARD, tile=172),
+                ClosedKanAction(tiles=(110, 111, 112, 113)),
+                ClosedKanAction(tiles=(130, 131, 132, 133)),
+                ClosedKanAction(tiles=(150, 151, 152, 153)),
             ],
         )
 
