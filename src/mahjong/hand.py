@@ -225,18 +225,19 @@ class Hand:
 
     def get_closed_kans(self):
         actions: list[Action] = []
-        same_tile_count = 1
-        for index in range(1, len(self._tiles)):
-            if get_tile_value(self._tiles[index]) == get_tile_value(
-                self._tiles[index - 1]
-            ):
-                same_tile_count += 1
-                if same_tile_count == 4:
-                    actions.append(
-                        ClosedKanAction(tiles=self._tiles[index - 3 : index + 1])
-                    )
-            else:
-                same_tile_count = 1
+        tile_value_buckets: dict[TileValue, list[TileId]] = {}
+        for tile in self._tiles:
+            tile_value = get_tile_value(tile)
+            bucket = tile_value_buckets.get(tile_value)
+            if bucket is None:
+                bucket = []
+                tile_value_buckets[tile_value] = bucket
+            bucket.append(tile)
+            if len(bucket) == 4:
+                bucket.sort()
+                actions.append(
+                    ClosedKanAction(tiles=(bucket[0], bucket[1], bucket[2], bucket[3]))
+                )
         return actions
 
     def closed_kan(self, tiles: tuple[TileId, TileId, TileId, TileId]):

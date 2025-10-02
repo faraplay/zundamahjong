@@ -63,24 +63,25 @@ class AllowedActionTest(unittest.TestCase):
 
     def test_wrong_turn_nothing(self):
         round = Round(tiles=test_deck1)
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[1].actions,
-            {SimpleAction(action_type=ActionType.PASS)},
+            [SimpleAction(action_type=ActionType.PASS)],
         )
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[2].actions,
-            {SimpleAction(action_type=ActionType.PASS)},
+            [SimpleAction(action_type=ActionType.PASS)],
         )
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[3].actions,
-            {SimpleAction(action_type=ActionType.PASS)},
+            [SimpleAction(action_type=ActionType.PASS)],
         )
 
     def test_turn_discard_actions(self):
         round = Round(tiles=test_deck1)
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[0].actions,
-            {
+            [
+                HandTileAction(action_type=ActionType.DISCARD, tile=12),
                 HandTileAction(action_type=ActionType.DISCARD, tile=10),
                 HandTileAction(action_type=ActionType.DISCARD, tile=20),
                 HandTileAction(action_type=ActionType.DISCARD, tile=30),
@@ -94,59 +95,58 @@ class AllowedActionTest(unittest.TestCase):
                 HandTileAction(action_type=ActionType.DISCARD, tile=211),
                 HandTileAction(action_type=ActionType.DISCARD, tile=212),
                 HandTileAction(action_type=ActionType.DISCARD, tile=170),
-                HandTileAction(action_type=ActionType.DISCARD, tile=12),
-            },
+            ],
         )
 
     def test_discard_self_cannot_chi(self):
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[0].actions,
-            {SimpleAction(action_type=ActionType.PASS)},
+            [SimpleAction(action_type=ActionType.PASS)],
         )
 
     def test_discard_self_cannot_pon(self):
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=210))
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[0].actions,
-            {SimpleAction(action_type=ActionType.PASS)},
+            [SimpleAction(action_type=ActionType.PASS)],
         )
 
     def test_can_draw(self):
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=170))
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[1].actions,
-            {SimpleAction(action_type=ActionType.DRAW)},
+            [SimpleAction(action_type=ActionType.DRAW)],
         )
 
     def test_can_chi_abc(self):
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=50))
         print(round._hands[1].tile_values)
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[1].actions,
-            {
+            [
                 SimpleAction(action_type=ActionType.DRAW),
                 OpenCallAction(action_type=ActionType.CHII, other_tiles=(31, 41)),
                 OpenCallAction(action_type=ActionType.CHII, other_tiles=(41, 61)),
                 OpenCallAction(action_type=ActionType.CHII, other_tiles=(61, 71)),
-            },
+            ],
         )
 
     def test_can_pon_kan(self):
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=90))
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[1].actions,
-            {
+            [
                 SimpleAction(action_type=ActionType.DRAW),
                 OpenCallAction(action_type=ActionType.CHII, other_tiles=(71, 81)),
                 OpenCallAction(action_type=ActionType.PON, other_tiles=(91, 92)),
                 OpenKanAction(other_tiles=(91, 92, 93)),
-            },
+            ],
         )
 
     def test_discard_actions_after_chi(self):
@@ -155,9 +155,10 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(
             1, OpenCallAction(action_type=ActionType.CHII, other_tiles=(71, 81))
         )
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[1].actions,
-            {
+            [
+                HandTileAction(action_type=ActionType.DISCARD, tile=213),
                 HandTileAction(action_type=ActionType.DISCARD, tile=11),
                 HandTileAction(action_type=ActionType.DISCARD, tile=21),
                 HandTileAction(action_type=ActionType.DISCARD, tile=31),
@@ -167,9 +168,8 @@ class AllowedActionTest(unittest.TestCase):
                 HandTileAction(action_type=ActionType.DISCARD, tile=91),
                 HandTileAction(action_type=ActionType.DISCARD, tile=92),
                 HandTileAction(action_type=ActionType.DISCARD, tile=93),
-                HandTileAction(action_type=ActionType.DISCARD, tile=213),
                 HandTileAction(action_type=ActionType.DISCARD, tile=171),
-            },
+            ],
         )
 
     def test_cannot_kan_after_call(self):
@@ -178,9 +178,10 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(
             1, OpenCallAction(action_type=ActionType.PON, other_tiles=(91, 92))
         )
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[1].actions,
-            {
+            [
+                HandTileAction(action_type=ActionType.DISCARD, tile=213),
                 HandTileAction(action_type=ActionType.DISCARD, tile=11),
                 HandTileAction(action_type=ActionType.DISCARD, tile=21),
                 HandTileAction(action_type=ActionType.DISCARD, tile=31),
@@ -190,20 +191,19 @@ class AllowedActionTest(unittest.TestCase):
                 HandTileAction(action_type=ActionType.DISCARD, tile=71),
                 HandTileAction(action_type=ActionType.DISCARD, tile=81),
                 HandTileAction(action_type=ActionType.DISCARD, tile=93),
-                HandTileAction(action_type=ActionType.DISCARD, tile=213),
                 HandTileAction(action_type=ActionType.DISCARD, tile=171),
-            },
+            ],
         )
 
     def test_can_ron(self):
         round = Round(tiles=test_deck2)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[2].actions,
-            {
+            [
                 SimpleAction(action_type=ActionType.PASS),
                 SimpleAction(action_type=ActionType.RON),
-            },
+            ],
         )
 
     def test_can_tsumo(self):
@@ -212,25 +212,25 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=20))
         round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[2].actions,
-            {
+            [
+                HandTileAction(action_type=ActionType.DISCARD, tile=160),
                 HandTileAction(action_type=ActionType.DISCARD, tile=110),
                 HandTileAction(action_type=ActionType.DISCARD, tile=111),
                 HandTileAction(action_type=ActionType.DISCARD, tile=112),
                 HandTileAction(action_type=ActionType.DISCARD, tile=120),
                 HandTileAction(action_type=ActionType.DISCARD, tile=121),
                 HandTileAction(action_type=ActionType.DISCARD, tile=122),
+                HandTileAction(action_type=ActionType.DISCARD, tile=140),
+                HandTileAction(action_type=ActionType.DISCARD, tile=150),
                 HandTileAction(action_type=ActionType.DISCARD, tile=310),
                 HandTileAction(action_type=ActionType.DISCARD, tile=311),
                 HandTileAction(action_type=ActionType.DISCARD, tile=320),
                 HandTileAction(action_type=ActionType.DISCARD, tile=321),
                 HandTileAction(action_type=ActionType.DISCARD, tile=322),
-                HandTileAction(action_type=ActionType.DISCARD, tile=140),
-                HandTileAction(action_type=ActionType.DISCARD, tile=150),
-                HandTileAction(action_type=ActionType.DISCARD, tile=160),
                 SimpleAction(action_type=ActionType.TSUMO),
-            },
+            ],
         )
 
     def test_cannot_ron_own_discard(self):
@@ -240,9 +240,9 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=20))
         round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
         round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=110))
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[2].actions,
-            {SimpleAction(action_type=ActionType.PASS)},
+            [SimpleAction(action_type=ActionType.PASS)],
         )
 
     def test_can_chankan(self):
@@ -267,30 +267,30 @@ class AllowedActionTest(unittest.TestCase):
                 ),
             ),
         )
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[2].actions,
-            {
+            [
                 SimpleAction(action_type=ActionType.PASS),
                 SimpleAction(action_type=ActionType.RON),
-            },
+            ],
         )
 
     def test_start_flowers(self):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[0].actions,
-            {
+            [
                 SimpleAction(action_type=ActionType.CONTINUE),
                 HandTileAction(action_type=ActionType.FLOWER, tile=410),
                 HandTileAction(action_type=ActionType.FLOWER, tile=430),
-            },
+            ],
         )
 
     def test_start_wrong_player_flowers(self):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[1].actions,
-            {SimpleAction(action_type=ActionType.PASS)},
+            [SimpleAction(action_type=ActionType.PASS)],
         )
 
     def test_manual_can_flower(self):
@@ -312,9 +312,10 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=20))
         round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[2].actions,
-            {
+            [
+                HandTileAction(action_type=ActionType.DISCARD, tile=450),
                 HandTileAction(action_type=ActionType.DISCARD, tile=30),
                 HandTileAction(action_type=ActionType.DISCARD, tile=31),
                 HandTileAction(action_type=ActionType.DISCARD, tile=32),
@@ -323,17 +324,16 @@ class AllowedActionTest(unittest.TestCase):
                 HandTileAction(action_type=ActionType.DISCARD, tile=71),
                 HandTileAction(action_type=ActionType.DISCARD, tile=72),
                 HandTileAction(action_type=ActionType.DISCARD, tile=73),
+                HandTileAction(action_type=ActionType.DISCARD, tile=90),
                 HandTileAction(action_type=ActionType.DISCARD, tile=130),
                 HandTileAction(action_type=ActionType.DISCARD, tile=131),
                 HandTileAction(action_type=ActionType.DISCARD, tile=132),
                 HandTileAction(action_type=ActionType.DISCARD, tile=133),
-                HandTileAction(action_type=ActionType.DISCARD, tile=90),
-                HandTileAction(action_type=ActionType.DISCARD, tile=450),
                 ClosedKanAction(tiles=(30, 31, 32, 33)),
                 ClosedKanAction(tiles=(70, 71, 72, 73)),
                 ClosedKanAction(tiles=(130, 131, 132, 133)),
                 HandTileAction(action_type=ActionType.FLOWER, tile=450),
-            },
+            ],
         )
 
     def test_auto_must_flower(self):
@@ -342,9 +342,9 @@ class AllowedActionTest(unittest.TestCase):
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=20))
         round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
-        self.assertSetEqual(
+        self.assertSequenceEqual(
             round.allowed_actions[2].actions,
-            {
+            [
                 HandTileAction(action_type=ActionType.FLOWER, tile=450),
-            },
+            ],
         )
