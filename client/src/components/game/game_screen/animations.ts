@@ -1,4 +1,13 @@
-import { ActionType, type Action } from "../../../types/action";
+import {
+  ActionType,
+  type Action,
+  type AddKanAction,
+  type ClosedKanAction,
+  type HandTileAction,
+  type OpenCallAction,
+  type OpenKanAction,
+  type SimpleAction,
+} from "../../../types/action";
 import type { HistoryItem } from "../../../types/game";
 
 import "./animations.css";
@@ -23,7 +32,7 @@ function addAnimation(
 
 function setDrawAnimation(
   player_index: number,
-  _action: Action,
+  _action: SimpleAction,
   delay_milliseconds: number,
 ) {
   const drawn_tile_element = document.querySelector<HTMLElement>(
@@ -35,7 +44,7 @@ function setDrawAnimation(
 
 function setDiscardAnimation(
   player_index: number,
-  _action: Action,
+  _action: HandTileAction,
   delay_milliseconds: number,
 ) {
   const discarded_tile_element = document.querySelector<HTMLElement>(
@@ -52,7 +61,7 @@ function setDiscardAnimation(
 
 function setCallAnimation(
   player_index: number,
-  _action: Action,
+  _action: OpenCallAction,
   delay_milliseconds: number,
 ) {
   const call_element = document.querySelector<HTMLElement>(
@@ -64,7 +73,7 @@ function setCallAnimation(
 
 function setNewKanAnimation(
   player_index: number,
-  _action: Action,
+  _action: OpenKanAction | ClosedKanAction,
   delay_milliseconds: number,
 ) {
   const open_kan_element = document.querySelector<HTMLElement>(
@@ -85,7 +94,7 @@ function setNewKanAnimation(
 
 function setAddKanAnimation(
   player_index: number,
-  action: Action,
+  action: AddKanAction,
   delay_milliseconds: number,
 ) {
   const add_kan_tile = document.querySelector<HTMLElement>(
@@ -106,7 +115,7 @@ function setAddKanAnimation(
 
 function setFlowerAnimation(
   player_index: number,
-  action: Action,
+  action: HandTileAction,
   delay_milliseconds: number,
 ) {
   const flower_element = document.querySelector<HTMLElement>(
@@ -127,7 +136,7 @@ function setFlowerAnimation(
 
 function setWinAnimation(
   player_index: number,
-  _action: Action,
+  _action: SimpleAction,
   delay_milliseconds: number,
 ) {
   const win_info = document.querySelector<HTMLElement>("#win_info");
@@ -149,9 +158,7 @@ function setAnimation(
       return setDrawAnimation(player_index, action, delay_milliseconds);
     case ActionType.DISCARD:
       return setDiscardAnimation(player_index, action, delay_milliseconds);
-    case ActionType.CHI_A:
-    case ActionType.CHI_B:
-    case ActionType.CHI_C:
+    case ActionType.CHII:
     case ActionType.PON:
       return setCallAnimation(player_index, action, delay_milliseconds);
     case ActionType.OPEN_KAN:

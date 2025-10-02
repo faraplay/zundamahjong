@@ -29,9 +29,13 @@
       transform-style: preserve-3d;
       transform-origin: left bottom;
       transform: translateX(4cqw) rotateZ(-90deg);
+
+      .tile_3d {
+        flex: none;
+      }
     }
 
-    &.call_type_5 {
+    &.call_type_4 {
       > :nth-child(1),
       > :nth-child(4) {
         transform: translate3d(var(--tile-width), 0, var(--tile-depth))

@@ -43,7 +43,7 @@
 @keyframes addKanAnimation {
   from {
     visibility: hidden;
-    transform: translateY(-24cqw);
+    transform: translateX(24cqw);
   }
   to {
     visibility: visible;
