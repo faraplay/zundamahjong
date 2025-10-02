@@ -5,13 +5,11 @@ from src.mahjong.tile import TileId, TileValue
 
 
 class MeldType(IntEnum):
-    PAIR = 0
-    CHI = 1
-    PON = 2
-    OPEN_KAN = 3
-    ADD_KAN = 4
-    CLOSED_KAN = 5
-    THIRTEEN_ORPHANS = 6
+    CHI = 0
+    PON = 1
+    KAN = 2
+    PAIR = 3
+    THIRTEEN_ORPHANS = 4
 
 
 class TileValueMeld(BaseModel):

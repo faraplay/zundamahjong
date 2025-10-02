@@ -7,23 +7,19 @@ from .meld import MeldType
 
 
 class CallType(IntEnum):
-    PAIR = 0
-    CHI = 1
-    PON = 2
-    OPEN_KAN = 3
-    ADD_KAN = 4
-    CLOSED_KAN = 5
-    THIRTEEN_ORPHANS = 6
+    CHI = 0
+    PON = 1
+    OPEN_KAN = 2
+    ADD_KAN = 3
+    CLOSED_KAN = 4
 
 
 call_meld_types = {
-    CallType.PAIR: MeldType.PAIR,
     CallType.CHI: MeldType.CHI,
     CallType.PON: MeldType.PON,
-    CallType.OPEN_KAN: MeldType.OPEN_KAN,
-    CallType.ADD_KAN: MeldType.ADD_KAN,
-    CallType.CLOSED_KAN: MeldType.CLOSED_KAN,
-    CallType.THIRTEEN_ORPHANS: MeldType.THIRTEEN_ORPHANS,
+    CallType.OPEN_KAN: MeldType.KAN,
+    CallType.ADD_KAN: MeldType.KAN,
+    CallType.CLOSED_KAN: MeldType.KAN,
 }
 
 

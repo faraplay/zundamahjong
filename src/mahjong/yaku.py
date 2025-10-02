@@ -66,13 +66,7 @@ class YakuCalculator:
             if call.meld_type in self._triplet_types
         }
 
-    _triplet_types = {
-        MeldType.PON,
-        MeldType.OPEN_KAN,
-        MeldType.ADD_KAN,
-        MeldType.CLOSED_KAN,
-    }
-    _kan_types = {MeldType.OPEN_KAN, MeldType.ADD_KAN, MeldType.CLOSED_KAN}
+    _triplet_types = {MeldType.PON, MeldType.KAN}
     _number_suits = [0, 10, 20]
     _honour_suit = 30
 
@@ -142,7 +136,7 @@ class YakuCalculator:
 
     @_register_yaku("FOUR_QUADS", "Four Quads", 18)
     def _four_quads(self):
-        return int(sum(call.meld_type in self._kan_types for call in self._melds) == 4)
+        return int(sum(call.meld_type == MeldType.KAN for call in self._melds) == 4)
 
     @_register_yaku("NINE_GATES", "Nine Gates", 11)
     def _nine_gates(self):
