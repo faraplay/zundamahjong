@@ -53,7 +53,8 @@ class GameTest(unittest.TestCase):
 
     def test_next_wind_round(self):
         game = Game(
-            first_deck_tiles=test_deck2, options=GameOptions(game_length=(2, 0))
+            first_deck_tiles=test_deck2,
+            options=GameOptions(game_length_wind_rounds=2, game_length_sub_rounds=0),
         )
         game.round.do_action(
             0, HandTileAction(action_type=ActionType.DISCARD, tile=130)
@@ -81,7 +82,8 @@ class GameTest(unittest.TestCase):
 
     def test_one_round_game(self):
         game = Game(
-            first_deck_tiles=test_deck2, options=GameOptions(game_length=(0, 1))
+            first_deck_tiles=test_deck2,
+            options=GameOptions(game_length_wind_rounds=0, game_length_sub_rounds=1),
         )
         game.round.do_action(
             0, HandTileAction(action_type=ActionType.DISCARD, tile=130)
@@ -91,7 +93,8 @@ class GameTest(unittest.TestCase):
 
     def test_cannot_start_next_round_at_end(self):
         game = Game(
-            first_deck_tiles=test_deck2, options=GameOptions(game_length=(0, 1))
+            first_deck_tiles=test_deck2,
+            options=GameOptions(game_length_wind_rounds=0, game_length_sub_rounds=1),
         )
         game.round.do_action(
             0, HandTileAction(action_type=ActionType.DISCARD, tile=130)
@@ -102,7 +105,8 @@ class GameTest(unittest.TestCase):
 
     def test_last_round_dealer_repeat(self):
         game = Game(
-            first_deck_tiles=test_deck2, options=GameOptions(game_length=(1, 0))
+            first_deck_tiles=test_deck2,
+            options=GameOptions(game_length_wind_rounds=1, game_length_sub_rounds=0),
         )
         game.round.do_action(
             0, HandTileAction(action_type=ActionType.DISCARD, tile=130)
