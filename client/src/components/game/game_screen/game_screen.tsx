@@ -75,10 +75,7 @@ export function GameScreen({
         {actionSubmitted ? (
           <></>
         ) : (
-          <ActionMenu
-            actions={info.player_info.actions}
-            last_discard={info.player_info.last_tile}
-          />
+          <ActionMenu actions={info.player_info.actions} />
         )}
         <Table info={info} />
         {winOverlay}

@@ -1,8 +1,11 @@
 from enum import IntEnum
-from collections.abc import Set
-from pydantic import BaseModel
+from collections.abc import Iterable, Set
+from typing import Annotated, Literal, Union
+from pydantic import BaseModel, Field, TypeAdapter
+
 
 from .tile import TileId
+from .call import OpenCall
 
 
 class ActionType(IntEnum):
@@ -10,9 +13,7 @@ class ActionType(IntEnum):
     CONTINUE = 1
     DRAW = 2
     DISCARD = 3
-    CHI_A = 4
-    CHI_B = 5
-    CHI_C = 6
+    CHII = 6
     PON = 7
     OPEN_KAN = 8
     ADD_KAN = 9
@@ -23,9 +24,7 @@ class ActionType(IntEnum):
 
 
 call_action_types = {
-    ActionType.CHI_A,
-    ActionType.CHI_B,
-    ActionType.CHI_C,
+    ActionType.CHII,
     ActionType.PON,
     ActionType.OPEN_KAN,
     ActionType.ADD_KAN,
@@ -33,30 +32,92 @@ call_action_types = {
 }
 
 
-class Action(BaseModel, frozen=True):
-    action_type: ActionType
-    tile: TileId = 0
+class SimpleAction(BaseModel, frozen=True):
+    action_type: Literal[
+        ActionType.PASS,
+        ActionType.CONTINUE,
+        ActionType.DRAW,
+        ActionType.RON,
+        ActionType.TSUMO,
+    ]
 
 
-class ActionSet:
-    def __init__(self, action_type: ActionType = ActionType.PASS, tile: TileId = 0):
-        self._default = Action(action_type=action_type, tile=tile)
-        self._actions = {self._default}
+class HandTileAction(BaseModel, frozen=True):
+    action_type: Literal[ActionType.DISCARD, ActionType.FLOWER]
+    tile: TileId
+
+
+class OpenCallAction(BaseModel, frozen=True):
+    action_type: Literal[
+        ActionType.CHII,
+        ActionType.PON,
+    ]
+    other_tiles: tuple[TileId, TileId]
+
+
+class OpenKanAction(BaseModel, frozen=True):
+    action_type: Literal[ActionType.OPEN_KAN,] = ActionType.OPEN_KAN
+    other_tiles: tuple[TileId, TileId, TileId]
+
+
+class AddKanAction(BaseModel, frozen=True):
+    action_type: Literal[ActionType.ADD_KAN] = ActionType.ADD_KAN
+    tile: TileId
+    pon_call: OpenCall
+
+
+class ClosedKanAction(BaseModel, frozen=True):
+    action_type: Literal[ActionType.CLOSED_KAN] = ActionType.CLOSED_KAN
+    tiles: tuple[TileId, TileId, TileId, TileId]
+
+
+Action = Annotated[
+    Union[
+        SimpleAction,
+        HandTileAction,
+        OpenCallAction,
+        OpenKanAction,
+        AddKanAction,
+        ClosedKanAction,
+    ],
+    Field(discriminator="action_type"),
+]
+
+action_adapter = TypeAdapter(Action)
+
+
+class ActionList:
+    def __init__(
+        self, default_action: Action = SimpleAction(action_type=ActionType.PASS)
+    ):
+        self._actions = [default_action]
 
     @property
     def default(self):
-        return self._default
+        return self._actions[0]
 
     @property
     def auto(self):
-        if len(self._actions) == 1 and self._default.action_type != ActionType.DISCARD:
-            return self._default
+        if len(self._actions) == 1:
+            return self._actions[0]
         else:
             return None
 
     @property
-    def actions(self) -> Set[Action]:
+    def actions(self) -> list[Action]:
         return self._actions
 
-    def add(self, action_type: ActionType, tile: TileId = 0):
-        self._actions.add(Action(action_type=action_type, tile=tile))
+    def add_simple_action(
+        self,
+        action_type: Literal[
+            ActionType.PASS,
+            ActionType.CONTINUE,
+            ActionType.DRAW,
+            ActionType.RON,
+            ActionType.TSUMO,
+        ],
+    ):
+        self._actions.append(SimpleAction(action_type=action_type))
+
+    def add_actions(self, actions: Iterable[Action]):
+        self._actions.extend(actions)

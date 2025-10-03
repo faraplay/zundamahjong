@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 
 from .tile import TileId, TileValue, get_tile_values, orphans, remove_tile_value
-from .call import Call, CallType
+from .meld import MeldType, Meld, TileValueMeld
 
 
 def is_winning(tiles: Sequence[TileId]):
@@ -16,21 +16,25 @@ def formed_hand_possibilities(tiles: Sequence[TileId]):
     return [reconstruct_formed_hand(tiles, formed_hand) for formed_hand in formed_hands]
 
 
-def reconstruct_formed_hand(tiles: Sequence[TileId], tile_value_calls: list[Call]):
+def reconstruct_formed_hand(
+    tiles: Sequence[TileId], tile_value_melds: list[TileValueMeld]
+):
     tiles_copy = list(tiles)
     return [
-        Call(
-            call_type=tile_value_call.call_type,
+        Meld(
+            meld_type=tile_value_meld.meld_type,
             tiles=[
                 remove_tile_value(tiles_copy, tile_value)
-                for tile_value in tile_value_call.tiles
+                for tile_value in tile_value_meld.tiles
             ],
         )
-        for tile_value_call in tile_value_calls
+        for tile_value_meld in tile_value_melds
     ]
 
 
-def standard_formed_hand_possibilities(tiles: Sequence[TileId]) -> list[list[Call]]:
+def standard_formed_hand_possibilities(
+    tiles: Sequence[TileId],
+) -> list[list[TileValueMeld]]:
     tile_values = get_tile_values(tiles)
     if len(tile_values) % 3 != 2:
         return []
@@ -46,7 +50,7 @@ def standard_formed_hand_possibilities(tiles: Sequence[TileId]) -> list[list[Cal
             suits[3].append(tile_value)
     if sum(len(suit) % 3 != 0 for suit in suits) != 1:
         return []
-    formed_hands: list[list[Call]] = [[]]
+    formed_hands: list[list[TileValueMeld]] = [[]]
     for index, suit in enumerate(suits):
         if len(formed_hands) == 0:
             return formed_hands
@@ -68,14 +72,14 @@ def standard_formed_hand_possibilities(tiles: Sequence[TileId]) -> list[list[Cal
     return formed_hands
 
 
-def split_suit_into_pons(tiles: Sequence[TileValue]) -> list[list[Call]]:
+def split_suit_into_pons(tiles: Sequence[TileValue]) -> list[list[TileValueMeld]]:
     assert len(tiles) % 3 == 0
     tile_counts = dict((tile, tiles.count(tile)) for tile in set(tiles))
     assert all(count <= 4 for count in tile_counts.values())
     if all(count == 3 for count in tile_counts.values()):
         return [
             [
-                Call(call_type=CallType.PON, tiles=[tile, tile, tile])
+                TileValueMeld(meld_type=MeldType.PON, tiles=[tile, tile, tile])
                 for tile in tile_counts.keys()
             ]
         ]
@@ -83,7 +87,9 @@ def split_suit_into_pons(tiles: Sequence[TileValue]) -> list[list[Call]]:
         return []
 
 
-def split_suit_into_pons_and_pair(tiles: Sequence[TileValue]) -> list[list[Call]]:
+def split_suit_into_pons_and_pair(
+    tiles: Sequence[TileValue],
+) -> list[list[TileValueMeld]]:
     assert len(tiles) % 3 == 2
     tile_counts = dict((tile, tiles.count(tile)) for tile in set(tiles))
     assert all(count <= 4 for count in tile_counts.values())
@@ -91,9 +97,9 @@ def split_suit_into_pons_and_pair(tiles: Sequence[TileValue]) -> list[list[Call]
         return [
             [
                 (
-                    Call(call_type=CallType.PON, tiles=[tile, tile, tile])
+                    TileValueMeld(meld_type=MeldType.PON, tiles=[tile, tile, tile])
                     if count == 3
-                    else Call(call_type=CallType.PAIR, tiles=[tile, tile])
+                    else TileValueMeld(meld_type=MeldType.PAIR, tiles=[tile, tile])
                 )
                 for (tile, count) in tile_counts.items()
             ]
@@ -102,18 +108,19 @@ def split_suit_into_pons_and_pair(tiles: Sequence[TileValue]) -> list[list[Call]
         return []
 
 
-def split_suit_into_3melds(tiles: Sequence[TileValue]) -> list[list[Call]]:
+def split_suit_into_3melds(tiles: Sequence[TileValue]) -> list[list[TileValueMeld]]:
     assert len(tiles) % 3 == 0
     assert tiles == sorted(tiles)
     if len(tiles) == 0:
         return [[]]
     tiles = list(tiles)
     tile = tiles[0]
-    formed_hands: list[list[Call]] = []
+    formed_hands: list[list[TileValueMeld]] = []
     if tiles[2] == tile:
         remaining_tiles = tiles[3:]
         formed_hands.extend(
-            [Call(call_type=CallType.PON, tiles=[tile, tile, tile])] + formed_hand
+            [TileValueMeld(meld_type=MeldType.PON, tiles=[tile, tile, tile])]
+            + formed_hand
             for formed_hand in split_suit_into_3melds(remaining_tiles)
         )
     try:
@@ -121,7 +128,7 @@ def split_suit_into_3melds(tiles: Sequence[TileValue]) -> list[list[Call]]:
         remaining_tiles.remove(tile + 1)
         remaining_tiles.remove(tile + 2)
         formed_hands.extend(
-            [Call(call_type=CallType.CHI, tiles=[tile, tile + 1, tile + 2])]
+            [TileValueMeld(meld_type=MeldType.CHI, tiles=[tile, tile + 1, tile + 2])]
             + formed_hand
             for formed_hand in split_suit_into_3melds(remaining_tiles)
         )
@@ -130,11 +137,13 @@ def split_suit_into_3melds(tiles: Sequence[TileValue]) -> list[list[Call]]:
     return formed_hands
 
 
-def split_suit_into_3melds_and_pair(tiles: Sequence[TileValue]) -> list[list[Call]]:
+def split_suit_into_3melds_and_pair(
+    tiles: Sequence[TileValue],
+) -> list[list[TileValueMeld]]:
     assert len(tiles) % 3 == 2
     assert tiles == sorted(tiles)
     tile_sum = sum(tiles)
-    formed_hands: list[list[Call]] = []
+    formed_hands: list[list[TileValueMeld]] = []
     for index, tile in enumerate(tiles):
         if index > 0 and tiles[index - 1] == tile:
             continue
@@ -146,13 +155,13 @@ def split_suit_into_3melds_and_pair(tiles: Sequence[TileValue]) -> list[list[Cal
             continue
         remaining_tiles = tiles[:index] + tiles[index + 2 :]
         formed_hands.extend(
-            [Call(call_type=CallType.PAIR, tiles=[tile, tile])] + formed_hand
+            [TileValueMeld(meld_type=MeldType.PAIR, tiles=[tile, tile])] + formed_hand
             for formed_hand in split_suit_into_3melds(remaining_tiles)
         )
     return formed_hands
 
 
-def form_seven_pairs(tiles: Sequence[TileId]) -> list[list[Call]]:
+def form_seven_pairs(tiles: Sequence[TileId]) -> list[list[TileValueMeld]]:
     tile_values = get_tile_values(tiles)
     if len(tile_values) != 14:
         return []
@@ -160,7 +169,7 @@ def form_seven_pairs(tiles: Sequence[TileId]) -> list[list[Call]]:
     if all(count == 2 for count in tile_counts.values()):
         return [
             [
-                Call(call_type=CallType.PAIR, tiles=[tile, tile])
+                TileValueMeld(meld_type=MeldType.PAIR, tiles=[tile, tile])
                 for tile in tile_counts.keys()
             ]
         ]
@@ -168,7 +177,7 @@ def form_seven_pairs(tiles: Sequence[TileId]) -> list[list[Call]]:
         return []
 
 
-def form_thirteen_orphans(tiles: Sequence[TileId]) -> list[list[Call]]:
+def form_thirteen_orphans(tiles: Sequence[TileId]) -> list[list[TileValueMeld]]:
     tile_values = get_tile_values(tiles)
     if len(tile_values) != 14:
         return []
@@ -180,8 +189,8 @@ def form_thirteen_orphans(tiles: Sequence[TileId]) -> list[list[Call]]:
         if tiles_list[0] in orphans:
             return [
                 [
-                    Call(
-                        call_type=CallType.THIRTEEN_ORPHANS,
+                    TileValueMeld(
+                        meld_type=MeldType.THIRTEEN_ORPHANS,
                         tiles=sorted(list(tile_values)),
                     )
                 ]

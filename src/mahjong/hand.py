@@ -1,9 +1,18 @@
 from collections.abc import Sequence
 
+from src.mahjong.action import (
+    Action,
+    ActionType,
+    AddKanAction,
+    ClosedKanAction,
+    HandTileAction,
+    OpenCallAction,
+    OpenKanAction,
+)
+
 from .tile import (
     TileId,
     TileValue,
-    N,
     get_tile_value,
     get_tile_values,
     remove_tile_value,
@@ -11,7 +20,7 @@ from .tile import (
     is_number,
 )
 from .deck import Deck
-from .call import CallType, Call
+from .call import AddKanCall, CallType, Call, ClosedKanCall, OpenCall, OpenKanCall
 from .form_hand import is_winning
 
 
@@ -54,126 +63,202 @@ class Hand:
     def _draw_from_back(self):
         self._tiles.append(self._deck.popleft())
 
-    def can_discard(self, tile: TileId):
-        return tile in self._tiles
+    def get_discards(self):
+        return [
+            HandTileAction(action_type=ActionType.DISCARD, tile=tile)
+            for tile in self._tiles
+        ]
 
     def discard(self, tile: TileId):
-        assert self.can_discard(tile)
         self._tiles.remove(tile)
         self.sort()
 
-    def can_chi_a(self, tile: TileId):
-        tile_value = get_tile_value(tile)
-        return (
-            is_number(tile_value)
-            and (tile_value + 1) in self.tile_values
-            and (tile_value + 2) in self.tile_values
-        )
+    def get_chiis(self, last_discard: TileId):
+        discard_value = get_tile_value(last_discard)
+        actions: list[Action] = []
+        if not is_number(discard_value):
+            return actions
+        # get lists of tiles with values discard_value-2, ..., discard_value+2
+        nearby_tiles: list[list[TileId]] = [[], [], [], [], []]
+        for tile in self._tiles:
+            value_diff = get_tile_value(tile) - discard_value
+            if -2 <= value_diff <= 2:
+                nearby_tiles[value_diff + 2].append(tile)
 
-    def chi_a(self, tile: TileId):
-        assert self.can_chi_a(tile)
-        tile_value = get_tile_value(tile)
-        tile_1 = self.remove_tile_value(tile_value + 1)
-        tile_2 = self.remove_tile_value(tile_value + 2)
-        self._calls.append(Call(call_type=CallType.CHI, tiles=[tile, tile_1, tile_2]))
+        if len(nearby_tiles[1]) > 0:
+            # note this rules out discard_value = 1, 11, 21
+            # try t-2, t-1, t
+            if len(nearby_tiles[0]) > 0:
+                actions.append(
+                    OpenCallAction(
+                        action_type=ActionType.CHII,
+                        other_tiles=(nearby_tiles[0][0], nearby_tiles[1][0]),
+                    )
+                )
+            # try t-1, t, t+1
+            if len(nearby_tiles[3]) > 0:
+                actions.append(
+                    OpenCallAction(
+                        action_type=ActionType.CHII,
+                        other_tiles=(nearby_tiles[1][0], nearby_tiles[3][0]),
+                    )
+                )
+        # try t, t+1, t+2
+        if len(nearby_tiles[3]) > 0 and len(nearby_tiles[4]) > 0:
+            actions.append(
+                OpenCallAction(
+                    action_type=ActionType.CHII,
+                    other_tiles=(nearby_tiles[3][0], nearby_tiles[4][0]),
+                )
+            )
+        return actions
 
-    def can_chi_b(self, tile: TileId):
-        tile_value = get_tile_value(tile)
-        return (
-            is_number(tile_value)
-            and (tile_value - 1) in self.tile_values
-            and (tile_value + 1) in self.tile_values
-        )
-
-    def chi_b(self, tile: TileId):
-        assert self.can_chi_b(tile)
-        tile_value = get_tile_value(tile)
-        tile_m1 = self.remove_tile_value(tile_value - 1)
-        tile_1 = self.remove_tile_value(tile_value + 1)
-        self._calls.append(Call(call_type=CallType.CHI, tiles=[tile_m1, tile, tile_1]))
-
-    def can_chi_c(self, tile: TileId):
-        tile_value = get_tile_value(tile)
-        return (
-            is_number(tile_value)
-            and (tile_value - 2) in self.tile_values
-            and (tile_value - 1) in self.tile_values
-        )
-
-    def chi_c(self, tile: TileId):
-        assert self.can_chi_c(tile)
-        tile_value = get_tile_value(tile)
-        tile_m2 = self.remove_tile_value(tile_value - 2)
-        tile_m1 = self.remove_tile_value(tile_value - 1)
-        self._calls.append(Call(call_type=CallType.CHI, tiles=[tile_m2, tile_m1, tile]))
-
-    def can_pon(self, tile: TileId):
-        tile_value = get_tile_value(tile)
-        return self.tile_values.count(tile_value) >= 2
-
-    def pon(self, tile: TileId):
-        assert self.can_pon(tile)
-        tile_value = get_tile_value(tile)
-        tile_a = self.remove_tile_value(tile_value)
-        tile_b = self.remove_tile_value(tile_value)
-        self._calls.append(Call(call_type=CallType.PON, tiles=[tile, tile_a, tile_b]))
-
-    def can_open_kan(self, tile: TileId):
-        tile_value = get_tile_value(tile)
-        return self.tile_values.count(tile_value) >= 3
-
-    def open_kan(self, tile: TileId):
-        assert self.can_open_kan(tile)
-        tile_value = get_tile_value(tile)
-        tile_a = self.remove_tile_value(tile_value)
-        tile_b = self.remove_tile_value(tile_value)
-        tile_c = self.remove_tile_value(tile_value)
+    def chii(
+        self,
+        called_player_index: int,
+        last_discard: TileId,
+        other_tiles: tuple[TileId, TileId],
+    ):
+        self._tiles.remove(other_tiles[0])
+        self._tiles.remove(other_tiles[1])
         self._calls.append(
-            Call(call_type=CallType.OPEN_KAN, tiles=[tile, tile_a, tile_b, tile_c])
-        )
-        self.sort()
-        self._draw_from_back()
-
-    def can_add_kan(self, tile: TileId):
-        tile_value = get_tile_value(tile)
-        return tile in self._tiles and any(
-            call.call_type == CallType.PON
-            and get_tile_value(call.tiles[0]) == tile_value
-            for call in self._calls
-        )
-
-    def add_kan(self, tile: TileId):
-        assert self.can_add_kan(tile)
-        tile_value = get_tile_value(tile)
-        pon_index, pon_call = next(
-            (index, call)
-            for index, call in enumerate(self._calls)
-            if call.call_type == CallType.PON
-            and get_tile_value(call.tiles[0]) == tile_value
-        )
-        self._tiles.remove(tile)
-        self._calls[pon_index] = Call(
-            call_type=CallType.ADD_KAN, tiles=[tile] + pon_call.tiles
-        )
-        self.sort()
-        self._draw_from_back()
-
-    def can_closed_kan(self, tile: TileId):
-        tile_value = get_tile_value(tile)
-        return tile % N == 0 and self.tile_values.count(tile_value) >= 4
-
-    def closed_kan(self, tile: TileId):
-        assert self.can_closed_kan(tile)
-        self._tiles.remove(tile)
-        self._tiles.remove(tile + 1)
-        self._tiles.remove(tile + 2)
-        self._tiles.remove(tile + 3)
-        self._calls.append(
-            Call(
-                call_type=CallType.CLOSED_KAN,
-                tiles=[tile, tile + 1, tile + 2, tile + 3],
+            OpenCall(
+                call_type=CallType.CHI,
+                called_player_index=called_player_index,
+                called_tile=last_discard,
+                other_tiles=other_tiles,
             )
         )
+
+    def get_pons(self, last_discard: TileId):
+        discard_value = get_tile_value(last_discard)
+        actions: list[Action] = []
+        same_tiles = [
+            tile for tile in self._tiles if get_tile_value(tile) == discard_value
+        ]
+        if len(same_tiles) >= 2:
+            actions.append(
+                OpenCallAction(
+                    action_type=ActionType.PON,
+                    other_tiles=(same_tiles[0], same_tiles[1]),
+                )
+            )
+        return actions
+
+    def pon(
+        self,
+        called_player_index: int,
+        last_discard: TileId,
+        other_tiles: tuple[TileId, TileId],
+    ):
+        self._tiles.remove(other_tiles[0])
+        self._tiles.remove(other_tiles[1])
+        self._calls.append(
+            OpenCall(
+                call_type=CallType.PON,
+                called_player_index=called_player_index,
+                called_tile=last_discard,
+                other_tiles=other_tiles,
+            )
+        )
+
+    def get_open_kans(self, last_discard: TileId):
+        discard_value = get_tile_value(last_discard)
+        actions: list[Action] = []
+        same_tiles = [
+            tile for tile in self._tiles if get_tile_value(tile) == discard_value
+        ]
+        if len(same_tiles) >= 3:
+            actions.append(
+                OpenKanAction(
+                    action_type=ActionType.OPEN_KAN,
+                    other_tiles=(same_tiles[0], same_tiles[1], same_tiles[2]),
+                )
+            )
+        return actions
+
+    def open_kan(
+        self,
+        called_player_index: int,
+        last_discard: TileId,
+        other_tiles: tuple[TileId, TileId, TileId],
+    ):
+        self._tiles.remove(other_tiles[0])
+        self._tiles.remove(other_tiles[1])
+        self._tiles.remove(other_tiles[2])
+        self._calls.append(
+            OpenKanCall(
+                call_type=CallType.OPEN_KAN,
+                called_player_index=called_player_index,
+                called_tile=last_discard,
+                other_tiles=other_tiles,
+            )
+        )
+        self.sort()
+        self._draw_from_back()
+
+    def get_add_kans(self):
+        pon_values = dict(
+            (get_tile_value(call.called_tile), call)
+            for call in self._calls
+            if call.call_type == CallType.PON
+        )
+        actions: list[Action] = []
+        for tile in self._tiles:
+            tile_value = get_tile_value(tile)
+            pon_call = pon_values.get(tile_value)
+            if pon_call is not None:
+                actions.append(AddKanAction(tile=tile, pon_call=pon_call))
+        return actions
+
+    def add_kan(self, tile: TileId, pon_call: OpenCall):
+        self._tiles.remove(tile)
+        call_index = self._calls.index(pon_call)
+        self._calls[call_index] = AddKanCall(
+            called_player_index=pon_call.called_player_index,
+            called_tile=pon_call.called_tile,
+            added_tile=tile,
+            other_tiles=pon_call.other_tiles,
+        )
+        self.sort()
+        self._draw_from_back()
+
+    def get_closed_kans(self):
+        actions: list[Action] = []
+        tile_value_buckets: dict[TileValue, list[TileId]] = {}
+        for tile in self._tiles:
+            tile_value = get_tile_value(tile)
+            bucket = tile_value_buckets.get(tile_value)
+            if bucket is None:
+                bucket = []
+                tile_value_buckets[tile_value] = bucket
+            bucket.append(tile)
+            if len(bucket) == 4:
+                bucket.sort()
+                actions.append(
+                    ClosedKanAction(tiles=(bucket[0], bucket[1], bucket[2], bucket[3]))
+                )
+        return actions
+
+    def closed_kan(self, tiles: tuple[TileId, TileId, TileId, TileId]):
+        self._tiles.remove(tiles[0])
+        self._tiles.remove(tiles[1])
+        self._tiles.remove(tiles[2])
+        self._tiles.remove(tiles[3])
+        self._calls.append(ClosedKanCall(tiles=tiles))
+        self.sort()
+        self._draw_from_back()
+
+    def get_flowers(self):
+        return [
+            HandTileAction(action_type=ActionType.FLOWER, tile=tile)
+            for tile in self._tiles
+            if tile_id_is_flower(tile)
+        ]
+
+    def flower(self, tile: TileId):
+        self._tiles.remove(tile)
+        self._flowers.append(tile)
         self.sort()
         self._draw_from_back()
 
@@ -182,14 +267,3 @@ class Hand:
 
     def can_tsumo(self):
         return is_winning(self._tiles)
-
-    def flowers_in_hand(self):
-        return [tile for tile in self._tiles if tile_id_is_flower(tile)]
-
-    def flower(self, tile: TileId):
-        assert tile_id_is_flower(tile)
-        assert tile in self._tiles
-        self._tiles.remove(tile)
-        self._flowers.append(tile)
-        self.sort()
-        self._draw_from_back()

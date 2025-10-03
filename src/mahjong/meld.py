@@ -1,0 +1,22 @@
+from enum import IntEnum
+from pydantic import BaseModel
+
+from src.mahjong.tile import TileId, TileValue
+
+
+class MeldType(IntEnum):
+    CHI = 0
+    PON = 1
+    KAN = 2
+    PAIR = 3
+    THIRTEEN_ORPHANS = 4
+
+
+class TileValueMeld(BaseModel):
+    meld_type: MeldType
+    tiles: list[TileValue]
+
+
+class Meld(BaseModel):
+    meld_type: MeldType
+    tiles: list[TileId]

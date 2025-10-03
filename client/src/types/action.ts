@@ -1,3 +1,4 @@
+import type { CallType, OpenCall } from "./call";
 import type { TileId } from "./tile";
 
 export const enum ActionType {
@@ -5,9 +6,7 @@ export const enum ActionType {
   CONTINUE = 1,
   DRAW = 2,
   DISCARD = 3,
-  CHI_A = 4,
-  CHI_B = 5,
-  CHI_C = 6,
+  CHII = 6,
   PON = 7,
   OPEN_KAN = 8,
   ADD_KAN = 9,
@@ -17,10 +16,48 @@ export const enum ActionType {
   TSUMO = 13,
 }
 
-export type Action = {
-  action_type: ActionType;
+export type SimpleAction = {
+  action_type:
+    | ActionType.PASS
+    | ActionType.CONTINUE
+    | ActionType.DRAW
+    | ActionType.RON
+    | ActionType.TSUMO;
+};
+
+export type HandTileAction = {
+  action_type: ActionType.DISCARD | ActionType.FLOWER;
   tile: TileId;
 };
+
+export type OpenCallAction = {
+  action_type: ActionType.CHII | ActionType.PON;
+  other_tiles: [TileId, TileId];
+};
+
+export type OpenKanAction = {
+  action_type: ActionType.OPEN_KAN;
+  other_tiles: [TileId, TileId, TileId];
+};
+
+export type AddKanAction = {
+  action_type: ActionType.ADD_KAN;
+  tile: TileId;
+  pon_call: OpenCall & { call_type: CallType.PON };
+};
+
+export type ClosedKanAction = {
+  action_type: ActionType.CLOSED_KAN;
+  tiles: [TileId, TileId, TileId, TileId];
+};
+
+export type Action =
+  | SimpleAction
+  | HandTileAction
+  | OpenCallAction
+  | OpenKanAction
+  | AddKanAction
+  | ClosedKanAction;
 
 const action_supertypes = [7, 7, 7, 0, 1, 1, 1, 2, 3, 3, 3, 4, 5, 6] as const;
 
