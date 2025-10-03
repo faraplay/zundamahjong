@@ -66,4 +66,4 @@ def get_call_tiles(call: Call):
     elif call.call_type == CallType.ADD_KAN:
         return [call.added_tile, call.called_tile] + list(call.other_tiles)
     else:
-        return [call.called_tile] + list(call.other_tiles)
+        return sorted([call.called_tile] + list(call.other_tiles))

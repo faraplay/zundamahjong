@@ -44,5 +44,5 @@ export function getCallTiles(call: Call) {
   if (call.call_type == CallType.ADD_KAN) {
     return [call.added_tile, call.called_tile, ...call.other_tiles];
   }
-  return [call.called_tile, ...call.other_tiles];
+  return [call.called_tile, ...call.other_tiles].sort();
 }

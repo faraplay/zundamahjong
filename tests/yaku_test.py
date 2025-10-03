@@ -818,8 +818,8 @@ class YakuTest(TestCase):
                 OpenCall(
                     call_type=CallType.CHI,
                     called_player_index=3,
-                    called_tile=231,
-                    other_tiles=(241, 251),
+                    called_tile=241,
+                    other_tiles=(231, 251),
                 ),
             ],
             flowers=[420],
