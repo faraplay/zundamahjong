@@ -1,9 +1,9 @@
-import { useRef, useEffect, type MutableRef, useState } from "preact/hooks";
+import { useRef, useEffect, useState } from "preact/hooks";
 import { io, Socket } from "socket.io-client";
 
 import type { ErrorMessage } from "./types/error_message";
 import type { Player } from "./types/player";
-import type { AvatarRoom, Room } from "./types/room";
+import type { DetailedRoom, BasicRoom } from "./types/room";
 import { RoundStatus, type AllInfo } from "./types/game";
 import type { EmitFunc } from "./types/emit_func";
 
@@ -21,6 +21,7 @@ import { GameScreen } from "./components/game/game_screen/game_screen";
 
 import "./fonts.css";
 import "./app.css";
+import { defaultGameOptions, type GameOptions } from "./types/game_options";
 
 export function App() {
   const [errors, setErrors] = useState<{
@@ -29,16 +30,21 @@ export function App() {
   }>({ currentIndex: 0, list: [] });
 
   const [myPlayer, setMyPlayer] = useState<Player>();
-  const [rooms, setRooms] = useState<Room[]>([]);
-  const [myRoom, setMyRoom] = useState<AvatarRoom>();
+  const [rooms, setRooms] = useState<BasicRoom[]>([]);
+  const [myRoom, setMyRoom] = useState<DetailedRoom>();
+  const [initialOptions, setInitialOptions] =
+    useState<GameOptions>(defaultGameOptions);
 
   const [info, setInfo] = useState<AllInfo>();
   const [actionSubmitted, setActionSubmitted] = useState<boolean>(false);
   const [seeResults, setSeeResults] = useState(false);
 
-  const socket = useRef() as MutableRef<Socket>;
+  const myPlayerRef = useRef<Player>();
+  const myRoomRef = useRef<DetailedRoom>();
+
+  const socket = useRef<Socket>();
   const emit: EmitFunc = (event, ...args) =>
-    socket.current.emit(event, ...args);
+    socket.current?.emit(event, ...args);
 
   useEffect(() => {
     socket.current = io();
@@ -54,12 +60,23 @@ export function App() {
     });
     socket.current.on("player_info", (player: Player) => {
       setMyPlayer(player);
+      myPlayerRef.current = player;
     });
-    socket.current.on("rooms_info", (rooms: Array<Room>) => {
+    socket.current.on("rooms_info", (rooms: Array<BasicRoom>) => {
       setRooms(rooms);
     });
-    socket.current.on("room_info", (room: AvatarRoom) => {
+    socket.current.on("room_info", (room: DetailedRoom | undefined) => {
+      // do not update initialOptions if you are the first player in the room
+      if (
+        !(
+          myRoomRef.current &&
+          myRoomRef.current.joined_players[0] == myPlayerRef.current
+        )
+      ) {
+        setInitialOptions(room ? room.game_options : defaultGameOptions);
+      }
       setMyRoom(room);
+      myRoomRef.current = room;
     });
     socket.current.on("info", (info: AllInfo) => {
       setInfo(info);
@@ -70,14 +87,15 @@ export function App() {
     });
 
     return () => {
-      socket.current.disconnect();
+      socket.current?.disconnect();
     };
   }, []);
 
   const screen = getScreen(
     myPlayer,
-    myRoom,
     rooms,
+    myRoom,
+    initialOptions,
     info,
     actionSubmitted,
     setActionSubmitted,
@@ -102,8 +120,9 @@ export function App() {
 
 function getScreen(
   myPlayer: Player | undefined,
-  myRoom: AvatarRoom | undefined,
-  rooms: Room[],
+  rooms: BasicRoom[],
+  myRoom: DetailedRoom | undefined,
+  defaultOptions: GameOptions,
   info: AllInfo | undefined,
   actionSubmitted: boolean,
   setActionSubmitted: (value: boolean) => void,
@@ -136,7 +155,7 @@ function getScreen(
         />
         {myRoom && myRoom.joined_players[0].id == myPlayer.id ? (
           <GameOptionsForm
-            player_count={myRoom.player_count}
+            defaultOptions={defaultOptions}
             can_start={myRoom.joined_players.length == myRoom.player_count}
           />
         ) : (

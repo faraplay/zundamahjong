@@ -26,6 +26,7 @@ class GameRoom:
     ):
         self.room_name = room_name
         self.player_count = player_count
+        self.game_options = GameOptions(player_count=player_count)
         self.game_controller: Optional[GameController] = None
         self.joined_player_connections: list[PlayerConnection] = [
             PlayerConnection(player=creator)
@@ -41,7 +42,7 @@ class GameRoom:
         ]
 
     @property
-    def room_info(self):
+    def room_basic_info(self):
         return {
             "room_name": self.room_name,
             "player_count": self.player_count,
@@ -49,13 +50,19 @@ class GameRoom:
         }
 
     @property
-    def room_avatar_info(self):
-        return {**self.room_info, "avatars": self.avatars}
+    def room_detailed_info(self):
+        return {
+            **self.room_basic_info,
+            "avatars": self.avatars,
+            "game_options": self.game_options.model_dump(),
+        }
 
     @classmethod
     def emit_rooms_list(cls, sid):
         sio.emit(
-            "rooms_info", [game_room.room_info for game_room in rooms.values()], sid
+            "rooms_info",
+            [game_room.room_basic_info for game_room in rooms.values()],
+            sid,
         )
 
     @classmethod
@@ -139,7 +146,7 @@ class GameRoom:
 
     def broadcast_room_info(self):
         for player in self.joined_players:
-            sio.emit("room_info", self.room_avatar_info, to=player.id)
+            sio.emit("room_info", self.room_detailed_info, to=player.id)
 
     def broadcast_game_end(self):
         for player in self.joined_players:
@@ -187,7 +194,7 @@ class GameRoom:
                 game_room.get_player_connection(player).is_connected = True
         sio.emit(
             "room_info",
-            game_room.room_avatar_info if game_room is not None else None,
+            game_room.room_detailed_info if game_room is not None else None,
             to=player.id,
         )
         return game_room

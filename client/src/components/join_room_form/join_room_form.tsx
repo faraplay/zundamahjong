@@ -1,10 +1,10 @@
 import { useContext } from "preact/hooks";
-import type { Room } from "../../types/room";
+import type { BasicRoom } from "../../types/room";
 
 import "./join_room_form.css";
 import { Emitter } from "../emitter/emitter";
 
-function RoomOption({ room }: { room: Room }) {
+function RoomOption({ room }: { room: BasicRoom }) {
   const roomCapacityString = `(${room.joined_players.length}/${room.player_count})`;
   const roomPlayersString = room.joined_players
     .map((player) => player.name)
@@ -20,7 +20,7 @@ function RoomOption({ room }: { room: Room }) {
   );
 }
 
-export function JoinRoomForm({ rooms }: { rooms: Array<Room> }) {
+export function JoinRoomForm({ rooms }: { rooms: Array<BasicRoom> }) {
   const emit = useContext(Emitter);
   const onSubmit = (e: SubmitEvent) => {
     e.preventDefault();

@@ -3,6 +3,7 @@ import { useContext, useId } from "preact/hooks";
 import { Emitter } from "../emitter/emitter";
 
 import "./game_options_form.css";
+import type { GameOptions } from "../../types/game_options";
 
 type NumberInputProps = {
   fieldName: string;
@@ -18,7 +19,6 @@ type CheckboxInputProps = {
   fieldName: string;
   labelText: string;
   type: "checkbox";
-  value?: "True";
   readonly?: boolean;
 };
 
@@ -65,8 +65,8 @@ function GameOptionsCheckboxInput({
       id={inputId}
       name={props.fieldName}
       type={props.type}
-      value={props.value}
-      checked={checked}
+      value="True"
+      defaultChecked={checked}
       readonly={props.readonly}
     />
   );
@@ -133,15 +133,14 @@ const inputProps = [
     fieldName: "auto_replace_flowers",
     labelText: "Auto flowers",
     type: "checkbox",
-    value: "True",
   },
 ] as const;
 
 export function GameOptionsForm({
-  player_count,
+  defaultOptions,
   can_start,
 }: {
-  player_count: number;
+  defaultOptions: GameOptions;
   can_start: boolean;
 }) {
   const emit = useContext(Emitter);
@@ -150,17 +149,6 @@ export function GameOptionsForm({
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     emit("start_game", Object.fromEntries(formData));
   };
-  const inputValues = {
-    player_count,
-    game_length_wind_rounds: 1,
-    game_length_sub_rounds: 0,
-    score_dealer_ron_base_value: 1.5,
-    score_dealer_tsumo_base_value: 1.0,
-    score_nondealer_ron_base_value: 1.0,
-    score_nondealer_tsumo_nondealer_base_value: 0.5,
-    score_nondealer_tsumo_dealer_base_value: 1.0,
-    auto_replace_flowers: "True",
-  } as const;
   return (
     <form id="game_options_form" onSubmit={onSubmit}>
       {inputProps.map((props) =>
@@ -168,13 +156,13 @@ export function GameOptionsForm({
           <GameOptionsNumberInput
             key={props.fieldName}
             props={props}
-            value={inputValues[props.fieldName]}
+            value={defaultOptions[props.fieldName]}
           />
         ) : (
           <GameOptionsCheckboxInput
             key={props.fieldName}
             props={props}
-            checked={inputValues[props.fieldName] == "True"}
+            checked={defaultOptions[props.fieldName]}
           />
         ),
       )}
