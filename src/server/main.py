@@ -117,5 +117,6 @@ def on_start_game(sid, form_data):
         score_nondealer_tsumo_dealer_base_value=form_data[
             "score_nondealer_tsumo_dealer_base_value"
         ],
+        auto_replace_flowers=bool(form_data.get("auto_replace_flowers")),
     )
     game_room.start_game(game_options)
