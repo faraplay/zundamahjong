@@ -92,6 +92,9 @@ class Round:
                 )
         self._hands[sub_round].draw()
 
+        for hand in self._hands:
+            hand.sort()
+
         self._current_player = sub_round
         self._status = RoundStatus.START
         self._last_tile: TileId = 0
@@ -108,9 +111,6 @@ class Round:
                 for flower_action in flower_actions:
                     self.do_action(player, flower_action)
                 self.do_action(player, SimpleAction(action_type=ActionType.CONTINUE))
-
-        for hand in self._hands:
-            hand.sort()
 
     def get_hand(self, player: int):
         return self._hands[player].tiles
@@ -343,6 +343,7 @@ class Round:
     def _continue(self, player: int, action: Action):
         assert action.action_type == ActionType.CONTINUE
         if self._status == RoundStatus.START:
+            self._hands[player].sort()
             self._flower_pass_count += 1
             if self._flower_pass_count >= self._player_count + 1:
                 self._current_player = self._sub_round

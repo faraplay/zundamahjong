@@ -81,8 +81,9 @@ class AllowedActionTest(unittest.TestCase):
         self.assertSequenceEqual(
             round.allowed_actions[0].actions,
             [
-                HandTileAction(action_type=ActionType.DISCARD, tile=12),
+                HandTileAction(action_type=ActionType.DISCARD, tile=212),
                 HandTileAction(action_type=ActionType.DISCARD, tile=10),
+                HandTileAction(action_type=ActionType.DISCARD, tile=12),
                 HandTileAction(action_type=ActionType.DISCARD, tile=20),
                 HandTileAction(action_type=ActionType.DISCARD, tile=30),
                 HandTileAction(action_type=ActionType.DISCARD, tile=40),
@@ -91,10 +92,9 @@ class AllowedActionTest(unittest.TestCase):
                 HandTileAction(action_type=ActionType.DISCARD, tile=70),
                 HandTileAction(action_type=ActionType.DISCARD, tile=80),
                 HandTileAction(action_type=ActionType.DISCARD, tile=90),
+                HandTileAction(action_type=ActionType.DISCARD, tile=170),
                 HandTileAction(action_type=ActionType.DISCARD, tile=210),
                 HandTileAction(action_type=ActionType.DISCARD, tile=211),
-                HandTileAction(action_type=ActionType.DISCARD, tile=212),
-                HandTileAction(action_type=ActionType.DISCARD, tile=170),
             ],
         )
 
