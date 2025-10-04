@@ -1,7 +1,7 @@
 from enum import IntEnum
 from pydantic import BaseModel
 
-from src.mahjong.tile import TileId, TileValue
+from .tile import TileId, TileValue
 
 
 class MeldType(IntEnum):

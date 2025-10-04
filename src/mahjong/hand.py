@@ -1,6 +1,6 @@
 from collections.abc import Sequence
 
-from src.mahjong.action import (
+from .action import (
     Action,
     ActionType,
     AddKanAction,
