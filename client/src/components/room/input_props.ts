@@ -1,4 +1,37 @@
-export const inputProps = [
+import type { GameOptions, Yaku } from "../../types/game_options";
+
+type GameOptionsOfValueType<T> = {
+  [key in keyof GameOptions as GameOptions[key] extends T ? key : never]: T;
+};
+
+export type NumberInputProps = {
+  fieldName: keyof GameOptionsOfValueType<number>;
+  labelText: string;
+  type: "number";
+  min?: number;
+  max?: number;
+  step?: number;
+  readonly?: boolean;
+};
+
+export type CheckboxInputProps = {
+  fieldName: keyof GameOptionsOfValueType<boolean>;
+  labelText: string;
+  type: "checkbox";
+  readonly?: boolean;
+};
+
+export type YakuInputProps = {
+  fieldName: Yaku;
+  labelText: string;
+  type: "number";
+  min?: number;
+  max?: number;
+  step?: number;
+  readonly?: boolean;
+};
+
+export const inputProps: (NumberInputProps | CheckboxInputProps)[] = [
   {
     fieldName: "player_count",
     labelText: "Number of players",
@@ -55,18 +88,3 @@ export const inputProps = [
     type: "checkbox",
   },
 ] as const;
-export type NumberInputProps = {
-  fieldName: string;
-  labelText: string;
-  type: "number";
-  min?: number;
-  max?: number;
-  step?: number;
-  readonly?: boolean;
-};
-export type CheckboxInputProps = {
-  fieldName: string;
-  labelText: string;
-  type: "checkbox";
-  readonly?: boolean;
-};
