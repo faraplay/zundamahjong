@@ -157,10 +157,10 @@ const inputProps = [
 ] as const;
 
 export function GameOptionsForm({
-  defaultOptions,
+  gameOptions,
   can_start,
 }: {
-  defaultOptions: GameOptions;
+  gameOptions: GameOptions;
   can_start: boolean;
 }) {
   const emit = useContext(Emitter);
@@ -179,14 +179,14 @@ export function GameOptionsForm({
           <GameOptionsNumberInput
             key={props.fieldName}
             props={props}
-            value={defaultOptions[props.fieldName]}
+            value={gameOptions[props.fieldName]}
             sendGameOptions={sendGameOptions}
           />
         ) : (
           <GameOptionsCheckboxInput
             key={props.fieldName}
             props={props}
-            checked={defaultOptions[props.fieldName]}
+            checked={gameOptions[props.fieldName]}
             sendGameOptions={sendGameOptions}
           />
         ),

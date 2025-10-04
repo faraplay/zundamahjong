@@ -21,7 +21,6 @@ import { GameScreen } from "./components/game/game_screen/game_screen";
 
 import "./fonts.css";
 import "./app.css";
-import { defaultGameOptions, type GameOptions } from "./types/game_options";
 
 export function App() {
   const [errors, setErrors] = useState<{
@@ -32,15 +31,10 @@ export function App() {
   const [myPlayer, setMyPlayer] = useState<Player>();
   const [rooms, setRooms] = useState<BasicRoom[]>([]);
   const [myRoom, setMyRoom] = useState<DetailedRoom>();
-  const [initialOptions, setInitialOptions] =
-    useState<GameOptions>(defaultGameOptions);
 
   const [info, setInfo] = useState<AllInfo>();
   const [actionSubmitted, setActionSubmitted] = useState<boolean>(false);
   const [seeResults, setSeeResults] = useState(false);
-
-  const myPlayerRef = useRef<Player>();
-  const myRoomRef = useRef<DetailedRoom>();
 
   const socket = useRef<Socket>();
   const emit: EmitFunc = (event, ...args) =>
@@ -60,24 +54,12 @@ export function App() {
     });
     socket.current.on("player_info", (player: Player) => {
       setMyPlayer(player);
-      myPlayerRef.current = player;
     });
     socket.current.on("rooms_info", (rooms: Array<BasicRoom>) => {
       setRooms(rooms);
     });
     socket.current.on("room_info", (room: DetailedRoom | undefined) => {
-      console.log(room);
-      // do not update initialOptions if you are the first player in the room
-      if (
-        !(
-          myRoomRef.current &&
-          myRoomRef.current.joined_players[0] == myPlayerRef.current
-        )
-      ) {
-        setInitialOptions(room ? room.game_options : defaultGameOptions);
-      }
       setMyRoom(room);
-      myRoomRef.current = room;
     });
     socket.current.on("info", (info: AllInfo) => {
       setInfo(info);
@@ -96,7 +78,6 @@ export function App() {
     myPlayer,
     rooms,
     myRoom,
-    initialOptions,
     info,
     actionSubmitted,
     setActionSubmitted,
@@ -123,7 +104,6 @@ function getScreen(
   myPlayer: Player | undefined,
   rooms: BasicRoom[],
   myRoom: DetailedRoom | undefined,
-  defaultOptions: GameOptions,
   info: AllInfo | undefined,
   actionSubmitted: boolean,
   setActionSubmitted: (value: boolean) => void,
@@ -156,7 +136,7 @@ function getScreen(
         />
         {myRoom && myRoom.joined_players[0].id == myPlayer.id ? (
           <GameOptionsForm
-            defaultOptions={defaultOptions}
+            gameOptions={myRoom.game_options}
             can_start={myRoom.joined_players.length == myRoom.player_count}
           />
         ) : (
