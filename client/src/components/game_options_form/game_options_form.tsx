@@ -23,10 +23,12 @@ type CheckboxInputProps = {
 };
 
 function GameOptionsNumberInput({
+  isEditable,
   props,
   value,
   sendGameOptions,
 }: {
+  isEditable: boolean;
   props: NumberInputProps;
   value: number;
   sendGameOptions: (form: HTMLFormElement) => void;
@@ -40,17 +42,25 @@ function GameOptionsNumberInput({
       sendGameOptions(form);
     }
   };
-  const input = (
+  const input = isEditable ? (
     <input
       id={inputId}
       name={props.fieldName}
-      type={props.type}
+      type="number"
       defaultValue={value}
       min={props.min}
       max={props.max}
       step={props.step}
       readonly={props.readonly}
       onChange={onChange}
+    />
+  ) : (
+    <input
+      id={inputId}
+      name={props.fieldName}
+      type="number"
+      value={value}
+      readonly
     />
   );
   return (
@@ -62,10 +72,12 @@ function GameOptionsNumberInput({
 }
 
 function GameOptionsCheckboxInput({
+  isEditable,
   props,
   checked,
   sendGameOptions,
 }: {
+  isEditable: boolean;
   props: CheckboxInputProps;
   checked: boolean;
   sendGameOptions: (form: HTMLFormElement) => void;
@@ -79,15 +91,23 @@ function GameOptionsCheckboxInput({
       sendGameOptions(form);
     }
   };
-  const input = (
+  const input = isEditable ? (
     <input
       id={inputId}
       name={props.fieldName}
-      type={props.type}
-      value="True"
+      type="checkbox"
       defaultChecked={checked}
-      readonly={props.readonly}
+      disabled={props.readonly}
       onChange={onChange}
+    />
+  ) : (
+    <input
+      id={inputId}
+      class={`checked_${checked}`}
+      name={props.fieldName}
+      type="checkbox"
+      checked={checked}
+      disabled
     />
   );
   return (
@@ -158,14 +178,24 @@ const inputProps = [
 
 export function GameOptionsForm({
   gameOptions,
+  isEditable,
   can_start,
 }: {
   gameOptions: GameOptions;
+  isEditable: boolean;
   can_start: boolean;
 }) {
   const emit = useContext(Emitter);
   const sendGameOptions = (form: HTMLFormElement) => {
     const formData = new FormData(form);
+    for (const prop of inputProps) {
+      if (prop.type == "checkbox") {
+        formData.set(
+          prop.fieldName,
+          formData.has(prop.fieldName) ? "True" : "False",
+        );
+      }
+    }
     emit("game_options", Object.fromEntries(formData));
   };
   const onSubmit = (e: SubmitEvent) => {
@@ -178,6 +208,7 @@ export function GameOptionsForm({
         props.type == "number" ? (
           <GameOptionsNumberInput
             key={props.fieldName}
+            isEditable={isEditable}
             props={props}
             value={gameOptions[props.fieldName]}
             sendGameOptions={sendGameOptions}
@@ -185,6 +216,7 @@ export function GameOptionsForm({
         ) : (
           <GameOptionsCheckboxInput
             key={props.fieldName}
+            isEditable={isEditable}
             props={props}
             checked={gameOptions[props.fieldName]}
             sendGameOptions={sendGameOptions}

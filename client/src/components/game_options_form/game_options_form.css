@@ -6,4 +6,9 @@
   display: grid;
   grid-template-columns: auto auto;
   overflow: scroll;
+
+  input:read-only {
+    color: rgb(170, 170, 170);
+    pointer-events: none;
+  }
 }

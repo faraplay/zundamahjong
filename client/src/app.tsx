@@ -134,14 +134,11 @@ function getScreen(
           players={myRoom.joined_players}
           avatars={myRoom.avatars}
         />
-        {myRoom && myRoom.joined_players[0].id == myPlayer.id ? (
-          <GameOptionsForm
-            gameOptions={myRoom.game_options}
-            can_start={myRoom.joined_players.length == myRoom.player_count}
-          />
-        ) : (
-          <></>
-        )}
+        <GameOptionsForm
+          gameOptions={myRoom.game_options}
+          isEditable={myRoom.joined_players[0].id == myPlayer.id}
+          can_start={myRoom.joined_players.length == myRoom.player_count}
+        />
       </div>
     );
   }
