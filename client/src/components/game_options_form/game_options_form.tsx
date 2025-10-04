@@ -14,24 +14,24 @@ function GameOptionsNumberInput({
   isEditable,
   props,
   value,
+  formId,
   sendGameOptions,
 }: {
   isEditable: boolean;
   props: NumberInputProps;
   value: number;
-  sendGameOptions: (form: HTMLFormElement) => void;
+  formId: string;
+  sendGameOptions: () => void;
 }) {
   const inputId = useId();
   const label = <label for={inputId}>{props.labelText}</label>;
   const onChange = (e: Event) => {
     e.preventDefault();
-    const form = (e.currentTarget as HTMLInputElement).form;
-    if (form) {
-      sendGameOptions(form);
-    }
+    sendGameOptions();
   };
   const input = isEditable ? (
     <input
+      form={formId}
       id={inputId}
       name={props.fieldName}
       type="number"
@@ -44,6 +44,7 @@ function GameOptionsNumberInput({
     />
   ) : (
     <input
+      form={formId}
       id={inputId}
       name={props.fieldName}
       type="number"
@@ -63,24 +64,24 @@ function GameOptionsCheckboxInput({
   isEditable,
   props,
   checked,
+  formId,
   sendGameOptions,
 }: {
   isEditable: boolean;
   props: CheckboxInputProps;
   checked: boolean;
-  sendGameOptions: (form: HTMLFormElement) => void;
+  formId: string;
+  sendGameOptions: () => void;
 }) {
   const inputId = useId();
   const label = <label for={inputId}>{props.labelText}</label>;
   const onChange = (e: Event) => {
     e.preventDefault();
-    const form = (e.currentTarget as HTMLInputElement).form;
-    if (form) {
-      sendGameOptions(form);
-    }
+    sendGameOptions();
   };
   const input = isEditable ? (
     <input
+      form={formId}
       id={inputId}
       name={props.fieldName}
       type="checkbox"
@@ -90,6 +91,7 @@ function GameOptionsCheckboxInput({
     />
   ) : (
     <input
+      form={formId}
       id={inputId}
       name={props.fieldName}
       type="checkbox"
@@ -115,8 +117,12 @@ export function GameOptionsForm({
   can_start: boolean;
 }) {
   const emit = useContext(Emitter);
-  const sendGameOptions = (form: HTMLFormElement) => {
-    const formData = new FormData(form);
+  const formId = useId();
+
+  const sendGameOptions = () => {
+    const formData = new FormData(
+      document.getElementById(formId) as HTMLFormElement,
+    );
     for (const prop of inputProps) {
       if (prop.type == "checkbox") {
         formData.set(
@@ -132,29 +138,39 @@ export function GameOptionsForm({
     emit("start_game");
   };
   return (
-    <form id="game_options_form" onSubmit={onSubmit}>
-      {inputProps.map((props) =>
-        props.type == "number" ? (
-          <GameOptionsNumberInput
-            key={props.fieldName}
-            isEditable={isEditable}
-            props={props}
-            value={gameOptions[props.fieldName]}
-            sendGameOptions={sendGameOptions}
-          />
-        ) : (
-          <GameOptionsCheckboxInput
-            key={props.fieldName}
-            isEditable={isEditable}
-            props={props}
-            checked={gameOptions[props.fieldName]}
-            sendGameOptions={sendGameOptions}
-          />
-        ),
-      )}
-      <button type="submit" id="start_game" disabled={!can_start}>
-        Start game
-      </button>
-    </form>
+    <>
+      <form id={formId} onSubmit={onSubmit} />
+      <div class="game_options">
+        {inputProps.map((props) =>
+          props.type == "number" ? (
+            <GameOptionsNumberInput
+              key={props.fieldName}
+              isEditable={isEditable}
+              props={props}
+              value={gameOptions[props.fieldName]}
+              formId={formId}
+              sendGameOptions={sendGameOptions}
+            />
+          ) : (
+            <GameOptionsCheckboxInput
+              key={props.fieldName}
+              isEditable={isEditable}
+              props={props}
+              checked={gameOptions[props.fieldName]}
+              formId={formId}
+              sendGameOptions={sendGameOptions}
+            />
+          ),
+        )}
+        <button
+          type="submit"
+          class="start_game"
+          form={formId}
+          disabled={!can_start}
+        >
+          Start game
+        </button>
+      </div>
+    </>
   );
 }
