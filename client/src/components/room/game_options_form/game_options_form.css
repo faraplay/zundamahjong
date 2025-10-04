@@ -9,7 +9,7 @@
   overflow: scroll;
   padding-right: 1cqw;
 
-  input:read-only {
+  input[type="number"]:read-only {
     color: rgb(170, 170, 170);
     pointer-events: none;
   }

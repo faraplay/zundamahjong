@@ -22,8 +22,8 @@ export function YakuForm({
         <GameOptionsNumberInput
           key={yaku}
           isEditable={isEditable}
-          props={{
-            fieldName: yaku,
+          inputProps={{
+            name: yaku,
             labelText: yakuDisplayNames[yaku],
             type: "number",
           }}

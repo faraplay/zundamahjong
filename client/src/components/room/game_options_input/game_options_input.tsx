@@ -4,99 +4,114 @@ import type {
   CheckboxInputProps,
   YakuInputProps,
 } from "../input_props";
+import type { GameOptions } from "../../../types/game_options";
 
 export function GameOptionsNumberInput({
   isEditable,
-  props,
+  inputProps,
   value,
   formId,
   sendGameOptions,
 }: {
   isEditable: boolean;
-  props: NumberInputProps | YakuInputProps;
+  inputProps: NumberInputProps | YakuInputProps;
   value: number;
   formId: string;
   sendGameOptions: () => void;
 }) {
   const inputId = useId();
-  const label = <label for={inputId}>{props.labelText}</label>;
   const onChange = (e: Event) => {
     e.preventDefault();
     sendGameOptions();
   };
-  const input = isEditable ? (
-    <input
-      form={formId}
-      id={inputId}
-      name={props.fieldName}
-      type="number"
-      defaultValue={value}
-      min={props.min}
-      max={props.max}
-      step={props.step}
-      readonly={props.readonly}
-      onChange={onChange}
-    />
-  ) : (
-    <input
-      form={formId}
-      id={inputId}
-      name={props.fieldName}
-      type="number"
-      value={value}
-      readonly
-    />
-  );
+  const editableProps = isEditable
+    ? {
+        defaultValue: value,
+        onChange,
+      }
+    : {
+        value,
+        readonly: true,
+      };
   return (
     <>
-      {label}
-      {input}
+      <label for={inputId}>{inputProps.labelText}</label>
+      <input form={formId} id={inputId} {...inputProps} {...editableProps} />
     </>
   );
 }
+
 export function GameOptionsCheckboxInput({
   isEditable,
-  props,
-  checked,
+  inputProps,
+  value,
   formId,
   sendGameOptions,
 }: {
   isEditable: boolean;
-  props: CheckboxInputProps;
-  checked: boolean;
+  inputProps: CheckboxInputProps;
+  value: boolean;
   formId: string;
   sendGameOptions: () => void;
 }) {
   const inputId = useId();
-  const label = <label for={inputId}>{props.labelText}</label>;
   const onChange = (e: Event) => {
     e.preventDefault();
     sendGameOptions();
   };
-  const input = isEditable ? (
-    <input
-      form={formId}
-      id={inputId}
-      name={props.fieldName}
-      type="checkbox"
-      defaultChecked={checked}
-      disabled={props.readonly}
-      onChange={onChange}
-    />
-  ) : (
-    <input
-      form={formId}
-      id={inputId}
-      name={props.fieldName}
-      type="checkbox"
-      checked={checked}
-      disabled
-    />
-  );
+  const editableProps = isEditable
+    ? {
+        defaultChecked: value,
+        onChange,
+      }
+    : {
+        checked: value,
+        disabled: true,
+      };
   return (
     <>
-      {label}
-      {input}
+      <label for={inputId}>{inputProps.labelText}</label>
+      <input form={formId} id={inputId} {...inputProps} {...editableProps} />
+    </>
+  );
+}
+
+export function GameOptionsInputList({
+  isEditable,
+  inputPropsList,
+  gameOptions,
+  formId,
+  sendGameOptions,
+}: {
+  isEditable: boolean;
+  inputPropsList: (NumberInputProps | CheckboxInputProps)[];
+  gameOptions: GameOptions;
+  formId: string;
+  sendGameOptions: () => void;
+}) {
+  return (
+    <>
+      {inputPropsList.map((inputProps) =>
+        inputProps.type == "number" ? (
+          <GameOptionsNumberInput
+            key={inputProps.name}
+            isEditable={isEditable}
+            formId={formId}
+            sendGameOptions={sendGameOptions}
+            inputProps={inputProps}
+            value={gameOptions[inputProps.name]}
+          />
+        ) : (
+          <GameOptionsCheckboxInput
+            key={inputProps.name}
+            isEditable={isEditable}
+            formId={formId}
+            sendGameOptions={sendGameOptions}
+            inputProps={inputProps}
+            value={gameOptions[inputProps.name]}
+          />
+        ),
+      )}
     </>
   );
 }

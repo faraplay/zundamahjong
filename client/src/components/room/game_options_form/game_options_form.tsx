@@ -3,11 +3,8 @@ import { useContext, useId } from "preact/hooks";
 import { type GameOptions, type YakuValues } from "../../../types/game_options";
 
 import { Emitter } from "../../emitter/emitter";
-import { inputProps } from "../input_props";
-import {
-  GameOptionsNumberInput,
-  GameOptionsCheckboxInput,
-} from "../game_options_input/game_options_input";
+import { inputPropsList } from "../input_props";
+import { GameOptionsInputList } from "../game_options_input/game_options_input";
 import { YakuForm } from "../yaku_form/yaku_form";
 
 import "./game_options_form.css";
@@ -32,11 +29,11 @@ export function GameOptionsForm({
     const yakuFormData = new FormData(
       document.getElementById(yakuFormId) as HTMLFormElement,
     );
-    for (const prop of inputProps) {
-      if (prop.type == "checkbox") {
+    for (const inputProps of inputPropsList) {
+      if (inputProps.type == "checkbox") {
         formData.set(
-          prop.fieldName,
-          formData.has(prop.fieldName) ? "True" : "False",
+          inputProps.name,
+          formData.has(inputProps.name) ? "True" : "False",
         );
       }
     }
@@ -58,27 +55,13 @@ export function GameOptionsForm({
       <form id={formId} onSubmit={onSubmit} hidden />
       <form id={yakuFormId} onSubmit={onSubmit} hidden />
       <div class="game_options">
-        {inputProps.map((props) =>
-          props.type == "number" ? (
-            <GameOptionsNumberInput
-              key={props.fieldName}
-              isEditable={isEditable}
-              props={props}
-              value={gameOptions[props.fieldName]}
-              formId={formId}
-              sendGameOptions={sendGameOptions}
-            />
-          ) : (
-            <GameOptionsCheckboxInput
-              key={props.fieldName}
-              isEditable={isEditable}
-              props={props}
-              checked={gameOptions[props.fieldName]}
-              formId={formId}
-              sendGameOptions={sendGameOptions}
-            />
-          ),
-        )}
+        <GameOptionsInputList
+          inputPropsList={inputPropsList}
+          gameOptions={gameOptions}
+          isEditable={isEditable}
+          formId={formId}
+          sendGameOptions={sendGameOptions}
+        />
         <details>
           <summary>Yaku</summary>
           <YakuForm
