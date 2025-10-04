@@ -79,12 +79,15 @@ export function GameOptionsForm({
             />
           ),
         )}
-        <YakuForm
-          yakuValues={gameOptions.yaku_values}
-          yakuFormId={yakuFormId}
-          isEditable={isEditable}
-          sendGameOptions={sendGameOptions}
-        />
+        <details>
+          <summary>Yaku</summary>
+          <YakuForm
+            yakuValues={gameOptions.yaku_values}
+            yakuFormId={yakuFormId}
+            isEditable={isEditable}
+            sendGameOptions={sendGameOptions}
+          />
+        </details>
         <button
           type="submit"
           class="start_game"
