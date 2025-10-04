@@ -61,10 +61,10 @@ export function App() {
     socket.current.on("room_info", (room: DetailedRoom | undefined) => {
       setMyRoom(room);
     });
-    socket.current.on("info", (info: AllInfo) => {
+    socket.current.on("info", (info: AllInfo | undefined) => {
       setInfo(info);
       setActionSubmitted(false);
-      if (info.round_info.status != RoundStatus.END) {
+      if (info && info.round_info.status != RoundStatus.END) {
         setSeeResults(false);
       }
     });
