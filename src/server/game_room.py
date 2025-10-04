@@ -208,15 +208,25 @@ class GameRoom:
             game_room.avatars[player.id] = avatar
         game_room.broadcast_room_info()
 
-    def start_game(self, game_options: GameOptions):
-        if game_options.player_count != self.player_count:
-            raise Exception("Wrong number of players specified!")
+    @classmethod
+    def set_game_options(cls, player: Player, game_options: GameOptions):
+        game_room = cls.get_player_room(player)
+        if game_room is None:
+            raise Exception("Player is not in a room!")
+        game_room.game_options = game_options
+        game_room.broadcast_room_info()
+
+    def start_game(self):
+        if self.game_options.player_count != self.player_count:
+            raise Exception("Wrong number of players!")
         with rooms_lock:
             if len(self.joined_players) != self.player_count:
                 raise Exception("Room is not full!")
             if self.game_controller is not None:
                 raise Exception("Game is already in progress!")
-            self.game_controller = GameController(self.joined_players, game_options)
+            self.game_controller = GameController(
+                self.joined_players, self.game_options
+            )
 
     def end_game(self):
         if self.game_controller is None:

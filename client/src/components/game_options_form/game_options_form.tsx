@@ -25,12 +25,21 @@ type CheckboxInputProps = {
 function GameOptionsNumberInput({
   props,
   value,
+  sendGameOptions,
 }: {
   props: NumberInputProps;
   value: number;
+  sendGameOptions: (form: HTMLFormElement) => void;
 }) {
   const inputId = useId();
   const label = <label for={inputId}>{props.labelText}</label>;
+  const onChange = (e: Event) => {
+    e.preventDefault();
+    const form = (e.currentTarget as HTMLInputElement).form;
+    if (form) {
+      sendGameOptions(form);
+    }
+  };
   const input = (
     <input
       id={inputId}
@@ -41,6 +50,7 @@ function GameOptionsNumberInput({
       max={props.max}
       step={props.step}
       readonly={props.readonly}
+      onChange={onChange}
     />
   );
   return (
@@ -54,12 +64,21 @@ function GameOptionsNumberInput({
 function GameOptionsCheckboxInput({
   props,
   checked,
+  sendGameOptions,
 }: {
   props: CheckboxInputProps;
   checked: boolean;
+  sendGameOptions: (form: HTMLFormElement) => void;
 }) {
   const inputId = useId();
   const label = <label for={inputId}>{props.labelText}</label>;
+  const onChange = (e: Event) => {
+    e.preventDefault();
+    const form = (e.currentTarget as HTMLInputElement).form;
+    if (form) {
+      sendGameOptions(form);
+    }
+  };
   const input = (
     <input
       id={inputId}
@@ -68,6 +87,7 @@ function GameOptionsCheckboxInput({
       value="True"
       defaultChecked={checked}
       readonly={props.readonly}
+      onChange={onChange}
     />
   );
   return (
@@ -144,10 +164,13 @@ export function GameOptionsForm({
   can_start: boolean;
 }) {
   const emit = useContext(Emitter);
+  const sendGameOptions = (form: HTMLFormElement) => {
+    const formData = new FormData(form);
+    emit("game_options", Object.fromEntries(formData));
+  };
   const onSubmit = (e: SubmitEvent) => {
     e.preventDefault();
-    const formData = new FormData(e.currentTarget as HTMLFormElement);
-    emit("start_game", Object.fromEntries(formData));
+    emit("start_game");
   };
   return (
     <form id="game_options_form" onSubmit={onSubmit}>
@@ -157,12 +180,14 @@ export function GameOptionsForm({
             key={props.fieldName}
             props={props}
             value={defaultOptions[props.fieldName]}
+            sendGameOptions={sendGameOptions}
           />
         ) : (
           <GameOptionsCheckboxInput
             key={props.fieldName}
             props={props}
             checked={defaultOptions[props.fieldName]}
+            sendGameOptions={sendGameOptions}
           />
         ),
       )}

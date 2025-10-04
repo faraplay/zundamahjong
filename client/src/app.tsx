@@ -66,6 +66,7 @@ export function App() {
       setRooms(rooms);
     });
     socket.current.on("room_info", (room: DetailedRoom | undefined) => {
+      console.log(room);
       // do not update initialOptions if you are the first player in the room
       if (
         !(
