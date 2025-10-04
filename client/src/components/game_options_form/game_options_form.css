@@ -1,11 +1,13 @@
 .game_options {
   width: 40cqw;
+  max-height: 46.25cqw;
   position: absolute;
   right: 5cqw;
   top: 5cqw;
   display: grid;
   grid-template-columns: auto auto;
   overflow: scroll;
+  padding-right: 1cqw;
 
   input:read-only {
     color: rgb(170, 170, 170);

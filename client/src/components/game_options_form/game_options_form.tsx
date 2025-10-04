@@ -3,7 +3,12 @@ import { useContext, useId } from "preact/hooks";
 import { Emitter } from "../emitter/emitter";
 
 import "./game_options_form.css";
-import type { GameOptions } from "../../types/game_options";
+import {
+  yakuDisplayNames,
+  yakus,
+  type GameOptions,
+  type YakuValues,
+} from "../../types/game_options";
 import {
   inputProps,
   type CheckboxInputProps,
@@ -118,10 +123,14 @@ export function GameOptionsForm({
 }) {
   const emit = useContext(Emitter);
   const formId = useId();
+  const yakuFormId = useId();
 
   const sendGameOptions = () => {
     const formData = new FormData(
       document.getElementById(formId) as HTMLFormElement,
+    );
+    const yakuFormData = new FormData(
+      document.getElementById(yakuFormId) as HTMLFormElement,
     );
     for (const prop of inputProps) {
       if (prop.type == "checkbox") {
@@ -131,15 +140,37 @@ export function GameOptionsForm({
         );
       }
     }
-    emit("game_options", Object.fromEntries(formData));
+    const formObject = Object.fromEntries(formData) as {
+      [key in keyof GameOptions]: unknown;
+    };
+    formObject.yaku_values = Object.fromEntries(
+      yakuFormData,
+    ) as unknown as YakuValues;
+    emit("game_options", formObject);
   };
   const onSubmit = (e: SubmitEvent) => {
     e.preventDefault();
     emit("start_game");
   };
+
+  const yakuInputs = yakus.map((yaku) => (
+    <GameOptionsNumberInput
+      key={yaku}
+      isEditable={isEditable}
+      props={{
+        fieldName: yaku,
+        labelText: yakuDisplayNames[yaku],
+        type: "number",
+      }}
+      value={gameOptions.yaku_values[yaku]}
+      formId={yakuFormId}
+      sendGameOptions={sendGameOptions}
+    />
+  ));
   return (
     <>
       <form id={formId} onSubmit={onSubmit} />
+      <form id={yakuFormId} onSubmit={onSubmit} />
       <div class="game_options">
         {inputProps.map((props) =>
           props.type == "number" ? (
@@ -162,6 +193,7 @@ export function GameOptionsForm({
             />
           ),
         )}
+        {yakuInputs}
         <button
           type="submit"
           class="start_game"
