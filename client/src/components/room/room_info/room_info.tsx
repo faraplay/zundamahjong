@@ -1,8 +1,8 @@
 import { useContext } from "preact/hooks";
 
-import type { BasicRoom } from "../../types/room";
+import type { BasicRoom } from "../../../types/room";
 
-import { Emitter } from "../emitter/emitter";
+import { Emitter } from "../../emitter/emitter";
 
 export function RoomInfo({ room }: { room: BasicRoom }) {
   const emit = useContext(Emitter);

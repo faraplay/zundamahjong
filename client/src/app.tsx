@@ -13,9 +13,9 @@ import { ErrorList } from "./components/error_list/error_list";
 import { NameForm } from "./components/name_form/name_form";
 import { JoinRoomForm } from "./components/join_room_form/join_room_form";
 import { CreateRoomForm } from "./components/create_room_form/create_room_form";
-import { RoomInfo } from "./components/room_info/room_info";
-import { AvatarDisplay } from "./components/avatar_selector/avatar_selector";
-import { GameOptionsForm } from "./components/game_options_form/game_options_form";
+import { RoomInfo } from "./components/room/room_info/room_info";
+import { AvatarDisplay } from "./components/room/avatar_selector/avatar_selector";
+import { GameOptionsForm } from "./components/room/game_options_form/game_options_form";
 
 import { GameScreen } from "./components/game/game_screen/game_screen";
 
