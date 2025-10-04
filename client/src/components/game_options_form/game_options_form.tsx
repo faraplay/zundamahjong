@@ -169,8 +169,8 @@ export function GameOptionsForm({
   ));
   return (
     <>
-      <form id={formId} onSubmit={onSubmit} />
-      <form id={yakuFormId} onSubmit={onSubmit} />
+      <form id={formId} onSubmit={onSubmit} hidden />
+      <form id={yakuFormId} onSubmit={onSubmit} hidden />
       <div class="game_options">
         {inputProps.map((props) =>
           props.type == "number" ? (
@@ -198,7 +198,7 @@ export function GameOptionsForm({
           type="submit"
           class="start_game"
           form={formId}
-          disabled={!can_start}
+          disabled={!(isEditable && can_start)}
         >
           Start game
         </button>
