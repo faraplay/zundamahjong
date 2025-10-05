@@ -37,8 +37,14 @@ def tile_id_is_flower(tile: TileId):
     return get_tile_value(tile) > 40
 
 
-orphans = {1, 9, 11, 19, 21, 29, 31, 32, 33, 34, 35, 36, 37}
-terminals = {1, 9, 11, 19, 21, 29}
-winds = {31, 32, 33, 34}
-dragons = {35, 36, 37}
-green_tiles = {22, 23, 24, 26, 28, 36}
+all_tiles = frozenset(
+    [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    + [11, 12, 13, 14, 15, 16, 17, 18, 19]
+    + [21, 22, 23, 24, 25, 26, 27, 28, 29]
+    + [31, 32, 33, 34, 35, 36, 37]
+)
+orphans = frozenset({1, 9, 11, 19, 21, 29, 31, 32, 33, 34, 35, 36, 37})
+terminals = frozenset({1, 9, 11, 19, 21, 29})
+winds = frozenset({31, 32, 33, 34})
+dragons = frozenset({35, 36, 37})
+green_tiles = frozenset({22, 23, 24, 26, 28, 36})
