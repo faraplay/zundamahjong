@@ -51,7 +51,7 @@ export function GameOptionsForm({
   };
 
   return (
-    <>
+    <div class="game_controls">
       <form id={formId} onSubmit={onSubmit} hidden />
       <form id={yakuFormId} onSubmit={onSubmit} hidden />
       <div class="game_options">
@@ -71,15 +71,15 @@ export function GameOptionsForm({
             sendGameOptions={sendGameOptions}
           />
         </details>
-        <button
-          type="submit"
-          class="start_game"
-          form={formId}
-          disabled={!(isEditable && can_start)}
-        >
-          Start game
-        </button>
       </div>
-    </>
+      <button
+        type="submit"
+        class="start_game"
+        form={formId}
+        disabled={!(isEditable && can_start)}
+      >
+        Start game
+      </button>
+    </div>
   );
 }
