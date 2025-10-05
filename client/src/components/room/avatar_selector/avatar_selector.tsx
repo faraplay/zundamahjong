@@ -1,9 +1,9 @@
 import { useContext } from "preact/hooks";
 
-import type { Player } from "../../types/player";
-import { avatars, type AvatarIdDict } from "../../types/avatars";
+import type { Player } from "../../../types/player";
+import { avatars, type AvatarIdDict } from "../../../types/avatars";
 
-import { Emitter } from "../emitter/emitter";
+import { Emitter } from "../../emitter/emitter";
 
 import "./avatar_selector.css";
 

@@ -1,3 +1,5 @@
+from typing import Optional
+
 from .action import Action
 from .round import RoundStatus, Round
 
@@ -7,6 +9,7 @@ class ActionSelector:
         self._round = round
         self._player_count = round._player_count
         self.reset_submitted_actions()
+        self._resolve_actions()
 
     def submit_action(self, player_index: int, action: Action, history_index: int):
         if history_index != len(self._round.history):
@@ -15,7 +18,7 @@ class ActionSelector:
         return self._resolve_actions()
 
     def reset_submitted_actions(self):
-        self._submitted_actions: list[Action | None] = [None] * self._player_count
+        self._submitted_actions: list[Optional[Action]] = [None] * self._player_count
 
     def _resolve_actions(self):
         action_resolve_count = 0

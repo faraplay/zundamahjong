@@ -97,25 +97,15 @@ def on_set_avatar(sid, avatar):
     GameRoom.set_avatar(get_player(sid), avatar)
 
 
+@sio_on("game_options")
+def on_game_options(sid, game_options_data):
+    game_options = GameOptions.model_validate(game_options_data)
+    GameRoom.set_game_options(get_player(sid), game_options)
+
+
 @sio_on("start_game")
-def on_start_game(sid, form_data):
+def on_start_game(sid):
     game_room = GameRoom.get_player_room(get_player(sid))
     if game_room is None:
         raise Exception("Player is not in a room!")
-    game_options = GameOptions(
-        player_count=form_data["player_count"],
-        game_length=(
-            form_data["game_length_wind_rounds"],
-            form_data["game_length_sub_rounds"],
-        ),
-        score_dealer_ron_base_value=form_data["score_dealer_ron_base_value"],
-        score_dealer_tsumo_base_value=form_data["score_dealer_tsumo_base_value"],
-        score_nondealer_ron_base_value=form_data["score_nondealer_ron_base_value"],
-        score_nondealer_tsumo_nondealer_base_value=form_data[
-            "score_nondealer_tsumo_nondealer_base_value"
-        ],
-        score_nondealer_tsumo_dealer_base_value=form_data[
-            "score_nondealer_tsumo_dealer_base_value"
-        ],
-    )
-    game_room.start_game(game_options)
+    game_room.start_game()

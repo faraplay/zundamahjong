@@ -1,9 +1,9 @@
-import { useRef, useEffect, type MutableRef, useState } from "preact/hooks";
+import { useRef, useEffect, useState } from "preact/hooks";
 import { io, Socket } from "socket.io-client";
 
 import type { ErrorMessage } from "./types/error_message";
 import type { Player } from "./types/player";
-import type { AvatarRoom, Room } from "./types/room";
+import type { DetailedRoom, BasicRoom } from "./types/room";
 import { RoundStatus, type AllInfo } from "./types/game";
 import type { EmitFunc } from "./types/emit_func";
 
@@ -13,9 +13,9 @@ import { ErrorList } from "./components/error_list/error_list";
 import { NameForm } from "./components/name_form/name_form";
 import { JoinRoomForm } from "./components/join_room_form/join_room_form";
 import { CreateRoomForm } from "./components/create_room_form/create_room_form";
-import { RoomInfo } from "./components/room_info/room_info";
-import { AvatarDisplay } from "./components/avatar_selector/avatar_selector";
-import { GameOptionsForm } from "./components/game_options_form/game_options_form";
+import { RoomInfo } from "./components/room/room_info/room_info";
+import { AvatarDisplay } from "./components/room/avatar_selector/avatar_selector";
+import { GameOptionsForm } from "./components/room/game_options_form/game_options_form";
 
 import { GameScreen } from "./components/game/game_screen/game_screen";
 
@@ -29,16 +29,16 @@ export function App() {
   }>({ currentIndex: 0, list: [] });
 
   const [myPlayer, setMyPlayer] = useState<Player>();
-  const [rooms, setRooms] = useState<Room[]>([]);
-  const [myRoom, setMyRoom] = useState<AvatarRoom>();
+  const [rooms, setRooms] = useState<BasicRoom[]>([]);
+  const [myRoom, setMyRoom] = useState<DetailedRoom>();
 
   const [info, setInfo] = useState<AllInfo>();
   const [actionSubmitted, setActionSubmitted] = useState<boolean>(false);
   const [seeResults, setSeeResults] = useState(false);
 
-  const socket = useRef() as MutableRef<Socket>;
+  const socket = useRef<Socket>();
   const emit: EmitFunc = (event, ...args) =>
-    socket.current.emit(event, ...args);
+    socket.current?.emit(event, ...args);
 
   useEffect(() => {
     socket.current = io();
@@ -55,29 +55,29 @@ export function App() {
     socket.current.on("player_info", (player: Player) => {
       setMyPlayer(player);
     });
-    socket.current.on("rooms_info", (rooms: Array<Room>) => {
+    socket.current.on("rooms_info", (rooms: Array<BasicRoom>) => {
       setRooms(rooms);
     });
-    socket.current.on("room_info", (room: AvatarRoom) => {
+    socket.current.on("room_info", (room: DetailedRoom | undefined) => {
       setMyRoom(room);
     });
-    socket.current.on("info", (info: AllInfo) => {
+    socket.current.on("info", (info: AllInfo | undefined) => {
       setInfo(info);
       setActionSubmitted(false);
-      if (info.round_info.status != RoundStatus.END) {
+      if (info && info.round_info.status != RoundStatus.END) {
         setSeeResults(false);
       }
     });
 
     return () => {
-      socket.current.disconnect();
+      socket.current?.disconnect();
     };
   }, []);
 
   const screen = getScreen(
     myPlayer,
-    myRoom,
     rooms,
+    myRoom,
     info,
     actionSubmitted,
     setActionSubmitted,
@@ -102,8 +102,8 @@ export function App() {
 
 function getScreen(
   myPlayer: Player | undefined,
-  myRoom: AvatarRoom | undefined,
-  rooms: Room[],
+  rooms: BasicRoom[],
+  myRoom: DetailedRoom | undefined,
   info: AllInfo | undefined,
   actionSubmitted: boolean,
   setActionSubmitted: (value: boolean) => void,
@@ -134,14 +134,11 @@ function getScreen(
           players={myRoom.joined_players}
           avatars={myRoom.avatars}
         />
-        {myRoom && myRoom.joined_players[0].id == myPlayer.id ? (
-          <GameOptionsForm
-            player_count={myRoom.player_count}
-            can_start={myRoom.joined_players.length == myRoom.player_count}
-          />
-        ) : (
-          <></>
-        )}
+        <GameOptionsForm
+          gameOptions={myRoom.game_options}
+          isEditable={myRoom.joined_players[0].id == myPlayer.id}
+          can_start={myRoom.joined_players.length == myRoom.player_count}
+        />
       </div>
     );
   }

@@ -1,9 +1,0 @@
-#game_options_form {
-  width: 40cqw;
-  position: absolute;
-  right: 5cqw;
-  top: 5cqw;
-  display: grid;
-  grid-template-columns: auto auto;
-  overflow: scroll;
-}

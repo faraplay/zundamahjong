@@ -31,7 +31,7 @@ class GameTest(unittest.TestCase):
             0, HandTileAction(action_type=ActionType.DISCARD, tile=130)
         )
         game.round.do_action(2, SimpleAction(action_type=ActionType.RON))
-        self.assertIsNotNone(game.win)
+        assert game.scoring is not None
         self.assertSequenceEqual(game.player_scores, game.scoring.player_scores)
 
     def test_dealer_repeat_next_round(self):
@@ -53,7 +53,8 @@ class GameTest(unittest.TestCase):
 
     def test_next_wind_round(self):
         game = Game(
-            first_deck_tiles=test_deck2, options=GameOptions(game_length=(2, 0))
+            first_deck_tiles=test_deck2,
+            options=GameOptions(game_length_wind_rounds=2, game_length_sub_rounds=0),
         )
         game.round.do_action(
             0, HandTileAction(action_type=ActionType.DISCARD, tile=130)
@@ -81,7 +82,8 @@ class GameTest(unittest.TestCase):
 
     def test_one_round_game(self):
         game = Game(
-            first_deck_tiles=test_deck2, options=GameOptions(game_length=(0, 1))
+            first_deck_tiles=test_deck2,
+            options=GameOptions(game_length_wind_rounds=0, game_length_sub_rounds=1),
         )
         game.round.do_action(
             0, HandTileAction(action_type=ActionType.DISCARD, tile=130)
@@ -91,7 +93,8 @@ class GameTest(unittest.TestCase):
 
     def test_cannot_start_next_round_at_end(self):
         game = Game(
-            first_deck_tiles=test_deck2, options=GameOptions(game_length=(0, 1))
+            first_deck_tiles=test_deck2,
+            options=GameOptions(game_length_wind_rounds=0, game_length_sub_rounds=1),
         )
         game.round.do_action(
             0, HandTileAction(action_type=ActionType.DISCARD, tile=130)
@@ -102,7 +105,8 @@ class GameTest(unittest.TestCase):
 
     def test_last_round_dealer_repeat(self):
         game = Game(
-            first_deck_tiles=test_deck2, options=GameOptions(game_length=(1, 0))
+            first_deck_tiles=test_deck2,
+            options=GameOptions(game_length_wind_rounds=1, game_length_sub_rounds=0),
         )
         game.round.do_action(
             0, HandTileAction(action_type=ActionType.DISCARD, tile=130)
@@ -134,8 +138,9 @@ class GameTest(unittest.TestCase):
         round = game.round
         while round.status != RoundStatus.END:
             actions = [action_set.default for action_set in round.allowed_actions]
-            player, action = round.get_priority_action(actions)
-            round.do_action(player, action)
+            playeraction = round.get_priority_action(actions)
+            assert playeraction is not None
+            round.do_action(*playeraction)
         self.assertEqual(game.draw_count, 0)
 
         game.start_next_round(test_deck4)
@@ -143,8 +148,9 @@ class GameTest(unittest.TestCase):
         round = game.round
         while round.status != RoundStatus.END:
             actions = [action_set.default for action_set in round.allowed_actions]
-            player, action = round.get_priority_action(actions)
-            round.do_action(player, action)
+            playeraction = round.get_priority_action(actions)
+            assert playeraction is not None
+            round.do_action(*playeraction)
         self.assertEqual(game.draw_count, 1)
 
         game.start_next_round(test_deck6)
@@ -161,8 +167,9 @@ class GameTest(unittest.TestCase):
         round = game.round
         while round.status != RoundStatus.END:
             actions = [action_set.default for action_set in round.allowed_actions]
-            player, action = round.get_priority_action(actions)
-            round.do_action(player, action)
+            playeraction = round.get_priority_action(actions)
+            assert playeraction is not None
+            round.do_action(*playeraction)
         self.assertEqual(game.draw_count, 0)
 
         game.start_next_round(test_deck4)
@@ -170,11 +177,13 @@ class GameTest(unittest.TestCase):
         round = game.round
         while round.status != RoundStatus.END:
             actions = [action_set.default for action_set in round.allowed_actions]
-            player, action = round.get_priority_action(actions)
-            round.do_action(player, action)
+            playeraction = round.get_priority_action(actions)
+            assert playeraction is not None
+            round.do_action(*playeraction)
         self.assertEqual(game.draw_count, 1)
 
         game.start_next_round(test_deck6)
         self.assertEqual(game.draw_count, 2)
         game.round.do_action(0, SimpleAction(action_type=ActionType.TSUMO))
+        assert game.win is not None
         self.assertEqual(game.win.draw_count, 2)
