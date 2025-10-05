@@ -31,7 +31,18 @@ export type YakuInputProps = {
   readonly?: boolean;
 };
 
-export const inputPropsList: (NumberInputProps | CheckboxInputProps)[] = [
+export type InputExpanderProps = {
+  type: "collection";
+  name: string;
+  children: GameOptionsInputProps[];
+};
+
+export type GameOptionsInputProps =
+  | NumberInputProps
+  | CheckboxInputProps
+  | InputExpanderProps;
+
+export const inputPropsList: GameOptionsInputProps[] = [
   {
     name: "player_count",
     labelText: "Number of players",
@@ -53,38 +64,44 @@ export const inputPropsList: (NumberInputProps | CheckboxInputProps)[] = [
     max: 3,
   },
   {
-    name: "score_dealer_ron_base_value",
-    labelText: "Dealer ron base score",
-    type: "number",
-    step: 0.5,
-  },
-  {
-    name: "score_dealer_tsumo_base_value",
-    labelText: "Dealer tsumo base score",
-    type: "number",
-    step: 0.5,
-  },
-  {
-    name: "score_nondealer_ron_base_value",
-    labelText: "Nondealer ron base score",
-    type: "number",
-    step: 0.5,
-  },
-  {
-    name: "score_nondealer_tsumo_nondealer_base_value",
-    labelText: "Nondealer-nondealer tsumo base score",
-    type: "number",
-    step: 0.5,
-  },
-  {
-    name: "score_nondealer_tsumo_dealer_base_value",
-    labelText: "Nondealer-dealer tsumo base score",
-    type: "number",
-    step: 0.5,
-  },
-  {
     name: "auto_replace_flowers",
     labelText: "Auto flowers",
     type: "checkbox",
+  },
+  {
+    type: "collection",
+    name: "Base Scores",
+    children: [
+      {
+        name: "score_dealer_ron_base_value",
+        labelText: "Dealer ron base score",
+        type: "number",
+        step: 0.5,
+      },
+      {
+        name: "score_dealer_tsumo_base_value",
+        labelText: "Dealer tsumo base score",
+        type: "number",
+        step: 0.5,
+      },
+      {
+        name: "score_nondealer_ron_base_value",
+        labelText: "Nondealer ron base score",
+        type: "number",
+        step: 0.5,
+      },
+      {
+        name: "score_nondealer_tsumo_nondealer_base_value",
+        labelText: "Nondealer-nondealer tsumo base score",
+        type: "number",
+        step: 0.5,
+      },
+      {
+        name: "score_nondealer_tsumo_dealer_base_value",
+        labelText: "Nondealer-dealer tsumo base score",
+        type: "number",
+        step: 0.5,
+      },
+    ],
   },
 ] as const;
