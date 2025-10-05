@@ -401,7 +401,9 @@ def calculate_shanten(tiles: list[TileValue]):
     )
 
 
-def check_tenpai(tiles: list[TileValue]):
+def get_waits(tiles: list[TileValue]):
+    if len(tiles) % 3 != 1:
+        return None
     shanten, waits = calculate_shanten(tiles)
     if shanten == 0:
         return waits

@@ -21,6 +21,18 @@ def get_tile_values(tiles: list[TileId]) -> list[TileValue]:
     return [tile // N for tile in tiles]
 
 
+def get_tile_value_buckets(tiles: list[TileId]):
+    tile_value_buckets: dict[TileValue, list[TileId]] = {}
+    for tile in tiles:
+        tile_value = get_tile_value(tile)
+        bucket = tile_value_buckets.get(tile_value)
+        if bucket is None:
+            bucket = []
+            tile_value_buckets[tile_value] = bucket
+        bucket.append(tile)
+    return tile_value_buckets
+
+
 def remove_tile_value(tiles: list[TileId], tile_value: TileValue):
     for tile in tiles:
         if get_tile_value(tile) == tile_value:
