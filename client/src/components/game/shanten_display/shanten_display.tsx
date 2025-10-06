@@ -21,7 +21,7 @@ export function ShantenDisplay({
         <Tile2DList
           tiles={
             [...tile_values]
-              .sort()
+              .sort((a, b) => a - b)
               .map((tile_value) => tile_value * 10) as TileId[]
           }
         />
