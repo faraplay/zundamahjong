@@ -4,7 +4,7 @@ import { io, Socket } from "socket.io-client";
 import type { ErrorMessage } from "./types/error_message";
 import type { Player } from "./types/player";
 import type { DetailedRoom, BasicRoom } from "./types/room";
-import { RoundStatus, type AllInfo } from "./types/game";
+import { RoundStatus, type AllInfo, type AllServerInfo } from "./types/game";
 import type { EmitFunc } from "./types/emit_func";
 
 import { Emitter } from "./components/emitter/emitter";
@@ -21,6 +21,8 @@ import { GameScreen } from "./components/game/game_screen/game_screen";
 
 import "./fonts.css";
 import "./app.css";
+import { calculate_shanten } from "./shanten";
+import type { TileValue } from "./types/tile";
 
 export function App() {
   const [errors, setErrors] = useState<{
@@ -61,8 +63,23 @@ export function App() {
     socket.current.on("room_info", (room: DetailedRoom | undefined) => {
       setMyRoom(room);
     });
-    socket.current.on("info", (info: AllInfo | undefined) => {
-      setInfo(info);
+    socket.current.on("info", (info: AllServerInfo | undefined) => {
+      if (info) {
+        if (info.player_info.hand.length % 3 == 1) {
+          const tile_values = info.player_info.hand.map(
+            (tile) => Math.trunc(tile / 10) as TileValue,
+          );
+          const shanten_info = calculate_shanten(tile_values);
+          setInfo({
+            ...info,
+            player_info: { ...info.player_info, shanten_info },
+          });
+        } else {
+          setInfo(info);
+        }
+      } else {
+        setInfo(undefined);
+      }
       setActionSubmitted(false);
       if (info && info.round_info.status != RoundStatus.END) {
         setSeeResults(false);

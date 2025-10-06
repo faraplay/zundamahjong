@@ -1,4 +1,4 @@
-import type { TileId } from "./tile.ts";
+import type { TileId, TileValue } from "./tile.ts";
 import type { Call } from "./call.ts";
 import type { Action } from "./action.ts";
 
@@ -64,7 +64,7 @@ export type Scoring = {
   player_scores: number[];
 };
 
-export type AllInfo = {
+export type AllServerInfo = {
   player_count: number;
   player_index: number;
   is_game_end: boolean;
@@ -74,4 +74,8 @@ export type AllInfo = {
   player_info: PlayerInfo;
   win_info: Win | null;
   scoring_info: Scoring | null;
+};
+
+export type AllInfo = AllServerInfo & {
+  player_info: { shanten_info?: [number, Set<TileValue>] };
 };

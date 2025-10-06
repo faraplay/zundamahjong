@@ -1,6 +1,6 @@
 import { avatars, type AvatarIdDict } from "../../../types/avatars";
 import type { Player } from "../../../types/player";
-import type { AllInfo } from "../../../types/game";
+import type { AllServerInfo } from "../../../types/game";
 
 import { WinHand } from "../win_hand/win_hand";
 import { YakuInfo } from "../yaku_info/yaku_info";
@@ -16,7 +16,7 @@ export function WinInfo({
 }: {
   players: ReadonlyArray<Player>;
   playerAvatarIds: AvatarIdDict;
-  info: AllInfo;
+  info: AllServerInfo;
   goToResults: () => void;
 }) {
   let winInfoInner = <></>;

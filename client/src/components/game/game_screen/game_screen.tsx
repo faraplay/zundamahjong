@@ -18,6 +18,7 @@ import { Results } from "../results/results";
 import { setAnimations } from "./animations";
 
 import "./game_screen.css";
+import { ShantenDisplayButton } from "../shanten_display/shanten_display";
 
 export function GameScreen({
   players,
@@ -76,6 +77,11 @@ export function GameScreen({
           <></>
         ) : (
           <ActionMenu actions={info.player_info.actions} />
+        )}
+        {info.player_info.shanten_info ? (
+          <ShantenDisplayButton shanten_info={info.player_info.shanten_info} />
+        ) : (
+          <></>
         )}
         <Table info={info} />
         {winOverlay}
