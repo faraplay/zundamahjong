@@ -288,9 +288,6 @@ class Hand:
         self._waits = None
         self._waits_dict = None
 
-    def can_ron(self, tile: TileId):
-        return is_winning(self._tiles + [tile])
-
     def can_tsumo(self):
         return is_winning(self._tiles)
 

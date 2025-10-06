@@ -6,7 +6,7 @@ from enum import Enum
 
 
 from .exceptions import InvalidMoveException
-from .tile import TileId
+from .tile import TileId, get_tile_value
 from .call import get_call_tiles
 from .action import (
     Action,
@@ -287,7 +287,8 @@ class Round:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
         else:
             actions = ActionList()
-            if hand.can_ron(last_tile):
+            waits = hand.waits
+            if get_tile_value(last_tile) in waits:
                 actions.add_simple_action(ActionType.RON)
         return actions
 
@@ -299,7 +300,8 @@ class Round:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
         else:
             actions = ActionList()
-            if hand.can_ron(last_tile):
+            waits = hand.waits
+            if get_tile_value(last_tile) in waits:
                 actions.add_simple_action(ActionType.RON)
         return actions
 
@@ -314,7 +316,8 @@ class Round:
         if self._current_player != player:
             actions.add_actions(hand.get_pons(last_tile))
             actions.add_actions(hand.get_open_kans(last_tile))
-            if hand.can_ron(last_tile):
+            waits = hand.waits
+            if get_tile_value(last_tile) in waits:
                 actions.add_simple_action(ActionType.RON)
         return actions
 
@@ -326,7 +329,8 @@ class Round:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
         else:
             actions = ActionList()
-            if hand.can_ron(last_tile):
+            waits = hand.waits
+            if get_tile_value(last_tile) in waits:
                 actions.add_simple_action(ActionType.RON)
         return actions
 
