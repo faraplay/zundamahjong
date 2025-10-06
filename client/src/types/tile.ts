@@ -236,6 +236,42 @@ const tile_urls = {
 } as const;
 
 export type TileId = keyof typeof tile_strings;
+export type TileValue =
+  | 0
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 11
+  | 12
+  | 13
+  | 14
+  | 15
+  | 16
+  | 17
+  | 18
+  | 19
+  | 21
+  | 22
+  | 23
+  | 24
+  | 25
+  | 26
+  | 27
+  | 28
+  | 29
+  | 31
+  | 32
+  | 33
+  | 34
+  | 35
+  | 36
+  | 37;
 export type TileString = keyof typeof tile_urls;
 export const TileN = 10;
 

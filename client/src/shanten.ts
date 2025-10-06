@@ -1,4 +1,6 @@
-type Datum = [number, Set<number>];
+import type { TileValue } from "./types/tile";
+
+type Datum = [number, Set<TileValue>];
 
 export function honours_shanten_data(tile_freqs: number[]) {
   const data: [number, number][] = [
@@ -244,10 +246,10 @@ export function suit_shanten_data(tile_freqs: number[]) {
 
 function standard_shanten(tile_freqs: number[], meld_count: number) {
   function flag_to_tiles(flags: number, tile_end_offset: number) {
-    const result: number[] = [];
+    const result: TileValue[] = [];
     while (flags != 0) {
       if (flags % 2 != 0) {
-        result.push(tile_end_offset);
+        result.push(tile_end_offset as TileValue);
       }
       tile_end_offset -= 1;
       flags = Math.trunc(flags / 2);
@@ -315,19 +317,19 @@ function standard_shanten(tile_freqs: number[], meld_count: number) {
 const all_tiles = [
   1, 2, 3, 4, 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 21, 22, 23, 24,
   25, 26, 27, 28, 29, 31, 32, 33, 34, 35, 36, 37,
-];
+] as const;
 
 function seven_pairs_shanten(tile_freqs: number[]): Datum {
-  const tiles2 = new Set<number>();
+  const tiles2 = new Set<TileValue>();
   let tiles2_count = 0;
-  const tiles1 = new Set<number>();
+  const tiles1 = new Set<TileValue>();
   let tiles1_count = 0;
   for (const [tile, freq] of tile_freqs.entries()) {
     if (freq >= 2) {
-      tiles2.add(tile);
+      tiles2.add(tile as TileValue);
       tiles2_count += 1;
     } else if (freq == 1) {
-      tiles1.add(tile);
+      tiles1.add(tile as TileValue);
       tiles1_count += 1;
     }
   }
@@ -346,7 +348,7 @@ function seven_pairs_shanten(tile_freqs: number[]): Datum {
   ];
 }
 
-const orphans = [1, 9, 11, 19, 21, 29, 31, 32, 33, 34, 35, 36, 37];
+const orphans = [1, 9, 11, 19, 21, 29, 31, 32, 33, 34, 35, 36, 37] as const;
 
 function thirteen_orphans_shanten(tile_freqs: number[]): Datum {
   const my_orphans = new Set<number>();
@@ -371,7 +373,7 @@ function thirteen_orphans_shanten(tile_freqs: number[]): Datum {
   return [orphan_count, new Set(orphans)];
 }
 
-export function calculate_shanten(tiles: number[]): Datum {
+export function calculate_shanten(tiles: TileValue[]): Datum {
   const meld_count = Math.trunc((tiles.length - 1) / 3);
 
   const tile_freqs = Array<number>(38).fill(0);
@@ -404,7 +406,7 @@ export function calculate_shanten(tiles: number[]): Datum {
   return [meld_count * 3 + 1 - datum[0], datum[1]];
 }
 
-export function check_tenpai(tiles: number[]): Set<number> {
+export function check_tenpai(tiles: TileValue[]): Set<TileValue> {
   if (tiles.length % 3 != 1) {
     return new Set();
   }
