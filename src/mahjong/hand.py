@@ -41,17 +41,16 @@ class Hand:
         self._tiles: list[TileId] = []
         self._calls: list[Call] = []
         self._flowers: list[TileId] = []
-        self._waits_dict: Optional[dict[TileId, Optional[list[TileValue]]]] = None
+        self._waits: Optional[frozenset[TileValue]] = None
+        self._waits_dict: Optional[dict[TileId, frozenset[TileValue]]] = None
 
     @property
     def tiles(self) -> Sequence[TileId]:
         return self._tiles
 
     @property
-    def all_tiles(self) -> list[TileId]:
-        return self._tiles + [
-            tile for call in self._calls for tile in get_call_tiles(call)
-        ]
+    def open_tiles(self) -> list[TileId]:
+        return [tile for call in self._calls for tile in get_call_tiles(call)]
 
     @property
     def tile_values(self) -> Sequence[TileValue]:
@@ -71,10 +70,12 @@ class Hand:
     def add_to_hand(self, tile_count: int):
         assert tile_count >= 0
         self._tiles.extend(self._deck.pop() for _ in range(tile_count))
+        self._waits = None
         self._waits_dict = None
 
     def draw(self):
         self._tiles.append(self._deck.pop())
+        self._waits = None
         self._waits_dict = None
 
     def _draw_from_back(self):
@@ -89,6 +90,7 @@ class Hand:
     def discard(self, tile: TileId):
         self._tiles.remove(tile)
         self.sort()
+        self._waits = None
         self._waits_dict = None
 
     def get_chiis(self, last_discard: TileId):
@@ -147,6 +149,7 @@ class Hand:
                 other_tiles=other_tiles,
             )
         )
+        self._waits = None
         self._waits_dict = None
 
     def get_pons(self, last_discard: TileId):
@@ -180,6 +183,7 @@ class Hand:
                 other_tiles=other_tiles,
             )
         )
+        self._waits = None
         self._waits_dict = None
 
     def get_open_kans(self, last_discard: TileId):
@@ -216,6 +220,7 @@ class Hand:
         )
         self.sort()
         self._draw_from_back()
+        self._waits = None
         self._waits_dict = None
 
     def get_add_kans(self):
@@ -243,6 +248,7 @@ class Hand:
         )
         self.sort()
         self._draw_from_back()
+        self._waits = None
         self._waits_dict = None
 
     def get_closed_kans(self):
@@ -264,6 +270,7 @@ class Hand:
         self._calls.append(ClosedKanCall(tiles=tiles))
         self.sort()
         self._draw_from_back()
+        self._waits = None
         self._waits_dict = None
 
     def get_flowers(self):
@@ -278,6 +285,7 @@ class Hand:
         self._flowers.append(tile)
         self.sort()
         self._draw_from_back()
+        self._waits = None
         self._waits_dict = None
 
     def can_ron(self, tile: TileId):
@@ -287,28 +295,40 @@ class Hand:
         return is_winning(self._tiles)
 
     @property
+    def waits(self):
+        if self._waits is None:
+            self._waits = self._calculate_waits(self._tiles)
+        return self._waits
+
+    def _calculate_waits(self, closed_tiles):
+        if len(closed_tiles) % 3 != 1:
+            return frozenset()
+        all_tiles_buckets = get_tile_value_buckets(closed_tiles + self.open_tiles)
+        unusable_tile_values = {
+            tileValue
+            for (tileValue, tiles) in all_tiles_buckets.items()
+            if len(tiles) >= 4
+        }
+        waits = get_waits(get_tile_values(closed_tiles))
+        return waits - unusable_tile_values
+
+    @property
     def waits_dict(self):
         if self._waits_dict is None:
             self._waits_dict = self._calculate_waits_dict()
         return self._waits_dict
 
-    def _calculate_waits_dict(self) -> dict[TileId, Optional[list[TileValue]]]:
+    def _calculate_waits_dict(self) -> dict[TileId, frozenset[TileValue]]:
         closed_tiles = self._tiles
         if len(closed_tiles) % 3 == 2:
-            all_tiles_buckets = get_tile_value_buckets(self.all_tiles)
-            unusable_tile_values = {
-                tileValue
-                for (tileValue, tiles) in all_tiles_buckets.items()
-                if len(tiles) >= 4
-            }
-            waits_dict = {}
-            for index, tile in enumerate(closed_tiles):
-                waits = get_waits(
-                    get_tile_values(closed_tiles[:index] + closed_tiles[index + 1 :])
+            return dict(
+                (
+                    tile,
+                    self._calculate_waits(
+                        closed_tiles[:index] + closed_tiles[index + 1 :]
+                    ),
                 )
-                waits_dict[tile] = (
-                    waits - unusable_tile_values if waits is not None else None
-                )
-            return waits_dict
+                for index, tile in enumerate(closed_tiles)
+            )
         else:
-            return dict((tile, None) for tile in closed_tiles)
+            return dict((tile, frozenset()) for tile in closed_tiles)

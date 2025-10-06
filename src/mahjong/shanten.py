@@ -403,9 +403,9 @@ def calculate_shanten(tiles: list[TileValue]):
 
 def get_waits(tiles: list[TileValue]):
     if len(tiles) % 3 != 1:
-        return None
+        return frozenset()
     shanten, waits = calculate_shanten(tiles)
     if shanten == 0:
         return waits
     else:
-        return None
+        return frozenset()
