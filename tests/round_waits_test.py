@@ -50,6 +50,8 @@ class RoundWaitsTest(unittest.TestCase):
             },
         )
 
+
+class RoundWaitsDictKeysTest(unittest.TestCase):
     def check_waits_dict_keys(self, round: Round):
         for hand in round._hands:
             self.assertSetEqual(set(hand.waits_dict.keys()), set(hand._tiles))
