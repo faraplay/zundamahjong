@@ -373,7 +373,8 @@ def calculate_shanten(tiles: list[TileValue]):
 
     tile_freqs = [0] * 38
     for tile in tiles:
-        tile_freqs[tile] += 1
+        if tile < 38:
+            tile_freqs[tile] += 1
 
     def combine_datum(
         datum1: tuple[int, frozenset[TileValue]],
@@ -404,7 +405,7 @@ def calculate_shanten(tiles: list[TileValue]):
 def get_waits(tiles: list[TileValue]):
     if len(tiles) % 3 != 1:
         return frozenset()
-    if any(tile >= 40 for tile in tiles):
+    if any(tile >= 30 for tile in tiles):
         return frozenset()
     shanten, waits = calculate_shanten(tiles)
     if shanten == 0:

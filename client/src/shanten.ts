@@ -376,7 +376,9 @@ export function calculate_shanten(tiles: number[]): Datum {
 
   const tile_freqs = Array<number>(38).fill(0);
   for (const tile of tiles) {
-    tile_freqs[tile] += 1;
+    if (tile < 38) {
+      tile_freqs[tile] += 1;
+    }
   }
 
   function combine_datum(datum1: Datum, datum2: Datum): Datum {
@@ -403,6 +405,12 @@ export function calculate_shanten(tiles: number[]): Datum {
 }
 
 export function check_tenpai(tiles: number[]): Set<number> {
+  if (tiles.length % 3 != 1) {
+    return new Set();
+  }
+  if (tiles.some((tile) => tile >= 38)) {
+    return new Set();
+  }
   const [shanten, waits] = calculate_shanten(tiles);
   if (shanten == 0) {
     return waits;
