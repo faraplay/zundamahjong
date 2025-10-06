@@ -1,5 +1,7 @@
 import unittest
 
+from src.mahjong.deck import Deck
+from src.mahjong.hand import Hand
 from src.mahjong.round import Round
 from src.mahjong.action import (
     ActionType,
@@ -49,6 +51,11 @@ class RoundWaitsTest(unittest.TestCase):
                 212: frozenset(),
             },
         )
+
+    def test_8_tile_wait(self):
+        hand = Hand(Deck(tiles=test_deck1))
+        hand._tiles = [20, 21, 22, 30, 40, 50, 60, 61, 70, 71, 72, 73, 80]
+        self.assertSetEqual(hand.waits, frozenset({1, 2, 3, 4, 5, 6, 8, 9}))
 
 
 class RoundWaitsDictKeysTest(unittest.TestCase):
