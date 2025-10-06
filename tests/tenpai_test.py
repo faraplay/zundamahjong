@@ -5,7 +5,9 @@ from src.mahjong.shanten import get_waits
 
 class TenpaiTest(unittest.TestCase):
     def test_not_tenpai(self):
-        self.assertIsNone(get_waits([1, 2, 4, 5, 6, 13, 14, 14, 15, 15, 16, 31, 32]))
+        self.assertSetEqual(
+            get_waits([1, 2, 4, 5, 6, 13, 14, 14, 15, 15, 16, 31, 32]), frozenset()
+        )
 
     def test_four_of_a_kind(self):
         self.assertSetEqual(
