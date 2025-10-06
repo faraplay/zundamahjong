@@ -1,6 +1,6 @@
 type Datum = [number, Set<number>];
 
-function honours_shanten_data(tile_freqs: number[]) {
+export function honours_shanten_data(tile_freqs: number[]) {
   const data: [number, number][] = [
     [0, 0b0000_000],
     [0, 0b0000_000],
@@ -36,7 +36,6 @@ function honours_shanten_data(tile_freqs: number[]) {
       tile1_count += 1;
       useful_tiles1 |= 0b1000_000 >> current_tile;
     }
-    current_tile += 1;
   }
 
   let meld_count = 0;
@@ -82,7 +81,7 @@ function honours_shanten_data(tile_freqs: number[]) {
   }
 }
 
-function suit_shanten_data(tile_freqs: number[]) {
+export function suit_shanten_data(tile_freqs: number[]) {
   const data: [number, number][] = [
     [0, 0b000_000_000],
     [0, 0b000_000_000],
@@ -163,7 +162,7 @@ function suit_shanten_data(tile_freqs: number[]) {
     }
 
     const freqs_copy = [...unmelded_freqs];
-    for (let current_tile = first_tile; current_tile <= 9; current_tile += 1) {
+    for (let current_tile = first_tile; current_tile < 9; current_tile += 1) {
       if (unmelded_freqs[current_tile] == 0) {
         continue;
       }
@@ -372,7 +371,7 @@ function thirteen_orphans_shanten(tile_freqs: number[]): Datum {
   return [orphan_count, new Set(orphans)];
 }
 
-function calculate_shanten(tiles: number[]): Datum {
+export function calculate_shanten(tiles: number[]): Datum {
   const meld_count = Math.trunc((tiles.length - 1) / 3);
 
   const tile_freqs = Array<number>(38).fill(0);
