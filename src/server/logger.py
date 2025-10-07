@@ -2,7 +2,7 @@ import logging
 import logging.handlers
 
 
-def create_server_logger(name: str):
+def create_server_logger(name: str) -> None:
     logger = logging.getLogger(name)
 
     formatter = logging.Formatter(
@@ -26,7 +26,7 @@ def create_server_logger(name: str):
     logger.addHandler(info_handler)
 
 
-def create_root_logger():
+def create_root_logger() -> None:
     logger = logging.getLogger()
 
     formatter = logging.Formatter(

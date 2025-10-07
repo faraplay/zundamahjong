@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pydantic import BaseModel
 
 
@@ -6,7 +7,7 @@ class Player(BaseModel, frozen=True):
     name: str
 
     @classmethod
-    def from_name(cls, name: str):
+    def from_name(cls, name: str) -> Player:
         return Player(id="player:" + name, name=name)
 
 

@@ -1,4 +1,5 @@
 from threading import Lock
+from typing import Any
 from ..mahjong.action import Action
 from ..mahjong.game_options import GameOptions
 from ..mahjong.round import RoundStatus
@@ -9,19 +10,19 @@ from .player_info import Player
 
 
 class GameController:
-    def __init__(self, players: list[Player], options: GameOptions):
+    def __init__(self, players: list[Player], options: GameOptions) -> None:
         self._players = players
         self._game = Game(options=options)
         self._lock = Lock()
         with self._lock:
             self._emit_info_all_inner(self._game.round.history)
 
-    def emit_info(self, player: Player):
+    def emit_info(self, player: Player) -> None:
         with self._lock:
             index = self._get_player_index(player)
             sio.emit("info", self._info(index, []), to=player.id)
 
-    def submit_action(self, player: Player, action: Action, history_index: int):
+    def submit_action(self, player: Player, action: Action, history_index: int) -> None:
         with self._lock:
             player_index = self._get_player_index(player)
             history_updates = self._game.submit_action(
@@ -30,7 +31,7 @@ class GameController:
             if history_updates is not None and len(history_updates) > 0:
                 self._emit_info_all_inner(history_updates)
 
-    def start_next_round(self, player: Player):
+    def start_next_round(self, player: Player) -> None:
         with self._lock:
             self._get_player_index(player)
             if not self._game.can_start_next_round:
@@ -38,13 +39,13 @@ class GameController:
             self._game.start_next_round()
             self._emit_info_all_inner(self._game.round.history)
 
-    def _get_player_index(self, player: Player):
+    def _get_player_index(self, player: Player) -> int:
         try:
             return self._players.index(player)
         except ValueError:
             raise Exception(f"Player {player.id} not found in this game!")
 
-    def _game_info(self):
+    def _game_info(self) -> dict[str, Any]:
         return {
             "player_names": [player.name for player in self._players],
             "wind_round": self._game.wind_round,
@@ -53,7 +54,7 @@ class GameController:
             "player_scores": self._game.player_scores,
         }
 
-    def _round_info(self):
+    def _round_info(self) -> dict[str, Any]:
         history = [
             {"player_index": action[0], "action": action[1].model_dump()}
             for action in self._game.round.history
@@ -82,7 +83,7 @@ class GameController:
             "history": history,
         }
 
-    def _player_info(self, index: int):
+    def _player_info(self, index: int) -> dict[str, Any]:
         hand = list(self._game.round.get_hand(index))
         if self._game.round.status == RoundStatus.END:
             actions = []
@@ -99,7 +100,9 @@ class GameController:
             "action_selected": action_selected,
         }
 
-    def _info(self, index: int, history_updates: list[tuple[int, Action]]):
+    def _info(
+        self, index: int, history_updates: list[tuple[int, Action]]
+    ) -> dict[str, Any]:
         return {
             "player_count": self._game.player_count,
             "player_index": index,
@@ -120,6 +123,8 @@ class GameController:
             ),
         }
 
-    def _emit_info_all_inner(self, history_updates: list[tuple[int, Action]] = []):
+    def _emit_info_all_inner(
+        self, history_updates: list[tuple[int, Action]] = []
+    ) -> None:
         for index, player in enumerate(self._players):
             sio.emit("info", self._info(index, history_updates), to=player.id)

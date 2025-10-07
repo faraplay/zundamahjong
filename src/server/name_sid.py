@@ -1,4 +1,5 @@
 from threading import Lock
+from typing import Optional
 
 from ..database.security import login
 from .sio import sio
@@ -9,27 +10,25 @@ id_to_sid: dict[str, str] = {}
 player_sid_lock = Lock()
 
 
-def verify_name(name: str):
-    if not isinstance(name, str):
-        raise Exception("Name is not a string!")
+def verify_name(name: str) -> None:
     if len(name) > 20:
         raise Exception("Name is over 20 characters long!")
     if name == "":
         raise Exception("Name cannot be empty!")
 
 
-def get_player(sid: str):
+def get_player(sid: str) -> Player:
     player = sid_to_player.get(sid)
     if player is None:
         raise Exception("Client has no name set!")
     return player
 
 
-def try_get_player(sid: str):
+def try_get_player(sid: str) -> Optional[Player]:
     return sid_to_player.get(sid)
 
 
-def set_player(sid: str, player: Player, password: str):
+def set_player(sid: str, player: Player, password: str) -> None:
     with player_sid_lock:
         if id_to_sid.get(player.id, sid) != sid:
             raise Exception(f"Id {player.id} is already in use!")
@@ -43,7 +42,7 @@ def set_player(sid: str, player: Player, password: str):
         sio.enter_room(sid, player.id)
 
 
-def remove_sid(sid: str):
+def remove_sid(sid: str) -> None:
     with player_sid_lock:
         player = sid_to_player.get(sid, None)
         if player:
