@@ -2,7 +2,7 @@ from collections.abc import Callable
 import logging
 from typing import Any, Optional
 
-from socketio import Server
+from socketio import Server  # type: ignore[import-untyped]
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

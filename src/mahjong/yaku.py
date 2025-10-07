@@ -3,6 +3,7 @@ from collections import Counter
 from collections.abc import Callable
 
 from .tile import (
+    TileValue,
     get_tile_value,
     is_number,
     terminals,
@@ -263,7 +264,7 @@ class YakuCalculator:
             and not self._thirteen_orphans()
         )
 
-    def _yakuhai(self, yaku_tile):
+    def _yakuhai(self, yaku_tile: TileValue):
         return int(
             any(
                 (call.tiles[0] == yaku_tile and call.meld_type != MeldType.PAIR)

@@ -83,7 +83,7 @@ Action = Annotated[
     Field(discriminator="action_type"),
 ]
 
-action_adapter = TypeAdapter(Action)
+action_adapter: TypeAdapter[Action] = TypeAdapter(Action)
 
 
 class ActionList:

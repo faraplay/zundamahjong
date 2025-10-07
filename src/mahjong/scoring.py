@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from .call import Call
+from .meld import Meld
 from .win import Win
 from .yaku import YakuCalculator, yaku_display_names
 from .game_options import GameOptions
@@ -26,7 +26,7 @@ class Scorer:
         player_count = self._options.player_count
         win_player = self._win.win_player
         lose_player = self._win.lose_player
-        han_multiplier = 2 ** min(han_total, 6)
+        han_multiplier: int = 2 ** min(han_total, 6)
         if lose_player is None:
             if win_player == self._win.sub_round:
                 player_pay_in_amount = (
@@ -57,12 +57,12 @@ class Scorer:
                 player_pay_in_amount = (
                     self._options.score_nondealer_ron_base_value * han_multiplier
                 )
-            player_scores = [0] * player_count
+            player_scores = [0.0] * player_count
             player_scores[win_player] = player_pay_in_amount
             player_scores[lose_player] = -player_pay_in_amount
         return player_scores
 
-    def _get_formed_hand_scoring(self, formed_hand: list[Call]):
+    def _get_formed_hand_scoring(self, formed_hand: list[Meld]):
         yaku_mults = YakuCalculator(self._win, formed_hand).get_yaku_mults()
         yaku_values = self._options.yaku_values
         yaku_hans = dict(

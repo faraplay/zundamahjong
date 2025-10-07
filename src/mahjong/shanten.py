@@ -128,7 +128,7 @@ def suit_shanten_data(tile_freqs: list[int]):
         else:
             return 0, 0b111_111_111
 
-    def update_data(data_index, used_tile_count, useful_tiles):
+    def update_data(data_index: int, used_tile_count: int, useful_tiles: int):
         if used_tile_count > data[data_index][0]:
             data[data_index][0] = used_tile_count
             data[data_index][1] = useful_tiles
