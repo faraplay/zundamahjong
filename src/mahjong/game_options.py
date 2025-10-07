@@ -23,5 +23,5 @@ class GameOptions(BaseModel):
     yaku_values: dict[str, int] = default_yaku_han
 
     @property
-    def game_length(self):
+    def game_length(self) -> tuple[int, int]:
         return (self.game_length_wind_rounds, self.game_length_sub_rounds)

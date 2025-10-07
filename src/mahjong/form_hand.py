@@ -4,11 +4,11 @@ from .tile import TileId, TileValue, get_tile_values, orphans, remove_tile_value
 from .meld import MeldType, Meld, TileValueMeld
 
 
-def is_winning(tiles: list[TileId]):
+def is_winning(tiles: list[TileId]) -> bool:
     return len(formed_hand_possibilities(tiles)) > 0
 
 
-def formed_hand_possibilities(tiles: list[TileId]):
+def formed_hand_possibilities(tiles: list[TileId]) -> list[list[Meld]]:
     formed_hands = standard_formed_hand_possibilities(tiles)
     if len(tiles) == 14:
         formed_hands.extend(form_seven_pairs(tiles))
@@ -18,7 +18,7 @@ def formed_hand_possibilities(tiles: list[TileId]):
 
 def reconstruct_formed_hand(
     tiles: Sequence[TileId], tile_value_melds: list[TileValueMeld]
-):
+) -> list[Meld]:
     tiles_copy = list(tiles)
     return [
         Meld(

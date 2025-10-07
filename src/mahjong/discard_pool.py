@@ -12,21 +12,15 @@ class Discard(BaseModel):
 
 
 class DiscardPool:
-    def __init__(self):
+    def __init__(self) -> None:
         self._discards: deque[Discard] = deque()
 
     @property
     def discards(self) -> Sequence[Discard]:
         return self._discards
 
-    def append(self, player: int, tile: TileId):
+    def append(self, player: int, tile: TileId) -> None:
         self._discards.append(Discard(player=player, tile=tile))
 
-    def pop(self):
+    def pop(self) -> Discard:
         return self._discards.pop()
-
-    def peek(self):
-        try:
-            return self._discards[-1]
-        except IndexError:
-            return 0

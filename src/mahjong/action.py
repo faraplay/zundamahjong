@@ -1,6 +1,6 @@
 from enum import IntEnum
-from collections.abc import Iterable, Set
-from typing import Annotated, Literal, Union
+from collections.abc import Iterable
+from typing import Annotated, Literal, Optional, Union
 from pydantic import BaseModel, Field, TypeAdapter
 
 
@@ -89,15 +89,15 @@ action_adapter: TypeAdapter[Action] = TypeAdapter(Action)
 class ActionList:
     def __init__(
         self, default_action: Action = SimpleAction(action_type=ActionType.PASS)
-    ):
+    ) -> None:
         self._actions = [default_action]
 
     @property
-    def default(self):
+    def default(self) -> Action:
         return self._actions[0]
 
     @property
-    def auto(self):
+    def auto(self) -> Optional[Action]:
         if len(self._actions) == 1:
             return self._actions[0]
         else:
@@ -116,8 +116,8 @@ class ActionList:
             ActionType.RON,
             ActionType.TSUMO,
         ],
-    ):
+    ) -> None:
         self._actions.append(SimpleAction(action_type=action_type))
 
-    def add_actions(self, actions: Iterable[Action]):
+    def add_actions(self, actions: Iterable[Action]) -> None:
         self._actions.extend(actions)

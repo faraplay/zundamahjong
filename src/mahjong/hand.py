@@ -36,7 +36,7 @@ from .shanten import get_waits
 
 
 class Hand:
-    def __init__(self, deck: Deck):
+    def __init__(self, deck: Deck) -> None:
         self._deck = deck
         self._tiles: list[TileId] = []
         self._calls: list[Call] = []
@@ -63,33 +63,33 @@ class Hand:
     def flowers(self) -> Sequence[TileId]:
         return self._flowers
 
-    def sort(self):
+    def sort(self) -> None:
         self._tiles.sort()
 
-    def add_to_hand(self, tile_count: int):
+    def add_to_hand(self, tile_count: int) -> None:
         assert tile_count >= 0
         self._tiles.extend(self._deck.pop() for _ in range(tile_count))
         self._waits = None
 
-    def draw(self):
+    def draw(self) -> None:
         self._tiles.append(self._deck.pop())
         self._waits = None
 
-    def _draw_from_back(self):
+    def _draw_from_back(self) -> None:
         self._tiles.append(self._deck.popleft())
 
-    def get_discards(self):
+    def get_discards(self) -> list[Action]:
         return [
             HandTileAction(action_type=ActionType.DISCARD, tile=tile)
             for tile in self._tiles
         ]
 
-    def discard(self, tile: TileId):
+    def discard(self, tile: TileId) -> None:
         self._tiles.remove(tile)
         self.sort()
         self._waits = None
 
-    def get_chiis(self, last_discard: TileId):
+    def get_chiis(self, last_discard: TileId) -> list[Action]:
         discard_value = get_tile_value(last_discard)
         actions: list[Action] = []
         if not is_number(discard_value):
@@ -134,7 +134,7 @@ class Hand:
         called_player_index: int,
         last_discard: TileId,
         other_tiles: tuple[TileId, TileId],
-    ):
+    ) -> None:
         self._tiles.remove(other_tiles[0])
         self._tiles.remove(other_tiles[1])
         self._calls.append(
@@ -147,7 +147,7 @@ class Hand:
         )
         self._waits = None
 
-    def get_pons(self, last_discard: TileId):
+    def get_pons(self, last_discard: TileId) -> list[Action]:
         discard_value = get_tile_value(last_discard)
         actions: list[Action] = []
         same_tiles = [
@@ -167,7 +167,7 @@ class Hand:
         called_player_index: int,
         last_discard: TileId,
         other_tiles: tuple[TileId, TileId],
-    ):
+    ) -> None:
         self._tiles.remove(other_tiles[0])
         self._tiles.remove(other_tiles[1])
         self._calls.append(
@@ -180,7 +180,7 @@ class Hand:
         )
         self._waits = None
 
-    def get_open_kans(self, last_discard: TileId):
+    def get_open_kans(self, last_discard: TileId) -> list[Action]:
         discard_value = get_tile_value(last_discard)
         actions: list[Action] = []
         same_tiles = [
@@ -200,7 +200,7 @@ class Hand:
         called_player_index: int,
         last_discard: TileId,
         other_tiles: tuple[TileId, TileId, TileId],
-    ):
+    ) -> None:
         self._tiles.remove(other_tiles[0])
         self._tiles.remove(other_tiles[1])
         self._tiles.remove(other_tiles[2])
@@ -216,7 +216,7 @@ class Hand:
         self._draw_from_back()
         self._waits = None
 
-    def get_add_kans(self):
+    def get_add_kans(self) -> list[Action]:
         pon_values = dict(
             (get_tile_value(call.called_tile), call)
             for call in self._calls
@@ -230,7 +230,7 @@ class Hand:
                 actions.append(AddKanAction(tile=tile, pon_call=pon_call))
         return actions
 
-    def add_kan(self, tile: TileId, pon_call: OpenCall):
+    def add_kan(self, tile: TileId, pon_call: OpenCall) -> None:
         self._tiles.remove(tile)
         call_index = self._calls.index(pon_call)
         self._calls[call_index] = AddKanCall(
@@ -243,7 +243,7 @@ class Hand:
         self._draw_from_back()
         self._waits = None
 
-    def get_closed_kans(self):
+    def get_closed_kans(self) -> list[Action]:
         actions: list[Action] = []
         tile_value_buckets = get_tile_value_buckets(self._tiles)
         for bucket in tile_value_buckets.values():
@@ -254,7 +254,7 @@ class Hand:
                 )
         return actions
 
-    def closed_kan(self, tiles: tuple[TileId, TileId, TileId, TileId]):
+    def closed_kan(self, tiles: tuple[TileId, TileId, TileId, TileId]) -> None:
         self._tiles.remove(tiles[0])
         self._tiles.remove(tiles[1])
         self._tiles.remove(tiles[2])
@@ -264,30 +264,30 @@ class Hand:
         self._draw_from_back()
         self._waits = None
 
-    def get_flowers(self):
+    def get_flowers(self) -> list[Action]:
         return [
             HandTileAction(action_type=ActionType.FLOWER, tile=tile)
             for tile in self._tiles
             if tile_id_is_flower(tile)
         ]
 
-    def flower(self, tile: TileId):
+    def flower(self, tile: TileId) -> None:
         self._tiles.remove(tile)
         self._flowers.append(tile)
         self.sort()
         self._draw_from_back()
         self._waits = None
 
-    def can_tsumo(self):
+    def can_tsumo(self) -> bool:
         return is_winning(self._tiles)
 
     @property
-    def waits(self):
+    def waits(self) -> frozenset[TileValue]:
         if self._waits is None:
             self._waits = self._calculate_waits(self._tiles)
         return self._waits
 
-    def _calculate_waits(self, closed_tiles):
+    def _calculate_waits(self, closed_tiles: list[TileId]) -> frozenset[TileValue]:
         if len(closed_tiles) % 3 != 1:
             return frozenset()
         all_tiles_buckets = get_tile_value_buckets(closed_tiles + self.open_tiles)

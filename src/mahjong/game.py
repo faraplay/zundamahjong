@@ -28,50 +28,50 @@ class Game:
         self._create_round(first_deck_tiles)
 
     @property
-    def player_count(self):
+    def player_count(self) -> int:
         return self._player_count
 
     @property
-    def wind_round(self):
+    def wind_round(self) -> int:
         return self._wind_round
 
     @property
-    def sub_round(self):
+    def sub_round(self) -> int:
         return self._sub_round
 
     @property
-    def round(self):
+    def round(self) -> Round:
         return self._round
 
     @property
-    def draw_count(self):
+    def draw_count(self) -> int:
         return self._draw_count
 
     @property
-    def player_scores(self):
+    def player_scores(self) -> tuple[float, ...]:
         return tuple(self._player_scores)
 
     @property
-    def win(self):
+    def win(self) -> Optional[Win]:
         return self._win
 
     @property
-    def scoring(self):
+    def scoring(self) -> Optional[Scoring]:
         return self._scoring
 
     @property
-    def can_start_next_round(self):
+    def can_start_next_round(self) -> bool:
         return self._round.status == RoundStatus.END and not self.is_game_end
 
     @property
-    def is_dealer_repeat(self):
+    def is_dealer_repeat(self) -> bool:
         if self._win is None:
             return True
         else:
             return self._win.win_player == self.sub_round
 
     @property
-    def is_game_end(self):
+    def is_game_end(self) -> bool:
         if self._round.status != RoundStatus.END:
             return False
         return (
@@ -79,10 +79,12 @@ class Game:
             and not self.is_dealer_repeat
         )
 
-    def submit_action(self, player_index: int, action: Action, history_index: int):
+    def submit_action(
+        self, player_index: int, action: Action, history_index: int
+    ) -> Optional[list[tuple[int, Action]]]:
         return self._action_selector.submit_action(player_index, action, history_index)
 
-    def start_next_round(self, deck_tiles: Optional[list[int]] = None):
+    def start_next_round(self, deck_tiles: Optional[list[int]] = None) -> None:
         if not self.can_start_next_round:
             raise InvalidOperationException()
         if not self.is_dealer_repeat:
@@ -93,7 +95,7 @@ class Game:
             self._draw_count = 0
         self._create_round(deck_tiles)
 
-    def _next_round(self):
+    def _next_round(self) -> tuple[int, int]:
         next_wind_round = self._wind_round
         next_sub_round = self._sub_round + 1
         if next_sub_round >= self._player_count:
@@ -101,8 +103,8 @@ class Game:
             next_sub_round = 0
         return next_wind_round, next_sub_round
 
-    def _create_round(self, deck_tiles: Optional[list[TileId]]):
-        def on_round_end():
+    def _create_round(self, deck_tiles: Optional[list[TileId]]) -> None:
+        def on_round_end() -> None:
             self._calculate_win_score()
 
         self._round = Round(
@@ -117,12 +119,12 @@ class Game:
         self._scoring = None
         self._action_selector = ActionSelector(self._round)
 
-    def _calculate_win_score(self):
+    def _calculate_win_score(self) -> None:
         self._win = self._round.win_info
         if self._win is None:
             self._scoring = None
         else:
-            scoring = Scorer.score(self._round.win_info, self._options)
+            scoring = Scorer.score(self._win, self._options)
             self._scoring = scoring
             for player in range(self._player_count):
                 self._player_scores[player] += scoring.player_scores[player]
