@@ -4,3 +4,4 @@ python-socketio
 sqlalchemy
 werkzeug
 gunicorn
+mypy
