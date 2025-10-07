@@ -26,7 +26,7 @@ from tests.decks import *
 
 
 class RoundTest(unittest.TestCase):
-    def test_start(self):
+    def test_start(self) -> None:
         round = Round(tiles=test_deck1)
         self.assertEqual(round.current_player, 0)
         self.assertEqual(round.status, RoundStatus.PLAY)
@@ -42,7 +42,7 @@ class RoundTest(unittest.TestCase):
             ],
         )
 
-    def test_fixed_deck_start_hands(self):
+    def test_fixed_deck_start_hands(self) -> None:
         round = Round(tiles=test_deck1)
         self.assertCountEqual(
             round.get_hand(0),
@@ -60,7 +60,7 @@ class RoundTest(unittest.TestCase):
             [120, 121, 122, 123, 140, 141, 142, 143, 160, 161, 162, 163, 173],
         )
 
-    def test_sub_round_start_hands(self):
+    def test_sub_round_start_hands(self) -> None:
         round = Round(tiles=test_deck1, sub_round=1)
         self.assertCountEqual(
             round.get_hand(1),
@@ -78,19 +78,19 @@ class RoundTest(unittest.TestCase):
             [120, 121, 122, 123, 140, 141, 142, 143, 160, 161, 162, 163, 173],
         )
 
-    def test_discard_pool(self):
+    def test_discard_pool(self) -> None:
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=170))
         self.assertSequenceEqual(round.discard_tiles, [170])
 
-    def test_discard_hand(self):
+    def test_discard_hand(self) -> None:
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=170))
         self.assertCountEqual(
             round.get_hand(0), [10, 12, 20, 30, 40, 50, 60, 70, 80, 90, 210, 211, 212]
         )
 
-    def test_draw(self):
+    def test_draw(self) -> None:
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=170))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
@@ -99,7 +99,7 @@ class RoundTest(unittest.TestCase):
             [11, 21, 31, 41, 51, 61, 71, 81, 91, 92, 93, 213, 171, 13],
         )
 
-    def test_chi_a(self):
+    def test_chi_a(self) -> None:
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=50))
         round.do_action(
@@ -123,7 +123,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
         self.assertSequenceEqual(round.discard_tiles, [21])
 
-    def test_chi_b(self):
+    def test_chi_b(self) -> None:
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=50))
         round.do_action(
@@ -146,7 +146,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
         self.assertSequenceEqual(round.discard_tiles, [21])
 
-    def test_chi_c(self):
+    def test_chi_c(self) -> None:
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=50))
         round.do_action(
@@ -169,7 +169,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
         self.assertSequenceEqual(round.discard_tiles, [21])
 
-    def test_pon(self):
+    def test_pon(self) -> None:
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=90))
         round.do_action(
@@ -192,7 +192,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
         self.assertSequenceEqual(round.discard_tiles, [21])
 
-    def test_pon_change_turn(self):
+    def test_pon_change_turn(self) -> None:
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
@@ -217,7 +217,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=20))
         self.assertSequenceEqual(round.discard_tiles, [10, 20])
 
-    def test_open_kan(self):
+    def test_open_kan(self) -> None:
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=90))
         round.do_action(1, OpenKanAction(other_tiles=(91, 92, 93)))
@@ -237,7 +237,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
         self.assertSequenceEqual(round.discard_tiles, [21])
 
-    def test_open_kan_change_turn(self):
+    def test_open_kan_change_turn(self) -> None:
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
@@ -259,7 +259,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=20))
         self.assertSequenceEqual(round.discard_tiles, [10, 20])
 
-    def test_add_kan(self):
+    def test_add_kan(self) -> None:
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=90))
         round.do_action(
@@ -301,7 +301,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
         self.assertSequenceEqual(round.discard_tiles, [10, 21])
 
-    def test_closed_kan(self):
+    def test_closed_kan(self) -> None:
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
@@ -319,7 +319,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         self.assertSequenceEqual(round.discard_tiles, [10, 21, 130])
 
-    def test_deck_2_start_hands(self):
+    def test_deck_2_start_hands(self) -> None:
         round = Round(tiles=test_deck2)
         self.assertCountEqual(
             round.get_hand(0),
@@ -340,7 +340,7 @@ class RoundTest(unittest.TestCase):
             round.get_hand(3), [30, 31, 32, 33, 60, 61, 62, 63, 80, 81, 82, 83, 90]
         )
 
-    def test_history(self):
+    def test_history(self) -> None:
         round = Round(tiles=test_deck1)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=90))
         round.do_action(
@@ -397,12 +397,13 @@ class RoundTest(unittest.TestCase):
             ],
         )
 
-    def test_ron(self):
+    def test_ron(self) -> None:
         round = Round(tiles=test_deck2)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         round.do_action(2, SimpleAction(action_type=ActionType.RON))
         self.assertEqual(round.status, RoundStatus.END)
         win_info = round.win_info
+        assert win_info is not None
         self.assertEqual(win_info.win_player, 2)
         self.assertEqual(win_info.lose_player, 0)
         self.assertCountEqual(
@@ -411,7 +412,7 @@ class RoundTest(unittest.TestCase):
         )
         self.assertCountEqual(win_info.calls, [])
 
-    def test_tsumo(self):
+    def test_tsumo(self) -> None:
         round = Round(tiles=test_deck2)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
@@ -420,6 +421,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(2, SimpleAction(action_type=ActionType.TSUMO))
         self.assertEqual(round.status, RoundStatus.END)
         win_info = round.win_info
+        assert win_info is not None
         self.assertEqual(win_info.win_player, 2)
         self.assertEqual(win_info.lose_player, None)
         self.assertCountEqual(
@@ -428,7 +430,7 @@ class RoundTest(unittest.TestCase):
         )
         self.assertCountEqual(win_info.calls, [])
 
-    def test_chankan(self):
+    def test_chankan(self) -> None:
         round = Round(tiles=test_deck2)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         round.do_action(
@@ -453,6 +455,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(2, SimpleAction(action_type=ActionType.RON))
         self.assertEqual(round.status, RoundStatus.END)
         win_info = round.win_info
+        assert win_info is not None
         self.assertEqual(win_info.win_player, 2)
         self.assertEqual(win_info.lose_player, 1)
         self.assertCountEqual(
@@ -462,7 +465,7 @@ class RoundTest(unittest.TestCase):
         self.assertCountEqual(win_info.calls, [])
         self.assertTrue(win_info.is_chankan)
 
-    def test_auto_flower_history(self):
+    def test_auto_flower_history(self) -> None:
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=True))
         self.assertSequenceEqual(
             round.history,
@@ -483,7 +486,7 @@ class RoundTest(unittest.TestCase):
             ],
         )
 
-    def test_sub_round_auto_flower_history(self):
+    def test_sub_round_auto_flower_history(self) -> None:
         round = Round(
             tiles=test_deck3,
             sub_round=1,
@@ -508,7 +511,7 @@ class RoundTest(unittest.TestCase):
             ],
         )
 
-    def test_auto_flower_one_person_draw_flower(self):
+    def test_auto_flower_one_person_draw_flower(self) -> None:
         round = Round(tiles=test_deck5, options=GameOptions(auto_replace_flowers=True))
         self.assertSequenceEqual(
             round.history,
@@ -527,23 +530,23 @@ class RoundTest(unittest.TestCase):
             ],
         )
 
-    def test_manual_flower_start(self):
+    def test_manual_flower_start(self) -> None:
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         self.assertEqual(round.status, RoundStatus.START)
 
-    def test_start_flower_call(self):
+    def test_start_flower_call(self) -> None:
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=410))
         self.assertCountEqual(round.get_flowers(0), [410])
 
-    def test_start_flower_calls(self):
+    def test_start_flower_calls(self) -> None:
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=410))
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=430))
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=440))
         self.assertCountEqual(round.get_flowers(0), [410, 430, 440])
 
-    def test_start_flower_next_player(self):
+    def test_start_flower_next_player(self) -> None:
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=410))
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=430))
@@ -555,7 +558,7 @@ class RoundTest(unittest.TestCase):
         )
         self.assertCountEqual(round.get_flowers(1), [420])
 
-    def test_start_flower_pass_all(self):
+    def test_start_flower_pass_all(self) -> None:
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=410))
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=430))
@@ -570,7 +573,7 @@ class RoundTest(unittest.TestCase):
         self.assertEqual(round.current_player, 0)
         self.assertEqual(round.status, RoundStatus.PLAY)
 
-    def test_start_flower_loop_pass_all(self):
+    def test_start_flower_loop_pass_all(self) -> None:
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=410))
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=430))
@@ -588,7 +591,7 @@ class RoundTest(unittest.TestCase):
         self.assertEqual(round.current_player, 0)
         self.assertEqual(round.status, RoundStatus.PLAY)
 
-    def test_draw_flower(self):
+    def test_draw_flower(self) -> None:
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=410))
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=430))
@@ -614,7 +617,7 @@ class RoundTest(unittest.TestCase):
             [30, 31, 32, 33, 70, 71, 72, 73, 130, 131, 132, 133, 90, 460],
         )
 
-    def test_priority(self):
+    def test_priority(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         actions: list[Optional[Action]] = [
@@ -623,11 +626,13 @@ class RoundTest(unittest.TestCase):
             OpenCallAction(action_type=ActionType.PON, other_tiles=(131, 132)),
             SimpleAction(action_type=ActionType.RON),
         ]
-        player, action = round.get_priority_action(actions)
+        playeraction = round.get_priority_action(actions)
+        assert playeraction is not None
+        player, action = playeraction
         self.assertEqual(player, 3)
         self.assertEqual(action, SimpleAction(action_type=ActionType.RON))
 
-    def test_priority_with_none(self):
+    def test_priority_with_none(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         actions: list[Optional[Action]] = [
@@ -636,11 +641,13 @@ class RoundTest(unittest.TestCase):
             OpenCallAction(action_type=ActionType.PON, other_tiles=(131, 132)),
             SimpleAction(action_type=ActionType.RON),
         ]
-        player, action = round.get_priority_action(actions)
+        playeraction = round.get_priority_action(actions)
+        assert playeraction is not None
+        player, action = playeraction
         self.assertEqual(player, 3)
         self.assertEqual(action, SimpleAction(action_type=ActionType.RON))
 
-    def test_priority_strong_call_and_none(self):
+    def test_priority_strong_call_and_none(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         actions: list[Optional[Action]] = [
@@ -649,11 +656,13 @@ class RoundTest(unittest.TestCase):
             None,
             SimpleAction(action_type=ActionType.RON),
         ]
-        player, action = round.get_priority_action(actions)
+        playeraction = round.get_priority_action(actions)
+        assert playeraction is not None
+        player, action = playeraction
         self.assertEqual(player, 3)
         self.assertEqual(action, SimpleAction(action_type=ActionType.RON))
 
-    def test_priority_weak_call_and_none(self):
+    def test_priority_weak_call_and_none(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         actions: list[Optional[Action]] = [
@@ -665,7 +674,7 @@ class RoundTest(unittest.TestCase):
         playeraction = round.get_priority_action(actions)
         self.assertEqual(playeraction, None)
 
-    def test_priority_no_choice_all_none(self):
+    def test_priority_no_choice_all_none(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
         actions: list[Optional[Action]] = [
@@ -674,11 +683,13 @@ class RoundTest(unittest.TestCase):
             None,
             None,
         ]
-        player, action = round.get_priority_action(actions)
+        playeraction = round.get_priority_action(actions)
+        assert playeraction is not None
+        player, action = playeraction
         self.assertEqual(player, 1)
         self.assertEqual(action, SimpleAction(action_type=ActionType.DRAW))
 
-    def test_priority_bad_action(self):
+    def test_priority_bad_action(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         actions: list[Optional[Action]] = [
@@ -687,13 +698,15 @@ class RoundTest(unittest.TestCase):
             SimpleAction(action_type=ActionType.RON),
             SimpleAction(action_type=ActionType.PASS),
         ]
-        player, action = round.get_priority_action(actions)
+        playeraction = round.get_priority_action(actions)
+        assert playeraction is not None
+        player, action = playeraction
         self.assertEqual(player, 1)
         self.assertEqual(
             action, OpenCallAction(action_type=ActionType.CHII, other_tiles=(110, 120))
         )
 
-    def test_priority_bad_action_and_none(self):
+    def test_priority_bad_action_and_none(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         actions: list[Optional[Action]] = [
@@ -702,13 +715,15 @@ class RoundTest(unittest.TestCase):
             OpenCallAction(action_type=ActionType.PON, other_tiles=(131, 132)),
             OpenKanAction(other_tiles=(131, 132, 133)),
         ]
-        player, action = round.get_priority_action(actions)
+        playeraction = round.get_priority_action(actions)
+        assert playeraction is not None
+        player, action = playeraction
         self.assertEqual(player, 2)
         self.assertEqual(
             action, OpenCallAction(action_type=ActionType.PON, other_tiles=(131, 132))
         )
 
-    def test_priority_current_player(self):
+    def test_priority_current_player(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
@@ -719,53 +734,62 @@ class RoundTest(unittest.TestCase):
             SimpleAction(action_type=ActionType.PASS),
             SimpleAction(action_type=ActionType.PASS),
         ]
-        player, action = round.get_priority_action(actions)
+        playeraction = round.get_priority_action(actions)
+        assert playeraction is not None
+        player, action = playeraction
         self.assertEqual(player, 1)
         self.assertEqual(action, SimpleAction(action_type=ActionType.CONTINUE))
 
-    def test_use_all_tiles(self):
+    def test_use_all_tiles(self) -> None:
         round = Round(tiles=test_deck4, options=GameOptions(end_wall_count=14))
         while round.status != RoundStatus.END:
             actions = [action_set.default for action_set in round.allowed_actions]
-            player, action = round.get_priority_action(actions)
+            playeraction = round.get_priority_action(actions)
+            assert playeraction is not None
+            player, action = playeraction
             round.do_action(player, action)
         self.assertEqual(round.wall_count, 14)
         self.assertIsNone(round.win_info)
 
-    def test_haitei(self):
+    def test_haitei(self) -> None:
         round = Round(tiles=test_deck_haitei, options=GameOptions(end_wall_count=14))
         while round.wall_count > 14:
             actions = [action_set.default for action_set in round.allowed_actions]
-            player, action = round.get_priority_action(actions)
+            playeraction = round.get_priority_action(actions)
+            assert playeraction is not None
+            player, action = playeraction
             round.do_action(player, action)
         self.assertEqual(round.current_player, 1)
         self.assertEqual(round.status, RoundStatus.PLAY)
         round.do_action(1, SimpleAction(action_type=ActionType.TSUMO))
-        self.assertIsNotNone(round.win_info)
+        assert round.win_info is not None
         self.assertTrue(round.win_info.is_haitei)
 
-    def test_houtei(self):
+    def test_houtei(self) -> None:
         round = Round(tiles=test_deck4, options=GameOptions(end_wall_count=14))
         round.do_action(0, ClosedKanAction(tiles=(40, 41, 42, 43)))
         while round.wall_count > 14:
             actions = [action_set.default for action_set in round.allowed_actions]
-            player, action = round.get_priority_action(actions)
+            playeraction = round.get_priority_action(actions)
+            assert playeraction is not None
+            player, action = playeraction
             round.do_action(player, action)
         self.assertEqual(round.current_player, 0)
         self.assertEqual(round.status, RoundStatus.PLAY)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         self.assertEqual(round.status, RoundStatus.LAST_DISCARDED)
         round.do_action(3, SimpleAction(action_type=ActionType.RON))
-        self.assertIsNotNone(round.win_info)
+        assert round.win_info is not None
         self.assertTrue(round.win_info.is_houtei)
 
-    def test_after_flower(self):
+    def test_after_flower(self) -> None:
         round = Round(tiles=test_deck_rinshan)
         round.do_action(0, SimpleAction(action_type=ActionType.TSUMO))
-        win = round.win_info
-        self.assertEqual(win.after_flower_count, 5)
+        win_info = round.win_info
+        assert win_info is not None
+        self.assertEqual(win_info.after_flower_count, 5)
 
-    def test_after_flower_and_kan(self):
+    def test_after_flower_and_kan(self) -> None:
         round = Round(tiles=test_deck_rinshan)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=110))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
@@ -773,39 +797,45 @@ class RoundTest(unittest.TestCase):
         round.do_action(1, SimpleAction(action_type=ActionType.CONTINUE))
         round.do_action(1, HandTileAction(action_type=ActionType.FLOWER, tile=480))
         round.do_action(1, SimpleAction(action_type=ActionType.TSUMO))
-        win = round.win_info
-        self.assertEqual(win.after_flower_count, 1)
-        self.assertEqual(win.after_kan_count, 1)
+        win_info = round.win_info
+        assert win_info is not None
+        self.assertEqual(win_info.after_flower_count, 1)
+        self.assertEqual(win_info.after_kan_count, 1)
 
-    def test_tenhou(self):
+    def test_tenhou(self) -> None:
         round = Round(tiles=test_deck_kan_tenhou)
         round.do_action(0, SimpleAction(action_type=ActionType.TSUMO))
+        assert round.win_info is not None
         self.assertTrue(round.win_info.is_tenhou)
 
-    def test_sub_round_tenhou(self):
+    def test_sub_round_tenhou(self) -> None:
         round = Round(tiles=test_deck_kan_tenhou, sub_round=1)
         round.do_action(1, SimpleAction(action_type=ActionType.TSUMO))
+        assert round.win_info is not None
         self.assertTrue(round.win_info.is_tenhou)
 
-    def test_not_tenhou_after_call(self):
+    def test_not_tenhou_after_call(self) -> None:
         round = Round(tiles=test_deck_kan_tenhou)
         round.do_action(0, ClosedKanAction(tiles=(160, 161, 162, 163)))
         round.do_action(0, SimpleAction(action_type=ActionType.CONTINUE))
         round.do_action(0, SimpleAction(action_type=ActionType.TSUMO))
+        assert round.win_info is not None
         self.assertFalse(round.win_info.is_tenhou)
 
-    def test_chiihou(self):
+    def test_chiihou(self) -> None:
         round = Round(tiles=test_deck_kan_tenhou)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=110))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
         round.do_action(1, SimpleAction(action_type=ActionType.TSUMO))
+        assert round.win_info is not None
         self.assertTrue(round.win_info.is_chiihou)
 
-    def test_not_chiihou_after_call(self):
+    def test_not_chiihou_after_call(self) -> None:
         round = Round(tiles=test_deck_kan_tenhou)
         round.do_action(0, ClosedKanAction(tiles=(160, 161, 162, 163)))
         round.do_action(0, SimpleAction(action_type=ActionType.CONTINUE))
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=110))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
         round.do_action(1, SimpleAction(action_type=ActionType.TSUMO))
+        assert round.win_info is not None
         self.assertFalse(round.win_info.is_chiihou)

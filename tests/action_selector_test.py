@@ -14,7 +14,7 @@ from tests.decks import *
 
 
 class ActionSelectorTest(unittest.TestCase):
-    def test_submit_only_action(self):
+    def test_submit_only_action(self) -> None:
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         history_updates = action_selector.submit_action(
@@ -22,6 +22,7 @@ class ActionSelectorTest(unittest.TestCase):
             HandTileAction(action_type=ActionType.DISCARD, tile=130),
             len(round.history),
         )
+        assert history_updates is not None
         self.assertSequenceEqual(
             history_updates,
             [(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))],
@@ -29,7 +30,7 @@ class ActionSelectorTest(unittest.TestCase):
         self.assertEqual(round.current_player, 0)
         self.assertEqual(round.status, RoundStatus.DISCARDED)
 
-    def test_submit_low_to_high_action(self):
+    def test_submit_low_to_high_action(self) -> None:
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         action_selector.submit_action(
@@ -40,27 +41,31 @@ class ActionSelectorTest(unittest.TestCase):
         history_updates = action_selector.submit_action(
             0, SimpleAction(action_type=ActionType.PASS), len(round.history)
         )
+        assert history_updates is not None
         self.assertSequenceEqual(history_updates, [])
         history_updates = action_selector.submit_action(
             1,
             OpenCallAction(action_type=ActionType.CHII, other_tiles=(110, 120)),
             len(round.history),
         )
+        assert history_updates is not None
         self.assertSequenceEqual(history_updates, [])
         history_updates = action_selector.submit_action(
             2,
             OpenCallAction(action_type=ActionType.PON, other_tiles=(131, 132)),
             len(round.history),
         )
+        assert history_updates is not None
         self.assertSequenceEqual(history_updates, [])
         history_updates = action_selector.submit_action(
             3, SimpleAction(action_type=ActionType.RON), len(round.history)
         )
+        assert history_updates is not None
         self.assertSequenceEqual(
             history_updates, [(3, SimpleAction(action_type=ActionType.RON))]
         )
 
-    def test_submit_high_action(self):
+    def test_submit_high_action(self) -> None:
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         action_selector.submit_action(
@@ -71,11 +76,12 @@ class ActionSelectorTest(unittest.TestCase):
         history_updates = action_selector.submit_action(
             3, SimpleAction(action_type=ActionType.RON), len(round.history)
         )
+        assert history_updates is not None
         self.assertSequenceEqual(
             history_updates, [(3, SimpleAction(action_type=ActionType.RON))]
         )
 
-    def test_do_auto_draw(self):
+    def test_do_auto_draw(self) -> None:
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         history_updates = action_selector.submit_action(
@@ -83,6 +89,7 @@ class ActionSelectorTest(unittest.TestCase):
             HandTileAction(action_type=ActionType.DISCARD, tile=10),
             len(round.history),
         )
+        assert history_updates is not None
         self.assertSequenceEqual(
             history_updates,
             [
@@ -91,7 +98,7 @@ class ActionSelectorTest(unittest.TestCase):
             ],
         )
 
-    def test_submit_bad_action(self):
+    def test_submit_bad_action(self) -> None:
         round = Round(tiles=test_deck4)
         action_selector = ActionSelector(round)
         action_selector.submit_action(
@@ -102,22 +109,25 @@ class ActionSelectorTest(unittest.TestCase):
         history_updates = action_selector.submit_action(
             3, SimpleAction(action_type=ActionType.PASS), len(round.history)
         )
+        assert history_updates is not None
         self.assertSequenceEqual(history_updates, [])
         history_updates = action_selector.submit_action(
             1,
             OpenCallAction(action_type=ActionType.CHII, other_tiles=(110, 120)),
             len(round.history),
         )
+        assert history_updates is not None
         self.assertSequenceEqual(history_updates, [])
         history_updates = action_selector.submit_action(
             2, SimpleAction(action_type=ActionType.RON), len(round.history)
         )
+        assert history_updates is not None
         self.assertSequenceEqual(
             history_updates,
             [(1, OpenCallAction(action_type=ActionType.CHII, other_tiles=(110, 120)))],
         )
 
-    def test_do_auto_continue(self):
+    def test_do_auto_continue(self) -> None:
         round = Round(tiles=test_deck_one_discard_option)
         action_selector = ActionSelector(round)
         history_updates = action_selector.submit_action(
@@ -125,6 +135,7 @@ class ActionSelectorTest(unittest.TestCase):
             ClosedKanAction(tiles=(110, 111, 112, 113)),
             len(round.history),
         )
+        assert history_updates is not None
         self.assertSequenceEqual(
             history_updates,
             [
@@ -133,7 +144,7 @@ class ActionSelectorTest(unittest.TestCase):
             ],
         )
 
-    def test_do_not_auto_discard(self):
+    def test_do_not_auto_discard(self) -> None:
         round = Round(tiles=test_deck_one_discard_option)
         action_selector = ActionSelector(round)
         action_selector.submit_action(
@@ -166,6 +177,7 @@ class ActionSelectorTest(unittest.TestCase):
             OpenCallAction(action_type=ActionType.PON, other_tiles=(141, 142)),
             len(round.history),
         )
+        assert history_updates is not None
         self.assertSequenceEqual(
             history_updates,
             [(0, OpenCallAction(action_type=ActionType.PON, other_tiles=(141, 142)))],

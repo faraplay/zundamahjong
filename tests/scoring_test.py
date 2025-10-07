@@ -1,16 +1,15 @@
 import unittest
 
-from src.mahjong.call import Call, CallType
-from src.mahjong.yaku import Win
+from src.mahjong.win import Win
 from src.mahjong.game_options import GameOptions
 from src.mahjong.scoring import Scorer
 
 
 class ScoringTest(unittest.TestCase):
-    def get_player_scores(self, win: Win):
+    def get_player_scores(self, win: Win) -> list[float]:
         return Scorer.score(win, GameOptions()).player_scores
 
-    def test_dealer_ron(self):
+    def test_dealer_ron(self) -> None:
         win = Win(
             win_player=0,
             lose_player=1,
@@ -24,7 +23,7 @@ class ScoringTest(unittest.TestCase):
         player_scores = self.get_player_scores(win)
         self.assertSequenceEqual(player_scores, [12.0, -12.0, 0.0, 0.0])
 
-    def test_dealer_tsumo(self):
+    def test_dealer_tsumo(self) -> None:
         win = Win(
             win_player=0,
             lose_player=None,
@@ -38,7 +37,7 @@ class ScoringTest(unittest.TestCase):
         player_scores = self.get_player_scores(win)
         self.assertSequenceEqual(player_scores, [24.0, -8.0, -8.0, -8.0])
 
-    def test_nondealer_ron(self):
+    def test_nondealer_ron(self) -> None:
         win = Win(
             win_player=2,
             lose_player=1,
@@ -52,7 +51,7 @@ class ScoringTest(unittest.TestCase):
         player_scores = self.get_player_scores(win)
         self.assertSequenceEqual(player_scores, [0.0, -8.0, 8.0, 0.0])
 
-    def test_nondealer_tsumo(self):
+    def test_nondealer_tsumo(self) -> None:
         win = Win(
             win_player=2,
             lose_player=None,
@@ -66,7 +65,7 @@ class ScoringTest(unittest.TestCase):
         player_scores = self.get_player_scores(win)
         self.assertSequenceEqual(player_scores, [-8.0, -4.0, 16.0, -4.0])
 
-    def test_sub_round_dealer_tsumo(self):
+    def test_sub_round_dealer_tsumo(self) -> None:
         win = Win(
             win_player=1,
             lose_player=None,
@@ -80,7 +79,7 @@ class ScoringTest(unittest.TestCase):
         player_scores = self.get_player_scores(win)
         self.assertSequenceEqual(player_scores, [-8.0, 24.0, -8.0, -8.0])
 
-    def test_sub_round_nondealer_ron(self):
+    def test_sub_round_nondealer_ron(self) -> None:
         win = Win(
             win_player=0,
             lose_player=1,

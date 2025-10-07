@@ -4,7 +4,9 @@ from src.mahjong.tile import TileId
 from src.mahjong.deck import four_player_deck
 
 
-def fill_missing_tiles(deck_front: list[TileId], deck_back: list[TileId]):
+def fill_missing_tiles(
+    deck_front: list[TileId], deck_back: list[TileId]
+) -> list[TileId]:
     count_deck = Counter(four_player_deck)
     count_deck.subtract(deck_front)
     count_deck.subtract(deck_back)

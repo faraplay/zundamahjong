@@ -8,7 +8,7 @@ from src.mahjong.shanten import (
 
 
 class ShantenTest(unittest.TestCase):
-    def test_honours_shanten_1(self):
+    def test_honours_shanten_1(self) -> None:
         data = honours_shanten_data([1, 0, 0, 0, 0, 0, 0])
         self.assertEqual(
             data,
@@ -26,7 +26,7 @@ class ShantenTest(unittest.TestCase):
             ],
         )
 
-    def test_honours_shanten_112(self):
+    def test_honours_shanten_112(self) -> None:
         data = honours_shanten_data([2, 1, 0, 0, 0, 0, 0])
         self.assertEqual(
             data,
@@ -44,7 +44,7 @@ class ShantenTest(unittest.TestCase):
             ],
         )
 
-    def test_honours_shanten_11123(self):
+    def test_honours_shanten_11123(self) -> None:
         data = honours_shanten_data([3, 1, 1, 0, 0, 0, 0])
         self.assertEqual(
             data,
@@ -62,7 +62,7 @@ class ShantenTest(unittest.TestCase):
             ],
         )
 
-    def test_honours_shanten_112234(self):
+    def test_honours_shanten_112234(self) -> None:
         data = honours_shanten_data([2, 2, 1, 1, 0, 0, 0])
         self.assertEqual(
             data,
@@ -80,7 +80,7 @@ class ShantenTest(unittest.TestCase):
             ],
         )
 
-    def test_honours_shanten_11112234(self):
+    def test_honours_shanten_11112234(self) -> None:
         data = honours_shanten_data([4, 2, 1, 1, 0, 0, 0])
         self.assertEqual(
             data,
@@ -98,7 +98,7 @@ class ShantenTest(unittest.TestCase):
             ],
         )
 
-    def test_suit_shanten_1(self):
+    def test_suit_shanten_1(self) -> None:
         data = suit_shanten_data([1, 0, 0, 0, 0, 0, 0, 0, 0])
         self.assertEqual(
             data,
@@ -116,7 +116,7 @@ class ShantenTest(unittest.TestCase):
             ],
         )
 
-    def test_suit_shanten_5(self):
+    def test_suit_shanten_5(self) -> None:
         data = suit_shanten_data([0, 0, 0, 0, 1, 0, 0, 0, 0])
         self.assertEqual(
             data,
@@ -134,7 +134,7 @@ class ShantenTest(unittest.TestCase):
             ],
         )
 
-    def test_suit_shanten_34(self):
+    def test_suit_shanten_34(self) -> None:
         data = suit_shanten_data([0, 0, 1, 1, 0, 0, 0, 0, 0])
         self.assertEqual(
             data,
@@ -152,7 +152,7 @@ class ShantenTest(unittest.TestCase):
             ],
         )
 
-    def test_suit_shanten_2344(self):
+    def test_suit_shanten_2344(self) -> None:
         data = suit_shanten_data([0, 1, 1, 2, 0, 0, 0, 0, 0])
         self.assertEqual(
             data,
@@ -170,7 +170,7 @@ class ShantenTest(unittest.TestCase):
             ],
         )
 
-    def test_suit_shanten_233444556(self):
+    def test_suit_shanten_233444556(self) -> None:
         data = suit_shanten_data([0, 1, 2, 3, 2, 1, 0, 0, 0])
         self.assertEqual(
             data,
@@ -188,23 +188,23 @@ class ShantenTest(unittest.TestCase):
             ],
         )
 
-    def test_suit_shanten_times_1000(self):
+    def test_suit_shanten_times_1000(self) -> None:
         for _ in range(1000):
             suit_shanten_data([0, 1, 2, 3, 2, 1, 0, 0, 0])
 
-    def test_suit_shanten_long_times_1000(self):
+    def test_suit_shanten_long_times_1000(self) -> None:
         for _ in range(1000):
             suit_shanten_data([0, 1, 2, 3, 2, 4, 3, 1, 3])
 
-    def test_suit_shanten_all(self):
-        def hand_from_code(hand_code):
+    def test_suit_shanten_all(self) -> None:
+        def hand_from_code(hand_code: int) -> list[int]:
             hand = []
             for _ in range(9):
                 hand.append(hand_code % 5)
                 hand_code //= 5
             return hand
 
-        def code_from_hand(hand):
+        def code_from_hand(hand: list[int]) -> int:
             return sum(count * 5**tile for tile, count in enumerate(hand))
 
         limit = 5**6
@@ -236,33 +236,33 @@ class ShantenTest(unittest.TestCase):
                             f"hand is {hand_from_code(hand_code)}, tile is {tile}, k is {k}",
                         )
 
-    def test_shanten_1shanten_small(self):
+    def test_shanten_1shanten_small(self) -> None:
         shanten, useful_tiles = calculate_shanten([2, 3, 15, 32])
         self.assertEqual(shanten, 1)
         self.assertSetEqual(useful_tiles, {1, 4, 15, 32})
 
-    def test_shanten_1shanten(self):
+    def test_shanten_1shanten(self) -> None:
         shanten, useful_tiles = calculate_shanten(
             [5, 6, 7, 8, 9, 17, 18, 19, 23, 24, 29, 29, 29]
         )
         self.assertEqual(shanten, 1)
         self.assertSetEqual(useful_tiles, {4, 5, 6, 7, 8, 9, 22, 23, 24, 25})
 
-    def test_shanten_2shanten(self):
+    def test_shanten_2shanten(self) -> None:
         shanten, useful_tiles = calculate_shanten(
             [7, 8, 12, 14, 18, 18, 23, 24, 24, 26, 27, 27, 28]
         )
         self.assertEqual(shanten, 2)
         self.assertSetEqual(useful_tiles, {6, 9, 13, 18, 22, 24, 25})
 
-    def test_shanten_2shanten_allow7pairs(self):
+    def test_shanten_2shanten_allow7pairs(self) -> None:
         shanten, useful_tiles = calculate_shanten(
             [3, 4, 4, 11, 12, 13, 17, 17, 24, 26, 26, 35, 35]
         )
         self.assertEqual(shanten, 2)
         self.assertSetEqual(useful_tiles, {2, 3, 4, 5, 11, 12, 13, 17, 24, 25, 26, 35})
 
-    def test_shanten_3shanten(self):
+    def test_shanten_3shanten(self) -> None:
         shanten, useful_tiles = calculate_shanten(
             [14, 17, 18, 22, 24, 25, 26, 27, 28, 33, 35, 37, 37]
         )
@@ -272,7 +272,7 @@ class ShantenTest(unittest.TestCase):
             {12, 13, 14, 15, 16, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 33, 35, 37},
         )
 
-    def test_shanten_4shanten_allow7pairs_allow13orphans(self):
+    def test_shanten_4shanten_allow7pairs_allow13orphans(self) -> None:
         shanten, useful_tiles = calculate_shanten(
             [1, 9, 11, 19, 21, 23, 31, 31, 31, 31, 32, 32, 33]
         )
@@ -306,7 +306,7 @@ class ShantenTest(unittest.TestCase):
             },
         )
 
-    def test_shanten_3player(self):
+    def test_shanten_3player(self) -> None:
         shanten, useful_tiles = calculate_shanten([1, 9, 25, 25], is_3player=True)
         self.assertEqual(shanten, 1)
         self.assertSetEqual(
