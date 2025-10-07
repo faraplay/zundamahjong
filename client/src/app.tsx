@@ -22,6 +22,7 @@ import { GameScreen } from "./components/game/game_screen/game_screen";
 
 import "./fonts.css";
 import "./app.css";
+import { GameOptionsContext } from "./components/game_options_context/game_options_context";
 
 export function App() {
   const [errors, setErrors] = useState<{
@@ -148,14 +149,16 @@ function getScreen(
     );
   }
   return (
-    <GameScreen
-      players={myRoom.joined_players}
-      playerAvatarIds={myRoom.avatars}
-      info={info}
-      actionSubmitted={actionSubmitted}
-      setActionSubmitted={() => setActionSubmitted(true)}
-      seeResults={seeResults}
-      goToResults={() => setSeeResults(true)}
-    />
+    <GameOptionsContext.Provider value={myRoom.game_options}>
+      <GameScreen
+        players={myRoom.joined_players}
+        playerAvatarIds={myRoom.avatars}
+        info={info}
+        actionSubmitted={actionSubmitted}
+        setActionSubmitted={() => setActionSubmitted(true)}
+        seeResults={seeResults}
+        goToResults={() => setSeeResults(true)}
+      />
+    </GameOptionsContext.Provider>
   );
 }
