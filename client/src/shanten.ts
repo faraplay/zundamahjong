@@ -1,4 +1,4 @@
-import type { TileValue } from "./types/tile";
+import { tileValueTop, type TileValue } from "./types/tile";
 
 type Datum = [number, Set<TileValue>];
 
@@ -376,9 +376,9 @@ function thirteen_orphans_shanten(tile_freqs: number[]): Datum {
 export function calculate_shanten(tiles: TileValue[]): Datum {
   const meld_count = Math.trunc((tiles.length - 1) / 3);
 
-  const tile_freqs = Array<number>(38).fill(0);
+  const tile_freqs = Array<number>(tileValueTop).fill(0);
   for (const tile of tiles) {
-    if (tile < 38) {
+    if (tile < tileValueTop) {
       tile_freqs[tile] += 1;
     }
   }
@@ -410,7 +410,7 @@ export function check_tenpai(tiles: TileValue[]): Set<TileValue> {
   if (tiles.length % 3 != 1) {
     return new Set();
   }
-  if (tiles.some((tile) => tile >= 38)) {
+  if (tiles.some((tile) => tile >= tileValueTop)) {
     return new Set();
   }
   const [shanten, waits] = calculate_shanten(tiles);

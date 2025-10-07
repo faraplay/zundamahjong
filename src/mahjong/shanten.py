@@ -1,4 +1,4 @@
-from src.mahjong.tile import TileValue, all_tiles, orphans
+from src.mahjong.tile import TileValue, all_tiles, tile_value_top, orphans
 
 
 def honours_shanten_data(tile_freqs: list[int]):
@@ -371,9 +371,9 @@ def calculate_shanten(tiles: list[TileValue]):
     assert len(tiles) % 3 == 1
     meld_count = (len(tiles) - 1) // 3
 
-    tile_freqs = [0] * 38
+    tile_freqs = [0] * tile_value_top
     for tile in tiles:
-        if tile < 38:
+        if tile < tile_value_top:
             tile_freqs[tile] += 1
 
     def combine_datum(
@@ -405,7 +405,7 @@ def calculate_shanten(tiles: list[TileValue]):
 def get_waits(tiles: list[TileValue]):
     if len(tiles) % 3 != 1:
         return frozenset()
-    if any(tile >= 30 for tile in tiles):
+    if any(tile >= tile_value_top for tile in tiles):
         return frozenset()
     shanten, waits = calculate_shanten(tiles)
     if shanten == 0:

@@ -274,6 +274,7 @@ export type TileValue =
   | 37;
 export type TileString = keyof typeof tile_urls;
 export const TileN = 10;
+export const tileValueTop = 38;
 
 export function getTileString(tile: TileId): TileString {
   return tile_strings[tile];

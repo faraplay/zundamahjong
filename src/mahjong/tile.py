@@ -55,6 +55,7 @@ all_tiles = frozenset(
     + [21, 22, 23, 24, 25, 26, 27, 28, 29]
     + [31, 32, 33, 34, 35, 36, 37]
 )
+tile_value_top = 38
 orphans = frozenset({1, 9, 11, 19, 21, 29, 31, 32, 33, 34, 35, 36, 37})
 terminals = frozenset({1, 9, 11, 19, 21, 29})
 winds = frozenset({31, 32, 33, 34})
