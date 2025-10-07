@@ -1,4 +1,4 @@
-from src.mahjong.tile import TileValue, all_tiles, tile_value_top, orphans
+from .tile import TileValue, all_tiles, tile_value_top, orphans
 
 
 def honours_shanten_data(tile_freqs: list[int]):
