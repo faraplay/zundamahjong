@@ -1,4 +1,4 @@
-import { useContext, useLayoutEffect } from "preact/hooks";
+import { useContext, useLayoutEffect, useState } from "preact/hooks";
 
 import type { Player } from "../../../types/player";
 import type { AvatarIdDict } from "../../../types/avatars";
@@ -18,7 +18,11 @@ import { Results } from "../results/results";
 import { setAnimations } from "./animations";
 
 import "./game_screen.css";
-import { ShantenDisplayButton } from "../shanten_display/shanten_display";
+import {
+  ShantenDisplay,
+  ShantenDisplayButton,
+} from "../shanten_display/shanten_display";
+import { type TileId } from "../../../types/tile";
 
 export function GameScreen({
   players,
@@ -37,6 +41,8 @@ export function GameScreen({
   seeResults: boolean;
   goToResults: () => void;
 }) {
+  const [hoverTile, setHoverTile] = useState<TileId | null>(null);
+
   const emit = useContext(Emitter);
   const emit_action = (action: Action) => {
     setActionSubmitted();
@@ -45,6 +51,7 @@ export function GameScreen({
   useLayoutEffect(() => {
     setAnimations(info.history_updates);
   }, [info]);
+
   const winOverlay =
     info.round_info.status != RoundStatus.END ? (
       <></>
@@ -62,6 +69,12 @@ export function GameScreen({
         info={info}
       />
     );
+
+  const discard_shanten_info =
+    info.player_info.discard_shanten_info &&
+    hoverTile &&
+    info.player_info.discard_shanten_info[hoverTile];
+
   return (
     <EmitAction.Provider value={emit_action}>
       <div
@@ -72,6 +85,7 @@ export function GameScreen({
           tiles={info.player_info.hand}
           actions={info.player_info.actions}
           actionSubmitted={actionSubmitted}
+          setHoverTile={setHoverTile}
         />
         {actionSubmitted ? (
           <></>
@@ -80,6 +94,11 @@ export function GameScreen({
         )}
         {info.player_info.shanten_info ? (
           <ShantenDisplayButton shanten_info={info.player_info.shanten_info} />
+        ) : (
+          <></>
+        )}
+        {discard_shanten_info ? (
+          <ShantenDisplay shanten_info={discard_shanten_info} visible />
         ) : (
           <></>
         )}

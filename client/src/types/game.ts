@@ -77,5 +77,8 @@ export type AllServerInfo = {
 };
 
 export type AllInfo = AllServerInfo & {
-  player_info: { shanten_info?: [number, Set<TileValue>] };
+  player_info: {
+    shanten_info?: [number, Set<TileValue>];
+    discard_shanten_info?: { [tile in TileId]?: [number, Set<TileValue>] };
+  };
 };
