@@ -367,7 +367,7 @@ def thirteen_orphans_shanten(tile_freqs: list[int]):
         return (orphan_count, orphans)
 
 
-def calculate_shanten(tiles: list[TileValue]):
+def calculate_shanten(tiles: list[TileValue], is_3player: bool = False):
     assert len(tiles) % 3 == 1
     meld_count = (len(tiles) - 1) // 3
 
@@ -395,6 +395,9 @@ def calculate_shanten(tiles: list[TileValue]):
                 seven_pairs_shanten(tile_freqs), thirteen_orphans_shanten(tile_freqs)
             ),
         )
+
+    if is_3player:
+        datum = (datum[0], datum[1] - {2, 3, 4, 5, 6, 7, 8})
 
     return (
         meld_count * 3 + 1 - datum[0],

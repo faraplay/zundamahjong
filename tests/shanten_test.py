@@ -271,3 +271,45 @@ class ShantenTest(unittest.TestCase):
             useful_tiles,
             {12, 13, 14, 15, 16, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 33, 35, 37},
         )
+
+    def test_shanten_4shanten_allow7pairs_allow13orphans(self):
+        shanten, useful_tiles = calculate_shanten(
+            [1, 9, 11, 19, 21, 23, 31, 31, 31, 31, 32, 32, 33]
+        )
+        self.assertEqual(shanten, 4)
+        self.assertSetEqual(
+            useful_tiles,
+            {
+                1,
+                2,
+                3,
+                7,
+                8,
+                9,
+                11,
+                12,
+                13,
+                17,
+                18,
+                19,
+                21,
+                22,
+                23,
+                29,
+                31,
+                32,
+                33,
+                34,
+                35,
+                36,
+                37,
+            },
+        )
+
+    def test_shanten_3player(self):
+        shanten, useful_tiles = calculate_shanten([1, 9, 25, 25], is_3player=True)
+        self.assertEqual(shanten, 1)
+        self.assertSetEqual(
+            useful_tiles,
+            {1, 9, 25},
+        )

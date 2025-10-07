@@ -206,31 +206,34 @@ test("Test suit_shanten_all", () => {
 }, 60_000);
 
 test("Test shanten_1shanten_small", () => {
-  const [shanten, useful_tiles] = calculate_shanten([2, 3, 15, 32]);
+  const [shanten, useful_tiles] = calculate_shanten([2, 3, 15, 32], false);
   expect(shanten).toEqual(1);
   expect(useful_tiles).toEqual(new Set([1, 4, 15, 32]));
 });
 
 test("Test shanten_1shanten", () => {
-  const [shanten, useful_tiles] = calculate_shanten([
-    5, 6, 7, 8, 9, 17, 18, 19, 23, 24, 29, 29, 29,
-  ]);
+  const [shanten, useful_tiles] = calculate_shanten(
+    [5, 6, 7, 8, 9, 17, 18, 19, 23, 24, 29, 29, 29],
+    false,
+  );
   expect(shanten).toEqual(1);
   expect(useful_tiles).toEqual(new Set([4, 5, 6, 7, 8, 9, 22, 23, 24, 25]));
 });
 
 test("Test shanten_2shanten", () => {
-  const [shanten, useful_tiles] = calculate_shanten([
-    7, 8, 12, 14, 18, 18, 23, 24, 24, 26, 27, 27, 28,
-  ]);
+  const [shanten, useful_tiles] = calculate_shanten(
+    [7, 8, 12, 14, 18, 18, 23, 24, 24, 26, 27, 27, 28],
+    false,
+  );
   expect(shanten).toEqual(2);
   expect(useful_tiles).toEqual(new Set([6, 9, 13, 18, 22, 24, 25]));
 });
 
 test("Test shanten_2shanten_allow7pairs", () => {
-  const [shanten, useful_tiles] = calculate_shanten([
-    3, 4, 4, 11, 12, 13, 17, 17, 24, 26, 26, 35, 35,
-  ]);
+  const [shanten, useful_tiles] = calculate_shanten(
+    [3, 4, 4, 11, 12, 13, 17, 17, 24, 26, 26, 35, 35],
+    false,
+  );
   expect(shanten).toEqual(2);
   expect(useful_tiles).toEqual(
     new Set([2, 3, 4, 5, 11, 12, 13, 17, 24, 25, 26, 35]),
@@ -238,13 +241,34 @@ test("Test shanten_2shanten_allow7pairs", () => {
 });
 
 test("Test shanten_3shanten", () => {
-  const [shanten, useful_tiles] = calculate_shanten([
-    14, 17, 18, 22, 24, 25, 26, 27, 28, 33, 35, 37, 37,
-  ]);
+  const [shanten, useful_tiles] = calculate_shanten(
+    [14, 17, 18, 22, 24, 25, 26, 27, 28, 33, 35, 37, 37],
+    false,
+  );
   expect(shanten).toEqual(3);
   expect(useful_tiles).toEqual(
     new Set([
       12, 13, 14, 15, 16, 19, 21, 22, 23, 24, 25, 26, 27, 28, 29, 33, 35, 37,
     ]),
   );
+});
+
+test("Test shanten_4shanten_allow7pairs_allow13orphans", () => {
+  const [shanten, useful_tiles] = calculate_shanten(
+    [1, 9, 11, 19, 21, 23, 31, 31, 31, 31, 32, 32, 33],
+    false,
+  );
+  expect(shanten).toEqual(4);
+  expect(useful_tiles).toEqual(
+    new Set([
+      1, 2, 3, 7, 8, 9, 11, 12, 13, 17, 18, 19, 21, 22, 23, 29, 31, 32, 33, 34,
+      35, 36, 37,
+    ]),
+  );
+});
+
+test("Test shanten_3player", () => {
+  const [shanten, useful_tiles] = calculate_shanten([1, 9, 25, 25], true);
+  expect(shanten).toEqual(1);
+  expect(useful_tiles).toEqual(new Set([1, 9, 25]));
 });

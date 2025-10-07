@@ -25,13 +25,16 @@ export function processInfo(info: AllServerInfo): AllInfo {
     (tile) => Math.trunc(tile / 10) as TileValue,
   );
   if (info.player_info.hand.length % 3 == 1) {
-    shantenInfo = calculate_shanten(tileValues);
+    shantenInfo = calculate_shanten(tileValues, info.player_count == 3);
   } else if (info.player_info.hand.length % 3 == 2) {
     discardShantenInfo = Object.fromEntries(
       info.player_info.hand.map((tile, index) => {
         const discarded_tile_values = [...tileValues];
         discarded_tile_values.splice(index, 1);
-        return [tile, calculate_shanten(discarded_tile_values)];
+        return [
+          tile,
+          calculate_shanten(discarded_tile_values, info.player_count == 3),
+        ];
       }),
     );
   }

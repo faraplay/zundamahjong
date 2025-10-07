@@ -373,7 +373,10 @@ function thirteen_orphans_shanten(tile_freqs: number[]): Datum {
   return [orphan_count, new Set(orphans)];
 }
 
-export function calculate_shanten(tiles: TileValue[]): Datum {
+export function calculate_shanten(
+  tiles: TileValue[],
+  is_3player: boolean,
+): Datum {
   const meld_count = Math.trunc((tiles.length - 1) / 3);
 
   const tile_freqs = Array<number>(tileValueTop).fill(0);
@@ -403,6 +406,13 @@ export function calculate_shanten(tiles: TileValue[]): Datum {
     );
   }
 
+  if (is_3player) {
+    const removeTiles: TileValue[] = [2, 3, 4, 5, 6, 7, 8] as const;
+    for (const value of removeTiles) {
+      datum[1].delete(value);
+    }
+  }
+
   return [meld_count * 3 + 1 - datum[0], datum[1]];
 }
 
@@ -413,7 +423,7 @@ export function check_tenpai(tiles: TileValue[]): Set<TileValue> {
   if (tiles.some((tile) => tile >= tileValueTop)) {
     return new Set();
   }
-  const [shanten, waits] = calculate_shanten(tiles);
+  const [shanten, waits] = calculate_shanten(tiles, false);
   if (shanten == 0) {
     return waits;
   }
