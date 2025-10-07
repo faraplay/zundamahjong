@@ -1,5 +1,5 @@
 import { useContext } from "preact/hooks";
-import type { AllInfo } from "../../../types/game";
+import type { AllServerInfo } from "../../../types/game";
 
 import "./results.css";
 import { Emitter } from "../../emitter/emitter";
@@ -44,7 +44,7 @@ export function Results({
 }: {
   players: ReadonlyArray<Player>;
   playerAvatarIds: AvatarIdDict;
-  info: AllInfo;
+  info: AllServerInfo;
 }) {
   const emit = useContext(Emitter);
   const player_scores = info.game_info.player_scores;

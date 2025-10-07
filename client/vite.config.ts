@@ -5,7 +5,8 @@ import preact from "@preact/preset-vite";
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), "");
   const debug_server_port = env.DEBUG_SERVER_PORT
-    ? Number(env.DEBUG_SERVER_PORT) : 5000;
+    ? Number(env.DEBUG_SERVER_PORT)
+    : 5000;
   return {
     base: "/zundamahjong/",
     plugins: [preact()],

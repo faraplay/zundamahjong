@@ -64,7 +64,7 @@ export type Scoring = {
   player_scores: number[];
 };
 
-export type AllInfo = {
+export type AllServerInfo = {
   player_count: number;
   player_index: number;
   is_game_end: boolean;

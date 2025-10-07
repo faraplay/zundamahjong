@@ -4,7 +4,8 @@ import { io, Socket } from "socket.io-client";
 import type { ErrorMessage } from "./types/error_message";
 import type { Player } from "./types/player";
 import type { DetailedRoom, BasicRoom } from "./types/room";
-import { RoundStatus, type AllInfo } from "./types/game";
+import { RoundStatus, type AllServerInfo } from "./types/game";
+import { processInfo, type AllInfo } from "./process_info";
 import type { EmitFunc } from "./types/emit_func";
 
 import { Emitter } from "./components/emitter/emitter";
@@ -21,6 +22,7 @@ import { GameScreen } from "./components/game/game_screen/game_screen";
 
 import "./fonts.css";
 import "./app.css";
+import { GameOptionsContext } from "./components/game_options_context/game_options_context";
 
 export function App() {
   const [errors, setErrors] = useState<{
@@ -61,8 +63,12 @@ export function App() {
     socket.current.on("room_info", (room: DetailedRoom | undefined) => {
       setMyRoom(room);
     });
-    socket.current.on("info", (info: AllInfo | undefined) => {
-      setInfo(info);
+    socket.current.on("info", (info: AllServerInfo | undefined) => {
+      if (info) {
+        setInfo(processInfo(info));
+      } else {
+        setInfo(undefined);
+      }
       setActionSubmitted(false);
       if (info && info.round_info.status != RoundStatus.END) {
         setSeeResults(false);
@@ -143,14 +149,16 @@ function getScreen(
     );
   }
   return (
-    <GameScreen
-      players={myRoom.joined_players}
-      playerAvatarIds={myRoom.avatars}
-      info={info}
-      actionSubmitted={actionSubmitted}
-      setActionSubmitted={() => setActionSubmitted(true)}
-      seeResults={seeResults}
-      goToResults={() => setSeeResults(true)}
-    />
+    <GameOptionsContext.Provider value={myRoom.game_options}>
+      <GameScreen
+        players={myRoom.joined_players}
+        playerAvatarIds={myRoom.avatars}
+        info={info}
+        actionSubmitted={actionSubmitted}
+        setActionSubmitted={() => setActionSubmitted(true)}
+        seeResults={seeResults}
+        goToResults={() => setSeeResults(true)}
+      />
+    </GameOptionsContext.Provider>
   );
 }

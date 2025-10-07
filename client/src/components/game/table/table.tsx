@@ -1,4 +1,4 @@
-import type { AllInfo } from "../../../types/game";
+import type { AllServerInfo } from "../../../types/game";
 import type { TileId } from "../../../types/tile";
 
 import { CenterInfo } from "../center_info/center_info";
@@ -9,7 +9,7 @@ import { TableHand } from "../table_hand/table_hand";
 
 import "./table.css";
 
-export function Table({ info }: { info: AllInfo }) {
+export function Table({ info }: { info: AllServerInfo }) {
   const known_hands: ReadonlyArray<TileId>[] = [];
   for (const hand_count of info.round_info.hand_counts) {
     known_hands.push(Array<TileId>(hand_count).fill(0));

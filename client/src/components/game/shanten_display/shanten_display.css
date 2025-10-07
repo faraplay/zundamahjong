@@ -1,0 +1,71 @@
+.shanten_display {
+  width: fit-content;
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 12cqw;
+  z-index: 1;
+  margin: auto;
+  padding: 2cqw;
+  border-radius: 2cqw;
+  background-color: rgba(160, 153, 235, 0.897);
+
+  &.hide {
+    display: none;
+  }
+
+  .shanten {
+    width: fit-content;
+    margin-inline: auto;
+    margin-bottom: 2cqw;
+    font-family: "Chiron GoRound TC", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 2cqw;
+  }
+
+  .tiles {
+    max-width: 90cqw;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 1cqw;
+
+    .tile_freq {
+      text-align: center;
+      font-family: "Chiron GoRound TC", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 600;
+      font-style: normal;
+      font-size: 1.5cqw;
+    }
+  }
+
+  .tile_div {
+    --tile-width: 5cqw;
+    --tile-border-width: 1px;
+  }
+}
+
+.shanten_display_button {
+  width: 3cqw;
+  height: 3cqw;
+  position: absolute;
+  left: 90cqw;
+  top: 45cqw;
+  z-index: 1;
+  border-radius: 1.7cqw;
+  border: 0.2cqw solid black;
+  background-color: rgba(225, 224, 238, 0.6);
+  text-align: center;
+  line-height: 2.9cqw;
+  user-select: none;
+  -webkit-user-select: none;
+
+  font-family: "Chiron GoRound TC", sans-serif;
+  font-optical-sizing: auto;
+  font-weight: 600;
+  font-style: normal;
+  font-size: 2cqw;
+}

@@ -69,9 +69,24 @@ export const inputPropsList: GameOptionsInputProps[] = [
     type: "checkbox",
   },
   {
+    name: "show_waits",
+    labelText: "Show waits",
+    type: "checkbox",
+  },
+  {
+    name: "show_shanten_info",
+    labelText: "Show shanten info",
+    type: "checkbox",
+  },
+  {
     type: "collection",
     name: "Base Scores",
     children: [
+      {
+        name: "start_score",
+        labelText: "Starting score",
+        type: "number",
+      },
       {
         name: "score_dealer_ron_base_value",
         labelText: "Dealer ron base score",

@@ -21,6 +21,18 @@ def get_tile_values(tiles: list[TileId]) -> list[TileValue]:
     return [tile // N for tile in tiles]
 
 
+def get_tile_value_buckets(tiles: list[TileId]):
+    tile_value_buckets: dict[TileValue, list[TileId]] = {}
+    for tile in tiles:
+        tile_value = get_tile_value(tile)
+        bucket = tile_value_buckets.get(tile_value)
+        if bucket is None:
+            bucket = []
+            tile_value_buckets[tile_value] = bucket
+        bucket.append(tile)
+    return tile_value_buckets
+
+
 def remove_tile_value(tiles: list[TileId], tile_value: TileValue):
     for tile in tiles:
         if get_tile_value(tile) == tile_value:
@@ -37,8 +49,15 @@ def tile_id_is_flower(tile: TileId):
     return get_tile_value(tile) > 40
 
 
-orphans = {1, 9, 11, 19, 21, 29, 31, 32, 33, 34, 35, 36, 37}
-terminals = {1, 9, 11, 19, 21, 29}
-winds = {31, 32, 33, 34}
-dragons = {35, 36, 37}
-green_tiles = {22, 23, 24, 26, 28, 36}
+all_tiles = frozenset(
+    [1, 2, 3, 4, 5, 6, 7, 8, 9]
+    + [11, 12, 13, 14, 15, 16, 17, 18, 19]
+    + [21, 22, 23, 24, 25, 26, 27, 28, 29]
+    + [31, 32, 33, 34, 35, 36, 37]
+)
+tile_value_top = 38
+orphans = frozenset({1, 9, 11, 19, 21, 29, 31, 32, 33, 34, 35, 36, 37})
+terminals = frozenset({1, 9, 11, 19, 21, 29})
+winds = frozenset({31, 32, 33, 34})
+dragons = frozenset({35, 36, 37})
+green_tiles = frozenset({22, 23, 24, 26, 28, 36})
