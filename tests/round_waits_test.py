@@ -1,5 +1,7 @@
 import unittest
 
+from src.mahjong.form_hand import is_winning
+from src.mahjong.tile import N, all_tiles
 from src.mahjong.deck import Deck
 from src.mahjong.hand import Hand
 from src.mahjong.round import Round
@@ -30,132 +32,117 @@ class RoundWaitsTest(unittest.TestCase):
         round = Round(tiles=test_deck2)
         self.assertSetEqual(round._hands[2].waits, frozenset({13, 16}))
 
-    def test_waits_dict(self):
-        round = Round(tiles=test_deck1)
-        self.assertDictEqual(
-            round._hands[0].waits_dict,
-            {
-                10: frozenset({17}),
-                12: frozenset({17}),
-                20: frozenset(),
-                30: frozenset(),
-                40: frozenset(),
-                50: frozenset(),
-                60: frozenset(),
-                70: frozenset(),
-                80: frozenset(),
-                90: frozenset(),
-                170: frozenset({1, 4, 7}),
-                210: frozenset(),
-                211: frozenset(),
-                212: frozenset(),
-            },
-        )
-
     def test_8_tile_wait(self):
         hand = Hand(Deck(tiles=test_deck1))
         hand._tiles = [20, 21, 22, 30, 40, 50, 60, 61, 70, 71, 72, 73, 80]
         self.assertSetEqual(hand.waits, frozenset({1, 2, 3, 4, 5, 6, 8, 9}))
 
 
-class RoundWaitsDictKeysTest(unittest.TestCase):
-    def check_waits_dict_keys(self, round: Round):
+class RoundActionsWaitsCheckTest(unittest.TestCase):
+    def check_waits(self, round: Round):
         for hand in round._hands:
-            self.assertSetEqual(hand.waits, hand._calculate_waits(hand._tiles))
-            self.assertSetEqual(set(hand.waits_dict.keys()), set(hand._tiles))
+            self.assertSetEqual(
+                hand.waits,
+                {
+                    tile_value
+                    for tile_value in all_tiles
+                    if hand.tile_values.count(tile_value) < 4
+                    and is_winning(hand._tiles + [tile_value * N])
+                },
+            )
 
     def test_draw(self):
         round = Round(tiles=test_deck1)
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=170))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
 
     def test_chii(self):
         round = Round(tiles=test_deck1)
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=50))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(
             1,
             OpenCallAction(action_type=ActionType.CHII, other_tiles=(61, 71)),
         )
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
 
     def test_pon(self):
         round = Round(tiles=test_deck1)
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=90))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(
             1, OpenCallAction(action_type=ActionType.PON, other_tiles=(91, 92))
         )
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
 
     def test_pon_change_turn(self):
         round = Round(tiles=test_deck1)
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=213))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(
             0, OpenCallAction(action_type=ActionType.PON, other_tiles=(210, 211))
         )
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=20))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
 
     def test_open_kan(self):
         round = Round(tiles=test_deck1)
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=90))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, OpenKanAction(other_tiles=(91, 92, 93)))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
 
     def test_open_kan_change_turn(self):
         round = Round(tiles=test_deck1)
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=213))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, OpenKanAction(other_tiles=(210, 211, 212)))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=20))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
 
     def test_add_kan(self):
         round = Round(tiles=test_deck1)
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=90))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(
             1, OpenCallAction(action_type=ActionType.PON, other_tiles=(91, 92))
         )
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=213))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(
             0, OpenCallAction(action_type=ActionType.PON, other_tiles=(210, 211))
         )
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(
             1,
             AddKanAction(
@@ -168,66 +155,66 @@ class RoundWaitsDictKeysTest(unittest.TestCase):
                 ),
             ),
         )
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, SimpleAction(action_type=ActionType.CONTINUE))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
 
     def test_closed_kan(self):
         round = Round(tiles=test_deck1)
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(2, ClosedKanAction(tiles=(110, 111, 112, 113)))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(2, SimpleAction(action_type=ActionType.CONTINUE))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=130))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
 
     def test_draw_flower(self):
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=410))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=430))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, SimpleAction(action_type=ActionType.CONTINUE))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, HandTileAction(action_type=ActionType.FLOWER, tile=420))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, SimpleAction(action_type=ActionType.CONTINUE))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(2, SimpleAction(action_type=ActionType.CONTINUE))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(3, SimpleAction(action_type=ActionType.CONTINUE))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=440))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, SimpleAction(action_type=ActionType.CONTINUE))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, SimpleAction(action_type=ActionType.CONTINUE))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(2, SimpleAction(action_type=ActionType.CONTINUE))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(3, SimpleAction(action_type=ActionType.CONTINUE))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, SimpleAction(action_type=ActionType.CONTINUE))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=20))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)
         round.do_action(2, HandTileAction(action_type=ActionType.FLOWER, tile=450))
-        self.check_waits_dict_keys(round)
+        self.check_waits(round)

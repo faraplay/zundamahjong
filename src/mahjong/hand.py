@@ -42,7 +42,6 @@ class Hand:
         self._calls: list[Call] = []
         self._flowers: list[TileId] = []
         self._waits: Optional[frozenset[TileValue]] = None
-        self._waits_dict: Optional[dict[TileId, frozenset[TileValue]]] = None
 
     @property
     def tiles(self) -> Sequence[TileId]:
@@ -71,12 +70,10 @@ class Hand:
         assert tile_count >= 0
         self._tiles.extend(self._deck.pop() for _ in range(tile_count))
         self._waits = None
-        self._waits_dict = None
 
     def draw(self):
         self._tiles.append(self._deck.pop())
         self._waits = None
-        self._waits_dict = None
 
     def _draw_from_back(self):
         self._tiles.append(self._deck.popleft())
@@ -91,7 +88,6 @@ class Hand:
         self._tiles.remove(tile)
         self.sort()
         self._waits = None
-        self._waits_dict = None
 
     def get_chiis(self, last_discard: TileId):
         discard_value = get_tile_value(last_discard)
@@ -150,7 +146,6 @@ class Hand:
             )
         )
         self._waits = None
-        self._waits_dict = None
 
     def get_pons(self, last_discard: TileId):
         discard_value = get_tile_value(last_discard)
@@ -184,7 +179,6 @@ class Hand:
             )
         )
         self._waits = None
-        self._waits_dict = None
 
     def get_open_kans(self, last_discard: TileId):
         discard_value = get_tile_value(last_discard)
@@ -221,7 +215,6 @@ class Hand:
         self.sort()
         self._draw_from_back()
         self._waits = None
-        self._waits_dict = None
 
     def get_add_kans(self):
         pon_values = dict(
@@ -249,7 +242,6 @@ class Hand:
         self.sort()
         self._draw_from_back()
         self._waits = None
-        self._waits_dict = None
 
     def get_closed_kans(self):
         actions: list[Action] = []
@@ -271,7 +263,6 @@ class Hand:
         self.sort()
         self._draw_from_back()
         self._waits = None
-        self._waits_dict = None
 
     def get_flowers(self):
         return [
@@ -286,7 +277,6 @@ class Hand:
         self.sort()
         self._draw_from_back()
         self._waits = None
-        self._waits_dict = None
 
     def can_tsumo(self):
         return is_winning(self._tiles)
@@ -308,24 +298,3 @@ class Hand:
         }
         waits = get_waits(get_tile_values(closed_tiles))
         return waits - unusable_tile_values
-
-    @property
-    def waits_dict(self):
-        if self._waits_dict is None:
-            self._waits_dict = self._calculate_waits_dict()
-        return self._waits_dict
-
-    def _calculate_waits_dict(self) -> dict[TileId, frozenset[TileValue]]:
-        closed_tiles = self._tiles
-        if len(closed_tiles) % 3 == 2:
-            return dict(
-                (
-                    tile,
-                    self._calculate_waits(
-                        closed_tiles[:index] + closed_tiles[index + 1 :]
-                    ),
-                )
-                for index, tile in enumerate(closed_tiles)
-            )
-        else:
-            return dict((tile, frozenset()) for tile in closed_tiles)
