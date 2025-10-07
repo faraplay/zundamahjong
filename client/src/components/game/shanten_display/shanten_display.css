@@ -26,14 +26,20 @@
   }
 
   .tiles {
-    /* left: 0;
-    right: 0;
-    margin-inline: auto; */
     max-width: 90cqw;
     display: flex;
     justify-content: center;
     flex-wrap: wrap;
     gap: 1cqw;
+
+    .tile_freq {
+      text-align: center;
+      font-family: "Chiron GoRound TC", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 600;
+      font-style: normal;
+      font-size: 1.5cqw;
+    }
   }
 
   .tile_div {

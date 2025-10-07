@@ -3,7 +3,8 @@ import { useContext, useLayoutEffect, useState } from "preact/hooks";
 import type { Player } from "../../../types/player";
 import type { AvatarIdDict } from "../../../types/avatars";
 import type { Action } from "../../../types/action";
-import { RoundStatus, type AllInfo } from "../../../types/game";
+import { RoundStatus } from "../../../types/game";
+import { type AllInfo } from "../../../process_info";
 
 import { Emitter } from "../../emitter/emitter";
 import { EmitAction } from "../emit_action/emit_action";
@@ -93,12 +94,19 @@ export function GameScreen({
           <ActionMenu actions={info.player_info.actions} />
         )}
         {info.player_info.shanten_info ? (
-          <ShantenDisplayButton shanten_info={info.player_info.shanten_info} />
+          <ShantenDisplayButton
+            shantenInfo={info.player_info.shanten_info}
+            remainingTileCounts={info.player_info.remaining_tile_counts}
+          />
         ) : (
           <></>
         )}
         {discard_shanten_info ? (
-          <ShantenDisplay shanten_info={discard_shanten_info} visible />
+          <ShantenDisplay
+            shantenInfo={discard_shanten_info}
+            remainingTileCounts={info.player_info.remaining_tile_counts}
+            visible
+          />
         ) : (
           <></>
         )}

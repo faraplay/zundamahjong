@@ -2,39 +2,48 @@ import { useState } from "preact/hooks";
 
 import type { TileId, TileValue } from "../../../types/tile";
 
-import { Tile2DList } from "../tile_2d/tile_2d";
+import { Tile2D } from "../tile_2d/tile_2d";
 
 import "./shanten_display.css";
 
 export function ShantenDisplay({
-  shanten_info,
+  shantenInfo,
+  remainingTileCounts,
   visible,
 }: {
-  shanten_info: [number, Set<TileValue>];
+  shantenInfo: [number, Set<TileValue>];
+  remainingTileCounts: number[];
   visible: boolean;
 }) {
-  const [shanten, tile_values] = shanten_info;
-  const shanten_description = shanten == 0 ? "Tenpai" : `${shanten}-shanten`;
+  const [shanten, tileValuesSet] = shantenInfo;
+  const tileValues = [...tileValuesSet].sort((a, b) => a - b);
+  const improveTileCount = tileValues.reduce<number>(
+    (sum, tileValue) => sum + remainingTileCounts[tileValue],
+    0,
+  );
+  const shantenDescription =
+    shanten == 0 ? "Tenpai" : `${shanten}-shanten (${improveTileCount} tiles)`;
   return (
     <div class={`shanten_display ${visible ? "show" : "hide"}`}>
-      <div class="shanten">{shanten_description}</div>
+      <div class="shanten">{shantenDescription}</div>
       <div class="tiles">
-        <Tile2DList
-          tiles={
-            [...tile_values]
-              .sort((a, b) => a - b)
-              .map((tile_value) => tile_value * 10) as TileId[]
-          }
-        />
+        {tileValues.map((tile) => (
+          <div key={tile} class="shanten_item">
+            <Tile2D tile={(tile * 10) as TileId} />
+            <div class="tile_freq">{`${remainingTileCounts[tile]} left`}</div>
+          </div>
+        ))}
       </div>
     </div>
   );
 }
 
 export function ShantenDisplayButton({
-  shanten_info,
+  shantenInfo,
+  remainingTileCounts,
 }: {
-  shanten_info: [number, Set<TileValue>];
+  shantenInfo: [number, Set<TileValue>];
+  remainingTileCounts: number[];
 }) {
   const [held, setHeld] = useState(false);
   const onMouseDown = (e: Event) => {
@@ -55,7 +64,11 @@ export function ShantenDisplayButton({
       >
         ?
       </div>
-      <ShantenDisplay shanten_info={shanten_info} visible={held} />
+      <ShantenDisplay
+        shantenInfo={shantenInfo}
+        remainingTileCounts={remainingTileCounts}
+        visible={held}
+      />
     </>
   );
 }

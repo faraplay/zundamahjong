@@ -4,7 +4,8 @@ import { io, Socket } from "socket.io-client";
 import type { ErrorMessage } from "./types/error_message";
 import type { Player } from "./types/player";
 import type { DetailedRoom, BasicRoom } from "./types/room";
-import { RoundStatus, type AllInfo, type AllServerInfo } from "./types/game";
+import { RoundStatus, type AllServerInfo } from "./types/game";
+import { processInfo, type AllInfo } from "./process_info";
 import type { EmitFunc } from "./types/emit_func";
 
 import { Emitter } from "./components/emitter/emitter";
@@ -21,7 +22,6 @@ import { GameScreen } from "./components/game/game_screen/game_screen";
 
 import "./fonts.css";
 import "./app.css";
-import { processInfo } from "./process_info";
 
 export function App() {
   const [errors, setErrors] = useState<{

@@ -1,4 +1,4 @@
-import type { TileId, TileValue } from "./tile.ts";
+import type { TileId } from "./tile.ts";
 import type { Call } from "./call.ts";
 import type { Action } from "./action.ts";
 
@@ -74,11 +74,4 @@ export type AllServerInfo = {
   player_info: PlayerInfo;
   win_info: Win | null;
   scoring_info: Scoring | null;
-};
-
-export type AllInfo = AllServerInfo & {
-  player_info: {
-    shanten_info?: [number, Set<TileValue>];
-    discard_shanten_info?: { [tile in TileId]?: [number, Set<TileValue>] };
-  };
 };
