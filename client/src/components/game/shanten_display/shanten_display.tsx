@@ -14,9 +14,10 @@ export function ShantenDisplay({
   visible: boolean;
 }) {
   const [shanten, tile_values] = shanten_info;
+  const shanten_description = shanten == 0 ? "Tenpai" : `${shanten}-shanten`;
   return (
     <div class={`shanten_display ${visible ? "show" : "hide"}`}>
-      <div class="shanten">Shanten: {shanten}</div>
+      <div class="shanten">{shanten_description}</div>
       <div class="tiles">
         <Tile2DList
           tiles={
