@@ -6,7 +6,7 @@ from src.mahjong.game_options import GameOptions
 from src.mahjong.round import RoundStatus
 from src.mahjong.game import Game
 
-from .decks import *
+from tests.decks import *
 
 
 class GameTest(unittest.TestCase):
