@@ -240,6 +240,14 @@ class YakuCalculator:
     def _twice_pure_double_sequence(self) -> int:
         return int(sum(count == 2 for count in self._chi_start_tiles.values()) == 2)
 
+    @_register_yaku("PURE_TRIPLE_SEQUENCE", "Pure Triple Sequence", 6)
+    def _pure_triple_sequence(self) -> int:
+        return int(sum(count == 3 for count in self._chi_start_tiles.values()) == 1)
+
+    @_register_yaku("PURE_QUADRUPLE_SEQUENCE", "Pure Quadruple Sequence", 12)
+    def _pure_quadruple_sequence(self) -> int:
+        return int(sum(count == 4 for count in self._chi_start_tiles.values()) == 1)
+
     @_register_yaku("MIXED_TRIPLE_SEQUENCE", "Mixed Triple Sequence", 2)
     def _mixed_triple_sequence(self) -> int:
         return int(

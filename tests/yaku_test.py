@@ -829,6 +829,56 @@ class YakuTest(TestCase):
             {"ALL_RUNS": 1, "TWICE_PURE_DOUBLE_SEQUENCE": 1},
         )
 
+    def test_pure_triple_sequence(self) -> None:
+        yaku_mults = get_yaku_mults(
+            win_player=0,
+            lose_player=None,
+            formed_hand=[
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[11, 21, 31]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[240, 241]),
+            ],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=12,
+                    other_tiles=(22, 32),
+                ),
+            ],
+            flowers=[420],
+        )
+        self.assertDictEqual(
+            yaku_mults,
+            {"PURE_TRIPLE_SEQUENCE": 1},
+        )
+
+    def test_pure_quadruple_sequence(self) -> None:
+        yaku_mults = get_yaku_mults(
+            win_player=0,
+            lose_player=None,
+            formed_hand=[
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[11, 21, 31]),
+                Meld(meld_type=MeldType.CHI, tiles=[13, 23, 33]),
+                Meld(meld_type=MeldType.PAIR, tiles=[240, 241]),
+            ],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=12,
+                    other_tiles=(22, 32),
+                ),
+            ],
+            flowers=[420],
+        )
+        self.assertDictEqual(
+            yaku_mults,
+            {"ALL_RUNS": 1, "PURE_QUADRUPLE_SEQUENCE": 1},
+        )
+
     def test_mixed_triple_sequence(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
