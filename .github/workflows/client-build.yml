@@ -16,39 +16,37 @@ jobs:
       matrix:
         node-version: ["20.x", "22.x", "24.x"]
 
+    defaults:
+      run:
+        working-directory: "client"
+
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
           cache: "npm"
           cache-dependency-path: "client/package-lock.json"
-      - name: Install dependencies
-        run: |
-          npm --prefix=client ci
-      - name: Run client tests
-        run: |
-          npm --prefix=client test
+      - run: npm ci
+      - run: npm test
 
   build-client:
     runs-on: ubuntu-latest
     needs: test-client
 
+    defaults:
+      run:
+        working-directory: "client"
+
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js
-        uses: actions/setup-node@v4
+      - uses: actions/setup-node@v4
         with:
           node-version: "24.x"
           cache: "npm"
           cache-dependency-path: "client/package-lock.json"
-      - name: Install dependencies
-        run: |
-          npm --prefix=client ci
-      - name: Build client
-        run: |
-          npm --prefix=client run build
+      - run: npm ci
+      - run: npm run build
       - uses: actions/upload-artifact@v4
         with:
           name: zundamahjong-client
