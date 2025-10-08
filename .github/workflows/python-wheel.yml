@@ -25,10 +25,13 @@ jobs:
       - name: Set up build
         run: |
           python -m pip install --upgrade pip
-          python -m pip install build flake8 pytest
+          python -m pip install mypy flake8 pytest build
           if [ -f requirements.txt ]; then
             python -m pip install -r requirements.txt
           fi
+      - name: Perform type checking
+        run: |
+          mypy --strict src tests
       - name: Lint with flake8
         run: |
           flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics

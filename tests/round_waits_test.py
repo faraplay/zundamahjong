@@ -24,22 +24,22 @@ from tests.decks import *
 
 
 class RoundWaitsTest(unittest.TestCase):
-    def test_waits_wrong_hand_size(self):
+    def test_waits_wrong_hand_size(self) -> None:
         round = Round(tiles=test_deck1)
         self.assertSetEqual(round._hands[0].waits, frozenset())
 
-    def test_waits(self):
+    def test_waits(self) -> None:
         round = Round(tiles=test_deck2)
         self.assertSetEqual(round._hands[2].waits, frozenset({13, 16}))
 
-    def test_8_tile_wait(self):
+    def test_8_tile_wait(self) -> None:
         hand = Hand(Deck(tiles=test_deck1))
         hand._tiles = [20, 21, 22, 30, 40, 50, 60, 61, 70, 71, 72, 73, 80]
         self.assertSetEqual(hand.waits, frozenset({1, 2, 3, 4, 5, 6, 8, 9}))
 
 
 class RoundActionsWaitsCheckTest(unittest.TestCase):
-    def check_waits(self, round: Round):
+    def check_waits(self, round: Round) -> None:
         for hand in round._hands:
             self.assertSetEqual(
                 hand.waits,
@@ -51,7 +51,7 @@ class RoundActionsWaitsCheckTest(unittest.TestCase):
                 },
             )
 
-    def test_draw(self):
+    def test_draw(self) -> None:
         round = Round(tiles=test_deck1)
         self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=170))
@@ -59,7 +59,7 @@ class RoundActionsWaitsCheckTest(unittest.TestCase):
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
         self.check_waits(round)
 
-    def test_chii(self):
+    def test_chii(self) -> None:
         round = Round(tiles=test_deck1)
         self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=50))
@@ -72,7 +72,7 @@ class RoundActionsWaitsCheckTest(unittest.TestCase):
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
         self.check_waits(round)
 
-    def test_pon(self):
+    def test_pon(self) -> None:
         round = Round(tiles=test_deck1)
         self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=90))
@@ -84,7 +84,7 @@ class RoundActionsWaitsCheckTest(unittest.TestCase):
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
         self.check_waits(round)
 
-    def test_pon_change_turn(self):
+    def test_pon_change_turn(self) -> None:
         round = Round(tiles=test_deck1)
         self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
@@ -100,7 +100,7 @@ class RoundActionsWaitsCheckTest(unittest.TestCase):
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=20))
         self.check_waits(round)
 
-    def test_open_kan(self):
+    def test_open_kan(self) -> None:
         round = Round(tiles=test_deck1)
         self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=90))
@@ -110,7 +110,7 @@ class RoundActionsWaitsCheckTest(unittest.TestCase):
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
         self.check_waits(round)
 
-    def test_open_kan_change_turn(self):
+    def test_open_kan_change_turn(self) -> None:
         round = Round(tiles=test_deck1)
         self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
@@ -124,7 +124,7 @@ class RoundActionsWaitsCheckTest(unittest.TestCase):
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=20))
         self.check_waits(round)
 
-    def test_add_kan(self):
+    def test_add_kan(self) -> None:
         round = Round(tiles=test_deck1)
         self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=90))
@@ -161,7 +161,7 @@ class RoundActionsWaitsCheckTest(unittest.TestCase):
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=21))
         self.check_waits(round)
 
-    def test_closed_kan(self):
+    def test_closed_kan(self) -> None:
         round = Round(tiles=test_deck1)
         self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
@@ -179,7 +179,7 @@ class RoundActionsWaitsCheckTest(unittest.TestCase):
         round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         self.check_waits(round)
 
-    def test_draw_flower(self):
+    def test_draw_flower(self) -> None:
         round = Round(tiles=test_deck3, options=GameOptions(auto_replace_flowers=False))
         self.check_waits(round)
         round.do_action(0, HandTileAction(action_type=ActionType.FLOWER, tile=410))

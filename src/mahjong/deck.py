@@ -1,3 +1,4 @@
+from __future__ import annotations
 from collections.abc import Iterable
 from random import shuffle
 from collections import deque
@@ -25,21 +26,21 @@ three_player_deck: list[TileId] = [
 
 
 class Deck:
-    def __init__(self, tiles: Iterable[TileId]):
+    def __init__(self, tiles: Iterable[TileId]) -> None:
         self._tiles = deque(tiles)
 
     @classmethod
-    def shuffled_deck(cls, tiles: list[TileId]):
+    def shuffled_deck(cls, tiles: list[TileId]) -> Deck:
         new_deck = tiles.copy()
         shuffle(new_deck)
         return cls(new_deck)
 
     @property
-    def tiles(self):
+    def tiles(self) -> tuple[TileId, ...]:
         return tuple(self._tiles)
 
-    def pop(self):
+    def pop(self) -> TileId:
         return self._tiles.popleft()
 
-    def popleft(self):
+    def popleft(self) -> TileId:
         return self._tiles.pop()

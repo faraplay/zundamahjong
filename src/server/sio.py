@@ -2,19 +2,23 @@ from collections.abc import Callable
 import logging
 from typing import Any, Optional
 
-from socketio import Server
+from socketio import Server  # type: ignore[import-untyped]
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 sio = Server(
-    logger=logger, async_mode="threading"
-)  # pyright: ignore[reportArgumentType]
+    logger=logger, async_mode="threading"  # pyright: ignore[reportArgumentType]
+)
+
+Handler = Callable[..., Optional[Any]]
 
 
-def sio_on(event: str):
-    def sio_on_decorator(handler: Callable[..., Optional[Any]]):
-        def wrapped_handler(sid: str, *args):
+def sio_on(event: str) -> Callable[[Handler], Handler]:
+    def sio_on_decorator(
+        handler: Handler,
+    ) -> Handler:
+        def wrapped_handler(sid: str, *args: Any) -> Optional[Any]:
             try:
                 logger.debug(
                     f"Received event {event} from {sid} with args {repr(args)}"
@@ -27,6 +31,7 @@ def sio_on(event: str):
             except Exception as e:
                 logger.error(e)
                 sio.send(str(e), to=sid)
+            return None
 
         sio.on(event, wrapped_handler)
         return wrapped_handler

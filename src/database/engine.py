@@ -25,7 +25,7 @@ else:
 db_factory = sessionmaker(bind=engine)
 
 
-def create_tables():
+def create_tables() -> None:
     Base.metadata.create_all(engine)
 
 

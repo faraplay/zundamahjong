@@ -1,4 +1,4 @@
-from socketio import WSGIApp
+from socketio import WSGIApp  # type: ignore[import-untyped]
 
 from . import main
 from .logger import create_root_logger, create_server_logger

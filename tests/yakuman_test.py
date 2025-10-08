@@ -12,7 +12,7 @@ from tests.yaku_test import get_yaku_mults
 
 
 class YakumanTest(TestCase):
-    def test_blessing_of_heaven(self):
+    def test_blessing_of_heaven(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -29,7 +29,7 @@ class YakumanTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"NO_CALLS": 1, "BLESSING_OF_HEAVEN": 1})
 
-    def test_blessing_of_earth(self):
+    def test_blessing_of_earth(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=1,
             lose_player=None,
@@ -46,7 +46,7 @@ class YakumanTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"NO_CALLS": 1, "BLESSING_OF_EARTH": 1})
 
-    def test_little_three_dragons(self):
+    def test_little_three_dragons(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -70,7 +70,7 @@ class YakumanTest(TestCase):
             yaku_mults, {"WHITE_DRAGON": 1, "RED_DRAGON": 1, "LITTLE_THREE_DRAGONS": 1}
         )
 
-    def test_big_three_dragons(self):
+    def test_big_three_dragons(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -100,7 +100,7 @@ class YakumanTest(TestCase):
             },
         )
 
-    def test_four_little_winds(self):
+    def test_four_little_winds(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -128,7 +128,7 @@ class YakumanTest(TestCase):
             },
         )
 
-    def test_four_big_winds(self):
+    def test_four_big_winds(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -159,7 +159,7 @@ class YakumanTest(TestCase):
             },
         )
 
-    def test_four_concealed_triplets(self):
+    def test_four_concealed_triplets(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -180,7 +180,7 @@ class YakumanTest(TestCase):
             yaku_mults, {"NO_CALLS": 1, "ALL_TRIPLETS": 1, "FOUR_CONCEALED_TRIPLETS": 1}
         )
 
-    def test_all_honours(self):
+    def test_all_honours(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -209,7 +209,7 @@ class YakumanTest(TestCase):
             },
         )
 
-    def test_all_greens(self):
+    def test_all_greens(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -231,7 +231,7 @@ class YakumanTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"HALF_FLUSH": 1, "ALL_GREENS": 1})
 
-    def test_all_terminals(self):
+    def test_all_terminals(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -255,7 +255,7 @@ class YakumanTest(TestCase):
             yaku_mults, {"ALL_TRIPLETS": 1, "FULLY_OUTSIDE_HAND": 1, "ALL_TERMINALS": 1}
         )
 
-    def test_thirteen_orphans(self):
+    def test_thirteen_orphans(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -285,7 +285,7 @@ class YakumanTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"THIRTEEN_ORPHANS": 1})
 
-    def test_four_quads(self):
+    def test_four_quads(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -314,7 +314,7 @@ class YakumanTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"ALL_TRIPLETS": 1, "FOUR_QUADS": 1})
 
-    def test_nine_gates(self):
+    def test_nine_gates(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -332,7 +332,7 @@ class YakumanTest(TestCase):
             yaku_mults, {"NO_CALLS": 1, "FULL_FLUSH": 1, "NINE_GATES": 1}
         )
 
-    def test_full_flush_not_nine_gates(self):
+    def test_full_flush_not_nine_gates(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,

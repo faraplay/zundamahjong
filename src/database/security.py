@@ -40,7 +40,7 @@ def check_pw(password: str, pwhash: str) -> bool:
     return hashval == _hash_internal(password, salt, method)
 
 
-def login(sid: str, name: str, password: str):
+def login(sid: str, name: str, password: str) -> None:
     db = get_db(sid)
 
     user = db.execute(select(User).where(User.name == name)).scalar_one_or_none()

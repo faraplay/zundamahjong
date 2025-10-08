@@ -1,11 +1,11 @@
-from typing import Optional
+from typing import Any, Optional
 
 from unittest import TestCase
 
 from src.mahjong.tile import TileId
 from src.mahjong.meld import Meld, MeldType
 from src.mahjong.call import Call, CallType, ClosedKanCall, OpenCall
-from src.mahjong.yaku import Win
+from src.mahjong.win import Win
 from src.mahjong.yaku import YakuCalculator
 
 
@@ -19,8 +19,8 @@ def get_yaku_mults(
     player_count: int = 4,
     wind_round: int = 0,
     sub_round: int = 0,
-    **kwargs
-):
+    **kwargs: Any
+) -> dict[str, int]:
     win = Win(
         win_player=win_player,
         lose_player=lose_player,
@@ -36,7 +36,7 @@ def get_yaku_mults(
 
 
 class YakuTest(TestCase):
-    def test_no_flowers(self):
+    def test_no_flowers(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -58,7 +58,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"NO_FLOWERS": 1})
 
-    def test_player_flower(self):
+    def test_player_flower(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -80,7 +80,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1})
 
-    def test_sub_round_player_flower(self):
+    def test_sub_round_player_flower(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -103,7 +103,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1})
 
-    def test_two_player_flowers(self):
+    def test_two_player_flowers(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -125,7 +125,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 2})
 
-    def test_set_of_flowers(self):
+    def test_set_of_flowers(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -147,7 +147,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1})
 
-    def test_seven_flowers(self):
+    def test_seven_flowers(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -171,7 +171,7 @@ class YakuTest(TestCase):
             yaku_mults, {"SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1, "SEVEN_FLOWERS": 1}
         )
 
-    def test_two_sets_of_flowers(self):
+    def test_two_sets_of_flowers(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -196,7 +196,7 @@ class YakuTest(TestCase):
             {"SEAT_FLOWER": 2, "TWO_SETS_OF_FLOWERS": 1},
         )
 
-    def test_draw(self):
+    def test_draw(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -222,7 +222,7 @@ class YakuTest(TestCase):
             {"DRAW": 1},
         )
 
-    def test_after_a_flower(self):
+    def test_after_a_flower(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -248,7 +248,7 @@ class YakuTest(TestCase):
             {"AFTER_A_FLOWER": 1},
         )
 
-    def test_after_a_kan(self):
+    def test_after_a_kan(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -274,7 +274,7 @@ class YakuTest(TestCase):
             {"AFTER_A_KAN": 1},
         )
 
-    def test_player_wind(self):
+    def test_player_wind(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=1,
             lose_player=None,
@@ -299,7 +299,7 @@ class YakuTest(TestCase):
             {"SEAT_WIND": 1},
         )
 
-    def test_sub_round_player_wind(self):
+    def test_sub_round_player_wind(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=2,
             lose_player=None,
@@ -325,7 +325,7 @@ class YakuTest(TestCase):
             {"SEAT_WIND": 1},
         )
 
-    def test_prevalent_wind(self):
+    def test_prevalent_wind(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=1,
             lose_player=None,
@@ -350,7 +350,7 @@ class YakuTest(TestCase):
             {"PREVALENT_WIND": 1},
         )
 
-    def test_white_dragon(self):
+    def test_white_dragon(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -375,7 +375,7 @@ class YakuTest(TestCase):
             {"WHITE_DRAGON": 1},
         )
 
-    def test_green_dragon(self):
+    def test_green_dragon(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -400,7 +400,7 @@ class YakuTest(TestCase):
             {"GREEN_DRAGON": 1},
         )
 
-    def test_red_dragon(self):
+    def test_red_dragon(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -425,7 +425,7 @@ class YakuTest(TestCase):
             {"RED_DRAGON": 1},
         )
 
-    def test_eyes(self):
+    def test_eyes(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -457,7 +457,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"EYES": 1})
 
-    def test_no_calls(self):
+    def test_no_calls(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -473,7 +473,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"NO_CALLS": 1})
 
-    def test_no_calls_closed_kan(self):
+    def test_no_calls_closed_kan(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -490,7 +490,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"NO_CALLS": 1})
 
-    def test_chankan(self):
+    def test_chankan(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -513,7 +513,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"ROBBING_A_KAN": 1})
 
-    def test_haitei(self):
+    def test_haitei(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -536,7 +536,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"UNDER_THE_SEA": 1})
 
-    def test_houtei(self):
+    def test_houtei(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -559,7 +559,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"UNDER_THE_RIVER": 1})
 
-    def test_all_runs(self):
+    def test_all_runs(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -596,7 +596,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"ALL_RUNS": 1})
 
-    def test_all_simples(self):
+    def test_all_simples(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -623,7 +623,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"ALL_SIMPLES": 1})
 
-    def test_pure_straight(self):
+    def test_pure_straight(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -645,7 +645,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"PURE_STRAIGHT": 1})
 
-    def test_all_triplets(self):
+    def test_all_triplets(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -667,7 +667,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"ALL_TRIPLETS": 1})
 
-    def test_half_flush(self):
+    def test_half_flush(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -689,7 +689,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"HALF_FLUSH": 1})
 
-    def test_full_flush(self):
+    def test_full_flush(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -711,7 +711,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"FULL_FLUSH": 1})
 
-    def test_seven_pairs(self):
+    def test_seven_pairs(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -729,7 +729,7 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"SEVEN_PAIRS": 1})
 
-    def test_half_outside_hand(self):
+    def test_half_outside_hand(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -754,7 +754,7 @@ class YakuTest(TestCase):
             {"HALF_OUTSIDE_HAND": 1},
         )
 
-    def test_fully_outside_hand(self):
+    def test_fully_outside_hand(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -779,7 +779,7 @@ class YakuTest(TestCase):
             {"FULLY_OUTSIDE_HAND": 1},
         )
 
-    def test_pure_double_sequence(self):
+    def test_pure_double_sequence(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -804,7 +804,7 @@ class YakuTest(TestCase):
             {"PURE_DOUBLE_SEQUENCE": 1},
         )
 
-    def test_twice_pure_double_sequence(self):
+    def test_twice_pure_double_sequence(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -829,7 +829,7 @@ class YakuTest(TestCase):
             {"ALL_RUNS": 1, "TWICE_PURE_DOUBLE_SEQUENCE": 1},
         )
 
-    def test_mixed_triple_sequence(self):
+    def test_mixed_triple_sequence(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -854,7 +854,7 @@ class YakuTest(TestCase):
             {"MIXED_TRIPLE_SEQUENCE": 1},
         )
 
-    def test_triple_triplets(self):
+    def test_triple_triplets(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -879,7 +879,7 @@ class YakuTest(TestCase):
             {"TRIPLE_TRIPLETS": 1},
         )
 
-    def test_all_terminals_and_honours(self):
+    def test_all_terminals_and_honours(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,

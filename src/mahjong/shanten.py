@@ -1,7 +1,7 @@
 from .tile import TileValue, all_tiles, tile_value_top, orphans
 
 
-def honours_shanten_data(tile_freqs: list[int]):
+def honours_shanten_data(tile_freqs: list[int]) -> list[list[int]]:
     # Expects values from 1 to 7 (need to subtract 30)
     data = [
         [0, 0b0000_000],
@@ -94,7 +94,7 @@ def honours_shanten_data(tile_freqs: list[int]):
         data[meld_count * 2] = [used_tile_count, useful_tiles]
 
 
-def suit_shanten_data(tile_freqs: list[int]):
+def suit_shanten_data(tile_freqs: list[int]) -> list[list[int]]:
     # Given a list of tiles of a suit
     # return the number of tiles used in creating i melds and j pairs (0<=i<=4, 0<=j<=1)
     # and determine which tiles get you 1 closer
@@ -112,7 +112,7 @@ def suit_shanten_data(tile_freqs: list[int]):
         [0, 0b000_000_000],  # 4 melds 1 pair
     ]
 
-    def get_pair_useful_tiles(tile_freqs: list[int]):
+    def get_pair_useful_tiles(tile_freqs: list[int]) -> tuple[int, int]:
         # Returns number of used tiles and bitflags of useful tiles for making a pair
         useful_tiles = 0b000_000_000
         current_tile = 0
@@ -128,7 +128,7 @@ def suit_shanten_data(tile_freqs: list[int]):
         else:
             return 0, 0b111_111_111
 
-    def update_data(data_index, used_tile_count, useful_tiles):
+    def update_data(data_index: int, used_tile_count: int, useful_tiles: int) -> None:
         if used_tile_count > data[data_index][0]:
             data[data_index][0] = used_tile_count
             data[data_index][1] = useful_tiles
@@ -142,7 +142,7 @@ def suit_shanten_data(tile_freqs: list[int]):
         meld_count: int,
         used_tile_count: int,
         useful_tiles: int,
-    ):
+    ) -> None:
         # Tries to make melds, updates the data accordingly
         # Does not meld any tiles in tiles[:first_index]
         # (but it does use them for pairs)
@@ -270,8 +270,10 @@ def suit_shanten_data(tile_freqs: list[int]):
     return data
 
 
-def standard_shanten(tile_freqs: list[int], meld_count: int):
-    def flag_to_tiles(flags: int, tile_end_offset: TileValue):
+def standard_shanten(
+    tile_freqs: list[int], meld_count: int
+) -> tuple[int, frozenset[TileValue]]:
+    def flag_to_tiles(flags: int, tile_end_offset: TileValue) -> frozenset[TileValue]:
         result: list[TileValue] = []
         while flags != 0:
             if (flags % 2) != 0:
@@ -300,7 +302,7 @@ def standard_shanten(tile_freqs: list[int], meld_count: int):
     def combine_data(
         data1: list[tuple[int, frozenset[TileValue]]],
         data2: list[tuple[int, frozenset[TileValue]]],
-    ):
+    ) -> list[tuple[int, frozenset[TileValue]]]:
         data: list[tuple[int, frozenset[TileValue]]] = [(0, frozenset())] * 10
         for k1, datum1 in enumerate(data1):
             for k2, datum2 in enumerate(data2):
@@ -328,7 +330,7 @@ def standard_shanten(tile_freqs: list[int], meld_count: int):
     return data[meld_count * 2 + 1]
 
 
-def seven_pairs_shanten(tile_freqs: list[int]):
+def seven_pairs_shanten(tile_freqs: list[int]) -> tuple[int, frozenset[TileValue]]:
     tiles2 = set()
     tiles2_count = 0
     tiles1 = set()
@@ -350,7 +352,7 @@ def seven_pairs_shanten(tile_freqs: list[int]):
     return (tiles2_count * 2 + tiles1_count, all_tiles - tiles2)
 
 
-def thirteen_orphans_shanten(tile_freqs: list[int]):
+def thirteen_orphans_shanten(tile_freqs: list[int]) -> tuple[int, frozenset[TileValue]]:
     my_orphans = set()
     orphan_count = 0
     pair_orphan_count = 0
@@ -367,7 +369,9 @@ def thirteen_orphans_shanten(tile_freqs: list[int]):
         return (orphan_count, orphans)
 
 
-def calculate_shanten(tiles: list[TileValue], is_3player: bool = False):
+def calculate_shanten(
+    tiles: list[TileValue], is_3player: bool = False
+) -> tuple[int, frozenset[TileValue]]:
     assert len(tiles) % 3 == 1
     meld_count = (len(tiles) - 1) // 3
 
@@ -379,7 +383,7 @@ def calculate_shanten(tiles: list[TileValue], is_3player: bool = False):
     def combine_datum(
         datum1: tuple[int, frozenset[TileValue]],
         datum2: tuple[int, frozenset[TileValue]],
-    ):
+    ) -> tuple[int, frozenset[TileValue]]:
         if datum1[0] > datum2[0]:
             return datum1
         elif datum1[0] < datum2[0]:
@@ -405,7 +409,7 @@ def calculate_shanten(tiles: list[TileValue], is_3player: bool = False):
     )
 
 
-def get_waits(tiles: list[TileValue]):
+def get_waits(tiles: list[TileValue]) -> frozenset[TileValue]:
     if len(tiles) % 3 != 1:
         return frozenset()
     if any(tile >= tile_value_top for tile in tiles):

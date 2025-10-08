@@ -7,7 +7,7 @@ from enum import Enum
 
 from .exceptions import InvalidMoveException
 from .tile import TileId, get_tile_value
-from .call import get_call_tiles
+from .call import Call, get_call_tiles
 from .action import (
     Action,
     ActionType,
@@ -16,7 +16,7 @@ from .action import (
     call_action_types,
 )
 from .deck import Deck, four_player_deck, three_player_deck
-from .discard_pool import DiscardPool
+from .discard_pool import Discard, DiscardPool
 from .hand import Hand
 from .win import Win
 from .game_options import GameOptions
@@ -33,26 +33,28 @@ class RoundStatus(Enum):
     END = 7
 
 
-_allowed_actions_funcs: dict[
-    RoundStatus, Callable[[Round, int, Hand, TileId], ActionList]
-] = {}
-_do_action_funcs: dict[ActionType, Callable[[Round, int, Action], None]] = {}
+_allowed_actions_funcs: dict[RoundStatus, AllowedActionsFunc] = {}
+_do_action_funcs: dict[ActionType, DoActionFunc] = {}
 
 
-def _register_allowed_actions(round_status: RoundStatus):
+def _register_allowed_actions(
+    round_status: RoundStatus,
+) -> Callable[[AllowedActionsFunc], AllowedActionsFunc]:
     def _register_allowed_action_inner(
-        _allowed_actions_func: Callable[[Round, int, Hand, TileId], ActionList],
-    ):
+        _allowed_actions_func: AllowedActionsFunc,
+    ) -> AllowedActionsFunc:
         _allowed_actions_funcs[round_status] = _allowed_actions_func
         return _allowed_actions_func
 
     return _register_allowed_action_inner
 
 
-def _register_do_action(action_type: ActionType):
+def _register_do_action(
+    action_type: ActionType,
+) -> Callable[[DoActionFunc], DoActionFunc]:
     def _register_do_action_inner(
-        _do_action_func: Callable[[Round, int, Action], None],
-    ):
+        _do_action_func: DoActionFunc,
+    ) -> DoActionFunc:
         _do_action_funcs[action_type] = _do_action_func
         return _do_action_func
 
@@ -112,56 +114,52 @@ class Round:
                     self.do_action(player, flower_action)
                 self.do_action(player, SimpleAction(action_type=ActionType.CONTINUE))
 
-    def get_hand(self, player: int):
+    def get_hand(self, player: int) -> Sequence[TileId]:
         return self._hands[player].tiles
 
-    def get_discard_tiles(self, player: int):
+    def get_discard_tiles(self, player: int) -> Sequence[TileId]:
         return [
             discard.tile
             for discard in self._discard_pool.discards
             if discard.player == player
         ]
 
-    def get_calls(self, player: int):
+    def get_calls(self, player: int) -> Sequence[Call]:
         return self._hands[player].calls
 
-    def get_flowers(self, player: int):
+    def get_flowers(self, player: int) -> Sequence[TileId]:
         return self._hands[player].flowers
 
     @property
-    def options(self):
-        return self._options
-
-    @property
-    def current_player(self):
+    def current_player(self) -> int:
         return self._current_player
 
     @property
-    def status(self):
+    def status(self) -> RoundStatus:
         return self._status
 
     @property
-    def allowed_actions(self):
+    def allowed_actions(self) -> tuple[ActionList, ...]:
         return self._allowed_actions
 
     @property
-    def discards(self):
+    def discards(self) -> Sequence[Discard]:
         return self._discard_pool.discards
 
     @property
-    def discard_tiles(self):
+    def discard_tiles(self) -> Sequence[TileId]:
         return [discard.tile for discard in self._discard_pool.discards]
 
     @property
-    def last_tile(self):
+    def last_tile(self) -> TileId:
         return self._last_tile
 
     @property
-    def wall_count(self):
+    def wall_count(self) -> int:
         return len(self._deck.tiles)
 
     @property
-    def tiles_left(self):
+    def tiles_left(self) -> int:
         return len(self._deck.tiles) - self._options.end_wall_count
 
     @property
@@ -169,14 +167,14 @@ class Round:
         return self._history
 
     @property
-    def win_info(self):
+    def win_info(self) -> Optional[Win]:
         return self._win_info
 
-    def display_info(self):
+    def display_info(self) -> None:
         print(
             f"Current player: {self.current_player}, "
             + f"Status: {self.status}, "
-            + f"Wall count: {self.wall_count}"
+            + f"Tiles left: {self.tiles_left}"
         )
         for player, hand in enumerate(self._hands):
             print(
@@ -186,7 +184,7 @@ class Round:
             )
         print("Discards:", self.discard_tiles)
 
-    def _calculate_allowed_actions(self):
+    def _calculate_allowed_actions(self) -> None:
         self._allowed_actions = tuple(
             _allowed_actions_funcs[self._status](
                 self, player, self._hands[player], self._last_tile
@@ -205,7 +203,7 @@ class Round:
             ),
         )
 
-    def do_action(self, player: int, action: Action):
+    def do_action(self, player: int, action: Action) -> None:
         if action not in self.allowed_actions[player].actions:
             raise InvalidMoveException()
         _do_action_funcs[action.action_type](self, player, action)
@@ -214,7 +212,9 @@ class Round:
         if self._status == RoundStatus.END:
             self._end_callback()
 
-    def get_priority_action(self, actions: Sequence[Optional[Action]]):
+    def get_priority_action(
+        self, actions: Sequence[Optional[Action]]
+    ) -> Optional[tuple[int, Action]]:
         if len(actions) != self._player_count:
             raise Exception("Incorrect number of elements in actions")
         validated_actions: list[Optional[Action]] = []
@@ -235,14 +235,16 @@ class Round:
                 return None
         assert False
 
-    def _previous_player(self, player: int):
+    def _previous_player(self, player: int) -> int:
         return (player - 1) % self._player_count
 
-    def _next_player(self, player: int):
+    def _next_player(self, player: int) -> int:
         return (player + 1) % self._player_count
 
     @_register_allowed_actions(RoundStatus.START)
-    def _allowed_actions_start(self, player: int, hand: Hand, last_tile: TileId):
+    def _allowed_actions_start(
+        self, player: int, hand: Hand, last_tile: TileId
+    ) -> ActionList:
         if self._current_player == player:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
             actions.add_actions(hand.get_flowers())
@@ -251,7 +253,9 @@ class Round:
             return ActionList()
 
     @_register_allowed_actions(RoundStatus.PLAY)
-    def _allowed_actions_play(self, player: int, hand: Hand, last_tile: TileId):
+    def _allowed_actions_play(
+        self, player: int, hand: Hand, last_tile: TileId
+    ) -> ActionList:
         if self._current_player == player:
             flower_actions = hand.get_flowers()
             if self._options.auto_replace_flowers and len(flower_actions) > 0:
@@ -270,7 +274,9 @@ class Round:
             return ActionList()
 
     @_register_allowed_actions(RoundStatus.CALLED_PLAY)
-    def _allowed_actions_called_play(self, player: int, hand: Hand, last_tile: TileId):
+    def _allowed_actions_called_play(
+        self, player: int, hand: Hand, last_tile: TileId
+    ) -> ActionList:
         if self._current_player == player:
             discard_actions = hand.get_discards()
             actions = ActionList(discard_actions[-1])
@@ -282,7 +288,7 @@ class Round:
     @_register_allowed_actions(RoundStatus.ADD_KAN_AFTER)
     def _allowed_actions_add_kan_after(
         self, player: int, hand: Hand, last_tile: TileId
-    ):
+    ) -> ActionList:
         if self.current_player == player:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
         else:
@@ -295,7 +301,7 @@ class Round:
     @_register_allowed_actions(RoundStatus.CLOSED_KAN_AFTER)
     def _allowed_actions_closed_kan_after(
         self, player: int, hand: Hand, last_tile: TileId
-    ):
+    ) -> ActionList:
         if self.current_player == player:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
         else:
@@ -306,7 +312,9 @@ class Round:
         return actions
 
     @_register_allowed_actions(RoundStatus.DISCARDED)
-    def _allowed_actions_discarded(self, player: int, hand: Hand, last_tile: TileId):
+    def _allowed_actions_discarded(
+        self, player: int, hand: Hand, last_tile: TileId
+    ) -> ActionList:
         if self._current_player == self._previous_player(player):
             actions = ActionList(SimpleAction(action_type=ActionType.DRAW))
         else:
@@ -324,7 +332,7 @@ class Round:
     @_register_allowed_actions(RoundStatus.LAST_DISCARDED)
     def _allowed_actions_last_discarded(
         self, player: int, hand: Hand, last_tile: TileId
-    ):
+    ) -> ActionList:
         if self.current_player == player:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
         else:
@@ -335,16 +343,18 @@ class Round:
         return actions
 
     @_register_allowed_actions(RoundStatus.END)
-    def _allowed_actions_end(self, player: int, hand: Hand, last_tile: TileId):
+    def _allowed_actions_end(
+        self, player: int, hand: Hand, last_tile: TileId
+    ) -> ActionList:
         return ActionList()
 
     @_register_do_action(ActionType.PASS)
-    def _pass(self, player: int, action: Action):
+    def _pass(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.PASS
         assert False
 
     @_register_do_action(ActionType.CONTINUE)
-    def _continue(self, player: int, action: Action):
+    def _continue(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.CONTINUE
         if self._status == RoundStatus.START:
             self._hands[player].sort()
@@ -364,7 +374,7 @@ class Round:
             self._status = RoundStatus.END
 
     @_register_do_action(ActionType.DRAW)
-    def _draw(self, player: int, action: Action):
+    def _draw(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.DRAW
         self._hands[player].draw()
         self._current_player = player
@@ -372,19 +382,19 @@ class Round:
         self._last_tile = 0
 
     @_register_do_action(ActionType.DISCARD)
-    def _discard(self, player: int, action: Action):
+    def _discard(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.DISCARD
         tile = action.tile
         self._hands[player].discard(tile)
         self._discard_pool.append(player, tile)
-        if self.wall_count > self._options.end_wall_count:
+        if self.tiles_left > 0:
             self._status = RoundStatus.DISCARDED
         else:
             self._status = RoundStatus.LAST_DISCARDED
         self._last_tile = tile
 
     @_register_do_action(ActionType.CHII)
-    def _chii(self, player: int, action: Action):
+    def _chii(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.CHII
         self._discard_pool.pop()
         self._hands[player].chii(
@@ -395,7 +405,7 @@ class Round:
         self._last_tile = 0
 
     @_register_do_action(ActionType.PON)
-    def _pon(self, player: int, action: Action):
+    def _pon(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.PON
         self._discard_pool.pop()
         self._hands[player].pon(
@@ -406,7 +416,7 @@ class Round:
         self._last_tile = 0
 
     @_register_do_action(ActionType.OPEN_KAN)
-    def _open_kan(self, player: int, action: Action):
+    def _open_kan(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.OPEN_KAN
         self._discard_pool.pop()
         self._hands[player].open_kan(
@@ -417,27 +427,27 @@ class Round:
         self._last_tile = 0
 
     @_register_do_action(ActionType.ADD_KAN)
-    def _add_kan(self, player: int, action: Action):
+    def _add_kan(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.ADD_KAN
         self._hands[player].add_kan(action.tile, action.pon_call)
         self._status = RoundStatus.ADD_KAN_AFTER
         self._last_tile = action.tile
 
     @_register_do_action(ActionType.CLOSED_KAN)
-    def _closed_kan(self, player: int, action: Action):
+    def _closed_kan(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.CLOSED_KAN
         self._hands[player].closed_kan(action.tiles)
         self._status = RoundStatus.CLOSED_KAN_AFTER
         self._last_tile = action.tiles[0]
 
     @_register_do_action(ActionType.FLOWER)
-    def _flower(self, player: int, action: Action):
+    def _flower(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.FLOWER
         self._hands[player].flower(action.tile)
         self._flower_pass_count = 0
 
     @_register_do_action(ActionType.RON)
-    def _ron(self, player: int, action: Action):
+    def _ron(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.RON
         hand = self._hands[player]
         is_chankan = (
@@ -461,7 +471,7 @@ class Round:
         self._status = RoundStatus.END
 
     @_register_do_action(ActionType.TSUMO)
-    def _tsumo(self, player: int, action: Action):
+    def _tsumo(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.TSUMO
         hand = self._hands[player]
         after_flower_count = 0
@@ -478,7 +488,7 @@ class Round:
                 pass
             else:
                 break
-        is_haitei = self.wall_count <= self._options.end_wall_count
+        is_haitei = self.tiles_left <= 0
         is_tenhou = False
         is_chiihou = False
         if not any(
@@ -507,3 +517,7 @@ class Round:
             is_chiihou=is_chiihou,
         )
         self._status = RoundStatus.END
+
+
+AllowedActionsFunc = Callable[[Round, int, Hand, TileId], ActionList]
+DoActionFunc = Callable[[Round, int, Action], None]

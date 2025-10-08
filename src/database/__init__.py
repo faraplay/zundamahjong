@@ -8,10 +8,10 @@ def get_db(sid: str) -> Session:
     with sio.session(sid) as session:
         if "db" not in session:
             session["db"] = db_factory()
-        return session["db"]
+        return session["db"]  # type: ignore[no-any-return]
 
 
-def close_db(sid: str):
+def close_db(sid: str) -> None:
     with sio.session(sid) as session:
         if "db" in session:
             session["db"].close()

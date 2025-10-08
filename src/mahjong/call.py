@@ -23,7 +23,7 @@ call_meld_types = {
 }
 
 
-def get_meld_type(call_type: CallType):
+def get_meld_type(call_type: CallType) -> MeldType:
     return call_meld_types[call_type]
 
 
@@ -60,7 +60,7 @@ Call = Annotated[
 ]
 
 
-def get_call_tiles(call: Call):
+def get_call_tiles(call: Call) -> list[TileId]:
     if call.call_type == CallType.CLOSED_KAN:
         return list(call.tiles)
     elif call.call_type == CallType.ADD_KAN:

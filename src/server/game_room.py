@@ -1,6 +1,6 @@
 from __future__ import annotations
 from threading import Lock
-from typing import Optional
+from typing import Any, Optional
 import logging
 
 from ..mahjong.game_options import GameOptions
@@ -23,7 +23,7 @@ class GameRoom:
         creator: Player,
         room_name: str,
         player_count: int,
-    ):
+    ) -> None:
         self.room_name = room_name
         self.player_count = player_count
         self.game_options = GameOptions(player_count=player_count)
@@ -35,14 +35,14 @@ class GameRoom:
         self.avatar_lock = Lock()
 
     @property
-    def joined_players(self):
+    def joined_players(self) -> list[Player]:
         return [
             player_connection.player
             for player_connection in self.joined_player_connections
         ]
 
     @property
-    def room_basic_info(self):
+    def room_basic_info(self) -> dict[str, Any]:
         return {
             "room_name": self.room_name,
             "player_count": self.player_count,
@@ -50,7 +50,7 @@ class GameRoom:
         }
 
     @property
-    def room_detailed_info(self):
+    def room_detailed_info(self) -> dict[str, Any]:
         return {
             **self.room_basic_info,
             "avatars": self.avatars,
@@ -58,7 +58,7 @@ class GameRoom:
         }
 
     @classmethod
-    def emit_rooms_list(cls, sid):
+    def emit_rooms_list(cls, sid: str) -> None:
         sio.emit(
             "rooms_info",
             [game_room.room_basic_info for game_room in rooms.values()],
@@ -66,28 +66,26 @@ class GameRoom:
         )
 
     @classmethod
-    def verify_room_name(cls, room_name):
-        if not isinstance(room_name, str):
-            raise Exception("Room name is not a string!")
+    def verify_room_name(cls, room_name: str) -> None:
         if room_name == "":
             raise Exception("Room name cannot be empty!")
         if len(room_name) > 20:
             raise Exception(f"Room name {room_name} is over 20 characters long!")
 
     @classmethod
-    def verify_player_count(cls, player_count):
-        if not isinstance(player_count, int):
-            raise Exception(f"Player count {player_count} is not an integer!")
+    def verify_player_count(cls, player_count: int) -> None:
         if not (player_count == 3 or player_count == 4):
             raise Exception("Player count is not 3 or 4!")
 
     @classmethod
-    def get_player_room(cls, player: Player):
+    def get_player_room(cls, player: Player) -> Optional[GameRoom]:
         with rooms_lock:
             return player_rooms.get(player.id)
 
     @classmethod
-    def create_room(cls, creator: Player, room_name: str, player_count: int):
+    def create_room(
+        cls, creator: Player, room_name: str, player_count: int
+    ) -> GameRoom:
         with rooms_lock:
             if creator.id in player_rooms:
                 raise Exception(f"Player {creator.id} is already in a room!")
@@ -101,7 +99,7 @@ class GameRoom:
         return game_room
 
     @classmethod
-    def join_room(cls, player: Player, room_name: str):
+    def join_room(cls, player: Player, room_name: str) -> GameRoom:
         with rooms_lock:
             if player.id in player_rooms:
                 raise Exception(f"Player {player.id} is already in a room!")
@@ -120,7 +118,7 @@ class GameRoom:
         game_room.broadcast_room_info()
         return game_room
 
-    def _remove_player(self, player_connection: PlayerConnection):
+    def _remove_player(self, player_connection: PlayerConnection) -> None:
         with self.avatar_lock:
             self.joined_player_connections.remove(player_connection)
             self.avatars.pop(player_connection.player.id)
@@ -130,7 +128,7 @@ class GameRoom:
             rooms.pop(self.room_name)
 
     @classmethod
-    def leave_room(cls, player: Player):
+    def leave_room(cls, player: Player) -> GameRoom:
         with rooms_lock:
             try:
                 game_room = player_rooms[player.id]
@@ -144,15 +142,15 @@ class GameRoom:
         game_room.broadcast_room_info()
         return game_room
 
-    def broadcast_room_info(self):
+    def broadcast_room_info(self) -> None:
         for player in self.joined_players:
             sio.emit("room_info", self.room_detailed_info, to=player.id)
 
-    def broadcast_game_end(self):
+    def broadcast_game_end(self) -> None:
         for player in self.joined_players:
             sio.emit("info", None, to=player.id)
 
-    def get_player_connection(self, player: Player):
+    def get_player_connection(self, player: Player) -> PlayerConnection:
         return next(
             player_connection
             for player_connection in self.joined_player_connections
@@ -160,7 +158,7 @@ class GameRoom:
         )
 
     @classmethod
-    def try_disconnect(cls, player: Player):
+    def try_disconnect(cls, player: Player) -> None:
         with rooms_lock:
             game_room = player_rooms.get(player.id)
             if game_room is None:
@@ -187,7 +185,7 @@ class GameRoom:
                     rooms.pop(game_room.room_name)
 
     @classmethod
-    def try_reconnect(cls, player: Player):
+    def try_reconnect(cls, player: Player) -> Optional[GameRoom]:
         with rooms_lock:
             game_room = player_rooms.get(player.id)
             if game_room is not None:
@@ -200,7 +198,7 @@ class GameRoom:
         return game_room
 
     @classmethod
-    def set_avatar(cls, player: Player, avatar: int):
+    def set_avatar(cls, player: Player, avatar: int) -> None:
         game_room = cls.get_player_room(player)
         if game_room is None:
             raise Exception("Player is not in a room!")
@@ -209,14 +207,14 @@ class GameRoom:
         game_room.broadcast_room_info()
 
     @classmethod
-    def set_game_options(cls, player: Player, game_options: GameOptions):
+    def set_game_options(cls, player: Player, game_options: GameOptions) -> None:
         game_room = cls.get_player_room(player)
         if game_room is None:
             raise Exception("Player is not in a room!")
         game_room.game_options = game_options
         game_room.broadcast_room_info()
 
-    def start_game(self):
+    def start_game(self) -> None:
         if self.game_options.player_count != self.player_count:
             raise Exception("Wrong number of players!")
         with rooms_lock:
@@ -228,7 +226,7 @@ class GameRoom:
                 self.joined_players, self.game_options
             )
 
-    def end_game(self):
+    def end_game(self) -> None:
         if self.game_controller is None:
             raise Exception("Game hasn't started!")
         with rooms_lock:

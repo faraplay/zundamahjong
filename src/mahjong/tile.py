@@ -21,7 +21,7 @@ def get_tile_values(tiles: list[TileId]) -> list[TileValue]:
     return [tile // N for tile in tiles]
 
 
-def get_tile_value_buckets(tiles: list[TileId]):
+def get_tile_value_buckets(tiles: list[TileId]) -> dict[int, list[int]]:
     tile_value_buckets: dict[TileValue, list[TileId]] = {}
     for tile in tiles:
         tile_value = get_tile_value(tile)
@@ -33,7 +33,7 @@ def get_tile_value_buckets(tiles: list[TileId]):
     return tile_value_buckets
 
 
-def remove_tile_value(tiles: list[TileId], tile_value: TileValue):
+def remove_tile_value(tiles: list[TileId], tile_value: TileValue) -> TileId:
     for tile in tiles:
         if get_tile_value(tile) == tile_value:
             tiles.remove(tile)
@@ -41,11 +41,11 @@ def remove_tile_value(tiles: list[TileId], tile_value: TileValue):
     raise Exception(f"Tile value {tile_value} not found in hand!")
 
 
-def is_number(tile: TileValue):
+def is_number(tile: TileValue) -> bool:
     return tile < 30
 
 
-def tile_id_is_flower(tile: TileId):
+def tile_id_is_flower(tile: TileId) -> bool:
     return get_tile_value(tile) > 40
 
 

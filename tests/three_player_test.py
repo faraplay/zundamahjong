@@ -11,11 +11,11 @@ from tests.decks import *
 
 
 class ThreePlayerTest(unittest.TestCase):
-    def test_3_player_game(self):
+    def test_3_player_game(self) -> None:
         game = Game(options=GameOptions(player_count=3))
         self.assertEqual(game._player_count, 3)
 
-    def test_north_yaku(self):
+    def test_north_yaku(self) -> None:
         formed_hand = [
             Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230]),
             Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
@@ -45,7 +45,7 @@ class ThreePlayerTest(unittest.TestCase):
             {"NORTH_WIND": 1},
         )
 
-    def test_one_set_of_flowers(self):
+    def test_one_set_of_flowers(self) -> None:
         formed_hand = [
             Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230]),
             Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
@@ -72,7 +72,7 @@ class ThreePlayerTest(unittest.TestCase):
         yaku_mults = YakuCalculator(win, formed_hand).get_yaku_mults()
         self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1})
 
-    def test_five_flowers(self):
+    def test_five_flowers(self) -> None:
         formed_hand = [
             Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230]),
             Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
@@ -101,7 +101,7 @@ class ThreePlayerTest(unittest.TestCase):
             yaku_mults, {"SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1, "FIVE_FLOWERS": 1}
         )
 
-    def test_two_sets_of_flowers(self):
+    def test_two_sets_of_flowers(self) -> None:
         formed_hand = [
             Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230]),
             Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),

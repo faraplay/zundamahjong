@@ -2,7 +2,7 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from .call import Call
+from .meld import Meld
 from .win import Win
 from .yaku import YakuCalculator, yaku_display_names
 from .game_options import GameOptions
@@ -18,15 +18,15 @@ class Scoring(BaseModel):
 
 
 class Scorer:
-    def __init__(self, win: Win, options: GameOptions):
+    def __init__(self, win: Win, options: GameOptions) -> None:
         self._win = win
         self._options = options
 
-    def _get_player_scores(self, han_total: int):
+    def _get_player_scores(self, han_total: int) -> list[float]:
         player_count = self._options.player_count
         win_player = self._win.win_player
         lose_player = self._win.lose_player
-        han_multiplier = 2 ** min(han_total, 6)
+        han_multiplier: int = 2 ** min(han_total, 6)
         if lose_player is None:
             if win_player == self._win.sub_round:
                 player_pay_in_amount = (
@@ -57,12 +57,12 @@ class Scorer:
                 player_pay_in_amount = (
                     self._options.score_nondealer_ron_base_value * han_multiplier
                 )
-            player_scores = [0] * player_count
+            player_scores = [0.0] * player_count
             player_scores[win_player] = player_pay_in_amount
             player_scores[lose_player] = -player_pay_in_amount
         return player_scores
 
-    def _get_formed_hand_scoring(self, formed_hand: list[Call]):
+    def _get_formed_hand_scoring(self, formed_hand: list[Meld]) -> Scoring:
         yaku_mults = YakuCalculator(self._win, formed_hand).get_yaku_mults()
         yaku_values = self._options.yaku_values
         yaku_hans = dict(
@@ -80,17 +80,17 @@ class Scorer:
             player_scores=player_scores,
         )
 
-    def _get_scoring(self):
+    def _get_scoring(self) -> Scoring:
         scorings = [
             self._get_formed_hand_scoring(formed_hand)
             for formed_hand in formed_hand_possibilities(self._win.hand)
         ]
 
-        def key(scoring: Scoring):
+        def key(scoring: Scoring) -> tuple[int, float]:
             return (scoring.han_total, scoring.player_scores[self._win.win_player])
 
         return max(scorings, key=key)
 
     @classmethod
-    def score(cls, win, options):
+    def score(cls, win: Win, options: GameOptions) -> Scoring:
         return cls(win, options)._get_scoring()
