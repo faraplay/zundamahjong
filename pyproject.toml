@@ -9,9 +9,9 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-pg = ["sqlalchemy[postgresql-psycopg]"]
-dev = ["werkzeug"]
-mypy = ["mypy"]
+pg = [
+  "sqlalchemy[postgresql-psycopg]"
+]
 
 [build-system]
 requires = ["setuptools"]
