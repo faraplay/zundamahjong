@@ -10,7 +10,7 @@ from src.mahjong.action import (
 from src.mahjong.round import Round, RoundStatus
 from src.mahjong.action_selector import ActionSelector
 
-from tests.decks import *
+from tests.decks import test_deck4, test_deck_one_discard_option
 
 
 class ActionSelectorTest(unittest.TestCase):

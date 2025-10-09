@@ -22,7 +22,16 @@ from src.mahjong.call import (
 )
 from src.mahjong.game_options import GameOptions
 
-from tests.decks import *
+from tests.decks import (
+    test_deck1,
+    test_deck2,
+    test_deck3,
+    test_deck4,
+    test_deck5,
+    test_deck_haitei,
+    test_deck_kan_tenhou,
+    test_deck_rinshan,
+)
 
 
 class RoundTest(unittest.TestCase):

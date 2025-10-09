@@ -20,7 +20,7 @@ from src.mahjong.call import (
 )
 from src.mahjong.game_options import GameOptions
 
-from tests.decks import *
+from tests.decks import test_deck1, test_deck2, test_deck3
 
 
 class RoundWaitsTest(unittest.TestCase):
