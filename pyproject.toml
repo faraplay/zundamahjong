@@ -26,6 +26,7 @@ zundamahjong = "src"
 dev = [
   "mypy",
   "pytest",
+  "ruff",
   "werkzeug",
 ]
 
