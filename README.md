@@ -3,9 +3,9 @@
 To setup the Python virtual environment and install dependencies, run
 
 ```sh
-python -m venv .venv
+uv venv
 source .venv/bin/activate
-pip install -r requirements.txt
+uv sync
 ```
 
 To install the Node.js dependencies, navigate to the `client` folder with
@@ -51,6 +51,14 @@ Activate the venv with
 source .venv/bin/activate
 ```
 
+Make sure Gunicorn is installed by running
+
+```sh
+uv sync --group=production
+```
+
+and then start the Gunicorn server with
+
 ```sh
 gunicorn --workers 1 --threads 100 --bind 127.0.0.1:5000 src.server:app
 ```
@@ -63,7 +71,7 @@ npm run build
 
 This will output the built client to `client_build`.
 
-Note that the gunicorn does not serve the client files.
+Note that Gunicorn does not serve the client files.
 You will need to serve the client files separately.
 
 ## Credits
