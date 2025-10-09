@@ -8,7 +8,8 @@ logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
 sio = Server(
-    logger=logger, async_mode="threading"  # pyright: ignore[reportArgumentType]
+    logger=logger,  # pyright: ignore[reportArgumentType]
+    async_mode="threading",
 )
 
 Handler = Callable[..., Optional[Any]]

@@ -19,7 +19,7 @@ def get_yaku_mults(
     player_count: int = 4,
     wind_round: int = 0,
     sub_round: int = 0,
-    **kwargs: Any
+    **kwargs: Any,
 ) -> dict[str, int]:
     win = Win(
         win_player=win_player,
@@ -30,7 +30,7 @@ def get_yaku_mults(
         player_count=player_count,
         wind_round=wind_round,
         sub_round=sub_round,
-        **kwargs
+        **kwargs,
     )
     return YakuCalculator(win, formed_hand).get_yaku_mults()
 
