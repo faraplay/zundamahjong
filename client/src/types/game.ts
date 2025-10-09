@@ -1,6 +1,7 @@
 import type { TileId } from "./tile.ts";
 import type { Call } from "./call.ts";
 import type { Action } from "./action.ts";
+import type { Player } from "./player.ts";
 
 export type Discard = {
   player: number;
@@ -24,7 +25,7 @@ export const enum RoundStatus {
 }
 
 export type GameInfo = {
-  player_names: string[];
+  players: Player[];
   wind_round: number;
   sub_round: number;
   draw_count: number;

@@ -151,7 +151,6 @@ function getScreen(
   return (
     <GameOptionsContext.Provider value={myRoom.game_options}>
       <GameScreen
-        players={myRoom.joined_players}
         playerAvatarIds={myRoom.avatars}
         info={info}
         actionSubmitted={actionSubmitted}

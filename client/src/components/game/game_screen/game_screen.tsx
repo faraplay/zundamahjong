@@ -1,6 +1,5 @@
 import { useContext, useLayoutEffect, useState } from "preact/hooks";
 
-import type { Player } from "../../../types/player";
 import type { AvatarIdDict } from "../../../types/avatars";
 import type { Action } from "../../../types/action";
 import { RoundStatus } from "../../../types/game";
@@ -26,7 +25,6 @@ import {
 import { type TileId } from "../../../types/tile";
 
 export function GameScreen({
-  players,
   playerAvatarIds,
   info,
   actionSubmitted,
@@ -34,7 +32,6 @@ export function GameScreen({
   seeResults,
   goToResults,
 }: {
-  players: Player[];
   playerAvatarIds: AvatarIdDict;
   info: AllInfo;
   actionSubmitted: boolean;
@@ -58,14 +55,14 @@ export function GameScreen({
       <></>
     ) : !seeResults ? (
       <WinInfo
-        players={players}
+        players={info.game_info.players}
         playerAvatarIds={playerAvatarIds}
         info={info}
         goToResults={goToResults}
       />
     ) : (
       <Results
-        players={players}
+        players={info.game_info.players}
         playerAvatarIds={playerAvatarIds}
         info={info}
       />
@@ -81,7 +78,10 @@ export function GameScreen({
       <div
         class={`game_screen me_player_${info.player_index} status_${info.round_info.status}`}
       >
-        <PlayerIcons players={players} playerAvatarIds={playerAvatarIds} />
+        <PlayerIcons
+          players={info.game_info.players}
+          playerAvatarIds={playerAvatarIds}
+        />
         <Hand
           tiles={info.player_info.hand}
           actions={info.player_info.actions}
