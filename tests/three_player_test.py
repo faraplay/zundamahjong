@@ -7,8 +7,6 @@ from src.mahjong.meld import Meld, MeldType
 from src.mahjong.win import Win
 from src.mahjong.yaku import YakuCalculator
 
-from tests.decks import *
-
 
 class ThreePlayerTest(unittest.TestCase):
     def test_3_player_game(self) -> None:
