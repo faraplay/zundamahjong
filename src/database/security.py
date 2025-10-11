@@ -2,10 +2,12 @@ import hashlib
 import secrets
 from typing import Optional
 
-from sqlalchemy import select
+from sqlalchemy import func, select
 
 from .models import User
 from . import get_db
+
+max_users = 256
 
 
 def _hash_internal(password: str, salt: str, method: str) -> str:
@@ -50,5 +52,11 @@ def login(sid: str, name: str, password: str) -> None:
             raise Exception("Incorrect password!")
 
     elif password:
-        db.add(User(name=name, password=hash_pw(password)))
-        db.commit()
+        num_users = db.scalar(select(func.count(User.id)))
+
+        if num_users and num_users >= max_users:
+            raise Exception("Unable to register new user!")
+
+        else:
+            db.add(User(name=name, password=hash_pw(password)))
+            db.commit()
