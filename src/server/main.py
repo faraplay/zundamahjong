@@ -2,6 +2,7 @@ import logging
 from typing import Any
 
 from ..database import close_db
+from ..database.security import change_password
 from ..mahjong.action import action_adapter
 from ..mahjong.game_options import GameOptions
 
@@ -72,6 +73,16 @@ def on_set_name(sid: str, name: object, password: object) -> None:
     game_room = GameRoom.try_reconnect(player)
     if game_room is not None and game_room.game_controller is not None:
         game_room.game_controller.emit_info(player)
+
+
+@sio_on("change_password")
+def on_change_password(sid: str, cur_password: object, new_password: object) -> None:
+    if not isinstance(cur_password, str):
+        raise Exception("Argument cur_password is not a string!")
+    if not isinstance(new_password, str):
+        raise Exception("Argument new_password is not a string!")
+    player = get_player(sid)
+    change_password(sid, player, cur_password, new_password)
 
 
 @sio_on("get_rooms")

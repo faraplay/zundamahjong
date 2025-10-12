@@ -5,6 +5,7 @@ from typing import Optional
 from sqlalchemy import func, select
 
 from ..server.player_info import Player
+from ..server.sio import sio
 from . import get_db
 from .models import User
 
@@ -64,3 +65,22 @@ def login(sid: str, player: Player, password: str) -> None:
             db.add(User(name=player.name, password=hash_pw(password)))
             db.commit()
             player.logged_in, player.new_account = True, True
+
+
+def change_password(
+    sid: str, player: Player, cur_password: str, new_password: str
+) -> None:
+    db = get_db(sid)
+    user = db.execute(select(User).where(User.name == player.name)).scalar_one_or_none()
+
+    if user:
+        if not check_pw(cur_password, user.password):
+            raise Exception("The password you entered is incorrect!")
+
+        else:
+            user.password = hash_pw(new_password)
+            db.commit()
+            sio.emit("change_password", {"success": True})
+
+    else:
+        raise Exception("User does not exist!")
