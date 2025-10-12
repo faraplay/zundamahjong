@@ -1,0 +1,16 @@
+#user_settings {
+  width: 40cqw;
+  margin-inline: auto;
+  margin-block: 5cqw;
+}
+
+#user_settings_form {
+  display: grid;
+  grid-template-columns: auto 20cqw;
+}
+
+#submit_settings_buttons {
+  display: flex;
+  gap: 1cqw;
+  margin-top: 2cqw;
+}

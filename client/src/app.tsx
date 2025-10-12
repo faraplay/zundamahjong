@@ -12,6 +12,7 @@ import { Emitter } from "./components/emitter/emitter";
 
 import { ErrorList } from "./components/error_list/error_list";
 import { NameForm } from "./components/name_form/name_form";
+import { UserSettingsForm } from "./components/user_settings_form/user_settings_form";
 import { JoinRoomForm } from "./components/join_room_form/join_room_form";
 import { CreateRoomForm } from "./components/create_room_form/create_room_form";
 import { RoomInfo } from "./components/room/room_info/room_info";
@@ -36,6 +37,7 @@ export function App() {
 
   const [info, setInfo] = useState<AllInfo>();
   const [actionSubmitted, setActionSubmitted] = useState<boolean>(false);
+  const [showSettings, setShowSettings] = useState(false);
   const [seeResults, setSeeResults] = useState(false);
 
   const socket = useRef<Socket>();
@@ -89,6 +91,8 @@ export function App() {
     setActionSubmitted,
     seeResults,
     setSeeResults,
+    showSettings,
+    setShowSettings,
   );
   return (
     <Emitter.Provider value={emit}>
@@ -115,6 +119,8 @@ function getScreen(
   setActionSubmitted: (value: boolean) => void,
   seeResults: boolean,
   setSeeResults: (value: boolean) => void,
+  showSettings: boolean,
+  setShowSettings: (value: boolean) => void,
 ) {
   if (!myPlayer) {
     return (
@@ -124,12 +130,29 @@ function getScreen(
     );
   }
   if (!myRoom) {
-    return (
-      <div id="lobby_screen" class="screen">
-        <JoinRoomForm rooms={rooms} />
-        <CreateRoomForm />
-      </div>
-    );
+    if (!showSettings) {
+      return (
+        <div id="lobby_screen" class="screen">
+          <UserSettingsForm
+            myPlayer={myPlayer}
+            showSettings={showSettings}
+            goToSettings={() => setShowSettings(true)}
+          />
+          <JoinRoomForm rooms={rooms} />
+          <CreateRoomForm />
+        </div>
+      );
+    } else {
+      return (
+        <div id="lobby_screen" class="screen">
+          <UserSettingsForm
+            myPlayer={myPlayer}
+            showSettings={showSettings}
+            goToSettings={() => setShowSettings(false)}
+          />
+        </div>
+      );
+    }
   }
   if (!info) {
     return (
