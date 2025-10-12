@@ -7,7 +7,7 @@ from ..mahjong.action import action_adapter
 from ..mahjong.game_options import GameOptions
 
 from .game_room import GameRoom
-from .name_sid import get_player, remove_sid, set_player, try_get_player, verify_name
+from .name_sid import get_player, set_player, try_get_player, unset_player, verify_name
 from .player_info import Player
 from .sio import sio, sio_on
 
@@ -28,7 +28,7 @@ def disconnect(sid: str, reason: str) -> None:
         logger.info(f"Client {sid} had no set name")
     else:
         GameRoom.try_disconnect(player)
-    remove_sid(sid)
+    unset_player(sid)
     close_db(sid)
 
 
@@ -69,10 +69,17 @@ def on_set_name(sid: str, name: object, password: object) -> None:
     verify_name(name)
     player = Player.from_name(name)
     set_player(sid, player, password)
-    sio.emit("player_info", player.model_dump(), sid)
+    sio.emit("player_info", player.model_dump(), to=sid)
     game_room = GameRoom.try_reconnect(player)
     if game_room is not None and game_room.game_controller is not None:
         game_room.game_controller.emit_info(player)
+
+
+@sio_on("unset_name")
+def on_unset_name(sid: str) -> None:
+    GameRoom.try_disconnect(get_player(sid))
+    unset_player(sid)
+    sio.emit("unset_name", to=sid)
 
 
 @sio_on("change_password")

@@ -60,6 +60,9 @@ export function App() {
     socket.current.on("player_info", (player: Player) => {
       setMyPlayer(player);
     });
+    socket.current.on("unset_name", () => {
+      setMyPlayer(undefined);
+    });
     socket.current.on("rooms_info", (rooms: Array<BasicRoom>) => {
       setRooms(rooms);
     });
