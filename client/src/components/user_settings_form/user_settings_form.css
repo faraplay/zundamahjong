@@ -14,3 +14,13 @@
   gap: 1cqw;
   margin-top: 2cqw;
 }
+
+#user_settings_error {
+  background-color: rgb(255, 0, 0, 30%);
+  font-size: 1.2cqw;
+
+  width: 40cqw;
+  border: 1px solid black;
+  padding: 0.5cqw;
+  margin: 2cqw 0;
+}

@@ -37,9 +37,9 @@ export function App() {
   const [myRoom, setMyRoom] = useState<DetailedRoom>();
 
   const [info, setInfo] = useState<AllInfo>();
+  const [showSettings, setShowSettings] = useState<boolean>(false);
   const [actionSubmitted, setActionSubmitted] = useState<boolean>(false);
-  const [showSettings, setShowSettings] = useState(false);
-  const [seeResults, setSeeResults] = useState(false);
+  const [seeResults, setSeeResults] = useState<boolean>(false);
 
   const socket = useRef<Socket>();
   const emit: EmitFunc = (event, ...args) =>

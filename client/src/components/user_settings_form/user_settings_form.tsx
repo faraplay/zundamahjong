@@ -1,9 +1,11 @@
-import { useContext } from "preact/hooks";
+import { useContext, useState } from "preact/hooks";
 
 import "./user_settings_form.css";
 import { Emitter } from "../emitter/emitter";
 
 export function UserSettingsForm({ goToLobby }: { goToLobby: () => void }) {
+  const [errorMessage, setErrorMessage] = useState<string>();
+
   const emit = useContext(Emitter);
 
   const onGoToLobbyClick = (e: Event) => {
@@ -17,16 +19,28 @@ export function UserSettingsForm({ goToLobby }: { goToLobby: () => void }) {
     </button>
   );
 
+  const errorDialog = errorMessage ? (
+    <div id="user_settings_error">{errorMessage}</div>
+  ) : null;
+
   const submitSettings = (e: SubmitEvent) => {
     e.preventDefault();
+    setErrorMessage(undefined);
 
     const formData = new FormData(e.currentTarget as HTMLFormElement);
     const cur_password = formData.get("cur_password");
     const new_password_2 = formData.get("new_password_2");
     const new_password = formData.get("new_password");
 
-    if (cur_password && new_password == new_password_2) {
-      emit("change_password", cur_password, new_password);
+    if (new_password || new_password_2) {
+      if (!cur_password) {
+        setErrorMessage("Please enter your current password");
+      } else if (new_password != new_password_2) {
+        setErrorMessage("Your new password values don't match!");
+      } else {
+        emit("change_password", cur_password, new_password);
+        (e.currentTarget as HTMLFormElement).reset();
+      }
     }
   };
 
@@ -49,6 +63,8 @@ export function UserSettingsForm({ goToLobby }: { goToLobby: () => void }) {
           {goToLobbyButton}
         </div>
       </form>
+
+      {errorDialog}
     </div>
   );
 }
