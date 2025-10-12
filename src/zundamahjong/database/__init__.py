@@ -5,7 +5,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm import Session, sessionmaker
 
 from .engine import engine
-from .models import User
+from .models import Base as Base, User
 
 session_factory = sessionmaker(engine)
 
