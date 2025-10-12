@@ -74,6 +74,18 @@ This will output the built client to `client_build`.
 Note that Gunicorn does not serve the client files.
 You will need to serve the client files separately.
 
+## Generating password hashes
+
+To reset a user's password if they have forgotten it, you can use
+
+```python
+>>> from getpass import getpass
+>>> from zundamahjong.database.security import hash_pw
+>>> print(hash_pw(getpass()))
+```
+
+and then input the result manually into the application database.
+
 ## Credits
 
 Mahjong tile graphics are from [demching.itch.io/mahjong](https://demching.itch.io/mahjong).
