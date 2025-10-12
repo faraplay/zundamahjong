@@ -60,7 +60,7 @@ uv sync --group=production
 and then start the Gunicorn server with
 
 ```sh
-gunicorn --workers 1 --threads 100 --bind 127.0.0.1:5000 src.server:app
+gunicorn --workers 1 --threads 100 --bind 127.0.0.1:5000 zundamahjong:app
 ```
 
 To build the client, open a shell in the `client` folder and run
