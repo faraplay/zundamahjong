@@ -15,6 +15,18 @@ sio = Server(
 Handler = Callable[..., Optional[Any]]
 
 
+def emit_error(message: str, sid: str) -> None:
+    sio.emit("error", {"message": message, "severity": "ERROR"}, to=sid)
+
+
+def emit_warning(message: str, sid: str) -> None:
+    sio.emit("error", {"message": message, "severity": "WARNING"}, to=sid)
+
+
+def emit_info(message: str, sid: str) -> None:
+    sio.emit("error", {"message": message, "severity": "INFO"}, to=sid)
+
+
 def sio_on(event: str) -> Callable[[Handler], Handler]:
     def sio_on_decorator(
         handler: Handler,
@@ -31,7 +43,7 @@ def sio_on(event: str) -> Callable[[Handler], Handler]:
                 return return_value
             except Exception as e:
                 logger.error(e)
-                sio.send(str(e), to=sid)
+                emit_error(str(e), sid)
             return None
 
         sio.on(event, wrapped_handler)

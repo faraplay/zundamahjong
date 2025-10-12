@@ -3,10 +3,10 @@ import type { ErrorMessage } from "../../types/error_message";
 import "./error_list.css";
 
 function ErrorListItem({
-  errorMessage,
+  error,
   removeThisError,
 }: {
-  errorMessage: string;
+  error: ErrorMessage;
   removeThisError: () => void;
 }) {
   const onClick = (e: Event) => {
@@ -14,9 +14,9 @@ function ErrorListItem({
     removeThisError();
   };
   return (
-    <div class="error_list_item">
+    <div class={`error_list_item ${error.severity.toLowerCase()}`}>
       <button onClick={onClick}>&times;</button>
-      <span>{errorMessage}</span>
+      <span>{error.message}</span>
     </div>
   );
 }
@@ -33,7 +33,7 @@ export function ErrorList({
       {errors.map((error) => (
         <ErrorListItem
           key={error.index}
-          errorMessage={error.message}
+          error={error}
           removeThisError={() => removeError(error.index)}
         />
       ))}

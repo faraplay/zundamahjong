@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "preact/hooks";
 import { io, Socket } from "socket.io-client";
 
-import type { ErrorMessage } from "./types/error_message";
+import type { ErrorMessage, Severity } from "./types/error_message";
 import type { Player } from "./types/player";
 import type { DetailedRoom, BasicRoom } from "./types/room";
 import { RoundStatus, type AllServerInfo } from "./types/game";
@@ -48,15 +48,20 @@ export function App() {
   useEffect(() => {
     socket.current = io();
 
-    socket.current.on("message", (message: string) => {
-      console.log(message);
-      setErrors((errors) => {
-        return {
-          currentIndex: errors.currentIndex + 1,
-          list: errors.list.concat([{ index: errors.currentIndex, message }]),
-        };
-      });
-    });
+    socket.current.on(
+      "error",
+      ({ message, severity }: { message: string; severity: Severity }) => {
+        console.log(message);
+        setErrors((errors) => {
+          return {
+            currentIndex: errors.currentIndex + 1,
+            list: errors.list.concat([
+              { index: errors.currentIndex, severity, message },
+            ]),
+          };
+        });
+      },
+    );
     socket.current.on("player_info", (player: Player) => {
       setMyPlayer(player);
     });
