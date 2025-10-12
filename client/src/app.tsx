@@ -12,6 +12,7 @@ import { Emitter } from "./components/emitter/emitter";
 
 import { ErrorList } from "./components/error_list/error_list";
 import { NameForm } from "./components/name_form/name_form";
+import { UserWelcome } from "./components/user_welcome/user_welcome";
 import { UserSettingsForm } from "./components/user_settings_form/user_settings_form";
 import { JoinRoomForm } from "./components/join_room_form/join_room_form";
 import { CreateRoomForm } from "./components/create_room_form/create_room_form";
@@ -129,30 +130,24 @@ function getScreen(
       </div>
     );
   }
+  if (showSettings) {
+    return (
+      <div id="settings_screen" class="screen">
+        <UserSettingsForm goToLobby={() => setShowSettings(false)} />
+      </div>
+    );
+  }
   if (!myRoom) {
-    if (!showSettings) {
-      return (
-        <div id="lobby_screen" class="screen">
-          <UserSettingsForm
-            myPlayer={myPlayer}
-            showSettings={showSettings}
-            goToSettings={() => setShowSettings(true)}
-          />
-          <JoinRoomForm rooms={rooms} />
-          <CreateRoomForm />
-        </div>
-      );
-    } else {
-      return (
-        <div id="lobby_screen" class="screen">
-          <UserSettingsForm
-            myPlayer={myPlayer}
-            showSettings={showSettings}
-            goToSettings={() => setShowSettings(false)}
-          />
-        </div>
-      );
-    }
+    return (
+      <div id="lobby_screen" class="screen">
+        <UserWelcome
+          myPlayer={myPlayer}
+          goToSettings={() => setShowSettings(true)}
+        />
+        <JoinRoomForm rooms={rooms} />
+        <CreateRoomForm />
+      </div>
+    );
   }
   if (!info) {
     return (
