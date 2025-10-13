@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "preact/hooks";
 import { io, Socket } from "socket.io-client";
 
-import type { ErrorMessage, Severity } from "./types/error_message";
+import type { ServerMessage, Severity } from "./types/server_message";
 import type { Player } from "./types/player";
 import type { DetailedRoom, BasicRoom } from "./types/room";
 import { RoundStatus, type AllServerInfo } from "./types/game";
@@ -10,7 +10,7 @@ import type { EmitFunc } from "./types/emit_func";
 
 import { Emitter } from "./components/emitter/emitter";
 
-import { ErrorList } from "./components/error_list/error_list";
+import { ServerMessageList } from "./components/server_message_list/server_message_list";
 import { NameForm } from "./components/name_form/name_form";
 import { UserWelcome } from "./components/user_welcome/user_welcome";
 import { UserSettingsForm } from "./components/user_settings_form/user_settings_form";
@@ -27,9 +27,9 @@ import "./app.css";
 import { GameOptionsContext } from "./components/game_options_context/game_options_context";
 
 export function App() {
-  const [errors, setErrors] = useState<{
+  const [serverMessages, setServerMessages] = useState<{
     currentIndex: number;
-    list: ErrorMessage[];
+    list: ServerMessage[];
   }>({ currentIndex: 0, list: [] });
 
   const [myPlayer, setMyPlayer] = useState<Player>();
@@ -49,14 +49,14 @@ export function App() {
     socket.current = io();
 
     socket.current.on(
-      "error",
+      "server_message",
       ({ message, severity }: { message: string; severity: Severity }) => {
         console.log(message);
-        setErrors((errors) => {
+        setServerMessages((serverMessages) => {
           return {
-            currentIndex: errors.currentIndex + 1,
-            list: errors.list.concat([
-              { index: errors.currentIndex, severity, message },
+            currentIndex: serverMessages.currentIndex + 1,
+            list: serverMessages.list.concat([
+              { index: serverMessages.currentIndex, severity, message },
             ]),
           };
         });
@@ -106,12 +106,12 @@ export function App() {
   return (
     <Emitter.Provider value={emit}>
       {screen}
-      <ErrorList
-        errors={errors.list}
-        removeError={(index) => {
-          setErrors({
-            currentIndex: errors.currentIndex,
-            list: errors.list.filter((error) => error.index != index),
+      <ServerMessageList
+        serverMessages={serverMessages.list}
+        removeMessage={(index) => {
+          setServerMessages({
+            currentIndex: serverMessages.currentIndex,
+            list: serverMessages.list.filter((msg) => msg.index != index),
           });
         }}
       />

@@ -16,15 +16,15 @@ Handler = Callable[..., Optional[Any]]
 
 
 def emit_error(message: str, sid: str) -> None:
-    sio.emit("error", {"message": message, "severity": "ERROR"}, to=sid)
+    sio.emit("server_message", {"message": message, "severity": "ERROR"}, sid)
 
 
 def emit_warning(message: str, sid: str) -> None:
-    sio.emit("error", {"message": message, "severity": "WARNING"}, to=sid)
+    sio.emit("server_message", {"message": message, "severity": "WARNING"}, sid)
 
 
 def emit_info(message: str, sid: str) -> None:
-    sio.emit("error", {"message": message, "severity": "INFO"}, to=sid)
+    sio.emit("server_message", {"message": message, "severity": "INFO"}, sid)
 
 
 def sio_on(event: str) -> Callable[[Handler], Handler]:

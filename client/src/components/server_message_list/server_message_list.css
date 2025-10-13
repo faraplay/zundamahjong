@@ -1,11 +1,11 @@
-.error_list {
+.server_message_list {
   width: 90cqw;
   position: absolute;
   left: 5cqw;
   bottom: 0;
   z-index: 100;
 
-  .error_list_item {
+  .server_message_list_item {
     padding: 0.5cqw;
     display: flex;
     flex-direction: row-reverse;
