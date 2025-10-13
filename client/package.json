@@ -7,7 +7,8 @@
     "dev": "vite",
     "build": "tsc -b && vite build",
     "preview": "vite preview",
-    "lint": "eslint . && prettier --write .",
+    "lint": "eslint .",
+    "lint:format": "eslint . && prettier --write .",
     "test": "vitest run",
     "test:debug": "vitest --test-timeout=0"
   },
