@@ -2,7 +2,7 @@ import hashlib
 import secrets
 from typing import Optional
 
-from sqlalchemy import func, select
+import sqlalchemy as sa
 
 from ..server.player_info import Player
 from . import get_db
@@ -45,7 +45,8 @@ def check_pw(password: str, pwhash: str) -> bool:
 
 def login(sid: str, name: str, password: str) -> Player:
     db = get_db(sid)
-    user = db.execute(select(User).where(User.name == name)).scalar_one_or_none()
+
+    user = db.execute(sa.select(User).where(User.name == name)).scalar_one_or_none()
 
     if user:
         if not check_pw(password, user.password):
@@ -55,7 +56,7 @@ def login(sid: str, name: str, password: str) -> Player:
             return Player(name=name, has_account=True)
 
     elif password:
-        num_users = db.scalar(select(func.count(User.id)))
+        num_users = db.scalar(sa.select(sa.func.count(User.id)))
 
         if num_users and num_users >= max_users:
             raise Exception("Unable to register new user!")
@@ -72,7 +73,7 @@ def change_password(
     sid: str, player: Player, cur_password: str, new_password: str
 ) -> None:
     db = get_db(sid)
-    user = db.execute(select(User).where(User.name == player.name)).scalar_one_or_none()
+    user = db.execute(sa.select(User).where(User.name == player.name)).scalar_one_or_none()
 
     if user:
         if not check_pw(cur_password, user.password):
