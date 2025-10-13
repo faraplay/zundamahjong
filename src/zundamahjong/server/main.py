@@ -5,6 +5,7 @@ from ..database import close_db
 from ..database.security import change_password, login
 from ..mahjong.action import action_adapter
 from ..mahjong.game_options import GameOptions
+from ..types.avatar import Avatar
 
 from .game_room import GameRoom
 from .name_sid import get_player, set_player, try_get_player, unset_player, verify_name
@@ -123,9 +124,10 @@ def on_leave_room(sid: str) -> None:
 
 
 @sio_on("set_avatar")
-def on_set_avatar(sid: str, avatar: object) -> None:
-    if not isinstance(avatar, int):
+def on_set_avatar(sid: str, avatar_code: object) -> None:
+    if not isinstance(avatar_code, int):
         raise Exception("Avatar code is not an integer!")
+    avatar = Avatar(avatar_code)
     GameRoom.set_avatar(get_player(sid), avatar)
 
 

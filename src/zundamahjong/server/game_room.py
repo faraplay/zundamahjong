@@ -3,10 +3,13 @@ from threading import Lock
 from typing import Any, Optional
 import logging
 
+from ..database.avatars import get_avatar, save_avatar
 from ..mahjong.game_options import GameOptions
+from ..types.avatar import Avatar
 from ..types.player import Player, PlayerConnection
 
 from .game_controller import GameController
+from .name_sid import id_to_sid
 from .sio import sio
 
 logger = logging.getLogger(__name__)
@@ -31,7 +34,7 @@ class GameRoom:
         self.joined_player_connections: list[PlayerConnection] = [
             PlayerConnection(player=creator)
         ]
-        self.avatars = {creator.id: 0}
+        self.avatars = {creator.id: get_avatar(sio, id_to_sid[creator.id], creator)}
         self.avatar_lock = Lock()
 
     @property
@@ -112,17 +115,21 @@ class GameRoom:
                 game_room.joined_player_connections.append(
                     PlayerConnection(player=player)
                 )
-                game_room.avatars[player.id] = 0
+                game_room.avatars[player.id] = get_avatar(
+                    sio, id_to_sid[player.id], player
+                )
             player_rooms[player.id] = game_room
         # broadcast new player to room
         game_room.broadcast_room_info()
         return game_room
 
     def _remove_player(self, player_connection: PlayerConnection) -> None:
+        player = player_connection.player
         with self.avatar_lock:
             self.joined_player_connections.remove(player_connection)
-            self.avatars.pop(player_connection.player.id)
-        player_rooms.pop(player_connection.player.id)
+            save_avatar(sio, id_to_sid[player.id], player, self.avatars[player.id])
+            self.avatars.pop(player.id)
+        player_rooms.pop(player.id)
         if len(self.joined_players) == 0:
             logger.info(f"Room {self.room_name} is now empty, removing from rooms dict")
             rooms.pop(self.room_name)
@@ -198,13 +205,18 @@ class GameRoom:
         return game_room
 
     @classmethod
-    def set_avatar(cls, player: Player, avatar: int) -> None:
+    def set_avatar(cls, player: Player, avatar: Avatar) -> None:
         game_room = cls.get_player_room(player)
         if game_room is None:
             raise Exception("Player is not in a room!")
         with game_room.avatar_lock:
             game_room.avatars[player.id] = avatar
         game_room.broadcast_room_info()
+
+    def _save_avatars(self) -> None:
+        for player_connection in self.joined_player_connections:
+            player = player_connection.player
+            save_avatar(sio, id_to_sid[player.id], player, self.avatars[player.id])
 
     @classmethod
     def set_game_options(cls, player: Player, game_options: GameOptions) -> None:
@@ -222,6 +234,7 @@ class GameRoom:
                 raise Exception("Room is not full!")
             if self.game_controller is not None:
                 raise Exception("Game is already in progress!")
+            self._save_avatars()
             self.game_controller = GameController(
                 self.joined_players, self.game_options
             )
