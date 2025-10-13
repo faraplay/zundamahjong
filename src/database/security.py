@@ -4,9 +4,10 @@ from typing import Optional
 
 import sqlalchemy as sa
 
+from ..server.name_sid import id_to_sid
 from ..server.player_info import Player
-from . import get_db
 from .models import User
+from . import get_db, get_user
 
 max_users = 256
 
@@ -45,8 +46,7 @@ def check_pw(password: str, pwhash: str) -> bool:
 
 def login(sid: str, name: str, password: str) -> Player:
     db = get_db(sid)
-
-    user = db.execute(sa.select(User).where(User.name == name)).scalar_one_or_none()
+    user = get_user(db, name)
 
     if user:
         if not check_pw(password, user.password):
@@ -70,10 +70,10 @@ def login(sid: str, name: str, password: str) -> Player:
 
 
 def change_password(
-    sid: str, player: Player, cur_password: str, new_password: str
+     player: Player, cur_password: str, new_password: str
 ) -> None:
-    db = get_db(sid)
-    user = db.execute(sa.select(User).where(User.name == player.name)).scalar_one_or_none()
+    db = get_db(id_to_sid[player.id])
+    user = get_user(db, player.name)
 
     if user:
         if not check_pw(cur_password, user.password):
@@ -84,4 +84,4 @@ def change_password(
             db.commit()
 
     else:
-        raise Exception("User does not exist!")
+        raise Exception("User does not have an account!")

@@ -89,7 +89,7 @@ def on_change_password(sid: str, cur_password: object, new_password: object) -> 
         raise Exception("Argument cur_password is not a string!")
     if not isinstance(new_password, str):
         raise Exception("Argument new_password is not a string!")
-    change_password(sid, get_player(sid), cur_password, new_password)
+    change_password(get_player(sid), cur_password, new_password)
     emit_info("Password changed successfully.", sid)
 
 
