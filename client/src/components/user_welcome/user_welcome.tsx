@@ -36,11 +36,11 @@ export function UserWelcome({
   );
 
   const welcome_message =
-    myPlayer.logged_in && !myPlayer.new_account
+    myPlayer.has_account && !myPlayer.new_user
       ? `Welcome back, ${myPlayer.name}`
       : `Welcome, ${myPlayer.name}`;
 
-  if (myPlayer.logged_in) {
+  if (myPlayer.has_account) {
     return (
       <div id="user_welcome">
         {welcome_message} {goToSettingsButton} {logoutButton}

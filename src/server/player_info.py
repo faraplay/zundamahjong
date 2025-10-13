@@ -1,17 +1,16 @@
 from __future__ import annotations
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, computed_field
 
 
-class Player(BaseModel):
-    id: str = Field(frozen=True)
-    name: str = Field(frozen=True)
+class Player(BaseModel, frozen=True):
+    name: str
+    has_account: bool = False
+    new_user: bool = False
 
-    logged_in: bool = False
-    new_account: bool = False
-
-    @classmethod
-    def from_name(cls, name: str) -> Player:
-        return Player(id="player:" + name, name=name)
+    @computed_field  # type: ignore[prop-decorator]
+    @property
+    def id(self) -> str:
+        return f"player:{self.name}"
 
 
 class PlayerConnection(BaseModel):

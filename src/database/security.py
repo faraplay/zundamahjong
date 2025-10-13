@@ -5,7 +5,6 @@ from typing import Optional
 from sqlalchemy import func, select
 
 from ..server.player_info import Player
-from ..server.sio import sio
 from . import get_db
 from .models import User
 
@@ -44,16 +43,16 @@ def check_pw(password: str, pwhash: str) -> bool:
     return hashval == _hash_internal(password, salt, method)
 
 
-def login(sid: str, player: Player, password: str) -> None:
+def login(sid: str, name: str, password: str) -> Player:
     db = get_db(sid)
-    user = db.execute(select(User).where(User.name == player.name)).scalar_one_or_none()
+    user = db.execute(select(User).where(User.name == name)).scalar_one_or_none()
 
     if user:
         if not check_pw(password, user.password):
             raise Exception("Incorrect password!")
 
         else:
-            player.logged_in = True
+            return Player(name=name, has_account=True)
 
     elif password:
         num_users = db.scalar(select(func.count(User.id)))
@@ -62,9 +61,11 @@ def login(sid: str, player: Player, password: str) -> None:
             raise Exception("Unable to register new user!")
 
         else:
-            db.add(User(name=player.name, password=hash_pw(password)))
+            db.add(User(name=name, password=hash_pw(password)))
             db.commit()
-            player.logged_in, player.new_account = True, True
+            return Player(name=name, has_account=True, new_user=True)
+
+    return Player(name=name)
 
 
 def change_password(
@@ -75,12 +76,11 @@ def change_password(
 
     if user:
         if not check_pw(cur_password, user.password):
-            raise Exception("The password you entered is incorrect!")
+            raise Exception("Current password is incorrect!")
 
         else:
             user.password = hash_pw(new_password)
             db.commit()
-            sio.emit("change_password", {"success": True})
 
     else:
         raise Exception("User does not exist!")
