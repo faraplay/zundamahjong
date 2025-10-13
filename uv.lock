@@ -1,5 +1,5 @@
 version = 1
-revision = 2
+revision = 3
 requires-python = ">=3.9"
 
 [[package]]
@@ -805,12 +805,19 @@ dev = [
     { name = "ruff" },
     { name = "werkzeug" },
 ]
+lint = [
+    { name = "mypy" },
+    { name = "ruff" },
+]
 postgresql = [
     { name = "psycopg", extra = ["binary"] },
 ]
 production = [
     { name = "gunicorn" },
     { name = "psycopg", extra = ["binary"] },
+]
+test = [
+    { name = "pytest" },
 ]
 
 [package.metadata]
@@ -829,8 +836,13 @@ dev = [
     { name = "ruff" },
     { name = "werkzeug" },
 ]
+lint = [
+    { name = "mypy" },
+    { name = "ruff" },
+]
 postgresql = [{ name = "psycopg", extras = ["binary"] }]
 production = [
     { name = "gunicorn" },
     { name = "psycopg", extras = ["binary"] },
 ]
+test = [{ name = "pytest" }]

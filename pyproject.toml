@@ -22,22 +22,37 @@ build-backend = "setuptools.build_meta"
 [tool.setuptools.package-dir]
 zundamahjong = "src"
 
+
+
+# Dev dependencies
+
 [dependency-groups]
 dev = [
-  "mypy",
-  "pytest",
-  "ruff",
+  {include-group = "lint"},
+  {include-group = "test"},
   "werkzeug",
 ]
 
-postgresql = [
-  "psycopg[binary]",
+lint = [
+  "mypy",
+  "ruff",
+]
+
+test = [
+  "pytest",
 ]
 
 production = [
   {include-group = "postgresql"},
   "gunicorn",
 ]
+
+postgresql = [
+  "psycopg[binary]",
+]
+
+
+# Other tool configs
 
 [[tool.mypy.overrides]]
 module = ["socketio.*"]
