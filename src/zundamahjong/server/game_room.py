@@ -106,7 +106,11 @@ class GameRoom:
         with rooms_lock:
             if player.id in player_rooms:
                 raise Exception(f"Player {player.id} is already in a room!")
-            game_room = rooms[room_name]
+            game_room = rooms.get(room_name)
+            if not game_room:
+                raise Exception(
+                    f"Room '{room_name}' no longer exists! Please refresh the room list."
+                )
             if game_room.game_controller:
                 raise Exception("Game already in progress!")
             if len(game_room.joined_players) >= game_room.player_count:
