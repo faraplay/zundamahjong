@@ -13,6 +13,7 @@ class ThreePlayerTest(unittest.TestCase):
         game = Game(options=GameOptions(player_count=3))
         self.assertEqual(game._player_count, 3)
 
+class ThreePlayerYakuTest(unittest.TestCase):
     def test_north_yaku(self) -> None:
         formed_hand = [
             Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230]),
