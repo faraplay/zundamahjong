@@ -1,5 +1,5 @@
 ---
-name: Build Server
+name: Build
 
 on:
   workflow_call:
@@ -40,10 +40,10 @@ jobs:
         run: |
           uv build
       - uses: actions/upload-artifact@v4
+        if: matrix.python-version == 3.13
         with:
           path: dist/zundamahjong-*-py3-none-any.whl
-          name: zundamahjong-wheel-python-${{ matrix.python-version }}
-          overwrite: true
+          name: zundamahjong-wheel
 
   test-wheel:
     needs: build-wheel
@@ -60,7 +60,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: actions/download-artifact@v5
         with:
-          name: zundamahjong-wheel-python-${{ matrix.python-version }}
+          name: zundamahjong-wheel
       - name: Install wheel
         run: |
           python -m pip install --upgrade pip

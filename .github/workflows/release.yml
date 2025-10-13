@@ -7,30 +7,22 @@ on:
       - "v*.*.*"
 
 jobs:
-  build-client:
-    uses: ./.github/workflows/build-client.yml
-  build-server:
-    uses: ./.github/workflows/build-server.yml
+  test-client:
+    uses: ./.github/workflows/client.yml
+  test-server:
+    uses: ./.github/workflows/server.yml
 
   release:
     needs:
-      - build-client
-      - build-server
+      - test-client
+      - test-server
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v5
         with:
-          name: zundamahjong-wheel-python-3.13
-      - uses: actions/download-artifact@v5
-        with:
-          name: zundamahjong-client
-      - name: Add version to client release files
-        run: |
-          mv zundamahjong-client.zip \
-             zundamahjong-client-"${GITHUB_REF_NAME#v}".zip
+          name: zundamahjong-wheel
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           files: |
             zundamahjong-*-py3-none-any.whl
-            zundamahjong-client-*.zip
