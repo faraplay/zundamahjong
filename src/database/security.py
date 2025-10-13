@@ -3,11 +3,11 @@ import secrets
 from typing import Optional
 
 import sqlalchemy as sa
+from socketio import Server  # type: ignore[import-untyped]
 
-from ..server.name_sid import id_to_sid
-from ..server.player_info import Player
-from .models import User
+from ..types.player import Player
 from . import get_db, get_user
+from .models import User
 
 max_users = 256
 
@@ -44,8 +44,8 @@ def check_pw(password: str, pwhash: str) -> bool:
     return hashval == _hash_internal(password, salt, method)
 
 
-def login(sid: str, name: str, password: str) -> Player:
-    db = get_db(sid)
+def login(sio: Server, sid: str, name: str, password: str) -> Player:
+    db = get_db(sio, sid)
     user = get_user(db, name)
 
     if user:
@@ -70,9 +70,9 @@ def login(sid: str, name: str, password: str) -> Player:
 
 
 def change_password(
-     player: Player, cur_password: str, new_password: str
+    sio: Server, sid: str, player: Player, cur_password: str, new_password: str
 ) -> None:
-    db = get_db(id_to_sid[player.id])
+    db = get_db(sio, sid)
     user = get_user(db, player.name)
 
     if user:

@@ -8,7 +8,7 @@ from ..mahjong.round import RoundStatus
 from ..mahjong.game import Game
 
 from .sio import sio
-from .player_info import Player
+from ..types.player import Player
 
 
 class GameController:

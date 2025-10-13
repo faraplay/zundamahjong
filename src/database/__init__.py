@@ -1,21 +1,21 @@
 from typing import Optional
 
+from socketio import Server  # type: ignore[import-untyped]
 import sqlalchemy as sa
 from sqlalchemy.orm import Session
 
-from ..server.sio import sio
 from .engine import db_factory
 from .models import User
 
 
-def get_db(sid: str) -> Session:
+def get_db(sio: Server, sid: str) -> Session:
     with sio.session(sid) as session:
         if "db" not in session:
             session["db"] = db_factory()
         return session["db"]  # type: ignore[no-any-return]
 
 
-def close_db(sid: str) -> None:
+def close_db(sio: Server, sid: str) -> None:
     with sio.session(sid) as session:
         if "db" in session:
             session["db"].close()

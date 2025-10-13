@@ -1,7 +1,7 @@
 from threading import Lock
 from typing import Optional
 
-from .player_info import Player
+from ..types.player import Player
 from .sio import sio
 
 sid_to_player: dict[str, Player] = {}

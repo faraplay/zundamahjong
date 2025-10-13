@@ -28,7 +28,7 @@ def disconnect(sid: str, reason: str) -> None:
     else:
         GameRoom.try_disconnect(player)
     unset_player(sid)
-    close_db(sid)
+    close_db(sio, sid)
 
 
 @sio_on("action")
@@ -66,7 +66,7 @@ def on_set_name(sid: str, name: object, password: object) -> None:
     if not isinstance(password, str):
         raise Exception("Argument password is not a string!")
     verify_name(name)
-    player = login(sid, name, password)
+    player = login(sio, sid, name, password)
     set_player(sid, player)
     if player.has_account and player.new_user:
         emit_info("Account successfully created.", sid)
@@ -89,7 +89,7 @@ def on_change_password(sid: str, cur_password: object, new_password: object) -> 
         raise Exception("Argument cur_password is not a string!")
     if not isinstance(new_password, str):
         raise Exception("Argument new_password is not a string!")
-    change_password(get_player(sid), cur_password, new_password)
+    change_password(sio, sid, get_player(sid), cur_password, new_password)
     emit_info("Password changed successfully.", sid)
 
 
