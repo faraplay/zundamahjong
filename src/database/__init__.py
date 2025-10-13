@@ -1,6 +1,6 @@
 from typing import Optional
 
-from socketio import Server  # type: ignore[import-untyped]
+from socketio import Server
 import sqlalchemy as sa
 from sqlalchemy.orm import Session
 

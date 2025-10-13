@@ -39,5 +39,9 @@ production = [
   "gunicorn",
 ]
 
+[[tool.mypy.overrides]]
+module = ["socketio.*"]
+ignore_missing_imports = true
+
 [tool.pyright]
 typeCheckingMode = "standard"

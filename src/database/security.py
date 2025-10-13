@@ -3,7 +3,7 @@ import secrets
 from typing import Optional
 
 import sqlalchemy as sa
-from socketio import Server  # type: ignore[import-untyped]
+from socketio import Server
 
 from ..types.player import Player
 from . import get_db, get_user
