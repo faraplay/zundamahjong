@@ -2,6 +2,7 @@
 name = "zundamahjong"
 dynamic = ["version"]
 description = "Web-based Mahjong game"
+readme = "README.md"
 requires-python = ">=3.9"
 
 dependencies = [
@@ -13,8 +14,11 @@ dependencies = [
 
 [project.optional-dependencies]
 postgresql = [
-  "sqlalchemy[postgresql-psycopg]"
+  "sqlalchemy[postgresql-psycopgbinary]"
 ]
+
+[project.urls]
+"Source Code" = "https://github.com/faraplay/zundamahjong"
 
 [build-system]
 requires = ["setuptools", "setuptools-scm"]
@@ -32,7 +36,6 @@ zundamahjong = "src"
 dev = [
   {include-group = "lint"},
   {include-group = "test"},
-  "werkzeug",
 ]
 
 lint = [
