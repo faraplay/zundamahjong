@@ -4,6 +4,8 @@ from typing import Any, Optional
 
 from socketio import Server as _Server
 
+from ..database import db
+
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
 
@@ -44,6 +46,8 @@ def sio_on(event: str) -> Callable[[Handler], Handler]:
             except Exception as e:
                 logger.exception(e)
                 sio.emit_error(str(e), to=sid)
+            finally:
+                db.close()
             return None
 
         sio.on(event, wrapped_handler)

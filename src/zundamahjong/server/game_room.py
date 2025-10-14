@@ -9,7 +9,6 @@ from ..types.avatar import Avatar
 from ..types.player import Player, PlayerConnection
 
 from .game_controller import GameController
-from .name_sid import id_to_sid
 from .sio import sio
 
 logger = logging.getLogger(__name__)
@@ -34,7 +33,7 @@ class GameRoom:
         self.joined_player_connections: list[PlayerConnection] = [
             PlayerConnection(player=creator)
         ]
-        self.avatars = {creator.id: get_avatar(sio, id_to_sid[creator.id], creator)}
+        self.avatars = {creator.id: get_avatar(creator)}
         self.avatar_lock = Lock()
 
     @property
@@ -119,9 +118,7 @@ class GameRoom:
                 game_room.joined_player_connections.append(
                     PlayerConnection(player=player)
                 )
-                game_room.avatars[player.id] = get_avatar(
-                    sio, id_to_sid[player.id], player
-                )
+                game_room.avatars[player.id] = get_avatar(player)
             player_rooms[player.id] = game_room
         # broadcast new player to room
         game_room.broadcast_room_info()
@@ -131,7 +128,7 @@ class GameRoom:
         player = player_connection.player
         with self.avatar_lock:
             self.joined_player_connections.remove(player_connection)
-            save_avatar(sio, id_to_sid[player.id], player, self.avatars[player.id])
+            save_avatar(player, self.avatars[player.id])
             self.avatars.pop(player.id)
         player_rooms.pop(player.id)
         if len(self.joined_players) == 0:
@@ -220,7 +217,7 @@ class GameRoom:
     def _save_avatars(self) -> None:
         for player_connection in self.joined_player_connections:
             player = player_connection.player
-            save_avatar(sio, id_to_sid[player.id], player, self.avatars[player.id])
+            save_avatar(player, self.avatars[player.id])
 
     @classmethod
     def set_game_options(cls, player: Player, game_options: GameOptions) -> None:

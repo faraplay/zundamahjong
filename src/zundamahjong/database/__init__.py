@@ -1,31 +1,24 @@
-from typing import Optional
+import logging
 
-from socketio import Server
 import sqlalchemy as sa
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session, scoped_session, sessionmaker
 
 from .engine import engine
-from .models import Base as Base, User
+from .models import Base as Base
 
-session_factory = sessionmaker(engine)
-
-
-def get_db(sio: Server, sid: str) -> Session:
-    with sio.session(sid) as session:
-        if "db" not in session:
-            session["db"] = session_factory()
-        return session["db"]  # type: ignore[no-any-return]
+logger = logging.getLogger(__name__)
 
 
-def close_db(sio: Server, sid: str) -> None:
-    with sio.session(sid) as session:
-        if "db" in session:
-            session["db"].close()
+class SQLAlchemy:
+    def __init__(self, engine: sa.Engine) -> None:
+        self._Session = scoped_session(sessionmaker(engine, autobegin=False))
+
+    @property
+    def session(self) -> Session:
+        return self._Session()
+
+    def close(self) -> None:
+        self._Session.remove()
 
 
-def get_user(db: Session, name: str) -> User:
-    return db.execute(sa.select(User).where(User.name == name)).scalar_one()
-
-
-def try_get_user(db: Session, name: str) -> Optional[User]:
-    return db.execute(sa.select(User).where(User.name == name)).scalar_one_or_none()
+db = SQLAlchemy(engine)
