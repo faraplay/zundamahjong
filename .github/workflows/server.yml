@@ -42,8 +42,8 @@ jobs:
       - uses: actions/upload-artifact@v4
         if: matrix.python-version == 3.13
         with:
-          path: dist/zundamahjong-*-py3-none-any.whl
-          name: zundamahjong-wheel
+          name: zundamahjong-dist
+          path: dist
 
   test-wheel:
     needs: build-wheel
@@ -60,11 +60,12 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - uses: actions/download-artifact@v5
         with:
-          name: zundamahjong-wheel
+          name: zundamahjong-dist
+          path: dist
       - name: Install wheel
         run: |
           python -m pip install --upgrade pip
-          python -m pip install zundamahjong-*-py3-none-any.whl
+          python -m pip install dist/zundamahjong-*-py3-none-any.whl
       - name: Install gunicorn
         run: |
           python -m pip install gunicorn

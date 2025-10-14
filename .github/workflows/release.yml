@@ -13,16 +13,27 @@ jobs:
     uses: ./.github/workflows/server.yml
 
   release:
+    runs-on: ubuntu-latest
     needs:
       - test-client
       - test-server
-    runs-on: ubuntu-latest
+
+    environment: release
+    permissions:
+      contents: write
+      id-token: write
+
     steps:
       - uses: actions/download-artifact@v5
         with:
-          name: zundamahjong-wheel
+          name: zundamahjong-dist
+          path: dist
       - name: Create release
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            zundamahjong-*-py3-none-any.whl
+            dist/zundamahjong-*-py3-none-any.whl
+      - name: Publish package to PyPI
+        uses: pypa/gh-action-pypi-publish@release/v1
+        with:
+          repository-url: https://test.pypi.org/legacy/
