@@ -56,6 +56,11 @@ function setDiscardAnimation(
     250,
     delay_milliseconds,
   );
+  const tile_audio_element =
+    document.querySelector<HTMLAudioElement>(".audio.discard");
+  setTimeout(() => {
+    tile_audio_element?.play();
+  }, delay_milliseconds + 125);
   return 250;
 }
 
