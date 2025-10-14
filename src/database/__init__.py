@@ -2,16 +2,18 @@ from typing import Optional
 
 from socketio import Server
 import sqlalchemy as sa
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, sessionmaker
 
-from .engine import db_factory
+from .engine import engine
 from .models import User
+
+session_factory = sessionmaker(engine)
 
 
 def get_db(sio: Server, sid: str) -> Session:
     with sio.session(sid) as session:
         if "db" not in session:
-            session["db"] = db_factory()
+            session["db"] = session_factory()
         return session["db"]  # type: ignore[no-any-return]
 
 
