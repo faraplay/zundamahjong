@@ -18,7 +18,7 @@ jobs:
       - test-client
       - test-server
 
-    environment: release
+    environment: pypi
     permissions:
       contents: write
       id-token: write
@@ -28,12 +28,9 @@ jobs:
         with:
           name: zundamahjong-dist
           path: dist
-      - name: Create release
+      - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            dist/zundamahjong-*-py3-none-any.whl
+          files: dist/zundamahjong-*-py3-none-any.whl
       - name: Publish package to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
-        with:
-          repository-url: https://test.pypi.org/legacy/
