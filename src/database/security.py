@@ -2,10 +2,12 @@ import hashlib
 import secrets
 from typing import Optional
 
-from sqlalchemy import func, select
+import sqlalchemy as sa
+from socketio import Server
 
+from ..types.player import Player
+from . import get_db, get_user
 from .models import User
-from . import get_db
 
 max_users = 256
 
@@ -42,17 +44,19 @@ def check_pw(password: str, pwhash: str) -> bool:
     return hashval == _hash_internal(password, salt, method)
 
 
-def login(sid: str, name: str, password: str) -> None:
-    db = get_db(sid)
-
-    user = db.execute(select(User).where(User.name == name)).scalar_one_or_none()
+def login(sio: Server, sid: str, name: str, password: str) -> Player:
+    db = get_db(sio, sid)
+    user = get_user(db, name)
 
     if user:
         if not check_pw(password, user.password):
             raise Exception("Incorrect password!")
 
+        else:
+            return Player(name=name, has_account=True)
+
     elif password:
-        num_users = db.scalar(select(func.count(User.id)))
+        num_users = db.scalar(sa.select(sa.func.count(User.id)))
 
         if num_users and num_users >= max_users:
             raise Exception("Unable to register new user!")
@@ -60,3 +64,24 @@ def login(sid: str, name: str, password: str) -> None:
         else:
             db.add(User(name=name, password=hash_pw(password)))
             db.commit()
+            return Player(name=name, has_account=True, new_user=True)
+
+    return Player(name=name)
+
+
+def change_password(
+    sio: Server, sid: str, player: Player, cur_password: str, new_password: str
+) -> None:
+    db = get_db(sio, sid)
+    user = get_user(db, player.name)
+
+    if user:
+        if not check_pw(cur_password, user.password):
+            raise Exception("Current password is incorrect!")
+
+        else:
+            user.password = hash_pw(new_password)
+            db.commit()
+
+    else:
+        raise Exception("User does not have an account!")

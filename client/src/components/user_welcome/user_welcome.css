@@ -1,0 +1,9 @@
+#user_welcome {
+  width: 40cqw;
+  margin-inline: auto;
+  margin-block: 5cqw;
+
+  button {
+    margin: 0 0.2cqw;
+  }
+}

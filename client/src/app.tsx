@@ -1,7 +1,7 @@
 import { useRef, useEffect, useState } from "preact/hooks";
 import { io, Socket } from "socket.io-client";
 
-import type { ErrorMessage } from "./types/error_message";
+import type { ServerMessage, Severity } from "./types/server_message";
 import type { Player } from "./types/player";
 import type { DetailedRoom, BasicRoom } from "./types/room";
 import { RoundStatus, type AllServerInfo } from "./types/game";
@@ -10,8 +10,10 @@ import type { EmitFunc } from "./types/emit_func";
 
 import { Emitter } from "./components/emitter/emitter";
 
-import { ErrorList } from "./components/error_list/error_list";
+import { ServerMessageList } from "./components/server_message_list/server_message_list";
 import { NameForm } from "./components/name_form/name_form";
+import { UserWelcome } from "./components/user_welcome/user_welcome";
+import { UserSettingsForm } from "./components/user_settings_form/user_settings_form";
 import { JoinRoomForm } from "./components/join_room_form/join_room_form";
 import { CreateRoomForm } from "./components/create_room_form/create_room_form";
 import { RoomInfo } from "./components/room/room_info/room_info";
@@ -25,9 +27,9 @@ import "./app.css";
 import { GameOptionsContext } from "./components/game_options_context/game_options_context";
 
 export function App() {
-  const [errors, setErrors] = useState<{
+  const [serverMessages, setServerMessages] = useState<{
     currentIndex: number;
-    list: ErrorMessage[];
+    list: ServerMessage[];
   }>({ currentIndex: 0, list: [] });
 
   const [myPlayer, setMyPlayer] = useState<Player>();
@@ -35,8 +37,9 @@ export function App() {
   const [myRoom, setMyRoom] = useState<DetailedRoom>();
 
   const [info, setInfo] = useState<AllInfo>();
+  const [showSettings, setShowSettings] = useState<boolean>(false);
   const [actionSubmitted, setActionSubmitted] = useState<boolean>(false);
-  const [seeResults, setSeeResults] = useState(false);
+  const [seeResults, setSeeResults] = useState<boolean>(false);
 
   const socket = useRef<Socket>();
   const emit: EmitFunc = (event, ...args) =>
@@ -45,17 +48,25 @@ export function App() {
   useEffect(() => {
     socket.current = io();
 
-    socket.current.on("message", (message: string) => {
-      console.log(message);
-      setErrors((errors) => {
-        return {
-          currentIndex: errors.currentIndex + 1,
-          list: errors.list.concat([{ index: errors.currentIndex, message }]),
-        };
-      });
-    });
+    socket.current.on(
+      "server_message",
+      ({ message, severity }: { message: string; severity: Severity }) => {
+        console.log(message);
+        setServerMessages((serverMessages) => {
+          return {
+            currentIndex: serverMessages.currentIndex + 1,
+            list: serverMessages.list.concat([
+              { index: serverMessages.currentIndex, severity, message },
+            ]),
+          };
+        });
+      },
+    );
     socket.current.on("player_info", (player: Player) => {
       setMyPlayer(player);
+    });
+    socket.current.on("unset_name", () => {
+      setMyPlayer(undefined);
     });
     socket.current.on("rooms_info", (rooms: Array<BasicRoom>) => {
       setRooms(rooms);
@@ -89,16 +100,18 @@ export function App() {
     setActionSubmitted,
     seeResults,
     setSeeResults,
+    showSettings,
+    setShowSettings,
   );
   return (
     <Emitter.Provider value={emit}>
       {screen}
-      <ErrorList
-        errors={errors.list}
-        removeError={(index) => {
-          setErrors({
-            currentIndex: errors.currentIndex,
-            list: errors.list.filter((error) => error.index != index),
+      <ServerMessageList
+        serverMessages={serverMessages.list}
+        removeMessage={(index) => {
+          setServerMessages({
+            currentIndex: serverMessages.currentIndex,
+            list: serverMessages.list.filter((msg) => msg.index != index),
           });
         }}
       />
@@ -115,6 +128,8 @@ function getScreen(
   setActionSubmitted: (value: boolean) => void,
   seeResults: boolean,
   setSeeResults: (value: boolean) => void,
+  showSettings: boolean,
+  setShowSettings: (value: boolean) => void,
 ) {
   if (!myPlayer) {
     return (
@@ -123,9 +138,20 @@ function getScreen(
       </div>
     );
   }
+  if (showSettings) {
+    return (
+      <div id="settings_screen" class="screen">
+        <UserSettingsForm goToLobby={() => setShowSettings(false)} />
+      </div>
+    );
+  }
   if (!myRoom) {
     return (
       <div id="lobby_screen" class="screen">
+        <UserWelcome
+          myPlayer={myPlayer}
+          goToSettings={() => setShowSettings(true)}
+        />
         <JoinRoomForm rooms={rooms} />
         <CreateRoomForm />
       </div>

@@ -4,10 +4,10 @@ from typing import Any, Optional
 import logging
 
 from ..mahjong.game_options import GameOptions
+from ..types.player import Player, PlayerConnection
 
-from .sio import sio
-from .player_info import Player, PlayerConnection
 from .game_controller import GameController
+from .sio import sio
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)

@@ -60,7 +60,7 @@ uv sync --group=production
 and then start the Gunicorn server with
 
 ```sh
-gunicorn --workers 1 --threads 100 --bind 127.0.0.1:5000 src.server:app
+gunicorn --workers 1 --threads 100 --bind 127.0.0.1:5000 zundamahjong.server:app
 ```
 
 To build the client, open a shell in the `client` folder and run
@@ -73,6 +73,18 @@ This will output the built client to `client_build`.
 
 Note that Gunicorn does not serve the client files.
 You will need to serve the client files separately.
+
+## Generating password hashes
+
+To reset a user's password if they have forgotten it, you can use
+
+```python
+>>> from getpass import getpass
+>>> from zundamahjong.database.security import hash_pw
+>>> print(hash_pw(getpass()))
+```
+
+and then input the result manually into the application database.
 
 ## Credits
 

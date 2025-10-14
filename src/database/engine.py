@@ -2,7 +2,6 @@ import logging
 import os
 
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 from .models import Base
 
@@ -20,14 +19,9 @@ if db_host:
     )
 
 else:
-    engine = create_engine("sqlite:///debug.db")
+    db_file = os.getenv("DB_FILE", "debug.db")
 
-db_factory = sessionmaker(bind=engine)
+    engine = create_engine(f"sqlite:///{db_file}")
 
-
-def create_tables() -> None:
-    Base.metadata.create_all(engine)
-
-
-if not db_host and not os.path.isfile("debug.db"):
-    create_tables()
+    if not os.path.isfile(db_file):
+        Base.metadata.create_all(engine)

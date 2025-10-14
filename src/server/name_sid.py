@@ -1,9 +1,8 @@
 from threading import Lock
 from typing import Optional
 
-from ..database.security import login
+from ..types.player import Player
 from .sio import sio
-from .player_info import Player
 
 sid_to_player: dict[str, Player] = {}
 id_to_sid: dict[str, str] = {}
@@ -28,12 +27,11 @@ def try_get_player(sid: str) -> Optional[Player]:
     return sid_to_player.get(sid)
 
 
-def set_player(sid: str, player: Player, password: str) -> None:
+def set_player(sid: str, player: Player) -> None:
     with player_sid_lock:
         if id_to_sid.get(player.id, sid) != sid:
             raise Exception(f"Id {player.id} is already in use!")
-        login(sid, player.name, password)
-        old_player = sid_to_player.get(sid, None)
+        old_player = sid_to_player.get(sid)
         if old_player:
             id_to_sid.pop(old_player.id)
             sio.close_room(old_player.id)
@@ -42,9 +40,9 @@ def set_player(sid: str, player: Player, password: str) -> None:
         sio.enter_room(sid, player.id)
 
 
-def remove_sid(sid: str) -> None:
+def unset_player(sid: str) -> None:
     with player_sid_lock:
-        player = sid_to_player.get(sid, None)
+        player = sid_to_player.get(sid)
         if player:
             id_to_sid.pop(player.id)
             sid_to_player.pop(sid)

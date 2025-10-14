@@ -2,7 +2,7 @@ from collections.abc import Callable
 import logging
 from typing import Any, Optional
 
-from socketio import Server  # type: ignore[import-untyped]
+from socketio import Server
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -13,6 +13,18 @@ sio = Server(
 )
 
 Handler = Callable[..., Optional[Any]]
+
+
+def emit_error(message: str, sid: str) -> None:
+    sio.emit("server_message", {"message": message, "severity": "ERROR"}, sid)
+
+
+def emit_warning(message: str, sid: str) -> None:
+    sio.emit("server_message", {"message": message, "severity": "WARNING"}, sid)
+
+
+def emit_info(message: str, sid: str) -> None:
+    sio.emit("server_message", {"message": message, "severity": "INFO"}, sid)
 
 
 def sio_on(event: str) -> Callable[[Handler], Handler]:
@@ -31,7 +43,7 @@ def sio_on(event: str) -> Callable[[Handler], Handler]:
                 return return_value
             except Exception as e:
                 logger.error(e)
-                sio.send(str(e), to=sid)
+                emit_error(str(e), sid)
             return None
 
         sio.on(event, wrapped_handler)
