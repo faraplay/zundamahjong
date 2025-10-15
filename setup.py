@@ -19,7 +19,10 @@ class build_client(Command):
     def run(self) -> None:
         """Build the Zundamahjong static client files."""
 
-        if not self.editable_mode:
+        if self.editable_mode:
+            return
+
+        if not os.path.isdir("client_build"):
             os.chdir("client")
 
             self.spawn(["npm", "install"])
@@ -27,8 +30,9 @@ class build_client(Command):
 
             os.chdir("..")
 
-            if self.client_dir:
-                shutil.move("client_build", self.client_dir)
+        if self.client_dir:
+            shutil.copytree("client_build", self.client_dir)
+
 
 
 class custom_build(build):
