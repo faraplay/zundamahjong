@@ -25,7 +25,7 @@ import { GameScreen } from "./components/game/game_screen/game_screen";
 import "./fonts.css";
 import "./app.css";
 import { GameOptionsContext } from "./components/game_options_context/game_options_context";
-import { AudioCollection } from "./components/audio_collection/audio_collection";
+import { CommonAudioCollection } from "./components/audio_collection/audio_collection";
 
 export function App() {
   const [serverMessages, setServerMessages] = useState<{
@@ -106,7 +106,7 @@ export function App() {
   );
   return (
     <Emitter.Provider value={emit}>
-      <AudioCollection />
+      <CommonAudioCollection />
       {screen}
       <ServerMessageList
         serverMessages={serverMessages.list}

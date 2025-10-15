@@ -23,6 +23,7 @@ import {
   ShantenDisplayButton,
 } from "../shanten_display/shanten_display";
 import { type TileId } from "../../../types/tile";
+import { VoiceCollection } from "../../audio_collection/audio_collection";
 
 export function GameScreen({
   playerAvatarIds,
@@ -47,8 +48,15 @@ export function GameScreen({
     emit("action", action, info.round_info.history.length);
   };
   useLayoutEffect(() => {
-    setAnimations(info.history_updates);
-  }, [info]);
+    const avatars = info.game_info.players.map(
+      (player) => playerAvatarIds[player.id],
+    );
+    setAnimations(info.history_updates, avatars);
+  }, [info, playerAvatarIds]);
+
+  const voiceCollections = [...new Set(Object.values(playerAvatarIds))].map(
+    (avatarId) => <VoiceCollection key={avatarId} avatarId={avatarId} />,
+  );
 
   const winOverlay =
     info.round_info.status != RoundStatus.END ? (
@@ -78,6 +86,7 @@ export function GameScreen({
       <div
         class={`game_screen me_player_${info.player_index} status_${info.round_info.status}`}
       >
+        {voiceCollections}
         <PlayerIcons
           players={info.game_info.players}
           playerAvatarIds={playerAvatarIds}
