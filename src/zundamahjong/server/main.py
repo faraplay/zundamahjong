@@ -9,7 +9,7 @@ from ..types.avatar import Avatar
 
 from .game_room import GameRoom
 from .name_sid import get_player, set_player, try_get_player, unset_player, verify_name
-from .sio import emit_info, sio, sio_on
+from .sio import sio, sio_on
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
@@ -70,7 +70,7 @@ def on_set_name(sid: str, name: object, password: object) -> None:
     player = login(sio, sid, name, password)
     set_player(sid, player)
     if player.has_account and player.new_user:
-        emit_info("Account successfully created.", sid)
+        sio.emit_info("Account successfully created.", to=sid)
     sio.emit("player_info", player.model_dump(), to=sid)
     game_room = GameRoom.try_reconnect(player)
     if game_room is not None and game_room.game_controller is not None:
@@ -91,7 +91,7 @@ def on_change_password(sid: str, cur_password: object, new_password: object) -> 
     if not isinstance(new_password, str):
         raise Exception("Argument new_password is not a string!")
     change_password(sio, sid, get_player(sid), cur_password, new_password)
-    emit_info("Password changed successfully.", sid)
+    sio.emit_info("Password changed successfully.", to=sid)
 
 
 @sio_on("get_rooms")

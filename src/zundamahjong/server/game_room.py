@@ -65,7 +65,7 @@ class GameRoom:
         sio.emit(
             "rooms_info",
             [game_room.room_basic_info for game_room in rooms.values()],
-            sid,
+            to=sid,
         )
 
     @classmethod
