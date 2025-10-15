@@ -4,6 +4,8 @@
 [![PyPI](https://img.shields.io/pypi/v/zundamahjong)](https://pypi.org/project/zundamahjong)
 [![License](https://img.shields.io/github/license/faraplay/zundamahjong.svg)](https://github.com/faraplay/zundamahjong/blob/main/LICENSE)
 
+![zundamahjong game screenshot](https://raw.githubusercontent.com/faraplay/zundamahjong/refs/heads/main/screenshot.jpg)
+
 Web-based Mahjong game.
 
 ## Quick Start
