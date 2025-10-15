@@ -32,7 +32,7 @@ source .venv/bin/activate
 and then start the Werkzeug server by running
 
 ```sh
-python -m debug_server
+python -m zundamahjong --debug
 ```
 
 To run the debug client, navigate to the folder `client`
