@@ -42,7 +42,7 @@ def sio_on(event: str) -> Callable[[Handler], Handler]:
                 )
                 return return_value
             except Exception as e:
-                logger.error(e)
+                logger.exception(e)
                 sio.emit_error(str(e), to=sid)
             return None
 
