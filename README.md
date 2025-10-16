@@ -18,10 +18,10 @@ source .venv/bin/activate
 pip install zundamahjong
 ```
 
-To start the bundled WSGI server, listening at port 5000, run
+To start the bundled WSGI server, listening at the port `PORT`, run
 
 ```sh
-python -m zundamahjong
+python -m zundamahjong [-p PORT]  # defaults to 5000
 ```
 
 > [!WARNING]
