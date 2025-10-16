@@ -40,7 +40,11 @@ def hash_pw(
 
 
 def check_pw(password: str, pwhash: str) -> bool:
-    method, salt, hashval = pwhash.split("$", 2)
+    try:
+        method, salt, hashval = pwhash.split("$", 2)
+    except ValueError:
+        raise Exception("Malformed password hash.")
+
     return hashval == _hash_internal(password, salt, method)
 
 
