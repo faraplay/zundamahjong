@@ -1,13 +1,13 @@
 from unittest import TestCase
 
-from src.mahjong.call import (
+from zundamahjong.mahjong.call import (
     AddKanCall,
     CallType,
     ClosedKanCall,
     OpenCall,
     OpenKanCall,
 )
-from src.mahjong.meld import Meld, MeldType
+from zundamahjong.mahjong.meld import Meld, MeldType
 from tests.yaku_test import get_yaku_mults
 
 

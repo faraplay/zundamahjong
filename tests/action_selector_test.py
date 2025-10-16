@@ -1,14 +1,14 @@
 import unittest
 
-from src.mahjong.action import (
+from zundamahjong.mahjong.action import (
     ActionType,
     ClosedKanAction,
     HandTileAction,
     OpenCallAction,
     SimpleAction,
 )
-from src.mahjong.round import Round, RoundStatus
-from src.mahjong.action_selector import ActionSelector
+from zundamahjong.mahjong.round import Round, RoundStatus
+from zundamahjong.mahjong.action_selector import ActionSelector
 
 from tests.decks import test_deck4, test_deck_one_discard_option
 

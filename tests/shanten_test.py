@@ -1,6 +1,6 @@
 import unittest
 
-from src.mahjong.shanten import (
+from zundamahjong.mahjong.shanten import (
     honours_shanten_data,
     suit_shanten_data,
     calculate_shanten,
