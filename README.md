@@ -100,5 +100,10 @@ and then input the result manually into the application database.
 
 ## Credits
 
-Mahjong tile graphics are from [demching.itch.io/mahjong](https://demching.itch.io/mahjong).
-Avatar graphics are by [坂本アヒル](https://www.pixiv.net/en/users/12147115)
+[Mahjong tile graphics](https://demching.itch.io/mahjong)
+by [Cangjie6](https://commons.wikimedia.org/wiki/User:Cangjie6)
+with modifications by [demching](https://itch.io/profile/demching),
+licensed under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).
+
+Avatar graphics by [坂本アヒル](https://www.pixiv.net/en/users/12147115),
+see [（ず・ω・きょ）](https://zunko.jp/guideline.html).
