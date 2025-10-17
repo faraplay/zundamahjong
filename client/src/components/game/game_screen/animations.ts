@@ -287,14 +287,14 @@ function unsetAnimations() {
 
 export function setAnimations(
   history_updates: ReadonlyArray<HistoryItem>,
-  avatars: number[],
+  avatarIds: number[],
 ) {
   unsetAnimations();
   let delay_milliseconds = 0;
   for (const history_item of history_updates) {
     delay_milliseconds += setAnimation(
       history_item.player_index,
-      avatars[history_item.player_index],
+      avatarIds[history_item.player_index],
       history_item.action,
       delay_milliseconds,
     );

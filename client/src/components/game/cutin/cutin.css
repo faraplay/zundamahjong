@@ -1,0 +1,101 @@
+.cutins {
+  .cutin {
+    position: absolute;
+    z-index: 2;
+
+    .avatar {
+      box-sizing: border-box;
+      position: absolute;
+      width: 15cqw;
+      height: 20cqw;
+      object-fit: cover;
+      object-position: 50% 0%;
+    }
+
+    .cutin_highlight {
+      width: 15cqw;
+      height: 5cqw;
+      position: absolute;
+      top: 15cqw;
+      border: none;
+      background-color: transparent;
+      font-family: "Racing Sans One", sans-serif;
+      font-weight: 400;
+      font-style: normal;
+      font-size: 3.5cqw;
+      color: var(--text-inner-color);
+
+      &::before {
+        --plate-top-color: color-mix(
+          in srgb,
+          var(--text-inner-color) 40%,
+          var(--plate-color)
+        );
+        --plate-bottom-color: color-mix(
+          in srgb,
+          var(--text-border-color) 40%,
+          var(--plate-color)
+        );
+        content: "";
+        width: calc(100% - 1.5cqw);
+        height: 75%;
+        position: absolute;
+        left: 0%;
+        bottom: 0%;
+        background-image: linear-gradient(
+          var(--plate-top-color),
+          var(--plate-color) 30% 80%,
+          var(--plate-bottom-color)
+        );
+        border-right: 1.5cqw ridge var(--text-border-color);
+        transform: skewX(-12deg);
+      }
+
+      .cutin_text {
+        position: absolute;
+        top: 0%;
+        left: 5%;
+        -webkit-text-stroke: 1cqw var(--text-border-color);
+      }
+
+      &::after {
+        content: attr(data-text);
+        position: absolute;
+        top: 0%;
+        left: 5%;
+      }
+    }
+  }
+
+  .me_player_0 & .cutin.player_0,
+  .me_player_1 & .cutin.player_1,
+  .me_player_2 & .cutin.player_2,
+  .me_player_3 & .cutin.player_3 {
+    top: 25cqw;
+    left: 42cqw;
+  }
+
+  .me_player_0 & .cutin.player_1,
+  .me_player_1 & .cutin.player_2,
+  .me_player_2 & .cutin.player_3,
+  .me_player_3 & .cutin.player_0 {
+    top: 14cqw;
+    left: 72cqw;
+  }
+
+  .me_player_0 & .cutin.player_2,
+  .me_player_1 & .cutin.player_3,
+  .me_player_2 & .cutin.player_0,
+  .me_player_3 & .cutin.player_1 {
+    top: 0cqw;
+    left: 42cqw;
+  }
+
+  .me_player_0 & .cutin.player_3,
+  .me_player_1 & .cutin.player_0,
+  .me_player_2 & .cutin.player_1,
+  .me_player_3 & .cutin.player_2 {
+    top: 14cqw;
+    left: 12cqw;
+  }
+}
