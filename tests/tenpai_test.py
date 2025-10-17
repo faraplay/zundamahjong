@@ -1,6 +1,6 @@
 import unittest
 
-from src.mahjong.shanten import get_waits
+from zundamahjong.mahjong.shanten import get_waits
 
 
 class TenpaiTest(unittest.TestCase):

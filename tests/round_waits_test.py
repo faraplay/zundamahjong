@@ -1,11 +1,11 @@
 import unittest
 
-from src.mahjong.form_hand import is_winning
-from src.mahjong.tile import N, all_tiles
-from src.mahjong.deck import Deck
-from src.mahjong.hand import Hand
-from src.mahjong.round import Round
-from src.mahjong.action import (
+from zundamahjong.mahjong.form_hand import is_winning
+from zundamahjong.mahjong.tile import N, all_tiles
+from zundamahjong.mahjong.deck import Deck
+from zundamahjong.mahjong.hand import Hand
+from zundamahjong.mahjong.round import Round
+from zundamahjong.mahjong.action import (
     ActionType,
     AddKanAction,
     ClosedKanAction,
@@ -14,11 +14,11 @@ from src.mahjong.action import (
     OpenKanAction,
     SimpleAction,
 )
-from src.mahjong.call import (
+from zundamahjong.mahjong.call import (
     CallType,
     OpenCall,
 )
-from src.mahjong.game_options import GameOptions
+from zundamahjong.mahjong.game_options import GameOptions
 
 from tests.decks import test_deck1, test_deck2, test_deck3
 

@@ -1,6 +1,6 @@
 import unittest
 
-from src.mahjong.form_hand import is_winning, formed_hand_possibilities
+from zundamahjong.mahjong.form_hand import is_winning, formed_hand_possibilities
 
 
 class FormHandTest(unittest.TestCase):

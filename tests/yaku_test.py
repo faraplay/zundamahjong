@@ -2,11 +2,11 @@ from typing import Any, Optional
 
 from unittest import TestCase
 
-from src.mahjong.tile import TileId
-from src.mahjong.meld import Meld, MeldType
-from src.mahjong.call import Call, CallType, ClosedKanCall, OpenCall
-from src.mahjong.win import Win
-from src.mahjong.yaku import YakuCalculator
+from zundamahjong.mahjong.tile import TileId
+from zundamahjong.mahjong.meld import Meld, MeldType
+from zundamahjong.mahjong.call import Call, CallType, ClosedKanCall, OpenCall
+from zundamahjong.mahjong.win import Win
+from zundamahjong.mahjong.yaku import YakuCalculator
 
 
 def get_yaku_mults(

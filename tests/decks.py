@@ -1,7 +1,7 @@
 from collections import Counter
 
-from src.mahjong.tile import TileId
-from src.mahjong.deck import four_player_deck
+from zundamahjong.mahjong.tile import TileId
+from zundamahjong.mahjong.deck import four_player_deck
 
 
 def fill_missing_tiles(

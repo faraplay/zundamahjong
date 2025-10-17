@@ -1,8 +1,8 @@
 import unittest
 
-from src.mahjong.win import Win
-from src.mahjong.game_options import GameOptions
-from src.mahjong.scoring import Scorer
+from zundamahjong.mahjong.win import Win
+from zundamahjong.mahjong.game_options import GameOptions
+from zundamahjong.mahjong.scoring import Scorer
 
 
 class ScoringTest(unittest.TestCase):

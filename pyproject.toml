@@ -42,9 +42,6 @@ Repository = "https://github.com/faraplay/zundamahjong"
 requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
-[tool.setuptools.package-dir]
-zundamahjong = "src"
-
 [tool.setuptools_scm]
 
 

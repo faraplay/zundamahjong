@@ -1,6 +1,6 @@
 import unittest
 
-from src.mahjong.deck import four_player_deck
+from zundamahjong.mahjong.deck import four_player_deck
 
 from tests.decks import test_deck1, test_deck2, test_deck3, test_deck4, test_deck5
 

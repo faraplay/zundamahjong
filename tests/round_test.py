@@ -2,8 +2,8 @@ import unittest
 
 from typing import Optional
 
-from src.mahjong.round import Round, RoundStatus
-from src.mahjong.action import (
+from zundamahjong.mahjong.round import Round, RoundStatus
+from zundamahjong.mahjong.action import (
     Action,
     ActionType,
     AddKanAction,
@@ -13,14 +13,14 @@ from src.mahjong.action import (
     OpenKanAction,
     SimpleAction,
 )
-from src.mahjong.call import (
+from zundamahjong.mahjong.call import (
     AddKanCall,
     CallType,
     ClosedKanCall,
     OpenCall,
     OpenKanCall,
 )
-from src.mahjong.game_options import GameOptions
+from zundamahjong.mahjong.game_options import GameOptions
 
 from tests.decks import (
     test_deck1,
