@@ -9,6 +9,18 @@ import type { HistoryItem } from "../../../types/game";
 
 import "./animations.css";
 
+function addAudio(
+  audioElement: HTMLAudioElement | null,
+  delayMilliseconds: number,
+) {
+  if (!audioElement) {
+    return;
+  }
+  setTimeout(() => {
+    audioElement.play();
+  }, delayMilliseconds);
+}
+
 function addAnimation(
   element: HTMLElement | null,
   animationStyle: string,
@@ -57,9 +69,7 @@ function setDiscardAnimation(
     250,
     delayMilliseconds,
   );
-  setTimeout(() => {
-    discardAudioElement?.play();
-  }, delayMilliseconds + 125);
+  addAudio(discardAudioElement, delayMilliseconds + 125);
   return 250;
 }
 
@@ -79,9 +89,7 @@ function setCallAnimation(
   const callAudioElement = document.querySelector<HTMLAudioElement>(
     `audio.avatar_${avatarId}.${callType}`,
   );
-  setTimeout(() => {
-    callAudioElement?.play();
-  }, delayMilliseconds);
+  addAudio(callAudioElement, delayMilliseconds);
   addAnimation(cutinElement, "cutinAnimation", 1000, delayMilliseconds);
   addAnimation(callElement, "callAnimation", 250, delayMilliseconds + 1000);
   return 1250;
@@ -135,9 +143,7 @@ function setNewKanAnimation(
   const kanAudioElement = document.querySelector<HTMLAudioElement>(
     `audio.avatar_${avatarId}.kan`,
   );
-  setTimeout(() => {
-    kanAudioElement?.play();
-  }, delayMilliseconds);
+  addAudio(kanAudioElement, delayMilliseconds);
   addAnimation(cutinElement, "cutinAnimation", 1000, delayMilliseconds);
   addAnimation(openKanElement, "callAnimation", 250, delayMilliseconds + 1000);
   addAnimation(
@@ -167,9 +173,7 @@ function setAddKanAnimation(
   const kanAudioElement = document.querySelector<HTMLAudioElement>(
     `audio.avatar_${avatarId}.kan`,
   );
-  setTimeout(() => {
-    kanAudioElement?.play();
-  }, delayMilliseconds);
+  addAudio(kanAudioElement, delayMilliseconds);
   addAnimation(cutinElement, "cutinAnimation", 1000, delayMilliseconds);
   addAnimation(addKanTile, "addKanAnimation", 250, delayMilliseconds + 1000);
   addAnimation(
@@ -199,9 +203,7 @@ function setFlowerAnimation(
   const faAudioElement = document.querySelector<HTMLAudioElement>(
     `audio.avatar_${avatarId}.fa`,
   );
-  setTimeout(() => {
-    faAudioElement?.play();
-  }, delayMilliseconds);
+  addAudio(faAudioElement, delayMilliseconds);
   addAnimation(cutinElement, "cutinAnimation", 500, delayMilliseconds);
   addAnimation(flowerElement, "callAnimation", 250, delayMilliseconds + 500);
   addAnimation(
@@ -230,9 +232,7 @@ function setWinAnimation(
   const winAudioElement = document.querySelector<HTMLAudioElement>(
     `audio.avatar_${avatarId}.${winType}`,
   );
-  setTimeout(() => {
-    winAudioElement?.play();
-  }, delayMilliseconds);
+  addAudio(winAudioElement, delayMilliseconds);
   addAnimation(cutinElement, "cutinAnimation", 1000, delayMilliseconds);
   addAnimation(winHandElement, "winAnimation", 500, delayMilliseconds + 1000);
   addAnimation(winInfo, "showAnimation", 0, delayMilliseconds + 2000);
