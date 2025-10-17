@@ -23,6 +23,8 @@ import {
   ShantenDisplayButton,
 } from "../shanten_display/shanten_display";
 import { type TileId } from "../../../types/tile";
+import { VoiceCollection } from "../../audio_collection/audio_collection";
+import { CutinCollection } from "../cutin/cutin";
 
 export function GameScreen({
   playerAvatarIds,
@@ -46,9 +48,22 @@ export function GameScreen({
     setActionSubmitted();
     emit("action", action, info.round_info.history.length);
   };
+
   useLayoutEffect(() => {
-    setAnimations(info.history_updates);
-  }, [info]);
+    // calculate this inside to avoid triggering this effect every time
+    // this component is rerendered
+    const avatarIds = info.game_info.players.map(
+      (player) => playerAvatarIds[player.id],
+    );
+    setAnimations(info.history_updates, avatarIds);
+  }, [info, playerAvatarIds]);
+
+  const avatarIds = info.game_info.players.map(
+    (player) => playerAvatarIds[player.id],
+  );
+  const voiceCollections = [...new Set(Object.values(playerAvatarIds))].map(
+    (avatarId) => <VoiceCollection key={avatarId} avatarId={avatarId} />,
+  );
 
   const winOverlay =
     info.round_info.status != RoundStatus.END ? (
@@ -78,6 +93,11 @@ export function GameScreen({
       <div
         class={`game_screen me_player_${info.player_index} status_${info.round_info.status}`}
       >
+        {voiceCollections}
+        <CutinCollection
+          historyUpdates={info.history_updates}
+          avatarIds={avatarIds}
+        />
         <PlayerIcons
           players={info.game_info.players}
           playerAvatarIds={playerAvatarIds}

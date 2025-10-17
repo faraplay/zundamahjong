@@ -62,3 +62,30 @@
     transform: translateY(4cqw);
   }
 }
+
+@keyframes cutinAnimation {
+  from {
+    opacity: 0%;
+    transform: translateX(12cqw);
+    animation-timing-function: ease-out;
+  }
+  10% {
+    opacity: 100%;
+  }
+  30% {
+    opacity: 100%;
+    transform: translateX(0cqw);
+  }
+  70% {
+    opacity: 100%;
+    transform: translateX(0cqw);
+    animation-timing-function: ease-in;
+  }
+  90% {
+    opacity: 100%;
+  }
+  100% {
+    opacity: 0%;
+    transform: translateX(-12cqw);
+  }
+}

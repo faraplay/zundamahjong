@@ -81,3 +81,7 @@ export function getActionSupertype(action_type: ActionType) {
 export function getActionSupertypeString(action_supertype: ActionSupertype) {
   return action_supertype_strings[action_supertype];
 }
+
+export function isCutinAction(action_type: ActionType) {
+  return action_type > 3;
+}
