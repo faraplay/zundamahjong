@@ -1,5 +1,6 @@
 import {
   ActionType,
+  getActionSupertype,
   type Action,
   type AddKanAction,
   type HandTileAction,
@@ -65,10 +66,13 @@ function setDiscardAnimation(
 function setCallAnimation(
   playerIndex: number,
   avatarId: number,
-  _action: Action,
+  action: Action,
   delayMilliseconds: number,
   callType: "chii" | "pon",
 ) {
+  const cutinElement = document.querySelector<HTMLElement>(
+    `.cutins .cutin.action_${getActionSupertype(action.action_type)}.player_${playerIndex}`,
+  );
   const callElement = document.querySelector<HTMLElement>(
     `#calls_list .player_calls.player_${playerIndex} > *:last-child`,
   );
@@ -78,8 +82,9 @@ function setCallAnimation(
   setTimeout(() => {
     callAudioElement?.play();
   }, delayMilliseconds);
-  addAnimation(callElement, "callAnimation", 250, delayMilliseconds);
-  return 250;
+  addAnimation(cutinElement, "cutinAnimation", 1000, delayMilliseconds);
+  addAnimation(callElement, "callAnimation", 250, delayMilliseconds + 1000);
+  return 1250;
 }
 
 function setChiiAnimation(
@@ -115,9 +120,12 @@ function setPonAnimation(
 function setNewKanAnimation(
   playerIndex: number,
   avatarId: number,
-  _action: Action,
+  action: Action,
   delayMilliseconds: number,
 ) {
+  const cutinElement = document.querySelector<HTMLElement>(
+    `.cutins .cutin.action_${getActionSupertype(action.action_type)}.player_${playerIndex}`,
+  );
   const openKanElement = document.querySelector<HTMLElement>(
     `#calls_list .player_calls.player_${playerIndex} > *:last-child`,
   );
@@ -130,9 +138,15 @@ function setNewKanAnimation(
   setTimeout(() => {
     kanAudioElement?.play();
   }, delayMilliseconds);
-  addAnimation(openKanElement, "callAnimation", 250, delayMilliseconds);
-  addAnimation(drawnTileElement, "drawAnimation", 250, delayMilliseconds + 250);
-  return 500;
+  addAnimation(cutinElement, "cutinAnimation", 1000, delayMilliseconds);
+  addAnimation(openKanElement, "callAnimation", 250, delayMilliseconds + 1000);
+  addAnimation(
+    drawnTileElement,
+    "drawAnimation",
+    250,
+    delayMilliseconds + 1250,
+  );
+  return 1500;
 }
 
 function setAddKanAnimation(
@@ -141,6 +155,9 @@ function setAddKanAnimation(
   action: Action,
   delayMilliseconds: number,
 ) {
+  const cutinElement = document.querySelector<HTMLElement>(
+    `.cutins .cutin.action_${getActionSupertype(action.action_type)}.player_${playerIndex}`,
+  );
   const addKanTile = document.querySelector<HTMLElement>(
     `.tile_id_${(action as AddKanAction).tile}`,
   );
@@ -153,9 +170,15 @@ function setAddKanAnimation(
   setTimeout(() => {
     kanAudioElement?.play();
   }, delayMilliseconds);
-  addAnimation(addKanTile, "addKanAnimation", 250, delayMilliseconds);
-  addAnimation(drawnTileElement, "drawAnimation", 250, delayMilliseconds + 250);
-  return 500;
+  addAnimation(cutinElement, "cutinAnimation", 1000, delayMilliseconds);
+  addAnimation(addKanTile, "addKanAnimation", 250, delayMilliseconds + 1000);
+  addAnimation(
+    drawnTileElement,
+    "drawAnimation",
+    250,
+    delayMilliseconds + 1250,
+  );
+  return 1500;
 }
 
 function setFlowerAnimation(
@@ -164,6 +187,9 @@ function setFlowerAnimation(
   action: Action,
   delayMilliseconds: number,
 ) {
+  const cutinElement = document.querySelector<HTMLElement>(
+    `.cutins .cutin.action_${getActionSupertype(action.action_type)}.player_${playerIndex}`,
+  );
   const flowerElement = document.querySelector<HTMLElement>(
     `.tile_id_${(action as HandTileAction).tile}`,
   );
@@ -176,23 +202,27 @@ function setFlowerAnimation(
   setTimeout(() => {
     faAudioElement?.play();
   }, delayMilliseconds);
-  addAnimation(flowerElement, "callAnimation", 250, delayMilliseconds);
+  addAnimation(cutinElement, "cutinAnimation", 500, delayMilliseconds);
+  addAnimation(flowerElement, "callAnimation", 250, delayMilliseconds + 500);
   addAnimation(
     flower_drawnTileElement,
     "drawAnimation",
     250,
-    delayMilliseconds + 250,
+    delayMilliseconds + 750,
   );
-  return 500;
+  return 1000;
 }
 
 function setWinAnimation(
   playerIndex: number,
   avatarId: number,
-  _action: Action,
+  action: Action,
   delayMilliseconds: number,
   winType: "ron" | "tsumo",
 ) {
+  const cutinElement = document.querySelector<HTMLElement>(
+    `.cutins .cutin.action_${getActionSupertype(action.action_type)}.player_${playerIndex}`,
+  );
   const winInfo = document.querySelector<HTMLElement>("#win_info");
   const winHandElement = document.querySelector<HTMLElement>(
     `.table_hand_outer.player_${playerIndex} .table_hand`,
@@ -203,9 +233,10 @@ function setWinAnimation(
   setTimeout(() => {
     winAudioElement?.play();
   }, delayMilliseconds);
-  addAnimation(winHandElement, "winAnimation", 500, delayMilliseconds);
-  addAnimation(winInfo, "showAnimation", 0, delayMilliseconds + 1000);
-  return 1000;
+  addAnimation(cutinElement, "cutinAnimation", 1000, delayMilliseconds);
+  addAnimation(winHandElement, "winAnimation", 500, delayMilliseconds + 1000);
+  addAnimation(winInfo, "showAnimation", 0, delayMilliseconds + 2000);
+  return 2000;
 }
 
 function setRonAnimation(
