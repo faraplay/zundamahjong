@@ -48,17 +48,26 @@ export function CutinCollection({
         playerIndex: historyItem.player_index,
       };
     });
-  const uniquePlayerActionSupertypes = [...new Set(playerActionSupertypes)];
+  const playerActionSupertypesDict: {
+    [key: string]: { supertype: ActionSupertype; playerIndex: number };
+  } = {};
+  for (const obj of playerActionSupertypes) {
+    playerActionSupertypesDict[
+      `action_${obj.supertype} player_${obj.playerIndex}`
+    ] = obj;
+  }
   return (
     <div class="cutins">
-      {uniquePlayerActionSupertypes.map(({ supertype, playerIndex }) => (
-        <Cutin
-          key={`action_${supertype} player_${playerIndex}`}
-          actionSupertype={supertype}
-          playerIndex={playerIndex}
-          avatarId={avatarIds[playerIndex]}
-        />
-      ))}
+      {Object.entries(playerActionSupertypesDict).map(
+        ([key, { supertype, playerIndex }]) => (
+          <Cutin
+            key={key}
+            actionSupertype={supertype}
+            playerIndex={playerIndex}
+            avatarId={avatarIds[playerIndex]}
+          />
+        ),
+      )}
     </div>
   );
 }
