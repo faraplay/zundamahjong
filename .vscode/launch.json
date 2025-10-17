@@ -5,7 +5,8 @@
             "type": "debugpy",
             "request": "launch",
             "cwd": "${workspaceFolder}",
-            "program": "${workspaceFolder}/debug_server.py"
+            "module": "zundamahjong",
+            "args": ["--debug"],
         }
     ]
 }

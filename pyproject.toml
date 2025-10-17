@@ -1,43 +1,81 @@
 [project]
 name = "zundamahjong"
-version = "0.0.0"
-description = "Web-based Mahjong game"
-requires-python = ">=3.9"
-
+dynamic = ["version"]
 dependencies = [
+  "flask",
   "pydantic",
   "python-socketio",
   "sqlalchemy",
+  "werkzeug",
+]
+requires-python = ">=3.9"
+
+
+# Project metadata
+
+description = "Web-based Mahjong game"
+readme = "README.md"
+license = "MIT"
+license-files = ["LICEN[CS]E"]
+
+keywords = ["game", "mahjong", "webgame"]
+classifiers = [
+  "Development Status :: 4 - Beta",
+  "Topic :: Games/Entertainment",
+  "Topic :: Internet :: WWW/HTTP :: WSGI :: Application",
+  "Framework :: Flask",
+  "Framework :: Pydantic",
+  "Programming Language :: JavaScript",
+  "Programming Language :: Python",
 ]
 
 [project.optional-dependencies]
-postgresql = [
-  "sqlalchemy[postgresql-psycopg]"
-]
+postgresql = ["sqlalchemy[postgresql-psycopgbinary]"]
+
+[project.urls]
+Repository = "https://github.com/faraplay/zundamahjong"
+
+
+# Building zundamahjong
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools", "setuptools-scm"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.package-dir]
 zundamahjong = "src"
 
+[tool.setuptools_scm]
+
+
+# Dev dependencies
+
 [dependency-groups]
 dev = [
-  "mypy",
-  "pytest",
-  "ruff",
-  "werkzeug",
+  {include-group = "lint"},
+  {include-group = "test"},
 ]
 
-postgresql = [
-  "psycopg[binary]",
+lint = [
+  "mypy",
+  "ruff",
+]
+
+test = [
+  "pytest",
 ]
 
 production = [
   {include-group = "postgresql"},
   "gunicorn",
 ]
+
+postgresql = [
+  "psycopg[binary]",
+]
+
+
+# Other tool configs
 
 [[tool.mypy.overrides]]
 module = ["socketio.*"]
