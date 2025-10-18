@@ -1,9 +1,7 @@
-.tile_2d {
+.tile_2d.tile_div {
   --tile-border-radius: calc(var(--tile-width) * 0.1);
   --tile-side-darken-percent: 8%;
-}
 
-.tile_2d.tile_div {
   --tile-height: calc(var(--tile-width) * 4 / 3);
   --tile-depth: calc(var(--tile-width) * 2 / 3);
   --tile-border-width: 1px;
@@ -11,51 +9,80 @@
   height: calc(var(--tile-height) * 9 / 8);
   display: inline-block;
   position: relative;
-}
 
-.tile_2d.tile_div .tile_back_layer,
-.tile_2d.tile_div .tile_middle_layer {
-  width: var(--tile-width);
-  height: var(--tile-height);
-  position: absolute;
-  border-radius: var(--tile-border-radius);
-}
+  .tile_back_layer,
+  .tile_middle_layer {
+    width: var(--tile-width);
+    height: var(--tile-height);
+    position: absolute;
+    border-radius: var(--tile-border-radius);
+  }
 
-.tile_2d.tile_div .tile_back_layer {
-  bottom: calc(var(--tile-height) * 1 / 8);
-  background-color: color-mix(
-    in srgb,
-    var(--tile-back-color),
-    black var(--tile-side-darken-percent)
-  );
-}
+  .tile_front_layer,
+  .tile_image {
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    border-radius: var(--tile-border-radius);
+  }
 
-.tile_2d.tile_div .tile_middle_layer {
-  bottom: calc(var(--tile-height) * 1 / 8 * 0.7);
-  background-color: color-mix(
-    in srgb,
-    var(--tile-front-color),
-    black var(--tile-side-darken-percent)
-  );
-}
+  &::after {
+    --border-width: 1px;
+    content: "";
+    box-sizing: border-box;
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0;
+    bottom: 0;
+    border-radius: var(--tile-border-radius);
+    border: var(--border-width) solid var(--tile-border-color);
+  }
 
-.tile_2d.tile_div .tile_image {
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  border: var(--tile-border-width) solid var(--tile-border-color);
-  border-radius: var(--tile-border-radius);
-  border-color: var(--tile-front-color);
-}
+  &.tile_2d_front {
+    .tile_back_layer {
+      bottom: calc(var(--tile-height) * 1 / 8);
+      background-color: color-mix(
+        in srgb,
+        var(--tile-back-color),
+        black var(--tile-side-darken-percent)
+      );
+    }
 
-.tile_2d.tile_div::after {
-  --border-width: 1px;
-  content: "";
-  width: calc(100% - 2 * var(--border-width));
-  height: calc(100% - 2 * var(--border-width));
-  position: absolute;
-  left: 0;
-  bottom: 0;
-  border-radius: var(--tile-border-radius);
-  border: var(--border-width) solid var(--tile-border-color);
+    .tile_middle_layer {
+      bottom: calc(var(--tile-height) * 1 / 8 * 0.7);
+      background-color: color-mix(
+        in srgb,
+        var(--tile-front-color),
+        black var(--tile-side-darken-percent)
+      );
+    }
+  }
+
+  &.tile_2d_back {
+    .tile_back_layer {
+      bottom: calc(var(--tile-height) * 1 / 8);
+      background-color: color-mix(
+        in srgb,
+        var(--tile-front-color),
+        black var(--tile-side-darken-percent)
+      );
+    }
+
+    .tile_middle_layer {
+      bottom: calc(var(--tile-height) * 1 / 8 * 0.3);
+      background-color: color-mix(
+        in srgb,
+        var(--tile-back-color),
+        black var(--tile-side-darken-percent)
+      );
+    }
+
+    .tile_front_layer {
+      box-sizing: border-box;
+      width: var(--tile-width);
+      height: var(--tile-height);
+      background-color: var(--tile-back-color);
+    }
+  }
 }

@@ -5,7 +5,7 @@
 }
 
 .tile_image {
-  --tile-padding: calc(var(--tile-width) * 0.02);
+  --tile-padding: calc(var(--tile-width) * 0.04);
   box-sizing: border-box;
   width: var(--tile-width);
   height: var(--tile-height);

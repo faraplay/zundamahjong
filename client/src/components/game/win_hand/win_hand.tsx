@@ -1,11 +1,21 @@
-import { getCallTiles, type Call } from "../../../types/call";
+import { CallType, getCallTiles, type Call } from "../../../types/call";
 import type { Win } from "../../../types/game";
 
-import { Tile2DList } from "../tile_2d/tile_2d";
+import { Tile2D, Tile2DBack, Tile2DList } from "../tile_2d/tile_2d";
 
 import "./win_hand.css";
 
 function WinCall({ call }: { call: Call }) {
+  if (call.call_type == CallType.CLOSED_KAN) {
+    return (
+      <span class="call">
+        <Tile2DBack />
+        <Tile2D tile={call.tiles[1]} />
+        <Tile2D tile={call.tiles[2]} />
+        <Tile2DBack />
+      </span>
+    );
+  }
   return (
     <span class="call">
       <Tile2DList tiles={getCallTiles(call)} />
