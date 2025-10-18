@@ -8,7 +8,7 @@ from .round import RoundStatus, Round
 class ActionSelector:
     def __init__(self, round: Round) -> None:
         self._round = round
-        self._player_count = round._player_count
+        self._player_count = round.player_count
         self.reset_submitted_actions()
         self._resolve_actions()
 

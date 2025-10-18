@@ -135,12 +135,20 @@ class Round:
         return self._hands[player].flowers
 
     @property
+    def player_count(self) -> int:
+        return self._player_count
+
+    @property
     def current_player(self) -> int:
         return self._current_player
 
     @property
     def status(self) -> RoundStatus:
         return self._status
+
+    @property
+    def wind_round(self) -> int:
+        return self._wind_round
 
     @property
     def allowed_actions(self) -> tuple[ActionList, ...]:

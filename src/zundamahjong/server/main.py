@@ -52,7 +52,7 @@ def start_next_round(sid: str) -> None:
         raise Exception("Player is not in a game room!")
     if game_room.game_controller is None:
         raise Exception("Game room has no active game!")
-    if not game_room.game_controller._game.is_game_end:
+    if not game_room.game_controller.game.is_game_end:
         game_room.game_controller.start_next_round(player)
     else:
         game_room.end_game()

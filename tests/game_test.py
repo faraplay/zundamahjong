@@ -78,7 +78,7 @@ class GameTest(unittest.TestCase):
         game.start_next_round(test_deck2)
         self.assertEqual(game.wind_round, 1)
         self.assertEqual(game.sub_round, 0)
-        self.assertEqual(game.round._wind_round, 1)
+        self.assertEqual(game.round.wind_round, 1)
 
     def test_one_round_game(self) -> None:
         game = Game(
