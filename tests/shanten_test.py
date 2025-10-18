@@ -198,7 +198,7 @@ class ShantenTest(unittest.TestCase):
 
     def test_suit_shanten_all(self) -> None:
         def hand_from_code(hand_code: int) -> list[int]:
-            hand = []
+            hand: list[int] = []
             for _ in range(9):
                 hand.append(hand_code % 5)
                 hand_code //= 5
@@ -208,7 +208,7 @@ class ShantenTest(unittest.TestCase):
             return sum(count * 5**tile for tile, count in enumerate(hand))
 
         limit = 5**6
-        datas = []
+        datas: list[list[list[int]]] = []
         for hand_code in range(limit):
             hand = hand_from_code(hand_code)
             assert hand_code == code_from_hand(hand)
