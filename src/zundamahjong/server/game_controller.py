@@ -1,14 +1,64 @@
-from threading import Lock
-from typing import Any, final
+from collections.abc import Sequence
 from random import sample
+from threading import Lock
+from typing import Optional, final
+
+from pydantic import BaseModel
 
 from ..mahjong.action import Action
+from ..mahjong.call import Call
+from ..mahjong.discard_pool import Discard
+from ..mahjong.game import Game
 from ..mahjong.game_options import GameOptions
 from ..mahjong.round import RoundStatus
-from ..mahjong.game import Game
-
-from .sio import sio
+from ..mahjong.scoring import Scoring
+from ..mahjong.tile import TileId
+from ..mahjong.win import Win
 from ..types.player import Player
+from .sio import sio
+
+
+class GameInfo(BaseModel):
+    players: list[Player]
+    wind_round: int
+    sub_round: int
+    draw_count: int
+    player_scores: tuple[float, ...]
+
+
+class HistoryItem(BaseModel):
+    player_index: int
+    action: Action
+
+
+class RoundInfo(BaseModel):
+    tiles_left: int
+    current_player: int
+    status: RoundStatus
+    hand_counts: list[int]
+    discards: list[Discard]
+    calls: list[Sequence[Call]]
+    flowers: list[Sequence[TileId]]
+    history: list[HistoryItem]
+
+
+class PlayerInfo(BaseModel):
+    hand: list[TileId]
+    last_tile: TileId
+    actions: list[Action]
+    action_selected: bool
+
+
+class AllInfo(BaseModel):
+    player_count: int
+    player_index: int
+    is_game_end: bool
+    game_info: GameInfo
+    round_info: RoundInfo
+    history_updates: list[HistoryItem]
+    player_info: PlayerInfo
+    win_info: Optional[Win]
+    scoring_info: Optional[Scoring]
 
 
 @final
@@ -27,7 +77,7 @@ class GameController:
     def emit_info(self, player: Player) -> None:
         with self._lock:
             index = self._get_player_index(player)
-            sio.emit("info", self._info(index, []), to=player.id)
+            sio.emit("info", self._info(index, []).model_dump(), to=player.id)
 
     def submit_action(self, player: Player, action: Action, history_index: int) -> None:
         with self._lock:
@@ -52,84 +102,77 @@ class GameController:
         except ValueError:
             raise Exception(f"Player {player.id} not found in this game!")
 
-    def _game_info(self) -> dict[str, Any]:
-        return {
-            "players": [player.model_dump() for player in self._players],
-            "wind_round": self._game.wind_round,
-            "sub_round": self._game.sub_round,
-            "draw_count": self._game.draw_count,
-            "player_scores": self._game.player_scores,
-        }
+    def _game_info(self) -> GameInfo:
+        return GameInfo(
+            players=self._players,
+            wind_round=self._game.wind_round,
+            sub_round=self._game.sub_round,
+            draw_count=self._game.draw_count,
+            player_scores=self._game.player_scores,
+        )
 
-    def _round_info(self) -> dict[str, Any]:
+    def _round_info(self) -> RoundInfo:
         history = [
-            {"player_index": action[0], "action": action[1].model_dump()}
+            HistoryItem(player_index=action[0], action=action[1])
             for action in self._game.round.history
         ]
         hand_counts = [
             len(self._game.round.get_hand(player))
             for player in range(self._game.player_count)
         ]
-        discards = [discard.model_dump() for discard in self._game.round.discards]
+        discards = self._game.round.discards
         calls = [
-            [call.model_dump() for call in self._game.round.get_calls(player)]
+            self._game.round.get_calls(player)
             for player in range(self._game.player_count)
         ]
         flowers = [
             self._game.round.get_flowers(player)
             for player in range(self._game.player_count)
         ]
-        return {
-            "tiles_left": self._game.round.tiles_left,
-            "current_player": self._game.round.current_player,
-            "status": self._game.round.status.value,
-            "hand_counts": hand_counts,
-            "discards": discards,
-            "calls": calls,
-            "flowers": flowers,
-            "history": history,
-        }
+        return RoundInfo(
+            tiles_left=self._game.round.tiles_left,
+            current_player=self._game.round.current_player,
+            status=self._game.round.status,
+            hand_counts=hand_counts,
+            discards=list(discards),
+            calls=calls,
+            flowers=flowers,
+            history=history,
+        )
 
-    def _player_info(self, index: int) -> dict[str, Any]:
+    def _player_info(self, index: int) -> PlayerInfo:
         hand = list(self._game.round.get_hand(index))
         if self._game.round.status == RoundStatus.END:
             actions = []
         else:
-            actions = [
-                action.model_dump()
-                for action in self._game.round.allowed_actions[index].actions
-            ]
-        action_selected = False
-        return {
-            "hand": hand,
-            "last_tile": self._game.round.last_tile,
-            "actions": actions,
-            "action_selected": action_selected,
-        }
+            actions = self._game.round.allowed_actions[index].actions
 
-    def _info(
-        self, index: int, history_updates: list[tuple[int, Action]]
-    ) -> dict[str, Any]:
-        return {
-            "player_count": self._game.player_count,
-            "player_index": index,
-            "is_game_end": self._game.is_game_end,
-            "game_info": self._game_info(),
-            "round_info": self._round_info(),
-            "history_updates": [
-                {
-                    "player_index": history_item[0],
-                    "action": history_item[1].model_dump(),
-                }
+        action_selected = False
+        return PlayerInfo(
+            hand=hand,
+            last_tile=self._game.round.last_tile,
+            actions=actions,
+            action_selected=action_selected,
+        )
+
+    def _info(self, index: int, history_updates: list[tuple[int, Action]]) -> AllInfo:
+        return AllInfo(
+            player_count=self._game.player_count,
+            player_index=index,
+            is_game_end=self._game.is_game_end,
+            game_info=self._game_info(),
+            round_info=self._round_info(),
+            history_updates=[
+                HistoryItem(player_index=history_item[0], action=history_item[1])
                 for history_item in history_updates
             ],
-            "player_info": self._player_info(index),
-            "win_info": self._game.win.model_dump() if self._game.win else None,
-            "scoring_info": (
-                self._game.scoring.model_dump() if self._game.scoring else None
-            ),
-        }
+            player_info=self._player_info(index),
+            win_info=self._game.win if self._game.win else None,
+            scoring_info=(self._game.scoring if self._game.scoring else None),
+        )
 
     def _emit_info_all_inner(self, history_updates: list[tuple[int, Action]]) -> None:
         for index, player in enumerate(self._players):
-            sio.emit("info", self._info(index, history_updates), to=player.id)
+            sio.emit(
+                "info", self._info(index, history_updates).model_dump(), to=player.id
+            )
