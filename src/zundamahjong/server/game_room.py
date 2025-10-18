@@ -1,6 +1,6 @@
 from __future__ import annotations
 from threading import Lock
-from typing import Any, Optional
+from typing import Any, Optional, final
 import logging
 
 from ..database.avatars import get_avatar, save_avatar
@@ -19,6 +19,7 @@ player_rooms: dict[str, GameRoom] = {}
 rooms_lock = Lock()
 
 
+@final
 class GameRoom:
     def __init__(
         self,

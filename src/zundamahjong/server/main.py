@@ -15,7 +15,7 @@ logger.setLevel(logging.INFO)
 
 
 @sio_on("connect")
-def connect(sid: str, environ: dict[str, Any], auth: object = None) -> None:
+def connect(sid: str, environ: dict[str, Any], auth: object = None) -> None:  # pyright: ignore[reportExplicitAny]
     logger.info(f"Client connecting with sid {sid}")
 
 

@@ -2,6 +2,7 @@ from __future__ import annotations
 from collections.abc import Iterable
 from random import shuffle
 from collections import deque
+from typing import final
 
 from .tile import TileId, N
 
@@ -25,6 +26,7 @@ three_player_deck: list[TileId] = [
 ] + [tile_value * N for tile_value in [41, 42, 43, 45, 46, 47]]
 
 
+@final
 class Deck:
     def __init__(self, tiles: Iterable[TileId]) -> None:
         self._tiles = deque(tiles)

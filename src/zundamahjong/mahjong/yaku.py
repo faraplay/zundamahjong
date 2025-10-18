@@ -1,6 +1,7 @@
 from __future__ import annotations
 from collections import Counter
 from collections.abc import Callable
+from typing import final
 
 from .tile import (
     TileValue,
@@ -35,6 +36,7 @@ def _register_yaku(
     return _register_yaku_inner
 
 
+@final
 class YakuCalculator:
     def __init__(self, win: Win, formed_hand: list[Meld]) -> None:
         self._win = win

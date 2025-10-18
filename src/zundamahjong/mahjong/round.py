@@ -1,5 +1,5 @@
 from __future__ import annotations
-from typing import Optional
+from typing import Optional, final
 from collections.abc import Sequence, Callable
 from enum import Enum
 
@@ -60,6 +60,7 @@ def _register_do_action(
     return _register_do_action_inner
 
 
+@final
 class Round:
     def __init__(
         self,

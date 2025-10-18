@@ -1,7 +1,7 @@
 # pyright: reportIgnoreCommentWithoutRule=false
 
 import logging
-from typing import Optional
+from typing import final, Optional
 
 import sqlalchemy as sa
 from sqlalchemy.orm import Session, scoped_session, sessionmaker
@@ -23,6 +23,7 @@ def _app_ctx_id() -> int:
     return id(app_ctx._get_current_object())  # type: ignore  # pyright: ignore
 
 
+@final
 class SQLAlchemy:
     def __init__(self, engine: sa.Engine) -> None:
         self._session = scoped_session(sessionmaker(engine), _app_ctx_id)

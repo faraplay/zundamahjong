@@ -1,6 +1,6 @@
 from enum import IntEnum
 from collections.abc import Iterable
-from typing import Annotated, Literal, Optional, Union
+from typing import Annotated, Literal, Optional, Union, final
 from pydantic import BaseModel, Field, TypeAdapter
 
 
@@ -86,6 +86,7 @@ Action = Annotated[
 action_adapter: TypeAdapter[Action] = TypeAdapter(Action)
 
 
+@final
 class ActionList:
     def __init__(
         self, default_action: Action = SimpleAction(action_type=ActionType.PASS)

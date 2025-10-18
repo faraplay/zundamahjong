@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, final
 
 from .exceptions import InvalidOperationException
 from .tile import TileId
@@ -10,6 +10,7 @@ from .scoring import Scoring, Scorer
 from .action_selector import ActionSelector
 
 
+@final
 class Game:
     def __init__(
         self,

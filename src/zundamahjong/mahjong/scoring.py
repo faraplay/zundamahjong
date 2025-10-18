@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, final
 
 from pydantic import BaseModel
 
@@ -17,6 +17,7 @@ class Scoring(BaseModel):
     player_scores: list[float]
 
 
+@final
 class Scorer:
     def __init__(self, win: Win, options: GameOptions) -> None:
         self._win = win
