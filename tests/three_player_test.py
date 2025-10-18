@@ -1,8 +1,8 @@
 import unittest
 
 from zundamahjong.mahjong.call import CallType, OpenCall
-from zundamahjong.mahjong.game_options import GameOptions
 from zundamahjong.mahjong.game import Game
+from zundamahjong.mahjong.game_options import GameOptions
 from zundamahjong.mahjong.meld import Meld, MeldType
 from zundamahjong.mahjong.win import Win
 from zundamahjong.mahjong.yaku import YakuCalculator

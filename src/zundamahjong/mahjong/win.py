@@ -2,8 +2,8 @@ from typing import Optional
 
 from pydantic import BaseModel
 
-from .tile import TileId
 from .call import Call
+from .tile import TileId
 
 
 class Win(BaseModel):

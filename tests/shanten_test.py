@@ -1,9 +1,9 @@
 import unittest
 
 from zundamahjong.mahjong.shanten import (
+    calculate_shanten,
     honours_shanten_data,
     suit_shanten_data,
-    calculate_shanten,
 )
 
 

@@ -1,8 +1,9 @@
-from collections.abc import Callable
 import logging
+from collections.abc import Callable
 from typing import Concatenate, Optional, ParamSpec, TypeVar
 
 from socketio import Server as _Server
+from typing_extensions import Concatenate, ParamSpec
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)

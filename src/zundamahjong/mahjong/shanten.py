@@ -1,4 +1,4 @@
-from .tile import TileValue, all_tiles, tile_value_top, orphans
+from .tile import TileValue, all_tiles, orphans, tile_value_top
 
 
 def honours_shanten_data(tile_freqs: list[int]) -> list[list[int]]:

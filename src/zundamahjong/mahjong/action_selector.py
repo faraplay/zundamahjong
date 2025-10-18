@@ -1,7 +1,7 @@
 from typing import Optional, final
 
 from .action import Action
-from .round import RoundStatus, Round
+from .round import Round, RoundStatus
 
 
 @final

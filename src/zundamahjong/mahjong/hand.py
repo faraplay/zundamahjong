@@ -1,7 +1,6 @@
 from collections.abc import Sequence
 from typing import Optional, final
 
-
 from .action import (
     Action,
     ActionType,
@@ -11,28 +10,27 @@ from .action import (
     OpenCallAction,
     OpenKanAction,
 )
-
+from .call import (
+    AddKanCall,
+    Call,
+    CallType,
+    ClosedKanCall,
+    OpenCall,
+    OpenKanCall,
+    get_call_tiles,
+)
+from .deck import Deck
+from .form_hand import is_winning
+from .shanten import get_waits
 from .tile import (
     TileId,
     TileValue,
     get_tile_value,
     get_tile_value_buckets,
     get_tile_values,
-    tile_id_is_flower,
     is_number,
+    tile_id_is_flower,
 )
-from .deck import Deck
-from .call import (
-    AddKanCall,
-    CallType,
-    Call,
-    ClosedKanCall,
-    OpenCall,
-    OpenKanCall,
-    get_call_tiles,
-)
-from .form_hand import is_winning
-from .shanten import get_waits
 
 
 @final

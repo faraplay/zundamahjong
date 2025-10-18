@@ -1,8 +1,16 @@
 import unittest
-
 from typing import Optional
 
-from zundamahjong.mahjong.round import Round, RoundStatus
+from tests.decks import (
+    test_deck1,
+    test_deck2,
+    test_deck3,
+    test_deck4,
+    test_deck5,
+    test_deck_haitei,
+    test_deck_kan_tenhou,
+    test_deck_rinshan,
+)
 from zundamahjong.mahjong.action import (
     Action,
     ActionType,
@@ -21,17 +29,7 @@ from zundamahjong.mahjong.call import (
     OpenKanCall,
 )
 from zundamahjong.mahjong.game_options import GameOptions
-
-from tests.decks import (
-    test_deck1,
-    test_deck2,
-    test_deck3,
-    test_deck4,
-    test_deck5,
-    test_deck_haitei,
-    test_deck_kan_tenhou,
-    test_deck_rinshan,
-)
+from zundamahjong.mahjong.round import Round, RoundStatus
 
 
 class RoundTest(unittest.TestCase):

@@ -1,14 +1,13 @@
 # pyright: reportAny=false
 
 import argparse
-from importlib.metadata import version
 import os
+from importlib.metadata import version
 
 from werkzeug import run_simple
 from werkzeug.serving import is_running_from_reloader
 
 from .server import app
-
 
 parser = argparse.ArgumentParser(
     prog="zundamahjong", description="Web-based Mahjong game server"

@@ -1,10 +1,11 @@
 from __future__ import annotations
+
+from collections import deque
 from collections.abc import Iterable
 from random import shuffle
-from collections import deque
 from typing import final
 
-from .tile import TileId, N
+from .tile import N, TileId
 
 four_player_deck: list[TileId] = [
     tile_value * N + r

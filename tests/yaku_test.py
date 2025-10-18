@@ -1,10 +1,9 @@
 from typing import Any, Optional
-
 from unittest import TestCase
 
-from zundamahjong.mahjong.tile import TileId
-from zundamahjong.mahjong.meld import Meld, MeldType
 from zundamahjong.mahjong.call import Call, CallType, ClosedKanCall, OpenCall
+from zundamahjong.mahjong.meld import Meld, MeldType
+from zundamahjong.mahjong.tile import TileId
 from zundamahjong.mahjong.win import Win
 from zundamahjong.mahjong.yaku import YakuCalculator
 
