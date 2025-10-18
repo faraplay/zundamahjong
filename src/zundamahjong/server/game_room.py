@@ -1,7 +1,9 @@
 from __future__ import annotations
 from threading import Lock
-from typing import Any, Optional, final
+from typing import Optional, final
 import logging
+
+from pydantic import BaseModel
 
 from ..database.avatars import get_avatar, save_avatar
 from ..mahjong.game_options import GameOptions
@@ -17,6 +19,17 @@ logger.setLevel(logging.INFO)
 rooms: dict[str, GameRoom] = {}
 player_rooms: dict[str, GameRoom] = {}
 rooms_lock = Lock()
+
+
+class RoomBasicInfo(BaseModel):
+    room_name: str
+    player_count: int
+    joined_players: list[Player]
+
+
+class RoomDetailedInfo(RoomBasicInfo):
+    avatars: dict[str, Avatar]
+    game_options: GameOptions
 
 
 @final
@@ -45,26 +58,28 @@ class GameRoom:
         ]
 
     @property
-    def room_basic_info(self) -> dict[str, Any]:
-        return {
-            "room_name": self.room_name,
-            "player_count": self.player_count,
-            "joined_players": [player.model_dump() for player in self.joined_players],
-        }
+    def room_basic_info(self) -> RoomBasicInfo:
+        return RoomBasicInfo(
+            room_name=self.room_name,
+            player_count=self.player_count,
+            joined_players=self.joined_players,
+        )
 
     @property
-    def room_detailed_info(self) -> dict[str, Any]:
-        return {
-            **self.room_basic_info,
-            "avatars": self.avatars,
-            "game_options": self.game_options.model_dump(),
-        }
+    def room_detailed_info(self) -> RoomDetailedInfo:
+        return RoomDetailedInfo(
+            room_name=self.room_name,
+            player_count=self.player_count,
+            joined_players=self.joined_players,
+            avatars=self.avatars,
+            game_options=self.game_options,
+        )
 
     @classmethod
     def emit_rooms_list(cls, sid: str) -> None:
         sio.emit(
             "rooms_info",
-            [game_room.room_basic_info for game_room in rooms.values()],
+            [game_room.room_basic_info.model_dump() for game_room in rooms.values()],
             to=sid,
         )
 
@@ -153,7 +168,7 @@ class GameRoom:
 
     def broadcast_room_info(self) -> None:
         for player in self.joined_players:
-            sio.emit("room_info", self.room_detailed_info, to=player.id)
+            sio.emit("room_info", self.room_detailed_info.model_dump(), to=player.id)
 
     def broadcast_game_end(self) -> None:
         for player in self.joined_players:
@@ -201,7 +216,9 @@ class GameRoom:
                 game_room.get_player_connection(player).is_connected = True
         sio.emit(
             "room_info",
-            game_room.room_detailed_info if game_room is not None else None,
+            game_room.room_detailed_info.model_dump()
+            if game_room is not None
+            else None,
             to=player.id,
         )
         return game_room
