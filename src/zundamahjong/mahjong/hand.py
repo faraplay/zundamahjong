@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import Optional
+from typing import Optional, final
 
 
 from .action import (
@@ -35,6 +35,7 @@ from .form_hand import is_winning
 from .shanten import get_waits
 
 
+@final
 class Hand:
     def __init__(self, deck: Deck) -> None:
         self._deck = deck

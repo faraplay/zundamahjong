@@ -1,9 +1,10 @@
-from typing import Optional
+from typing import Optional, final
 
 from .action import Action
 from .round import RoundStatus, Round
 
 
+@final
 class ActionSelector:
     def __init__(self, round: Round) -> None:
         self._round = round

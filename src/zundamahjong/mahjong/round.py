@@ -1,24 +1,24 @@
 from __future__ import annotations
-from typing import Optional
-from collections.abc import Sequence, Callable
+
+from collections.abc import Callable, Sequence
 from enum import Enum
+from typing import Optional, final
 
-
-from .exceptions import InvalidMoveException
-from .tile import TileId, get_tile_value
-from .call import Call, get_call_tiles
 from .action import (
     Action,
-    ActionType,
     ActionList,
+    ActionType,
     SimpleAction,
     call_action_types,
 )
+from .call import Call, get_call_tiles
 from .deck import Deck, four_player_deck, three_player_deck
 from .discard_pool import Discard, DiscardPool
-from .hand import Hand
-from .win import Win
+from .exceptions import InvalidMoveException
 from .game_options import GameOptions
+from .hand import Hand
+from .tile import TileId, get_tile_value
+from .win import Win
 
 
 class RoundStatus(Enum):
@@ -60,6 +60,7 @@ def _register_do_action(
     return _register_do_action_inner
 
 
+@final
 class Round:
     def __init__(
         self,

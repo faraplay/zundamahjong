@@ -1,5 +1,5 @@
 from threading import Lock
-from typing import Any
+from typing import Any, final
 from random import sample
 
 from ..mahjong.action import Action
@@ -11,6 +11,7 @@ from .sio import sio
 from ..types.player import Player
 
 
+@final
 class GameController:
     def __init__(self, players: list[Player], options: GameOptions) -> None:
         self._players = sample(players, len(players))
