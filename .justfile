@@ -29,8 +29,9 @@ check-client: lint-client test-client
 
 [doc("Lint server source code")]
 lint-server:
-    ruff check
-    mypy --strict src tests
+    ruff check --select I
+    mypy
+    basedpyright
 
 [doc("Run server tests")]
 test-server:
