@@ -1,5 +1,5 @@
 from collections.abc import Sequence
-from typing import Optional, final
+from typing import final
 
 from .action import (
     Action,
@@ -40,7 +40,7 @@ class Hand:
         self._tiles: list[TileId] = []
         self._calls: list[Call] = []
         self._flowers: list[TileId] = []
-        self._waits: Optional[frozenset[TileValue]] = None
+        self._waits: frozenset[TileValue] | None = None
 
     @property
     def tiles(self) -> Sequence[TileId]:

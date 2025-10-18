@@ -1,6 +1,6 @@
 from collections.abc import Iterable
 from enum import IntEnum
-from typing import Annotated, Literal, Optional, Union, final
+from typing import Annotated, Literal, final
 
 from pydantic import BaseModel, Field, TypeAdapter
 
@@ -72,14 +72,12 @@ class ClosedKanAction(BaseModel, frozen=True):
 
 
 Action = Annotated[
-    Union[
-        SimpleAction,
-        HandTileAction,
-        OpenCallAction,
-        OpenKanAction,
-        AddKanAction,
-        ClosedKanAction,
-    ],
+    SimpleAction
+    | HandTileAction
+    | OpenCallAction
+    | OpenKanAction
+    | AddKanAction
+    | ClosedKanAction,
     Field(discriminator="action_type"),
 ]
 
@@ -88,7 +86,7 @@ action_adapter: TypeAdapter[Action] = TypeAdapter(Action)
 
 @final
 class ActionList:
-    def __init__(self, default_action: Optional[Action] = None) -> None:
+    def __init__(self, default_action: Action | None = None) -> None:
         if default_action is not None:
             _default_action = default_action
         else:
@@ -100,7 +98,7 @@ class ActionList:
         return self._actions[0]
 
     @property
-    def auto(self) -> Optional[Action]:
+    def auto(self) -> Action | None:
         if len(self._actions) == 1:
             return self._actions[0]
         else:

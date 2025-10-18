@@ -2,7 +2,7 @@
 
 import logging
 from collections.abc import Callable
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 from flask import request
 from flask_socketio import SocketIO as _SocketIO
@@ -29,14 +29,14 @@ sio = SocketIO(app, logger=logger, async_mode="threading")
 
 P = ParamSpec("P")
 T = TypeVar("T")
-Handler = Callable[Concatenate[str, P], Optional[T]]
+Handler = Callable[Concatenate[str, P], T | None]
 
 
-def sio_on(event: str) -> Callable[[Handler[P, T]], Callable[P, Optional[T]]]:
+def sio_on(event: str) -> Callable[[Handler[P, T]], Callable[P, T | None]]:
     def sio_on_decorator(
         handler: Handler[P, T],
-    ) -> Callable[P, Optional[T]]:
-        def wrapped_handler(*args: P.args, **kwargs: P.kwargs) -> Optional[T]:
+    ) -> Callable[P, T | None]:
+        def wrapped_handler(*args: P.args, **kwargs: P.kwargs) -> T | None:
             with app.app_context():
                 sid: str = request.sid  # type: ignore  # pyright: ignore
                 assert isinstance(sid, str)

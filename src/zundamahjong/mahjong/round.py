@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from collections.abc import Callable, Sequence
 from enum import IntEnum
-from typing import Optional, final
+from typing import final
 
 from .action import (
     Action,
@@ -68,8 +68,8 @@ class Round:
         wind_round: int = 0,
         sub_round: int = 0,
         draw_count: int = 0,
-        tiles: Optional[list[TileId]] = None,
-        options: Optional[GameOptions] = None,
+        tiles: list[TileId] | None = None,
+        options: GameOptions | None = None,
         round_end_callback: Callable[[], None] = lambda: None,
     ):
         if options is not None:
@@ -105,7 +105,7 @@ class Round:
         self._status = RoundStatus.START
         self._last_tile: TileId = 0
         self._history: list[tuple[int, Action]] = []
-        self._win_info: Optional[Win] = None
+        self._win_info: Win | None = None
 
         self._calculate_allowed_actions()
 
@@ -179,7 +179,7 @@ class Round:
         return self._history
 
     @property
-    def win_info(self) -> Optional[Win]:
+    def win_info(self) -> Win | None:
         return self._win_info
 
     def display_info(self) -> None:
@@ -225,11 +225,11 @@ class Round:
             self._end_callback()
 
     def get_priority_action(
-        self, actions: Sequence[Optional[Action]]
-    ) -> Optional[tuple[int, Action]]:
+        self, actions: Sequence[Action | None]
+    ) -> tuple[int, Action] | None:
         if len(actions) != self._player_count:
             raise Exception("Incorrect number of elements in actions")
-        validated_actions: list[Optional[Action]] = []
+        validated_actions: list[Action | None] = []
         for player, action in enumerate(actions):
             allowed_actions = self.allowed_actions[player]
             if action is None:

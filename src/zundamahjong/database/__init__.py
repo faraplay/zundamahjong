@@ -1,7 +1,7 @@
 # pyright: reportIgnoreCommentWithoutRule=false
 
 import logging
-from typing import Optional, final
+from typing import final
 
 import sqlalchemy as sa
 from flask import Flask
@@ -43,7 +43,7 @@ class SQLAlchemy:
             )
         return self._session()
 
-    def _close(self, exc: Optional[BaseException]) -> None:
+    def _close(self, exc: BaseException | None) -> None:
         if self._session.registry.has():
             logger.info(
                 f"Closing database session within Flask application context {_app_ctx_id()}"

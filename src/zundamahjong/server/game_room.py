@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import logging
 from threading import Lock
-from typing import Optional, final
+from typing import final
 
 from pydantic import BaseModel
 
@@ -43,7 +43,7 @@ class GameRoom:
         self.room_name = room_name
         self.player_count = player_count
         self.game_options = GameOptions(player_count=player_count)
-        self.game_controller: Optional[GameController] = None
+        self.game_controller: GameController | None = None
         self.joined_player_connections: list[PlayerConnection] = [
             PlayerConnection(player=creator)
         ]
@@ -96,7 +96,7 @@ class GameRoom:
             raise Exception("Player count is not 3 or 4!")
 
     @classmethod
-    def get_player_room(cls, player: Player) -> Optional[GameRoom]:
+    def get_player_room(cls, player: Player) -> GameRoom | None:
         with rooms_lock:
             return player_rooms.get(player.id)
 
@@ -209,7 +209,7 @@ class GameRoom:
                     rooms.pop(game_room.room_name)
 
     @classmethod
-    def try_reconnect(cls, player: Player) -> Optional[GameRoom]:
+    def try_reconnect(cls, player: Player) -> GameRoom | None:
         with rooms_lock:
             game_room = player_rooms.get(player.id)
             if game_room is not None:

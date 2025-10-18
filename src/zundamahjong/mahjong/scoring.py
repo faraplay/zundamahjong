@@ -1,4 +1,4 @@
-from typing import Optional, final
+from typing import final
 
 from pydantic import BaseModel
 
@@ -11,7 +11,7 @@ from .yaku import YakuCalculator, yaku_display_names
 
 class Scoring(BaseModel):
     win_player: int
-    lose_player: Optional[int]
+    lose_player: int | None
     yaku_hans: dict[str, int]
     han_total: int
     player_scores: list[float]
