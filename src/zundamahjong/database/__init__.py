@@ -4,7 +4,7 @@ import sqlalchemy as sa
 from sqlalchemy.orm import Session, scoped_session, sessionmaker
 
 from .engine import engine
-from .models import Base as Base
+from .models import Base
 
 
 @final
@@ -21,3 +21,6 @@ class SQLAlchemy:
 
 
 db = SQLAlchemy(engine)
+
+
+__all__ = ["Base", "db", "engine"]
