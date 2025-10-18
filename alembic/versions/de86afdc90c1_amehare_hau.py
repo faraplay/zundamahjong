@@ -5,9 +5,8 @@ Revises: 9e41b71ccd79
 Create Date: 2025-10-16 05:01:03.825292+00:00
 
 """
-
+from collections.abc import Sequence
 from enum import IntEnum
-from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
@@ -15,9 +14,9 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = "de86afdc90c1"
-down_revision: Union[str, Sequence[str], None] = "9e41b71ccd79"
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = "9e41b71ccd79"
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 class OldAvatar(IntEnum):
