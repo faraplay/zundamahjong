@@ -79,6 +79,10 @@ alembic = [
 
 # Type checker configurations
 
+[tool.mypy]
+files = ["src", "tests"]
+strict = true
+
 [[tool.mypy.overrides]]
 module = ["socketio.*"]
 ignore_missing_imports = true

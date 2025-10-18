@@ -53,10 +53,13 @@ jobs:
           uv run ruff check --output-format=github .
       - name: Type check with mypy
         run: |
-          uv run mypy --strict src tests
+          uv run mypy
+      - name: Type check with basedpyright
+        run: |
+          uv run basedpyright
       - name: Test with pytest
         run: |
-          uv run pytest tests
+          uv run pytest
       - name: Build Python wheel
         run: |
           uv build
