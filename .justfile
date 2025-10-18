@@ -42,3 +42,18 @@ check-server: lint-server test-server
 
 [doc("Run all checks")]
 check-all: check-client check-server
+
+
+# Working with the Sphinx docs
+
+[doc("Clean existing doc builds")]
+docs-clean:
+    rm -r docs/build
+
+[doc("Build developer documentation")]
+docs: docs-clean
+    sphinx-build -M html docs/source/ docs/build/
+
+[doc("Build auto-reloading developer documentation")]
+docs-auto: docs-clean
+    sphinx-autobuild docs/source docs/build/html --watch src
