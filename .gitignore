@@ -8,3 +8,4 @@
 /.direnv/
 /client_build/
 /dist/
+/docs/build/

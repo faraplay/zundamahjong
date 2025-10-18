@@ -1,31 +1,48 @@
-from typing import Optional
-
-from socketio import Server
 import sqlalchemy as sa
-from sqlalchemy.orm import Session, sessionmaker
+from sqlalchemy.orm import Session, scoped_session, sessionmaker
 
 from .engine import engine
-from .models import Base as Base, User
-
-session_factory = sessionmaker(engine)
+from .models import Base as Base
 
 
-def get_db(sio: Server, sid: str) -> Session:
-    with sio.session(sid) as session:
-        if "db" not in session:
-            session["db"] = session_factory()
-        return session["db"]  # type: ignore[no-any-return]
+class SQLAlchemy:
+    """Helper class to manage SQLAlchemy ORM sessions for the game server.
+
+    :param engine:
+    :type engine: `sqlalchemy.Engine`_
+
+    Example usage::
+
+        from ..database import db
+        from ..database.models import User
+
+        with db.session.begin():
+            db.session.add(User(name="Zundamon", password=password))
+        # commits the transaction
+
+    """
+
+    def __init__(self, engine: sa.Engine) -> None:
+        self._Session = scoped_session(sessionmaker(engine, autobegin=False))
+
+    @property
+    def session(self) -> Session:
+        """Handle to an ORM session open for the current Python thread.
+
+        :rtype: `sqlalchemy.orm.Session`_
+
+        """
+
+        return self._Session()
+
+    def close(self) -> None:
+        """Close ORM session (if any) for the current Python thread. In
+        practice this means keeping track of one ORM session per connected
+        Socket.IO client.
+
+        """
+
+        self._Session.remove()
 
 
-def close_db(sio: Server, sid: str) -> None:
-    with sio.session(sid) as session:
-        if "db" in session:
-            session["db"].close()
-
-
-def get_user(db: Session, name: str) -> User:
-    return db.execute(sa.select(User).where(User.name == name)).scalar_one()
-
-
-def try_get_user(db: Session, name: str) -> Optional[User]:
-    return db.execute(sa.select(User).where(User.name == name)).scalar_one_or_none()
+db = SQLAlchemy(engine)

@@ -51,6 +51,7 @@ build-backend = "setuptools.build_meta"
 dev = [
   {include-group = "lint"},
   {include-group = "test"},
+  {include-group = "docs"},
 ]
 
 lint = [
@@ -60,6 +61,11 @@ lint = [
 
 test = [
   "pytest",
+]
+
+docs = [
+  "sphinx",
+  "sphinx-autobuild",
 ]
 
 production = [
