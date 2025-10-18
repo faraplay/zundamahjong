@@ -1,27 +1,38 @@
 TileId = int
-TileValue = int
+"Represents a Mahjong tile. Every tile in the deck has a unique TileId."
 
-# Tiles are represented by integers
-# Each tile in the deck has a unique integer
-# To get the tile value, divide the tile by 4 (without remainder)
-# 1-9 are 10ks
-# 11-19 are biscuits
-# 21-29 are sticks
-# 31-37 are ESWNWhGR
-# 41-48 are flowers
+TileValue = int
+"""
+Represents the value of a mahjong tile.
+
+- 1-9 are manzu (characters)
+- 11-19 are pinzu (dots)
+- 21-29 are souzu (bamboos)
+- 31-37 are jihai (winds and dragons, in the oreder ESWNWhGR)
+- 41-48 are flowers (seasons and flowers)
+"""
 
 N = 10
+"""
+Constant used to calculate the value of a mahjong tile.
+
+Mahjong tiles with tile id `N * a`, `N * a + 1`, ..., `N * a + (a - 1)`
+all have tile value `a`.
+"""
 
 
 def get_tile_value(tile: TileId) -> TileValue:
+    "Returns the value of a mahjong tile."
     return tile // N
 
 
 def get_tile_values(tiles: list[TileId]) -> list[TileValue]:
+    "Returns a list of tile values given a list of tiles."
     return [tile // N for tile in tiles]
 
 
-def get_tile_value_buckets(tiles: list[TileId]) -> dict[int, list[int]]:
+def get_tile_value_buckets(tiles: list[TileId]) -> dict[TileValue, list[TileId]]:
+    "Sorts tiles into buckets based on the tile's value."
     tile_value_buckets: dict[TileValue, list[TileId]] = {}
     for tile in tiles:
         tile_value = get_tile_value(tile)
@@ -34,6 +45,12 @@ def get_tile_value_buckets(tiles: list[TileId]) -> dict[int, list[int]]:
 
 
 def remove_tile_value(tiles: list[TileId], tile_value: TileValue) -> TileId:
+    """
+    Removes the first tile in the list with the specified value.
+
+    Returns the removed tile.
+    Raises an exception if no such tile is in the list.
+    """
     for tile in tiles:
         if get_tile_value(tile) == tile_value:
             tiles.remove(tile)
@@ -42,10 +59,21 @@ def remove_tile_value(tiles: list[TileId], tile_value: TileValue) -> TileId:
 
 
 def is_number(tile: TileValue) -> bool:
+    """
+    Returns True if the tile value corresponds to a number tile.
+
+    Returns True if the tile value corresponds to a character tile,
+    dot tile or bamboo tile.
+    Returns False if the tile value corresponds to
+    an honour tile or flower tile.
+    """
     return tile < 30
 
 
 def tile_id_is_flower(tile: TileId) -> bool:
+    """
+    Returns True if the tile is a flower tile.
+    """
     return get_tile_value(tile) > 40
 
 
@@ -55,9 +83,22 @@ all_tiles = frozenset(
     + [21, 22, 23, 24, 25, 26, 27, 28, 29]
     + [31, 32, 33, 34, 35, 36, 37]
 )
+"A frozenset containing all non-flower tile values."
+
 tile_value_top = 38
+"One more than the largest possible non-flower tile value."
+
 orphans = frozenset({1, 9, 11, 19, 21, 29, 31, 32, 33, 34, 35, 36, 37})
+"A frozenset containing the values of all orphan tiles."
+
 terminals = frozenset({1, 9, 11, 19, 21, 29})
+"A frozenset containing the values of all terminal tiles."
+
 winds = frozenset({31, 32, 33, 34})
+"A frozenset containing the values of all wind tiles."
+
 dragons = frozenset({35, 36, 37})
+"A frozenset containing the values of all dragon tiles."
+
 green_tiles = frozenset({22, 23, 24, 26, 28, 36})
+"A frozenset containing the values of all green tiles."
