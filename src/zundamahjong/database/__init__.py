@@ -1,3 +1,5 @@
+# pyright: reportIgnoreCommentWithoutRule=false
+
 import logging
 from typing import Optional
 
@@ -13,8 +15,12 @@ logger = logging.getLogger(__name__)
 
 
 def _app_ctx_id() -> int:
-    """Get the id of the current Flask application context for the session scope."""
-    return id(app_ctx._get_current_object())  # type: ignore[attr-defined]
+    """Get the id of the current Flask application context object."""
+
+    # Flask lies about `app_ctx`: it's not an instance of `AppContext` but
+    # of `LocalProxy[AppContext]`, which confuses type checkers here.
+
+    return id(app_ctx._get_current_object())  # type: ignore  # pyright: ignore
 
 
 class SQLAlchemy:

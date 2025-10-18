@@ -54,6 +54,7 @@ dev = [
 ]
 
 lint = [
+  "basedpyright",
   "mypy",
   "ruff",
 ]
@@ -76,6 +77,22 @@ alembic = [
 ]
 
 
+# Type checker configuration
+
+[[tool.mypy.overrides]]
+module = ["flask_socketio.*"]
+ignore_missing_imports = true
+
+[tool.basedpyright]
+include = ["src", "tests"]
+allowedUntypedLibraries = ["flask_socketio"]
+pythonVersion = "3.9"
+
+reportUnusedCallResult = false
+reportUnusedFunction = false
+reportUnusedParameter = false
+
+
 # Other tool configs
 
 [tool.alembic]
@@ -87,10 +104,3 @@ name = "ruff"
 type = "module"
 module = "ruff"
 options = "check --fix REVISION_SCRIPT_FILENAME"
-
-[[tool.mypy.overrides]]
-module = ["flask_socketio.*"]
-ignore_missing_imports = true
-
-[tool.pyright]
-typeCheckingMode = "standard"
