@@ -1,5 +1,10 @@
-Internal API Reference
-======================
+zundamahjong
+============
+
+Welcome to the zundamahjong developer documentation.
 
 .. toctree::
-   :maxdepth: 3
+   :maxdepth: 2
+   :glob:
+
+   api/index
