@@ -331,9 +331,9 @@ def standard_shanten(
 
 
 def seven_pairs_shanten(tile_freqs: list[int]) -> tuple[int, frozenset[TileValue]]:
-    tiles2 = set()
+    tiles2: set[int] = set()
     tiles2_count = 0
-    tiles1 = set()
+    tiles1: set[int] = set()
     tiles1_count = 0
     for tile, freq in enumerate(tile_freqs):
         if freq >= 2:
@@ -353,7 +353,7 @@ def seven_pairs_shanten(tile_freqs: list[int]) -> tuple[int, frozenset[TileValue
 
 
 def thirteen_orphans_shanten(tile_freqs: list[int]) -> tuple[int, frozenset[TileValue]]:
-    my_orphans = set()
+    my_orphans: set[int] = set()
     orphan_count = 0
     pair_orphan_count = 0
     for orphan in orphans:
