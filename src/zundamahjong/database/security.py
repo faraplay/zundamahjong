@@ -1,6 +1,5 @@
 import hashlib
 import secrets
-from typing import Optional
 
 import sqlalchemy as sa
 
@@ -26,9 +25,7 @@ def _hash_internal(password: str, salt: str, method: str) -> str:
     ).hex()
 
 
-def hash_pw(
-    password: str, salt: Optional[str] = None, method: Optional[str] = None
-) -> str:
+def hash_pw(password: str, salt: str | None = None, method: str | None = None) -> str:
     if not salt:
         salt = secrets.token_urlsafe(16)
 

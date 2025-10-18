@@ -1,5 +1,5 @@
 from enum import IntEnum
-from typing import Annotated, Literal, Union
+from typing import Annotated, Literal
 
 from pydantic import BaseModel, Field
 
@@ -56,7 +56,7 @@ class ClosedKanCall(BaseModel, frozen=True):
 
 
 Call = Annotated[
-    Union[OpenCall, OpenKanCall, AddKanCall, ClosedKanCall],
+    OpenCall | OpenKanCall | AddKanCall | ClosedKanCall,
     Field(discriminator="call_type"),
 ]
 

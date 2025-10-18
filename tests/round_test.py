@@ -1,5 +1,4 @@
 import unittest
-from typing import Optional
 
 from tests.decks import (
     test_deck1,
@@ -627,7 +626,7 @@ class RoundTest(unittest.TestCase):
     def test_priority(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
-        actions: list[Optional[Action]] = [
+        actions: list[Action | None] = [
             SimpleAction(action_type=ActionType.PASS),
             OpenCallAction(action_type=ActionType.CHII, other_tiles=(110, 120)),
             OpenCallAction(action_type=ActionType.PON, other_tiles=(131, 132)),
@@ -642,7 +641,7 @@ class RoundTest(unittest.TestCase):
     def test_priority_with_none(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
-        actions: list[Optional[Action]] = [
+        actions: list[Action | None] = [
             None,
             OpenCallAction(action_type=ActionType.CHII, other_tiles=(110, 120)),
             OpenCallAction(action_type=ActionType.PON, other_tiles=(131, 132)),
@@ -657,7 +656,7 @@ class RoundTest(unittest.TestCase):
     def test_priority_strong_call_and_none(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
-        actions: list[Optional[Action]] = [
+        actions: list[Action | None] = [
             None,
             None,
             None,
@@ -672,7 +671,7 @@ class RoundTest(unittest.TestCase):
     def test_priority_weak_call_and_none(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
-        actions: list[Optional[Action]] = [
+        actions: list[Action | None] = [
             None,
             OpenCallAction(action_type=ActionType.CHII, other_tiles=(110, 120)),
             None,
@@ -684,7 +683,7 @@ class RoundTest(unittest.TestCase):
     def test_priority_no_choice_all_none(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
-        actions: list[Optional[Action]] = [
+        actions: list[Action | None] = [
             None,
             None,
             None,
@@ -699,7 +698,7 @@ class RoundTest(unittest.TestCase):
     def test_priority_bad_action(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
-        actions: list[Optional[Action]] = [
+        actions: list[Action | None] = [
             SimpleAction(action_type=ActionType.PASS),
             OpenCallAction(action_type=ActionType.CHII, other_tiles=(110, 120)),
             SimpleAction(action_type=ActionType.RON),
@@ -716,7 +715,7 @@ class RoundTest(unittest.TestCase):
     def test_priority_bad_action_and_none(self) -> None:
         round = Round(tiles=test_deck4)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
-        actions: list[Optional[Action]] = [
+        actions: list[Action | None] = [
             None,
             OpenCallAction(action_type=ActionType.CHII, other_tiles=(110, 120)),
             OpenCallAction(action_type=ActionType.PON, other_tiles=(131, 132)),
@@ -735,7 +734,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
         round.do_action(1, ClosedKanAction(tiles=(50, 51, 52, 53)))
-        actions: list[Optional[Action]] = [
+        actions: list[Action | None] = [
             SimpleAction(action_type=ActionType.PASS),
             SimpleAction(action_type=ActionType.CONTINUE),
             SimpleAction(action_type=ActionType.PASS),

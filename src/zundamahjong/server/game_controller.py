@@ -1,7 +1,7 @@
 from collections.abc import Sequence
 from random import sample
 from threading import Lock
-from typing import Optional, final
+from typing import final
 
 from pydantic import BaseModel
 
@@ -57,8 +57,8 @@ class AllInfo(BaseModel):
     round_info: RoundInfo
     history_updates: list[HistoryItem]
     player_info: PlayerInfo
-    win_info: Optional[Win]
-    scoring_info: Optional[Scoring]
+    win_info: Win | None
+    scoring_info: Scoring | None
 
 
 @final

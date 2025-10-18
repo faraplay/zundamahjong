@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Any
 from unittest import TestCase
 
 from zundamahjong.mahjong.call import Call, CallType, ClosedKanCall, OpenCall
@@ -11,7 +11,7 @@ from zundamahjong.mahjong.yaku import YakuCalculator
 def get_yaku_mults(
     *,
     win_player: int = 0,
-    lose_player: Optional[int],
+    lose_player: int | None,
     formed_hand: list[Meld],
     calls: list[Call],
     flowers: list[TileId],
