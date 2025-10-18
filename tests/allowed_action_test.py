@@ -1,3 +1,5 @@
+# pyright: reportPrivateUsage=false
+
 import unittest
 
 from zundamahjong.mahjong.action import (

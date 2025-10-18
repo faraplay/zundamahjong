@@ -1,3 +1,5 @@
+# pyright: reportPrivateUsage=false
+
 import unittest
 
 from zundamahjong.mahjong.form_hand import is_winning
