@@ -1,5 +1,6 @@
 from unittest import TestCase
 
+from tests.yaku_test import get_yaku_mults
 from zundamahjong.mahjong.call import (
     AddKanCall,
     CallType,
@@ -8,7 +9,6 @@ from zundamahjong.mahjong.call import (
     OpenKanCall,
 )
 from zundamahjong.mahjong.meld import Meld, MeldType
-from tests.yaku_test import get_yaku_mults
 
 
 class YakumanTest(TestCase):

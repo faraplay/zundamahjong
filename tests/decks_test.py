@@ -1,8 +1,7 @@
 import unittest
 
-from zundamahjong.mahjong.deck import four_player_deck
-
 from tests.decks import test_deck1, test_deck2, test_deck3, test_deck4, test_deck5
+from zundamahjong.mahjong.deck import four_player_deck
 
 
 class DeckTest(unittest.TestCase):

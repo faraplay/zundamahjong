@@ -1,12 +1,11 @@
 import unittest
 
-from zundamahjong.mahjong.exceptions import InvalidOperationException
+from tests.decks import test_deck2, test_deck4, test_deck6
 from zundamahjong.mahjong.action import ActionType, HandTileAction, SimpleAction
+from zundamahjong.mahjong.exceptions import InvalidOperationException
+from zundamahjong.mahjong.game import Game
 from zundamahjong.mahjong.game_options import GameOptions
 from zundamahjong.mahjong.round import RoundStatus
-from zundamahjong.mahjong.game import Game
-
-from tests.decks import test_deck2, test_deck4, test_deck6
 
 
 class GameTest(unittest.TestCase):

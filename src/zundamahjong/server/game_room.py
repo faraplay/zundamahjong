@@ -1,7 +1,8 @@
 from __future__ import annotations
+
+import logging
 from threading import Lock
 from typing import Optional, final
-import logging
 
 from pydantic import BaseModel
 
@@ -9,7 +10,6 @@ from ..database.avatars import get_avatar, save_avatar
 from ..mahjong.game_options import GameOptions
 from ..types.avatar import Avatar
 from ..types.player import Player, PlayerConnection
-
 from .game_controller import GameController
 from .sio import sio
 

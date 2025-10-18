@@ -108,3 +108,6 @@ name = "ruff"
 type = "module"
 module = "ruff"
 options = "check --fix REVISION_SCRIPT_FILENAME"
+
+[tool.ruff]
+extend-exclude = ["alembic"]

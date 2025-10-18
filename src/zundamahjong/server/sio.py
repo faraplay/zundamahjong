@@ -1,12 +1,12 @@
 # pyright: reportIgnoreCommentWithoutRule=false
 
-from collections.abc import Callable
 import logging
+from collections.abc import Callable
 from typing import Optional, TypeVar
-from typing_extensions import Concatenate, ParamSpec
 
 from flask import request
 from flask_socketio import SocketIO as _SocketIO
+from typing_extensions import Concatenate, ParamSpec
 
 from .flask import app
 

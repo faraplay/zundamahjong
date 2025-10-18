@@ -1,12 +1,12 @@
 # pyright: reportIgnoreCommentWithoutRule=false
 
 import logging
-from typing import final, Optional
+from typing import Optional, final
 
 import sqlalchemy as sa
-from sqlalchemy.orm import Session, scoped_session, sessionmaker
 from flask import Flask
 from flask.globals import app_ctx
+from sqlalchemy.orm import Session, scoped_session, sessionmaker
 
 from .engine import engine
 from .models import Base as Base

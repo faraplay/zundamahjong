@@ -2,11 +2,11 @@ from typing import Optional, final
 
 from pydantic import BaseModel
 
+from .form_hand import formed_hand_possibilities
+from .game_options import GameOptions
 from .meld import Meld
 from .win import Win
 from .yaku import YakuCalculator, yaku_display_names
-from .game_options import GameOptions
-from .form_hand import formed_hand_possibilities
 
 
 class Scoring(BaseModel):

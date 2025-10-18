@@ -1,7 +1,7 @@
-from pydantic import BaseModel
-
 from collections import deque
 from collections.abc import Sequence
+
+from pydantic import BaseModel
 
 from .tile import TileId
 

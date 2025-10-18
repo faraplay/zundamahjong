@@ -5,7 +5,6 @@ from ..database.security import change_password, login
 from ..mahjong.action import action_adapter
 from ..mahjong.game_options import GameOptions
 from ..types.avatar import Avatar
-
 from .game_room import GameRoom
 from .name_sid import get_player, set_player, try_get_player, unset_player, verify_name
 from .sio import sio, sio_on

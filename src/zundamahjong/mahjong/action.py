@@ -1,11 +1,11 @@
-from enum import IntEnum
 from collections.abc import Iterable
+from enum import IntEnum
 from typing import Annotated, Literal, Optional, Union, final
+
 from pydantic import BaseModel, Field, TypeAdapter
 
-
-from .tile import TileId
 from .call import OpenCall
+from .tile import TileId
 
 
 class ActionType(IntEnum):
