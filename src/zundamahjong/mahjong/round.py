@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections.abc import Callable, Sequence
-from enum import Enum
+from enum import IntEnum
 from typing import Optional, final
 
 from .action import (
@@ -21,7 +21,7 @@ from .tile import TileId, get_tile_value
 from .win import Win
 
 
-class RoundStatus(Enum):
+class RoundStatus(IntEnum):
     START = 0  # Options: nothing, flower
     PLAY = 1  # Options: discard, added kan, closed kan, flower, tsumo
     CALLED_PLAY = 2  # Options: discard
