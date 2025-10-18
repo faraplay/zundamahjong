@@ -219,7 +219,7 @@ class ShantenTest(unittest.TestCase):
                 if hand_from_code(hand_code)[tile] == 4:
                     continue
                 mask = 0b100_000_000 >> tile
-                added_hand_code = hand_code + 5**tile
+                added_hand_code = hand_code + 5**tile  # pyright: ignore[reportAny]
                 if added_hand_code >= limit:
                     break
                 for k in range(10):
