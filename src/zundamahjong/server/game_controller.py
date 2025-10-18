@@ -20,6 +20,10 @@ class GameController:
         with self._lock:
             self._emit_info_all_inner(self._game.round.history)
 
+    @property
+    def game(self) -> Game:
+        return self._game
+
     def emit_info(self, player: Player) -> None:
         with self._lock:
             index = self._get_player_index(player)

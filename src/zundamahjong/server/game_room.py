@@ -245,7 +245,7 @@ class GameRoom:
         if self.game_controller is None:
             raise Exception("Game hasn't started!")
         with rooms_lock:
-            if not self.game_controller._game.is_game_end:
+            if not self.game_controller.game.is_game_end:
                 raise Exception("Game is not over yet!")
             self.game_controller = None
         self.broadcast_game_end()
