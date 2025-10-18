@@ -2,10 +2,22 @@ from collections.abc import Callable
 import logging
 from typing import Any, Optional
 
-from socketio import Server
+from socketio import Server as _Server
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
+
+
+class Server(_Server):  # type: ignore[misc]
+    def emit_error(self, message: str, to: str) -> None:
+        self.emit("server_message", {"message": message, "severity": "ERROR"}, to=to)
+
+    def emit_warning(self, message: str, to: str) -> None:
+        self.emit("server_message", {"message": message, "severity": "WARNING"}, to=to)
+
+    def emit_info(self, message: str, to: str) -> None:
+        self.emit("server_message", {"message": message, "severity": "INFO"}, to=to)
+
 
 sio = Server(
     logger=logger,  # pyright: ignore[reportArgumentType]
@@ -13,18 +25,6 @@ sio = Server(
 )
 
 Handler = Callable[..., Optional[Any]]
-
-
-def emit_error(message: str, sid: str) -> None:
-    sio.emit("server_message", {"message": message, "severity": "ERROR"}, sid)
-
-
-def emit_warning(message: str, sid: str) -> None:
-    sio.emit("server_message", {"message": message, "severity": "WARNING"}, sid)
-
-
-def emit_info(message: str, sid: str) -> None:
-    sio.emit("server_message", {"message": message, "severity": "INFO"}, sid)
 
 
 def sio_on(event: str) -> Callable[[Handler], Handler]:
@@ -42,8 +42,8 @@ def sio_on(event: str) -> Callable[[Handler], Handler]:
                 )
                 return return_value
             except Exception as e:
-                logger.error(e)
-                emit_error(str(e), sid)
+                logger.exception(e)
+                sio.emit_error(str(e), to=sid)
             return None
 
         sio.on(event, wrapped_handler)

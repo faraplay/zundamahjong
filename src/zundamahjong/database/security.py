@@ -2,11 +2,11 @@ import hashlib
 import secrets
 from typing import Optional
 
-import sqlalchemy as sa
 from socketio import Server
+import sqlalchemy as sa
 
 from ..types.player import Player
-from . import get_db, get_user
+from . import get_db, get_user, try_get_user
 from .models import User
 
 max_users = 256
@@ -40,13 +40,17 @@ def hash_pw(
 
 
 def check_pw(password: str, pwhash: str) -> bool:
-    method, salt, hashval = pwhash.split("$", 2)
+    try:
+        method, salt, hashval = pwhash.split("$", 2)
+    except ValueError:
+        raise Exception("Malformed password hash.")
+
     return hashval == _hash_internal(password, salt, method)
 
 
 def login(sio: Server, sid: str, name: str, password: str) -> Player:
     db = get_db(sio, sid)
-    user = get_user(db, name)
+    user = try_get_user(db, name)
 
     if user:
         if not check_pw(password, user.password):
@@ -75,13 +79,9 @@ def change_password(
     db = get_db(sio, sid)
     user = get_user(db, player.name)
 
-    if user:
-        if not check_pw(cur_password, user.password):
-            raise Exception("Current password is incorrect!")
-
-        else:
-            user.password = hash_pw(new_password)
-            db.commit()
+    if not check_pw(cur_password, user.password):
+        raise Exception("Current password is incorrect!")
 
     else:
-        raise Exception("User does not have an account!")
+        user.password = hash_pw(new_password)
+        db.commit()

@@ -71,8 +71,22 @@ postgresql = [
   "psycopg[binary]",
 ]
 
+alembic = [
+  "alembic[tz]",
+]
+
 
 # Other tool configs
+
+[tool.alembic]
+script_location = "%(here)s/alembic"
+timezone = "UTC"
+
+[[tool.alembic.post_write_hooks]]
+name = "ruff"
+type = "module"
+module = "ruff"
+options = "check --fix REVISION_SCRIPT_FILENAME"
 
 [[tool.mypy.overrides]]
 module = ["socketio.*"]
