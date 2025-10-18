@@ -23,12 +23,27 @@ def _app_ctx_id() -> int:
     return id(app_ctx._get_current_object())  # type: ignore  # pyright: ignore
 
 
+"""Global instance of :py:class:`sqlalchemy.Engine` used to communicate
+with the database. The actual value of :py:obj:`engine.url` is as configured by
+the end consumer of `zundamahjong`."""
+
+
 @final
 class SQLAlchemy:
+    """Helper class to manage SQLAlchemy ORM sessions for the server.
+
+    :param engine: Instance of :py:class:`sqlalchemy.Engine` used to start new
+                   connections to the application database. Will typically
+                   refer to a local SQLite file or to a remote PostgreSQL
+                   database server.
+    """
+
     def __init__(self, engine: sa.Engine) -> None:
         self._session = scoped_session(sessionmaker(engine), _app_ctx_id)
 
     def init_app(self, app: Flask) -> None:
+        """TODO"""
+
         if "sqlalchemy" in app.extensions:
             raise Exception("SQLAlchemy extension has already been initialized!")
         app.extensions["sqlalchemy"] = self
@@ -37,6 +52,8 @@ class SQLAlchemy:
 
     @property
     def session(self) -> Session:
+        """Handle to an ORM session open in the current Flask application context."""
+
         if not self._session.registry.has():
             logger.info(
                 f"Opening database session within Flask application context {_app_ctx_id()}"
@@ -44,6 +61,8 @@ class SQLAlchemy:
         return self._session()
 
     def _close(self, exc: BaseException | None) -> None:
+        """Close ORM session (if any) in the current Flask application context."""
+
         if self._session.registry.has():
             logger.info(
                 f"Closing database session within Flask application context {_app_ctx_id()}"
@@ -52,6 +71,19 @@ class SQLAlchemy:
 
 
 db = SQLAlchemy(engine)
+""" Global instance of :py:class:`SQLAlchemy` for use in other modules.
+    Built using :py:obj:`engine`.
+
+    Example usage::
+
+        from ..database import db
+        from ..database.models import User
+
+        with db.session.begin():
+            db.session.add(User(name="Zundamon", password=password))
+        # commits the transaction
+
+"""
 
 
-__all__ = ["Base", "db", "engine"]
+__all__ = ["Base", "db", "engine", "SQLAlchemy"]
