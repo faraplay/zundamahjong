@@ -1,3 +1,5 @@
+# pyright: reportAny=false
+
 import argparse
 from importlib.metadata import version
 import os
