@@ -88,10 +88,12 @@ action_adapter: TypeAdapter[Action] = TypeAdapter(Action)
 
 @final
 class ActionList:
-    def __init__(
-        self, default_action: Action = SimpleAction(action_type=ActionType.PASS)
-    ) -> None:
-        self._actions = [default_action]
+    def __init__(self, default_action: Optional[Action] = None) -> None:
+        if default_action is not None:
+            _default_action = default_action
+        else:
+            _default_action = SimpleAction(action_type=ActionType.PASS)
+        self._actions = [_default_action]
 
     @property
     def default(self) -> Action:

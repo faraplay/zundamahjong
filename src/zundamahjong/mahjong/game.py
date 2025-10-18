@@ -16,13 +16,17 @@ class Game:
         self,
         *,
         first_deck_tiles: Optional[list[TileId]] = None,
-        options: GameOptions = GameOptions(),
+        options: Optional[GameOptions] = None,
     ):
-        self._player_count = options.player_count
-        self._options = options
+        if options is not None:
+            _options = options
+        else:
+            _options = GameOptions()
+        self._player_count = _options.player_count
+        self._options = _options
         self._wind_round: int = 0
         self._sub_round: int = 0
-        self._player_scores = [options.start_score] * self._player_count
+        self._player_scores = [_options.start_score] * self._player_count
         self._win: Optional[Win] = None
         self._scoring: Optional[Scoring] = None
         self._draw_count: int = 0

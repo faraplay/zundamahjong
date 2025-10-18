@@ -69,19 +69,23 @@ class Round:
         sub_round: int = 0,
         draw_count: int = 0,
         tiles: Optional[list[TileId]] = None,
-        options: GameOptions = GameOptions(),
+        options: Optional[GameOptions] = None,
         round_end_callback: Callable[[], None] = lambda: None,
     ):
+        if options is not None:
+            _options = options
+        else:
+            _options = GameOptions()
         self._wind_round = wind_round
         self._sub_round = sub_round
         self._draw_count = draw_count
-        self._player_count = options.player_count
-        self._options = options
+        self._player_count = _options.player_count
+        self._options = _options
         self._end_callback = round_end_callback
         if tiles is not None:
             self._deck = Deck(tiles)
         else:
-            if options.player_count == 3:
+            if _options.player_count == 3:
                 self._deck = Deck.shuffled_deck(three_player_deck)
             else:
                 self._deck = Deck.shuffled_deck(four_player_deck)

@@ -126,8 +126,6 @@ class GameController:
             ),
         }
 
-    def _emit_info_all_inner(
-        self, history_updates: list[tuple[int, Action]] = []
-    ) -> None:
+    def _emit_info_all_inner(self, history_updates: list[tuple[int, Action]]) -> None:
         for index, player in enumerate(self._players):
             sio.emit("info", self._info(index, history_updates), to=player.id)
