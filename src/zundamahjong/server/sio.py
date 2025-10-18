@@ -1,6 +1,6 @@
 from collections.abc import Callable
 import logging
-from typing import Any, Optional
+from typing_extensions import Concatenate, ParamSpec
 
 from socketio import Server as _Server
 
@@ -24,19 +24,21 @@ sio = Server(
     async_mode="threading",
 )
 
-Handler = Callable[..., Optional[Any]]
+
+P = ParamSpec("P")
+Handler = Callable[Concatenate[str, P], None]
 
 
-def sio_on(event: str) -> Callable[[Handler], Handler]:
+def sio_on(event: str) -> Callable[[Handler[P]], Handler[P]]:
     def sio_on_decorator(
-        handler: Handler,
-    ) -> Handler:
-        def wrapped_handler(sid: str, *args: Any) -> Optional[Any]:
+        handler: Handler[P],
+    ) -> Handler[P]:
+        def wrapped_handler(sid: str, *args: P.args, **kwargs: P.kwargs) -> None:
             try:
                 logger.debug(
                     f"Received event {event} from {sid} with args {repr(args)}"
                 )
-                return_value = handler(sid, *args)
+                return_value = handler(sid, *args, **kwargs)
                 logger.debug(
                     f"Handler for event {event} from {sid} returned {repr(return_value)}"
                 )
