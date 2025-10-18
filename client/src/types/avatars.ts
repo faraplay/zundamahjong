@@ -6,6 +6,8 @@ import tsumugiURL from "../assets/avatars/tsumugi.png";
 import tsumugiFaceURL from "../assets/avatars/tsumugi_face.png";
 import kiritanURL from "../assets/avatars/kiritan.png";
 import kiritanFaceURL from "../assets/avatars/kiritan_face.png";
+import hauURL from "../assets/avatars/hau.png";
+import hauFaceURL from "../assets/avatars/hau_face.png";
 
 export type AvatarIdDict = { [playerId: string]: number };
 
@@ -14,4 +16,5 @@ export const avatars = [
   { name: "Metan", imageURL: metanURL, faceURL: metanFaceURL },
   { name: "Tsumugi", imageURL: tsumugiURL, faceURL: tsumugiFaceURL },
   { name: "Kiritan", imageURL: kiritanURL, faceURL: kiritanFaceURL },
+  { name: "Hau", imageURL: hauURL, faceURL: hauFaceURL },
 ] as const;
