@@ -27,7 +27,7 @@ class Scorer:
         player_count = self._options.player_count
         win_player = self._win.win_player
         lose_player = self._win.lose_player
-        han_multiplier: int = 2 ** min(han_total, 6)
+        han_multiplier: int = 1 << min(han_total, 6)
         if lose_player is None:
             if win_player == self._win.sub_round:
                 player_pay_in_amount = (
