@@ -5,6 +5,13 @@ from .users import get_user
 
 
 def get_avatar(player: Player) -> Avatar:
+    """Return a player's last-chosen :py:class:`.Avatar`, if available. Fall
+    back to :py:obj:`Avatar(0)`.
+
+    :param player: Player whose name is used to search for an avatar.
+
+    """
+
     if not player.has_account:
         return Avatar(0)
 
@@ -13,6 +20,16 @@ def get_avatar(player: Player) -> Avatar:
 
 
 def save_avatar(player: Player, avatar: Avatar) -> None:
+    """Store a player's newly chosen :py:class:`.Avatar` value in the
+    application database. If it so happens that :py:obj:`player` does not have
+    a user account then this is a no-op.
+
+    :param player: Player for whom to save the new :py:class:`.Avatar` value.
+
+    :param avatar: Value of :py:class:`.Avatar` to store in the database.
+
+    """
+
     if not player.has_account:
         return
 
