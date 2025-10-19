@@ -1,9 +1,6 @@
-import hashlib
-import secrets
-from typing import Optional
-
 from socketio import Server
 import sqlalchemy as sa
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..types.player import Player
 from . import get_db, get_user, try_get_user
@@ -12,48 +9,12 @@ from .models import User
 max_users = 256
 
 
-def _hash_internal(password: str, salt: str, method: str) -> str:
-    method, *args = method.split(":")
-
-    if method != "scrypt":
-        raise NotImplementedError
-
-    n, r, p = map(int, args)
-    maxmem = 132 * n * r * p
-
-    return hashlib.scrypt(
-        password.encode(), salt=salt.encode(), n=n, r=r, p=p, maxmem=maxmem
-    ).hex()
-
-
-def hash_pw(
-    password: str, salt: Optional[str] = None, method: Optional[str] = None
-) -> str:
-    if not salt:
-        salt = secrets.token_urlsafe(16)
-
-    if not method:
-        method = "scrypt:32768:8:1"
-
-    hashval = _hash_internal(password, salt, method)
-    return f"{method}${salt}${hashval}"
-
-
-def check_pw(password: str, pwhash: str) -> bool:
-    try:
-        method, salt, hashval = pwhash.split("$", 2)
-    except ValueError:
-        raise Exception("Malformed password hash.")
-
-    return hashval == _hash_internal(password, salt, method)
-
-
 def login(sio: Server, sid: str, name: str, password: str) -> Player:
     db = get_db(sio, sid)
     user = try_get_user(db, name)
 
     if user:
-        if not check_pw(password, user.password):
+        if not check_password_hash(user.password, password):
             raise Exception("Incorrect password!")
 
         else:
@@ -66,7 +27,7 @@ def login(sio: Server, sid: str, name: str, password: str) -> Player:
             raise Exception("Unable to register new user!")
 
         else:
-            db.add(User(name=name, password=hash_pw(password)))
+            db.add(User(name=name, password=generate_password_hash(password)))
             db.commit()
             return Player(name=name, has_account=True, new_user=True)
 
@@ -79,9 +40,9 @@ def change_password(
     db = get_db(sio, sid)
     user = get_user(db, player.name)
 
-    if not check_pw(cur_password, user.password):
+    if not check_password_hash(user.password, cur_password):
         raise Exception("Current password is incorrect!")
 
     else:
-        user.password = hash_pw(new_password)
+        user.password = generate_password_hash(new_password)
         db.commit()
