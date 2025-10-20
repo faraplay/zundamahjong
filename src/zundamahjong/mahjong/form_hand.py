@@ -1,7 +1,14 @@
 from collections.abc import Sequence
 
-from .meld import Meld, MeldType, TileValueMeld
-from .tile import TileId, TileValue, get_tile_values, orphans, remove_tile_value
+from .tile import (
+    TileId,
+    TileValue,
+    get_tile_value,
+    get_tile_values,
+    orphans,
+    remove_tile_value,
+)
+from .meld import MeldType, Meld, TileValueMeld
 
 
 def is_winning(tiles: list[TileId]) -> bool:
@@ -9,18 +16,29 @@ def is_winning(tiles: list[TileId]) -> bool:
 
 
 def formed_hand_possibilities(tiles: list[TileId]) -> list[list[Meld]]:
-    formed_hands = standard_formed_hand_possibilities(tiles)
+    formed_value_hands = standard_formed_hand_possibilities(tiles)
     if len(tiles) == 14:
-        formed_hands.extend(form_seven_pairs(tiles))
-        formed_hands.extend(form_thirteen_orphans(tiles))
-    return [reconstruct_formed_hand(tiles, formed_hand) for formed_hand in formed_hands]
+        formed_value_hands.extend(form_seven_pairs(tiles))
+        formed_value_hands.extend(form_thirteen_orphans(tiles))
+    return [
+        formed_hand
+        for formed_value_hand in formed_value_hands
+        for formed_hand in reconstruct_formed_hand(tiles, formed_value_hand)
+    ]
 
 
 def reconstruct_formed_hand(
     tiles: Sequence[TileId], tile_value_melds: list[TileValueMeld]
-) -> list[Meld]:
+) -> list[list[Meld]]:
+    winning_tile = tiles[-1]
+    winning_tile_value = get_tile_value(winning_tile)
     tiles_copy = list(tiles)
-    return [
+    melds_with_last_tile_indices = [
+        (index, meld.tiles.index(winning_tile_value))
+        for index, meld in enumerate(tile_value_melds)
+        if winning_tile_value in meld.tiles
+    ]
+    reconstructed_hand = [
         Meld(
             meld_type=tile_value_meld.meld_type,
             tiles=[
@@ -29,6 +47,20 @@ def reconstruct_formed_hand(
             ],
         )
         for tile_value_meld in tile_value_melds
+    ]
+    return [
+        [
+            meld.model_copy(
+                update={
+                    "winning_tile_index": (
+                        winning_tile_index if meld_index == winning_meld_index else None
+                    )
+                },
+                deep=True,
+            )
+            for meld_index, meld in enumerate(reconstructed_hand)
+        ]
+        for (winning_meld_index, winning_tile_index) in melds_with_last_tile_indices
     ]
 
 

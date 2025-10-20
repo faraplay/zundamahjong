@@ -1,5 +1,5 @@
 from enum import IntEnum
-
+from typing import Optional
 from pydantic import BaseModel
 
 from .tile import TileId, TileValue
@@ -21,3 +21,4 @@ class TileValueMeld(BaseModel):
 class Meld(BaseModel):
     meld_type: MeldType
     tiles: list[TileId]
+    winning_tile_index: Optional[int] = None
