@@ -16,6 +16,7 @@ class MeldType(IntEnum):
 class TileValueMeld(BaseModel):
     meld_type: MeldType
     tiles: list[TileValue]
+    winning_tile_index: Optional[int] = None
 
 
 class Meld(BaseModel):

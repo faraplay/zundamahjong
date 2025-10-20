@@ -3,6 +3,8 @@ from __future__ import annotations
 from collections import Counter
 from collections.abc import Callable
 from typing import final
+from enum import IntEnum
+from typing import Optional
 
 from .call import CallType, get_call_tiles, get_meld_type
 from .meld import Meld, MeldType, TileValueMeld
@@ -37,6 +39,51 @@ def _register_yaku(
     return _register_yaku_inner
 
 
+class WaitPattern(IntEnum):
+    RYANMEN = 0
+    KANCHAN = 1
+    PENCHAN = 2
+    SHANPON = 3
+    TANKI = 4
+    KOKUSHI = 5
+    KOKUSHI_13 = 6
+
+
+def _get_wait_pattern(meld: TileValueMeld) -> WaitPattern:
+    assert meld.winning_tile_index is not None
+    meld_type = meld.meld_type
+    if meld_type == MeldType.CHI:
+        if meld.winning_tile_index == 0:
+            if meld.tiles[0] % 10 == 7:
+                return WaitPattern.PENCHAN
+            else:
+                return WaitPattern.RYANMEN
+        elif meld.winning_tile_index == 1:
+            return WaitPattern.KANCHAN
+        elif meld.winning_tile_index == 2:
+            if meld.tiles[2] % 10 == 3:
+                return WaitPattern.PENCHAN
+            else:
+                return WaitPattern.RYANMEN
+        else:
+            raise Exception(
+                f"Unexpected winning tile index {meld.winning_tile_index} in chi meld!"
+            )
+    elif meld_type == MeldType.PON:
+        return WaitPattern.SHANPON
+    elif meld_type == MeldType.PAIR:
+        return WaitPattern.TANKI
+    elif meld_type == MeldType.THIRTEEN_ORPHANS:
+        if meld.tiles.count(meld.tiles[meld.winning_tile_index]) == 2:
+            return WaitPattern.KOKUSHI_13
+        else:
+            return WaitPattern.KOKUSHI
+    elif meld_type == MeldType.KAN:
+        raise Exception("Winning tile found in kan meld!")
+    else:
+        raise Exception("Unknown meld type!")
+
+
 @final
 class YakuCalculator:
     def __init__(self, win: Win, formed_hand: list[Meld]) -> None:
@@ -51,15 +98,23 @@ class YakuCalculator:
             TileValueMeld(
                 meld_type=meld.meld_type,
                 tiles=[get_tile_value(tile) for tile in meld.tiles],
+                winning_tile_index=meld.winning_tile_index,
             )
             for meld in self._formed_hand
         ] + [
             TileValueMeld(
                 meld_type=get_meld_type(call.call_type),
                 tiles=[get_tile_value(tile) for tile in get_call_tiles(call)],
+                winning_tile_index=None,
             )
             for call in self._win.calls
         ]
+        winning_meld = next(
+            meld for meld in self._melds if meld.winning_tile_index is not None
+        )
+        assert winning_meld.winning_tile_index is not None
+        self._winning_tile = winning_meld.tiles[winning_meld.winning_tile_index]
+        self._wait_pattern = _get_wait_pattern(winning_meld)
         self._hand_tiles = [tile for call in self._melds for tile in call.tiles]
         self._used_suits = set((tile // 10) * 10 for tile in self._hand_tiles)
         self._call_outsidenesses = set(
@@ -126,6 +181,27 @@ class YakuCalculator:
     def _four_concealed_triplets(self) -> int:
         return int(self._no_calls() and self._all_triplets())
 
+    @_register_yaku("FOUR_FULLY_CONCEALED_TRIPLETS", "Four Fully Concealed Triplets", 0)
+    def _four_fully_concealed_triplets(self) -> int:
+        return int(
+            self._no_calls()
+            and self._all_triplets()
+            and self._wait_pattern == WaitPattern.SHANPON
+            and self._win.lose_player is None
+        )
+
+    @_register_yaku(
+        "FOUR_CONCEALED_TRIPLETS_1_SIDED_WAIT",
+        "Four Concealed Triplets 1-sided Wait",
+        0,
+    )
+    def _four_concealed_triplets_1_sided_wait(self) -> int:
+        return int(
+            self._no_calls()
+            and self._all_triplets()
+            and self._wait_pattern == WaitPattern.TANKI
+        )
+
     @_register_yaku("ALL_HONOURS", "All Honours", 10)
     def _all_honours(self) -> int:
         return int(self._used_suits == {self._honour_suit})
@@ -140,18 +216,23 @@ class YakuCalculator:
 
     @_register_yaku("THIRTEEN_ORPHANS", "Thirteen Orphans", 13)
     def _thirteen_orphans(self) -> int:
-        return int(self._melds[0].meld_type == MeldType.THIRTEEN_ORPHANS)
+        return int(self._wait_pattern == WaitPattern.KOKUSHI)
+
+    @_register_yaku(
+        "THIRTEEN_ORPHANS_13_SIDED_WAIT", "Thirteen Orphans 13-sided Wait", 13
+    )
+    def _thirteen_orphans_13_sided_wait(self) -> int:
+        return int(self._wait_pattern == WaitPattern.KOKUSHI_13)
 
     @_register_yaku("FOUR_QUADS", "Four Quads", 18)
     def _four_quads(self) -> int:
         return int(sum(call.meld_type == MeldType.KAN for call in self._melds) == 4)
 
-    @_register_yaku("NINE_GATES", "Nine Gates", 11)
-    def _nine_gates(self) -> int:
+    def _get_nine_gates_last_tile(self) -> Optional[TileValue]:
         if not self._no_calls():
-            return 0
+            return None
         if not self._full_flush():
-            return 0
+            return None
         suit = (self._hand_tiles[0] // 10) * 10
         model_tiles = [
             suit + 1,
@@ -170,7 +251,22 @@ class YakuCalculator:
         ]
         tile_counter = Counter(self._hand_tiles)
         tile_counter.subtract(model_tiles)
-        return int(len(-tile_counter) == 0)
+        if len(-tile_counter) > 0:
+            return None
+        return next(tile_counter.elements())
+
+    @_register_yaku("NINE_GATES", "Nine Gates", 11)
+    def _nine_gates(self) -> int:
+        nine_gates_last_tile = self._get_nine_gates_last_tile()
+        return int(
+            nine_gates_last_tile is not None
+            and nine_gates_last_tile != self._winning_tile
+        )
+
+    @_register_yaku("TRUE_NINE_GATES", "True Nine Gates", 19)
+    def _true_nine_gates(self) -> int:
+        nine_gates_last_tile = self._get_nine_gates_last_tile()
+        return int(nine_gates_last_tile == self._winning_tile)
 
     @_register_yaku("ALL_RUNS", "All Runs", 1)
     def _all_runs(self) -> int:
@@ -390,3 +486,23 @@ class YakuCalculator:
     @_register_yaku("DRAW", "Draw", 1)
     def _draw(self) -> int:
         return self._win.draw_count
+
+    @_register_yaku("OPEN_WAIT", "Open Wait", 0)
+    def _open_wait(self) -> int:
+        return int(self._wait_pattern == WaitPattern.RYANMEN)
+
+    @_register_yaku("CLOSED_WAIT", "Closed Wait", 0)
+    def _closed_wait(self) -> int:
+        return int(self._wait_pattern == WaitPattern.KANCHAN)
+
+    @_register_yaku("EDGE_WAIT", "Edge Wait", 0)
+    def _edge_wait(self) -> int:
+        return int(self._wait_pattern == WaitPattern.PENCHAN)
+
+    @_register_yaku("DUAL_PON_WAIT", "Dual Pon Wait", 0)
+    def _dual_pon_wait(self) -> int:
+        return int(self._wait_pattern == WaitPattern.SHANPON)
+
+    @_register_yaku("PAIR_WAIT", "Pair Wait", 0)
+    def _pair_wait(self) -> int:
+        return int(self._wait_pattern == WaitPattern.TANKI and not self._seven_pairs())
