@@ -1,9 +1,13 @@
 from flask import Flask, redirect, url_for
 from werkzeug.wrappers import Response
 
+from ..database import db
+
 flask_app = Flask(
     "zundamahjong", static_url_path="/zundamahjong/", static_folder="client"
 )
+
+db.init_app(flask_app)
 
 
 @flask_app.route("/")

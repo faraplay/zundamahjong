@@ -4,7 +4,7 @@ from typing import Any, Optional
 
 from socketio import Server as _Server
 
-from ..database import db
+from .flask import flask_app
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -34,21 +34,20 @@ def sio_on(event: str) -> Callable[[Handler], Handler]:
         handler: Handler,
     ) -> Handler:
         def wrapped_handler(sid: str, *args: Any) -> Optional[Any]:
-            try:
-                logger.debug(
-                    f"Received event {event} from {sid} with args {repr(args)}"
-                )
-                return_value = handler(sid, *args)
-                logger.debug(
-                    f"Handler for event {event} from {sid} returned {repr(return_value)}"
-                )
-                return return_value
-            except Exception as e:
-                logger.exception(e)
-                sio.emit_error(str(e), to=sid)
-            finally:
-                db.close()
-            return None
+            with flask_app.app_context():
+                try:
+                    logger.debug(
+                        f"Received event {event} from {sid} with args {repr(args)}"
+                    )
+                    return_value = handler(sid, *args)
+                    logger.debug(
+                        f"Handler for event {event} from {sid} returned {return_value}"
+                    )
+                    return return_value
+                except Exception as e:
+                    sio.emit_error(str(e), to=sid)
+                    logger.exception(e)
+                return None
 
         sio.on(event, wrapped_handler)
         return wrapped_handler
