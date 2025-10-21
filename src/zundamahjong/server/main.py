@@ -1,12 +1,15 @@
 import logging
 from typing import Any
 
-from ..database.security import change_password, login
+from flask import session
+
+from ..database.security import change_password
 from ..mahjong.action import action_adapter
 from ..mahjong.game_options import GameOptions
 from ..types.avatar import Avatar
+from ..types.player import Player
 from .game_room import GameRoom
-from .name_sid import get_player, set_player, try_get_player, unset_player, verify_name
+from .name_sid import get_player, set_player, try_get_player, unset_player
 from .sio import sio, sio_on
 
 logger = logging.getLogger(__name__)
@@ -16,6 +19,16 @@ logger.setLevel(logging.INFO)
 @sio_on("connect")
 def connect(sid: str, environ: dict[str, Any], auth: object = None) -> None:  # pyright: ignore[reportExplicitAny]
     logger.info(f"Client connecting with sid {sid}")
+    if "player" not in session:
+        raise Exception("Please log in first.")
+    player = Player.model_validate_json(session["player"])  # pyright: ignore[reportAny]
+    set_player(sid, player)
+    if player.has_account and player.new_user:
+        sio.emit_info("Account successfully created.", to=sid)
+    sio.emit("player_info", player.model_dump(), to=sid)
+    game_room = GameRoom.try_reconnect(player)
+    if game_room is not None and game_room.game_controller is not None:
+        game_room.game_controller.emit_info(player)
 
 
 @sio_on("disconnect")
@@ -57,28 +70,10 @@ def start_next_round(sid: str) -> None:
         game_room.end_game()
 
 
-@sio_on("set_name")
-def on_set_name(sid: str, name: object, password: object) -> None:
-    if not isinstance(name, str):
-        raise Exception("Argument name is not a string!")
-    if not isinstance(password, str):
-        raise Exception("Argument password is not a string!")
-    verify_name(name)
-    player = login(name, password)
-    set_player(sid, player)
-    if player.has_account and player.new_user:
-        sio.emit_info("Account successfully created.", to=sid)
-    sio.emit("player_info", player.model_dump(), to=sid)
-    game_room = GameRoom.try_reconnect(player)
-    if game_room is not None and game_room.game_controller is not None:
-        game_room.game_controller.emit_info(player)
-
-
 @sio_on("unset_name")
 def on_unset_name(sid: str) -> None:
     GameRoom.try_disconnect(get_player(sid))
     unset_player(sid)
-    sio.emit("unset_name", to=sid)
 
 
 @sio_on("change_password")
