@@ -16,7 +16,7 @@ class ThreePlayerTest(unittest.TestCase):
 class ThreePlayerYakuTest(unittest.TestCase):
     def test_north_yaku(self) -> None:
         formed_hand = [
-            Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230]),
+            Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230], winning_tile_index=0),
             Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
             Meld(meld_type=MeldType.PON, tiles=[340, 341, 342]),
             Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
@@ -41,12 +41,12 @@ class ThreePlayerYakuTest(unittest.TestCase):
         yaku_mults = YakuCalculator(win, formed_hand).get_yaku_mults()
         self.assertDictEqual(
             yaku_mults,
-            {"NORTH_WIND": 1},
+            {"OPEN_WAIT": 1, "NORTH_WIND": 1},
         )
 
     def test_one_set_of_flowers(self) -> None:
         formed_hand = [
-            Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230]),
+            Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230], winning_tile_index=0),
             Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
             Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
             Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
@@ -69,11 +69,13 @@ class ThreePlayerYakuTest(unittest.TestCase):
             sub_round=0,
         )
         yaku_mults = YakuCalculator(win, formed_hand).get_yaku_mults()
-        self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1})
+        self.assertDictEqual(
+            yaku_mults, {"OPEN_WAIT": 1, "SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1}
+        )
 
     def test_five_flowers(self) -> None:
         formed_hand = [
-            Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230]),
+            Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230], winning_tile_index=0),
             Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
             Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
             Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
@@ -97,12 +99,13 @@ class ThreePlayerYakuTest(unittest.TestCase):
         )
         yaku_mults = YakuCalculator(win, formed_hand).get_yaku_mults()
         self.assertDictEqual(
-            yaku_mults, {"SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1, "FIVE_FLOWERS": 1}
+            yaku_mults,
+            {"OPEN_WAIT": 1, "SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1, "FIVE_FLOWERS": 1},
         )
 
     def test_two_sets_of_flowers(self) -> None:
         formed_hand = [
-            Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230]),
+            Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230], winning_tile_index=0),
             Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
             Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
             Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
@@ -125,4 +128,6 @@ class ThreePlayerYakuTest(unittest.TestCase):
             sub_round=0,
         )
         yaku_mults = YakuCalculator(win, formed_hand).get_yaku_mults()
-        self.assertDictEqual(yaku_mults, {"SEAT_FLOWER": 2, "TWO_SETS_OF_FLOWERS": 1})
+        self.assertDictEqual(
+            yaku_mults, {"OPEN_WAIT": 1, "SEAT_FLOWER": 2, "TWO_SETS_OF_FLOWERS": 1}
+        )
