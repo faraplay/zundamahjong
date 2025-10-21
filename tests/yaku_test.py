@@ -1,9 +1,16 @@
 from typing import Any
 from unittest import TestCase
 
-from zundamahjong.mahjong.call import Call, CallType, ClosedKanCall, OpenCall
-from zundamahjong.mahjong.meld import Meld, MeldType
 from zundamahjong.mahjong.tile import TileId
+from zundamahjong.mahjong.meld import Meld, MeldType
+from zundamahjong.mahjong.call import (
+    AddKanCall,
+    Call,
+    CallType,
+    ClosedKanCall,
+    OpenCall,
+    OpenKanCall,
+)
 from zundamahjong.mahjong.win import Win
 from zundamahjong.mahjong.yaku import YakuCalculator
 
@@ -608,7 +615,7 @@ class YakuTest(TestCase):
     def test_no_calls(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
-            lose_player=None,
+            lose_player=1,
             formed_hand=[
                 Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
                 Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
@@ -621,7 +628,42 @@ class YakuTest(TestCase):
         )
         self.assertDictEqual(yaku_mults, {"OPEN_WAIT": 1, "NO_CALLS": 1})
 
+    def test_no_calls_tsumo(self) -> None:
+        yaku_mults = get_yaku_mults(
+            win_player=0,
+            lose_player=None,
+            formed_hand=[
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[230, 240, 250]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+            ],
+            calls=[],
+            flowers=[420],
+        )
+        self.assertDictEqual(
+            yaku_mults, {"OPEN_WAIT": 1, "NO_CALLS": 1, "NO_CALLS_TSUMO": 1}
+        )
+
     def test_no_calls_closed_kan(self) -> None:
+        yaku_mults = get_yaku_mults(
+            win_player=0,
+            lose_player=1,
+            formed_hand=[
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.CHI, tiles=[230, 240, 250]),
+            ],
+            calls=[
+                ClosedKanCall(tiles=(190, 191, 192, 193)),
+            ],
+            flowers=[420],
+        )
+        self.assertDictEqual(yaku_mults, {"OPEN_WAIT": 1, "NO_CALLS": 1})
+
+    def test_no_calls_tsumo_closed_kan(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
             lose_player=None,
@@ -636,7 +678,9 @@ class YakuTest(TestCase):
             ],
             flowers=[420],
         )
-        self.assertDictEqual(yaku_mults, {"OPEN_WAIT": 1, "NO_CALLS": 1})
+        self.assertDictEqual(
+            yaku_mults, {"OPEN_WAIT": 1, "NO_CALLS": 1, "NO_CALLS_TSUMO": 1}
+        )
 
     def test_chankan(self) -> None:
         yaku_mults = get_yaku_mults(
@@ -798,7 +842,7 @@ class YakuTest(TestCase):
     def test_all_triplets(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
-            lose_player=None,
+            lose_player=1,
             formed_hand=[
                 Meld(meld_type=MeldType.PON, tiles=[10, 11, 12], winning_tile_index=0),
                 Meld(meld_type=MeldType.PON, tiles=[150, 151, 152]),
@@ -864,7 +908,7 @@ class YakuTest(TestCase):
     def test_seven_pairs(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
-            lose_player=None,
+            lose_player=1,
             formed_hand=[
                 Meld(meld_type=MeldType.PAIR, tiles=[30, 31], winning_tile_index=0),
                 Meld(meld_type=MeldType.PAIR, tiles=[40, 41]),
@@ -1054,6 +1098,56 @@ class YakuTest(TestCase):
             {"OPEN_WAIT": 1, "MIXED_TRIPLE_SEQUENCE": 1},
         )
 
+    def test_three_concealed_triplets(self) -> None:
+        yaku_mults = get_yaku_mults(
+            win_player=0,
+            lose_player=1,
+            formed_hand=[
+                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12]),
+                Meld(meld_type=MeldType.PON, tiles=[150, 151, 152]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331], winning_tile_index=0),
+            ],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[420],
+        )
+        self.assertDictEqual(
+            yaku_mults, {"PAIR_WAIT": 1, "THREE_CONCEALED_TRIPLETS": 1}
+        )
+
+    def test_three_quads(self) -> None:
+        yaku_mults = get_yaku_mults(
+            win_player=0,
+            lose_player=None,
+            formed_hand=[
+                Meld(
+                    meld_type=MeldType.CHI, tiles=[110, 120, 130], winning_tile_index=0
+                ),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
+            ],
+            calls=[
+                OpenKanCall(
+                    called_player_index=0, called_tile=10, other_tiles=(11, 12, 13)
+                ),
+                AddKanCall(
+                    called_player_index=0,
+                    called_tile=150,
+                    added_tile=151,
+                    other_tiles=(152, 153),
+                ),
+                ClosedKanCall(tiles=(190, 191, 192, 193)),
+            ],
+            flowers=[420],
+        )
+        self.assertDictEqual(yaku_mults, {"OPEN_WAIT": 1, "THREE_QUADS": 1})
+
     def test_triple_triplets(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
@@ -1082,7 +1176,7 @@ class YakuTest(TestCase):
     def test_all_terminals_and_honours(self) -> None:
         yaku_mults = get_yaku_mults(
             win_player=0,
-            lose_player=None,
+            lose_player=1,
             formed_hand=[
                 Meld(meld_type=MeldType.PON, tiles=[10, 11, 12], winning_tile_index=0),
                 Meld(meld_type=MeldType.PON, tiles=[110, 111, 112]),
