@@ -3,8 +3,8 @@ name = "zundamahjong"
 dynamic = ["version"]
 dependencies = [
   "flask",
+  "flask-socketio",
   "pydantic",
-  "python-socketio",
   "sqlalchemy",
   "werkzeug",
 ]
@@ -89,7 +89,7 @@ module = "ruff"
 options = "check --fix REVISION_SCRIPT_FILENAME"
 
 [[tool.mypy.overrides]]
-module = ["socketio.*"]
+module = ["flask_socketio.*"]
 ignore_missing_imports = true
 
 [tool.pyright]
