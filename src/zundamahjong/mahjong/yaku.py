@@ -123,6 +123,12 @@ class YakuCalculator:
         self._chi_start_tiles = Counter(
             call.tiles[0] for call in self._melds if call.meld_type == MeldType.CHI
         )
+        self._concealed_triplets = sum(
+            tile_meld.meld_type == MeldType.PON
+            and (tile_meld.winning_tile_index is None or self._win.lose_player is None)
+            for tile_meld in self._formed_hand
+        ) + sum(call.call_type == CallType.CLOSED_KAN for call in self._win.calls)
+        self._quads = sum(call.meld_type == MeldType.KAN for call in self._melds)
         self._triplet_tiles = {
             call.tiles[0]
             for call in self._melds
@@ -179,15 +185,8 @@ class YakuCalculator:
 
     @_register_yaku("FOUR_CONCEALED_TRIPLETS", "Four Concealed Triplets", 12)
     def _four_concealed_triplets(self) -> int:
-        return int(self._no_calls() and self._all_triplets())
-
-    @_register_yaku("FOUR_FULLY_CONCEALED_TRIPLETS", "Four Fully Concealed Triplets", 0)
-    def _four_fully_concealed_triplets(self) -> int:
         return int(
-            self._no_calls()
-            and self._all_triplets()
-            and self._wait_pattern == WaitPattern.SHANPON
-            and self._win.lose_player is None
+            self._concealed_triplets == 4 and self._wait_pattern == WaitPattern.SHANPON
         )
 
     @_register_yaku(
@@ -197,9 +196,7 @@ class YakuCalculator:
     )
     def _four_concealed_triplets_1_sided_wait(self) -> int:
         return int(
-            self._no_calls()
-            and self._all_triplets()
-            and self._wait_pattern == WaitPattern.TANKI
+            self._concealed_triplets == 4 and self._wait_pattern == WaitPattern.TANKI
         )
 
     @_register_yaku("ALL_HONOURS", "All Honours", 10)
@@ -226,7 +223,7 @@ class YakuCalculator:
 
     @_register_yaku("FOUR_QUADS", "Four Quads", 18)
     def _four_quads(self) -> int:
-        return int(sum(call.meld_type == MeldType.KAN for call in self._melds) == 4)
+        return int(self._quads == 4)
 
     def _get_nine_gates_last_tile(self) -> Optional[TileValue]:
         if not self._no_calls():
@@ -357,6 +354,14 @@ class YakuCalculator:
             )
         )
 
+    @_register_yaku("THREE_CONCEALED_TRIPLETS", "Three Concealed Triplets", 3)
+    def _three_concealed_triplets(self) -> int:
+        return int(self._concealed_triplets == 3)
+
+    @_register_yaku("THREE_QUADS", "Three Quads", 4)
+    def _three_quads(self) -> int:
+        return int(self._quads == 3)
+
     @_register_yaku("TRIPLE_TRIPLETS", "Triple Triplets", 4)
     def _triple_triplets(self) -> int:
         return int(
@@ -422,6 +427,14 @@ class YakuCalculator:
         return int(
             not self._seven_pairs()
             and not self._thirteen_orphans()
+            and not self._thirteen_orphans_13_sided_wait()
+            and all(call.call_type == CallType.CLOSED_KAN for call in self._win.calls)
+        )
+
+    @_register_yaku("NO_CALLS_TSUMO", "No Calls Tsumo", 0)
+    def _no_calls_tsumo(self) -> int:
+        return int(
+            self._win.lose_player is None
             and all(call.call_type == CallType.CLOSED_KAN for call in self._win.calls)
         )
 
