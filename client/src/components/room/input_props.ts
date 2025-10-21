@@ -1,4 +1,4 @@
-import type { GameOptions, Yaku } from "../../types/game_options";
+import type { GameOptions, Pattern } from "../../types/game_options";
 
 type GameOptionsOfValueType<T> = {
   [key in keyof GameOptions as GameOptions[key] extends T ? key : never]: T;
@@ -21,8 +21,8 @@ export type CheckboxInputProps = {
   disabled?: boolean;
 };
 
-export type YakuInputProps = {
-  name: Yaku;
+export type PatternInputProps = {
+  name: Pattern;
   labelText: string;
   type: "number";
   min?: number;

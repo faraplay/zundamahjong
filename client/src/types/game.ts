@@ -60,7 +60,7 @@ export type Win = {
 export type Scoring = {
   win_player: number;
   lose_player: number | null;
-  yaku_hans: { [yaku: string]: number };
+  pattern_hans: { [pattern: string]: number };
   han_total: number;
   player_scores: number[];
 };

@@ -5,7 +5,7 @@ from zundamahjong.mahjong.game import Game
 from zundamahjong.mahjong.game_options import GameOptions
 from zundamahjong.mahjong.meld import Meld, MeldType
 from zundamahjong.mahjong.win import Win
-from zundamahjong.mahjong.yaku import YakuCalculator
+from zundamahjong.mahjong.pattern import PatternCalculator
 
 
 class ThreePlayerTest(unittest.TestCase):
@@ -13,8 +13,9 @@ class ThreePlayerTest(unittest.TestCase):
         game = Game(options=GameOptions(player_count=3))
         self.assertEqual(game.player_count, 3)
 
-class ThreePlayerYakuTest(unittest.TestCase):
-    def test_north_yaku(self) -> None:
+
+class ThreePlayerPatternTest(unittest.TestCase):
+    def test_north_pattern(self) -> None:
         formed_hand = [
             Meld(meld_type=MeldType.CHI, tiles=[210, 220, 230], winning_tile_index=0),
             Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
@@ -38,9 +39,9 @@ class ThreePlayerYakuTest(unittest.TestCase):
             wind_round=0,
             sub_round=0,
         )
-        yaku_mults = YakuCalculator(win, formed_hand).get_yaku_mults()
+        pattern_mults = PatternCalculator(win, formed_hand).get_pattern_mults()
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {"OPEN_WAIT": 1, "NORTH_WIND": 1},
         )
 
@@ -68,9 +69,9 @@ class ThreePlayerYakuTest(unittest.TestCase):
             wind_round=0,
             sub_round=0,
         )
-        yaku_mults = YakuCalculator(win, formed_hand).get_yaku_mults()
+        pattern_mults = PatternCalculator(win, formed_hand).get_pattern_mults()
         self.assertDictEqual(
-            yaku_mults, {"OPEN_WAIT": 1, "SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1}
+            pattern_mults, {"OPEN_WAIT": 1, "SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1}
         )
 
     def test_five_flowers(self) -> None:
@@ -97,9 +98,9 @@ class ThreePlayerYakuTest(unittest.TestCase):
             wind_round=0,
             sub_round=0,
         )
-        yaku_mults = YakuCalculator(win, formed_hand).get_yaku_mults()
+        pattern_mults = PatternCalculator(win, formed_hand).get_pattern_mults()
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {"OPEN_WAIT": 1, "SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1, "FIVE_FLOWERS": 1},
         )
 
@@ -127,7 +128,7 @@ class ThreePlayerYakuTest(unittest.TestCase):
             wind_round=0,
             sub_round=0,
         )
-        yaku_mults = YakuCalculator(win, formed_hand).get_yaku_mults()
+        pattern_mults = PatternCalculator(win, formed_hand).get_pattern_mults()
         self.assertDictEqual(
-            yaku_mults, {"OPEN_WAIT": 1, "SEAT_FLOWER": 2, "TWO_SETS_OF_FLOWERS": 1}
+            pattern_mults, {"OPEN_WAIT": 1, "SEAT_FLOWER": 2, "TWO_SETS_OF_FLOWERS": 1}
         )

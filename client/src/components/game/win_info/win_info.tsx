@@ -3,7 +3,7 @@ import type { Player } from "../../../types/player";
 import type { AllServerInfo } from "../../../types/game";
 
 import { WinHand } from "../win_hand/win_hand";
-import { YakuInfo } from "../yaku_info/yaku_info";
+import { PatternInfo } from "../pattern_info/pattern_info";
 import { WinTotalScore } from "../win_total_score/win_total_score";
 
 import "./win_info.css";
@@ -30,10 +30,12 @@ export function WinInfo({
           src={winnerAvatar.imageURL}
           alt={winnerAvatar.name}
         />
-        <div id="yakus">
-          {Object.entries(info.scoring_info.yaku_hans).map(([yaku, han]) => (
-            <YakuInfo key={yaku} yaku={yaku} han={han} />
-          ))}
+        <div id="patterns">
+          {Object.entries(info.scoring_info.pattern_hans).map(
+            ([pattern, han]) => (
+              <PatternInfo key={pattern} pattern={pattern} han={han} />
+            ),
+          )}
         </div>
       </>
     );

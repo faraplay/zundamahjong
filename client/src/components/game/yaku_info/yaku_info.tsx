@@ -1,10 +1,16 @@
-import "./yaku_info.css";
+import "./pattern_info.css";
 
-export function YakuInfo({ yaku, han }: { yaku: string; han: number }) {
+export function PatternInfo({
+  pattern,
+  han,
+}: {
+  pattern: string;
+  han: number;
+}) {
   return (
-    <div class="yaku">
-      <span class="yaku_name">{yaku}</span>
-      <span class="yaku_han">{han}</span>
+    <div class="pattern">
+      <span class="pattern_name">{pattern}</span>
+      <span class="pattern_han">{han}</span>
     </div>
   );
 }

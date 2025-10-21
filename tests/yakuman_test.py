@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from tests.yaku_test import get_yaku_mults
+from tests.yaku_test import get_pattern_mults
 from zundamahjong.mahjong.call import (
     AddKanCall,
     CallType,
@@ -13,7 +13,7 @@ from zundamahjong.mahjong.meld import Meld, MeldType
 
 class YakumanTest(TestCase):
     def test_blessing_of_heaven(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -28,7 +28,7 @@ class YakumanTest(TestCase):
             is_tenhou=True,
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
                 "OPEN_WAIT": 1,
                 "NO_CALLS": 1,
@@ -38,7 +38,7 @@ class YakumanTest(TestCase):
         )
 
     def test_blessing_of_earth(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=1,
             lose_player=None,
             formed_hand=[
@@ -53,7 +53,7 @@ class YakumanTest(TestCase):
             is_chiihou=True,
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
                 "OPEN_WAIT": 1,
                 "NO_CALLS": 1,
@@ -63,7 +63,7 @@ class YakumanTest(TestCase):
         )
 
     def test_little_three_dragons(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -83,7 +83,7 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
                 "OPEN_WAIT": 1,
                 "WHITE_DRAGON": 1,
@@ -93,7 +93,7 @@ class YakumanTest(TestCase):
         )
 
     def test_big_three_dragons(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -113,7 +113,7 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
                 "OPEN_WAIT": 1,
                 "WHITE_DRAGON": 1,
@@ -124,7 +124,7 @@ class YakumanTest(TestCase):
         )
 
     def test_four_little_winds(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -144,7 +144,7 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
                 "OPEN_WAIT": 1,
                 "HALF_FLUSH": 1,
@@ -153,7 +153,7 @@ class YakumanTest(TestCase):
         )
 
     def test_four_big_winds(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -175,7 +175,7 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
                 "DUAL_PON_WAIT": 1,
                 "SEAT_WIND": 1,
@@ -187,7 +187,7 @@ class YakumanTest(TestCase):
         )
 
     def test_four_concealed_triplets(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -204,7 +204,7 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
                 "DUAL_PON_WAIT": 1,
                 "NO_CALLS": 1,
@@ -215,7 +215,7 @@ class YakumanTest(TestCase):
         )
 
     def test_one_open_triplet(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -232,7 +232,7 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
                 "DUAL_PON_WAIT": 1,
                 "NO_CALLS": 1,
@@ -242,7 +242,7 @@ class YakumanTest(TestCase):
         )
 
     def test_four_concealed_triplets_1_sided_wait(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -259,7 +259,7 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
                 "PAIR_WAIT": 1,
                 "NO_CALLS": 1,
@@ -269,7 +269,7 @@ class YakumanTest(TestCase):
         )
 
     def test_all_honours(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -291,7 +291,7 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
                 "DUAL_PON_WAIT": 1,
                 "GREEN_DRAGON": 1,
@@ -301,7 +301,7 @@ class YakumanTest(TestCase):
         )
 
     def test_all_greens(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -323,11 +323,11 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults, {"OPEN_WAIT": 1, "HALF_FLUSH": 1, "ALL_GREENS": 1}
+            pattern_mults, {"OPEN_WAIT": 1, "HALF_FLUSH": 1, "ALL_GREENS": 1}
         )
 
     def test_all_terminals(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -347,7 +347,7 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
                 "DUAL_PON_WAIT": 1,
                 "ALL_TRIPLETS": 1,
@@ -357,7 +357,7 @@ class YakumanTest(TestCase):
         )
 
     def test_thirteen_orphans(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -385,10 +385,10 @@ class YakumanTest(TestCase):
             calls=[],
             flowers=[420],
         )
-        self.assertDictEqual(yaku_mults, {"THIRTEEN_ORPHANS": 1})
+        self.assertDictEqual(pattern_mults, {"THIRTEEN_ORPHANS": 1})
 
     def test_thirteen_orphans_13_sided_wait(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -416,10 +416,10 @@ class YakumanTest(TestCase):
             calls=[],
             flowers=[420],
         )
-        self.assertDictEqual(yaku_mults, {"THIRTEEN_ORPHANS_13_SIDED_WAIT": 1})
+        self.assertDictEqual(pattern_mults, {"THIRTEEN_ORPHANS_13_SIDED_WAIT": 1})
 
     def test_four_quads(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -446,11 +446,11 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults, {"PAIR_WAIT": 1, "ALL_TRIPLETS": 1, "FOUR_QUADS": 1}
+            pattern_mults, {"PAIR_WAIT": 1, "ALL_TRIPLETS": 1, "FOUR_QUADS": 1}
         )
 
     def test_nine_gates(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -464,12 +464,12 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {"DUAL_PON_WAIT": 1, "NO_CALLS": 1, "FULL_FLUSH": 1, "NINE_GATES": 1},
         )
 
     def test_true_nine_gates(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -483,12 +483,12 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {"OPEN_WAIT": 1, "NO_CALLS": 1, "FULL_FLUSH": 1, "TRUE_NINE_GATES": 1},
         )
 
     def test_full_flush_not_nine_gates(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -502,5 +502,5 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults, {"OPEN_WAIT": 1, "NO_CALLS": 1, "FULL_FLUSH": 1}
+            pattern_mults, {"OPEN_WAIT": 1, "NO_CALLS": 1, "FULL_FLUSH": 1}
         )

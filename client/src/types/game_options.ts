@@ -15,10 +15,10 @@ export type GameOptions = {
   score_nondealer_tsumo_nondealer_base_value: number;
   score_nondealer_tsumo_dealer_base_value: number;
 
-  yaku_values: YakuValues;
+  pattern_values: PatternValues;
 };
 
-export const yakus: Yaku[] = [
+export const patterns: Pattern[] = [
   "BLESSING_OF_HEAVEN",
   "BLESSING_OF_EARTH",
   "LITTLE_THREE_DRAGONS",
@@ -68,7 +68,7 @@ export const yakus: Yaku[] = [
   "DRAW",
 ];
 
-export const yakuDisplayNames = {
+export const patternDisplayNames = {
   BLESSING_OF_HEAVEN: "Blessing of Heaven",
   BLESSING_OF_EARTH: "Blessing of Earth",
   LITTLE_THREE_DRAGONS: "Little Three Dragons",
@@ -118,8 +118,8 @@ export const yakuDisplayNames = {
   DRAW: "Draw",
 } as const;
 
-export type Yaku = keyof typeof yakuDisplayNames;
+export type Pattern = keyof typeof patternDisplayNames;
 
-export type YakuValues = {
-  [yaku in Yaku]: number;
+export type PatternValues = {
+  [pattern in Pattern]: number;
 };

@@ -2,7 +2,7 @@ import { useId } from "preact/hooks";
 import type {
   NumberInputProps,
   CheckboxInputProps,
-  YakuInputProps,
+  PatternInputProps,
   GameOptionsInputProps,
   InputExpanderProps,
 } from "../input_props";
@@ -16,7 +16,7 @@ export function GameOptionsNumberInput({
   sendGameOptions,
 }: {
   isEditable: boolean;
-  inputProps: NumberInputProps | YakuInputProps;
+  inputProps: NumberInputProps | PatternInputProps;
   value: number;
   formId: string;
   sendGameOptions: () => void;

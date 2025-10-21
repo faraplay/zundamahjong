@@ -1,15 +1,15 @@
-.yaku {
+.pattern {
   width: 27cqw;
   height: 5cqw;
   position: relative;
 }
 
-.yaku_name,
-.yaku_han {
+.pattern_name,
+.pattern_han {
   text-align: center;
 }
 
-.yaku_name {
+.pattern_name {
   width: 22cqw;
   height: 5cqw;
   position: absolute;
@@ -17,7 +17,7 @@
   font-size: 1.5cqw;
 }
 
-.yaku_han {
+.pattern_han {
   width: 5cqw;
   height: 5cqw;
   position: absolute;

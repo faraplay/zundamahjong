@@ -6,13 +6,13 @@ from .form_hand import formed_hand_possibilities
 from .game_options import GameOptions
 from .meld import Meld
 from .win import Win
-from .yaku import YakuCalculator, yaku_display_names
+from .pattern import PatternCalculator, pattern_display_names
 
 
 class Scoring(BaseModel):
     win_player: int
     lose_player: int | None
-    yaku_hans: dict[str, int]
+    pattern_hans: dict[str, int]
     han_total: int
     player_scores: list[float]
 
@@ -64,19 +64,22 @@ class Scorer:
         return player_scores
 
     def _get_formed_hand_scoring(self, formed_hand: list[Meld]) -> Scoring:
-        yaku_mults = YakuCalculator(self._win, formed_hand).get_yaku_mults()
-        yaku_values = self._options.yaku_values
-        yaku_hans = dict(
-            (yaku_display_names[yaku], yaku_values[yaku] * yaku_mults[yaku])
-            for yaku in yaku_mults.keys()
-            if yaku_values[yaku] != 0
+        pattern_mults = PatternCalculator(self._win, formed_hand).get_pattern_mults()
+        pattern_values = self._options.pattern_values
+        pattern_hans = dict(
+            (
+                pattern_display_names[pattern],
+                pattern_values[pattern] * pattern_mults[pattern],
+            )
+            for pattern in pattern_mults.keys()
+            if pattern_values[pattern] != 0
         )
-        han_total = sum(yaku_hans.values())
+        han_total = sum(pattern_hans.values())
         player_scores = self._get_player_scores(han_total)
         return Scoring(
             win_player=self._win.win_player,
             lose_player=self._win.lose_player,
-            yaku_hans=yaku_hans,
+            pattern_hans=pattern_hans,
             han_total=han_total,
             player_scores=player_scores,
         )

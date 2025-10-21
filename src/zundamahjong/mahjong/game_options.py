@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from .yaku import default_yaku_han
+from .pattern import default_pattern_han
 
 
 class GameOptions(BaseModel):
@@ -20,7 +20,7 @@ class GameOptions(BaseModel):
     score_nondealer_tsumo_nondealer_base_value: float = 0.5
     score_nondealer_tsumo_dealer_base_value: float = 1.0
 
-    yaku_values: dict[str, int] = default_yaku_han
+    pattern_values: dict[str, int] = default_pattern_han
 
     @property
     def game_length(self) -> tuple[int, int]:

@@ -1,34 +1,34 @@
 import {
-  type YakuValues,
-  yakus,
-  yakuDisplayNames,
+  type PatternValues,
+  patterns,
+  patternDisplayNames,
 } from "../../../types/game_options";
 import { GameOptionsNumberInput } from "../game_options_input/game_options_input";
 
-export function YakuForm({
-  yakuValues,
-  yakuFormId,
+export function PatternForm({
+  patternValues,
+  patternFormId,
   isEditable,
   sendGameOptions,
 }: {
-  yakuValues: YakuValues;
-  yakuFormId: string;
+  patternValues: PatternValues;
+  patternFormId: string;
   isEditable: boolean;
   sendGameOptions: () => void;
 }) {
   return (
     <>
-      {yakus.map((yaku) => (
+      {patterns.map((pattern) => (
         <GameOptionsNumberInput
-          key={yaku}
+          key={pattern}
           isEditable={isEditable}
           inputProps={{
-            name: yaku,
-            labelText: yakuDisplayNames[yaku],
+            name: pattern,
+            labelText: patternDisplayNames[pattern],
             type: "number",
           }}
-          value={yakuValues[yaku]}
-          formId={yakuFormId}
+          value={patternValues[pattern]}
+          formId={patternFormId}
           sendGameOptions={sendGameOptions}
         />
       ))}
