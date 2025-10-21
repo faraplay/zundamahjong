@@ -17,6 +17,12 @@ export default defineConfig(({ mode }) => {
         filePath.endsWith(".svg") &&
         !filePath.includes("/flower/") &&
         !filePath.includes("/season/"),
+      rollupOptions: {
+        input: {
+          main: "index.html",
+          login: "login/index.html",
+        },
+      },
     },
     server: {
       proxy: {
