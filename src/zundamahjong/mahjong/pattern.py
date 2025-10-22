@@ -637,7 +637,10 @@ class PatternCalculator:
 
     @_register_pattern("CLOSED_HAND_RON", "Closed Hand Ron", 0)
     def _ron(self) -> int:
-        return int(self._no_calls() and self._win.lose_player is not None)
+        return int(
+            self._win.lose_player is not None
+            and all(call.call_type == CallType.CLOSED_KAN for call in self._win.calls)
+        )
 
     @_register_pattern("NON_PINFU_TSUMO", "Non Pinfu Tsumo", 0)
     def _non_pinfu_tsumo(self) -> int:

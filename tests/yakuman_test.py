@@ -31,6 +31,8 @@ class YakumanTest(TestCase):
             pattern_mults,
             {
                 "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
                 "NO_CALLS": 1,
                 "NO_CALLS_TSUMO": 1,
                 "BLESSING_OF_HEAVEN": 1,
@@ -56,6 +58,8 @@ class YakumanTest(TestCase):
             pattern_mults,
             {
                 "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
                 "NO_CALLS": 1,
                 "NO_CALLS_TSUMO": 1,
                 "BLESSING_OF_EARTH": 1,
@@ -86,6 +90,11 @@ class YakumanTest(TestCase):
             pattern_mults,
             {
                 "OPEN_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 1,
+                "SIMPLE_CLOSED_TRIPLET": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "YAKUHAI_PAIR": 1,
+                "NON_PINFU_TSUMO": 1,
                 "WHITE_DRAGON": 1,
                 "RED_DRAGON": 1,
                 "LITTLE_THREE_DRAGONS": 1,
@@ -116,6 +125,9 @@ class YakumanTest(TestCase):
             pattern_mults,
             {
                 "OPEN_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 1,
+                "ORPHAN_CLOSED_TRIPLET": 2,
+                "NON_PINFU_TSUMO": 1,
                 "WHITE_DRAGON": 1,
                 "GREEN_DRAGON": 1,
                 "RED_DRAGON": 1,
@@ -147,6 +159,10 @@ class YakumanTest(TestCase):
             pattern_mults,
             {
                 "OPEN_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 1,
+                "ORPHAN_CLOSED_TRIPLET": 2,
+                "YAKUHAI_PAIR": 2,
+                "NON_PINFU_TSUMO": 1,
                 "HALF_FLUSH": 1,
                 "FOUR_LITTLE_WINDS": 1,
             },
@@ -178,6 +194,8 @@ class YakumanTest(TestCase):
             pattern_mults,
             {
                 "DUAL_PON_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 2,
+                "ORPHAN_CLOSED_TRIPLET": 2,
                 "SEAT_WIND": 1,
                 "PREVALENT_WIND": 1,
                 "HALF_FLUSH": 1,
@@ -207,6 +225,10 @@ class YakumanTest(TestCase):
             pattern_mults,
             {
                 "DUAL_PON_WAIT": 1,
+                "SIMPLE_CLOSED_TRIPLET": 2,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "ORPHAN_CLOSED_QUAD": 1,
+                "NON_PINFU_TSUMO": 1,
                 "NO_CALLS": 1,
                 "NO_CALLS_TSUMO": 1,
                 "ALL_TRIPLETS": 1,
@@ -235,6 +257,10 @@ class YakumanTest(TestCase):
             pattern_mults,
             {
                 "DUAL_PON_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 1,
+                "SIMPLE_CLOSED_TRIPLET": 2,
+                "ORPHAN_CLOSED_QUAD": 1,
+                "CLOSED_HAND_RON": 1,
                 "NO_CALLS": 1,
                 "ALL_TRIPLETS": 1,
                 "THREE_CONCEALED_TRIPLETS": 1,
@@ -262,6 +288,10 @@ class YakumanTest(TestCase):
             pattern_mults,
             {
                 "PAIR_WAIT": 1,
+                "SIMPLE_CLOSED_TRIPLET": 2,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "ORPHAN_CLOSED_QUAD": 1,
+                "CLOSED_HAND_RON": 1,
                 "NO_CALLS": 1,
                 "ALL_TRIPLETS": 1,
                 "FOUR_CONCEALED_TRIPLETS_1_SIDED_WAIT": 1,
@@ -294,6 +324,9 @@ class YakumanTest(TestCase):
             pattern_mults,
             {
                 "DUAL_PON_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 2,
+                "ORPHAN_CLOSED_TRIPLET": 2,
+                "YAKUHAI_PAIR": 1,
                 "GREEN_DRAGON": 1,
                 "ALL_TRIPLETS": 1,
                 "ALL_HONOURS": 1,
@@ -323,7 +356,16 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            pattern_mults, {"OPEN_WAIT": 1, "HALF_FLUSH": 1, "ALL_GREENS": 1}
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "SIMPLE_OPEN_TRIPLET": 1,
+                "SIMPLE_CLOSED_TRIPLET": 1,
+                "YAKUHAI_PAIR": 1,
+                "NON_PINFU_TSUMO": 1,
+                "HALF_FLUSH": 1,
+                "ALL_GREENS": 1,
+            },
         )
 
     def test_all_terminals(self) -> None:
@@ -350,6 +392,8 @@ class YakumanTest(TestCase):
             pattern_mults,
             {
                 "DUAL_PON_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 2,
+                "ORPHAN_CLOSED_TRIPLET": 2,
                 "ALL_TRIPLETS": 1,
                 "FULLY_OUTSIDE_HAND": 1,
                 "ALL_TERMINALS": 1,
@@ -385,7 +429,9 @@ class YakumanTest(TestCase):
             calls=[],
             flowers=[420],
         )
-        self.assertDictEqual(pattern_mults, {"THIRTEEN_ORPHANS": 1})
+        self.assertDictEqual(
+            pattern_mults, {"CLOSED_HAND_RON": 1, "THIRTEEN_ORPHANS": 1}
+        )
 
     def test_thirteen_orphans_13_sided_wait(self) -> None:
         pattern_mults = get_pattern_mults(
@@ -416,7 +462,9 @@ class YakumanTest(TestCase):
             calls=[],
             flowers=[420],
         )
-        self.assertDictEqual(pattern_mults, {"THIRTEEN_ORPHANS_13_SIDED_WAIT": 1})
+        self.assertDictEqual(
+            pattern_mults, {"CLOSED_HAND_RON": 1, "THIRTEEN_ORPHANS_13_SIDED_WAIT": 1}
+        )
 
     def test_four_quads(self) -> None:
         pattern_mults = get_pattern_mults(
@@ -446,7 +494,16 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            pattern_mults, {"PAIR_WAIT": 1, "ALL_TRIPLETS": 1, "FOUR_QUADS": 1}
+            pattern_mults,
+            {
+                "PAIR_WAIT": 1,
+                "SIMPLE_OPEN_QUAD": 2,
+                "ORPHAN_OPEN_QUAD": 1,
+                "ORPHAN_CLOSED_QUAD": 1,
+                "NON_PINFU_TSUMO": 1,
+                "ALL_TRIPLETS": 1,
+                "FOUR_QUADS": 1,
+            },
         )
 
     def test_nine_gates(self) -> None:
@@ -465,7 +522,14 @@ class YakumanTest(TestCase):
         )
         self.assertDictEqual(
             pattern_mults,
-            {"DUAL_PON_WAIT": 1, "NO_CALLS": 1, "FULL_FLUSH": 1, "NINE_GATES": 1},
+            {
+                "DUAL_PON_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 1,
+                "CLOSED_HAND_RON": 1,
+                "NO_CALLS": 1,
+                "FULL_FLUSH": 1,
+                "NINE_GATES": 1,
+            },
         )
 
     def test_true_nine_gates(self) -> None:
@@ -484,7 +548,14 @@ class YakumanTest(TestCase):
         )
         self.assertDictEqual(
             pattern_mults,
-            {"OPEN_WAIT": 1, "NO_CALLS": 1, "FULL_FLUSH": 1, "TRUE_NINE_GATES": 1},
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "CLOSED_HAND_RON": 1,
+                "NO_CALLS": 1,
+                "FULL_FLUSH": 1,
+                "TRUE_NINE_GATES": 1,
+            },
         )
 
     def test_full_flush_not_nine_gates(self) -> None:
@@ -502,5 +573,12 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            pattern_mults, {"OPEN_WAIT": 1, "NO_CALLS": 1, "FULL_FLUSH": 1}
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "CLOSED_HAND_RON": 1,
+                "NO_CALLS": 1,
+                "FULL_FLUSH": 1,
+            },
         )
