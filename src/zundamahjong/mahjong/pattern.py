@@ -151,13 +151,16 @@ class PatternCalculator:
             if meld.meld_type == MeldType.CHI:
                 self._chii_meld_count += 1
             elif meld.meld_type == MeldType.PON:
-                if meld.winning_tile_index is not None:
-                    if meld.tiles[0] not in orphans:
+                if (
+                    meld.winning_tile_index is not None
+                    and self._win.lose_player is not None
+                ):
+                    if get_tile_value(meld.tiles[0]) not in orphans:
                         self._simple_open_triplet_count += 1
                     else:
                         self._orphan_open_triplet_count += 1
                 else:
-                    if meld.tiles[0] not in orphans:
+                    if get_tile_value(meld.tiles[0]) not in orphans:
                         self._simple_closed_triplet_count += 1
                     else:
                         self._orphan_closed_triplet_count += 1
@@ -165,7 +168,7 @@ class PatternCalculator:
                 raise Exception("Unexpected kan meld in formed hand!")
             elif meld.meld_type == MeldType.PAIR:
                 self._pair_count += 1
-                self._pair_tile = meld.tiles[0]
+                self._pair_tile = get_tile_value(meld.tiles[0])
 
         for call in self._win.calls:
             if call.call_type == CallType.CHI:
