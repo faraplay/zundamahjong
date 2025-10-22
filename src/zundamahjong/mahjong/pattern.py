@@ -14,6 +14,7 @@ from .tile import (
     get_tile_value,
     green_tiles,
     is_number,
+    orphans,
     terminals,
     winds,
 )
@@ -134,6 +135,59 @@ class PatternCalculator:
             for call in self._melds
             if call.meld_type in self._triplet_types
         }
+
+        self._pair_count = 0
+        self._pair_tile = 0
+        self._chii_meld_count = 0
+        self._simple_open_triplet_count = 0
+        self._orphan_open_triplet_count = 0
+        self._simple_closed_triplet_count = 0
+        self._orphan_closed_triplet_count = 0
+        self._simple_open_quad_count = 0
+        self._orphan_open_quad_count = 0
+        self._simple_closed_quad_count = 0
+        self._orphan_closed_quad_count = 0
+        for meld in self._formed_hand:
+            if meld.meld_type == MeldType.CHI:
+                self._chii_meld_count += 1
+            elif meld.meld_type == MeldType.PON:
+                if meld.winning_tile_index is not None:
+                    if meld.tiles[0] not in orphans:
+                        self._simple_open_triplet_count += 1
+                    else:
+                        self._orphan_open_triplet_count += 1
+                else:
+                    if meld.tiles[0] not in orphans:
+                        self._simple_closed_triplet_count += 1
+                    else:
+                        self._orphan_closed_triplet_count += 1
+            elif meld.meld_type == MeldType.KAN:
+                raise Exception("Unexpected kan meld in formed hand!")
+            elif meld.meld_type == MeldType.PAIR:
+                self._pair_count += 1
+                self._pair_tile = meld.tiles[0]
+
+        for call in self._win.calls:
+            if call.call_type == CallType.CHI:
+                self._chii_meld_count += 1
+            elif call.call_type == CallType.PON:
+                if get_tile_value(call.called_tile) not in orphans:
+                    self._simple_open_triplet_count += 1
+                else:
+                    self._orphan_open_triplet_count += 1
+            elif (
+                call.call_type == CallType.OPEN_KAN
+                or call.call_type == CallType.ADD_KAN
+            ):
+                if get_tile_value(call.called_tile) not in orphans:
+                    self._simple_open_quad_count += 1
+                else:
+                    self._orphan_open_quad_count += 1
+            elif call.call_type == CallType.CLOSED_KAN:
+                if get_tile_value(call.tiles[0]) not in orphans:
+                    self._simple_closed_quad_count += 1
+                else:
+                    self._orphan_closed_quad_count += 1
 
     _triplet_types = {MeldType.PON, MeldType.KAN}
     _number_suits = [0, 10, 20]
@@ -298,9 +352,7 @@ class PatternCalculator:
 
     @_register_pattern("SEVEN_PAIRS", "Seven Pairs", 3)
     def _seven_pairs(self) -> int:
-        return len(self._melds) == 7 and int(
-            all(call.meld_type == MeldType.PAIR for call in self._melds)
-        )
+        return int(self._pair_count == 7)
 
     def _is_outside_call(self, meld: TileValueMeld) -> int:
         "Returns 2 if it contains a terminal, 1 if it contains an honor, 0 otherwise"
@@ -380,7 +432,7 @@ class PatternCalculator:
             and not self._thirteen_orphans()
         )
 
-    def _patternhai(self, pattern_tile: TileValue) -> int:
+    def _yakuhai(self, pattern_tile: TileValue) -> int:
         return int(
             any(
                 (call.tiles[0] == pattern_tile and call.meld_type != MeldType.PAIR)
@@ -390,34 +442,33 @@ class PatternCalculator:
 
     @_register_pattern("SEAT_WIND", "Seat Wind", 1)
     def _player_wind(self) -> int:
-        return self._patternhai(self._seat + 31)
+        return self._yakuhai(self._seat + 31)
 
     @_register_pattern("PREVALENT_WIND", "Prevalent Wind", 1)
     def _prevalent_wind(self) -> int:
-        return self._patternhai(self._win.wind_round + 31)
+        return self._yakuhai(self._win.wind_round + 31)
 
     @_register_pattern("NORTH_WIND", "North Wind", 1)
     def _north_wind(self) -> int:
-        return int(self._win.player_count == 3 and self._patternhai(34))
+        return int(self._win.player_count == 3 and self._yakuhai(34))
 
     @_register_pattern("WHITE_DRAGON", "White Dragon", 1)
     def _white_dragon(self) -> int:
-        return self._patternhai(35)
+        return self._yakuhai(35)
 
     @_register_pattern("GREEN_DRAGON", "Green Dragon", 1)
     def _green_dragon(self) -> int:
-        return self._patternhai(36)
+        return self._yakuhai(36)
 
     @_register_pattern("RED_DRAGON", "Red Dragon", 1)
     def _red_dragon(self) -> int:
-        return self._patternhai(37)
+        return self._yakuhai(37)
 
     @_register_pattern("EYES", "Eyes", 1)
     def _eyes(self) -> int:
-        pairs = [call for call in self._melds if call.meld_type == MeldType.PAIR]
-        if len(pairs) != 1:
+        if self._pair_count != 1:
             return 0
-        tile = pairs[0].tiles[0]
+        tile = self._pair_tile
         if not is_number(tile):
             return 0
         return int((tile % 10) % 3 == 2)
@@ -425,9 +476,7 @@ class PatternCalculator:
     @_register_pattern("NO_CALLS", "No Calls", 1)
     def _no_calls(self) -> int:
         return int(
-            not self._seven_pairs()
-            and not self._thirteen_orphans()
-            and not self._thirteen_orphans_13_sided_wait()
+            self._pair_count == 1
             and all(call.call_type == CallType.CLOSED_KAN for call in self._win.calls)
         )
 
@@ -518,4 +567,75 @@ class PatternCalculator:
 
     @_register_pattern("PAIR_WAIT", "Pair Wait", 0)
     def _pair_wait(self) -> int:
-        return int(self._wait_pattern == WaitPattern.TANKI and not self._seven_pairs())
+        return int(self._wait_pattern == WaitPattern.TANKI and self._pair_count == 1)
+
+    @_register_pattern("SIMPLE_OPEN_TRIPLET", "Simple Open Triplet", 0)
+    def _simple_open_triplet(self) -> int:
+        return self._simple_open_triplet_count
+
+    @_register_pattern("ORPHAN_OPEN_TRIPLET", "Orphan Open Triplet", 0)
+    def _orphan_open_triplet(self) -> int:
+        return self._orphan_open_triplet_count
+
+    @_register_pattern("SIMPLE_CLOSED_TRIPLET", "Simple Closed Triplet", 0)
+    def _simple_closed_triplet(self) -> int:
+        return self._simple_closed_triplet_count
+
+    @_register_pattern("ORPHAN_CLOSED_TRIPLET", "Orphan Closed Triplet", 0)
+    def _orphan_closed_triplet(self) -> int:
+        return self._orphan_closed_triplet_count
+
+    @_register_pattern("SIMPLE_OPEN_QUAD", "Simple Open Quad", 0)
+    def _simple_open_quad(self) -> int:
+        return self._simple_open_quad_count
+
+    @_register_pattern("ORPHAN_OPEN_QUAD", "Orphan Open Quad", 0)
+    def _orphan_open_quad(self) -> int:
+        return self._orphan_open_quad_count
+
+    @_register_pattern("SIMPLE_CLOSED_QUAD", "Simple Closed Quad", 0)
+    def _simple_closed_quad(self) -> int:
+        return self._simple_closed_quad_count
+
+    @_register_pattern("ORPHAN_CLOSED_QUAD", "Orphan Closed Quad", 0)
+    def _orphan_closed_quad(self) -> int:
+        return self._orphan_closed_quad_count
+
+    @_register_pattern("YAKUHAI_PAIR", "Yakuhai Pair", 0)
+    def _yakuhai_pair(self) -> int:
+        if self._pair_count != 1:
+            return 0
+        yakuhai = [
+            self._seat + 31,
+            self._win.wind_round + 31,
+            35,
+            36,
+            37,
+        ]
+        return sum(self._pair_tile == tile for tile in yakuhai)
+
+    @_register_pattern("PINFU", "Pinfu", 0)
+    def _pinfu(self) -> int:
+        return int(
+            len(self._win.calls) == 0
+            and self._chii_meld_count == 4
+            and self._wait_pattern == WaitPattern.RYANMEN
+            and not self._yakuhai_pair()
+        )
+
+    @_register_pattern("OPEN_PINFU", "Open Pinfu", 0)
+    def _open_pinfu(self) -> int:
+        return int(
+            len(self._win.calls) != 0
+            and self._chii_meld_count == 4
+            and self._wait_pattern == WaitPattern.RYANMEN
+            and not self._yakuhai_pair()
+        )
+
+    @_register_pattern("CLOSED_HAND_RON", "Closed Hand Ron", 0)
+    def _ron(self) -> int:
+        return int(self._no_calls() and self._win.lose_player is not None)
+
+    @_register_pattern("NON_PINFU_TSUMO", "Non Pinfu Tsumo", 0)
+    def _non_pinfu_tsumo(self) -> int:
+        return int(self._win.lose_player is None and not self._pinfu())
