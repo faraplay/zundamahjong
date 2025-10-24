@@ -44,7 +44,7 @@ class Scorer:
                     * han_multiplier
                 )
                 player_scores = [-player_pay_in_amount] * player_count
-                player_scores[0] = -dealer_pay_in_amount
+                player_scores[self._win.sub_round] = -dealer_pay_in_amount
                 player_scores[win_player] = (
                     player_count - 2
                 ) * player_pay_in_amount + dealer_pay_in_amount
