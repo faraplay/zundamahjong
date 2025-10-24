@@ -1,87 +1,47 @@
-import hashlib
-import secrets
-from typing import Optional
-
-from socketio import Server
 import sqlalchemy as sa
+from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..types.player import Player
-from . import get_db, get_user, try_get_user
+from . import db
+from .users import get_user, try_get_user
 from .models import User
 
 max_users = 256
 
 
-def _hash_internal(password: str, salt: str, method: str) -> str:
-    method, *args = method.split(":")
+def login(name: str, password: str) -> Player:
+    with db.session.begin():
+        user = try_get_user(name)
 
-    if method != "scrypt":
-        raise NotImplementedError
+        if user:
+            if not check_password_hash(user.password, password):
+                raise Exception("Incorrect password!")
 
-    n, r, p = map(int, args)
-    maxmem = 132 * n * r * p
+            else:
+                return Player(name=name, has_account=True)
 
-    return hashlib.scrypt(
-        password.encode(), salt=salt.encode(), n=n, r=r, p=p, maxmem=maxmem
-    ).hex()
+        elif password:
+            num_users = db.session.scalar(sa.select(sa.func.count(User.id)))
 
+            if num_users and num_users >= max_users:
+                raise Exception("Unable to register new user!")
 
-def hash_pw(
-    password: str, salt: Optional[str] = None, method: Optional[str] = None
-) -> str:
-    if not salt:
-        salt = secrets.token_urlsafe(16)
+            else:
+                db.session.add(
+                    User(name=name, password=generate_password_hash(password))
+                )
 
-    if not method:
-        method = "scrypt:32768:8:1"
+                return Player(name=name, has_account=True, new_user=True)
 
-    hashval = _hash_internal(password, salt, method)
-    return f"{method}${salt}${hashval}"
-
-
-def check_pw(password: str, pwhash: str) -> bool:
-    try:
-        method, salt, hashval = pwhash.split("$", 2)
-    except ValueError:
-        raise Exception("Malformed password hash.")
-
-    return hashval == _hash_internal(password, salt, method)
+        return Player(name=name)
 
 
-def login(sio: Server, sid: str, name: str, password: str) -> Player:
-    db = get_db(sio, sid)
-    user = try_get_user(db, name)
+def change_password(player: Player, cur_password: str, new_password: str) -> None:
+    with db.session.begin():
+        user = get_user(player.name)
 
-    if user:
-        if not check_pw(password, user.password):
-            raise Exception("Incorrect password!")
+        if not check_password_hash(user.password, cur_password):
+            raise Exception("Current password is incorrect!")
 
         else:
-            return Player(name=name, has_account=True)
-
-    elif password:
-        num_users = db.scalar(sa.select(sa.func.count(User.id)))
-
-        if num_users and num_users >= max_users:
-            raise Exception("Unable to register new user!")
-
-        else:
-            db.add(User(name=name, password=hash_pw(password)))
-            db.commit()
-            return Player(name=name, has_account=True, new_user=True)
-
-    return Player(name=name)
-
-
-def change_password(
-    sio: Server, sid: str, player: Player, cur_password: str, new_password: str
-) -> None:
-    db = get_db(sio, sid)
-    user = get_user(db, player.name)
-
-    if not check_pw(cur_password, user.password):
-        raise Exception("Current password is incorrect!")
-
-    else:
-        user.password = hash_pw(new_password)
-        db.commit()
+            user.password = generate_password_hash(new_password)

@@ -28,6 +28,7 @@ def create_server_logger(name: str) -> None:
 
 def create_root_logger() -> None:
     logger = logging.getLogger()
+    logger.setLevel(logging.INFO)
 
     formatter = logging.Formatter(
         fmt="[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s",

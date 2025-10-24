@@ -1,24 +1,22 @@
-from socketio import Server
-
 from ..types.avatar import Avatar
 from ..types.player import Player
-from . import get_db, get_user
+
+from . import db
+from .users import get_user
 
 
-def get_avatar(sio: Server, sid: str, player: Player) -> Avatar:
+def get_avatar(player: Player) -> Avatar:
     if not player.has_account:
         return Avatar(0)
 
-    db = get_db(sio, sid)
-    return get_user(db, player.name).avatar
+    with db.session.begin():
+        return get_user(player.name).avatar
 
 
-def save_avatar(sio: Server, sid: str, player: Player, avatar: Avatar) -> None:
+def save_avatar(player: Player, avatar: Avatar) -> None:
     if not player.has_account:
         return
 
-    db = get_db(sio, sid)
-    user = get_user(db, player.name)
-
-    user.avatar = avatar
-    db.commit()
+    with db.session.begin():
+        user = get_user(player.name)
+        user.avatar = avatar

@@ -92,8 +92,8 @@ To reset a user's password if they have forgotten it, you can use
 
 ```python
 >>> from getpass import getpass
->>> from zundamahjong.database.security import hash_pw
->>> print(hash_pw(getpass()))
+>>> from werkzeug.security import generate_password_hash
+>>> print(generate_password_hash(getpass()))
 ```
 
 and then input the result manually into the application database.

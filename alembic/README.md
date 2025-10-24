@@ -10,8 +10,6 @@ alembic history            # check alembic revision history
 alembic upgrade head       # run migrations on connected database
 ```
 
-## Starting new migration
-
 Whenever there is a change in database metadata, create a new Alembic revision with
 
 ```sh

@@ -1,7 +1,6 @@
 import logging
 from typing import Any
 
-from ..database import close_db
 from ..database.security import change_password, login
 from ..mahjong.action import action_adapter
 from ..mahjong.game_options import GameOptions
@@ -29,7 +28,6 @@ def disconnect(sid: str, reason: str) -> None:
     else:
         GameRoom.try_disconnect(player)
     unset_player(sid)
-    close_db(sio, sid)
 
 
 @sio_on("action")
@@ -67,7 +65,7 @@ def on_set_name(sid: str, name: object, password: object) -> None:
     if not isinstance(password, str):
         raise Exception("Argument password is not a string!")
     verify_name(name)
-    player = login(sio, sid, name, password)
+    player = login(name, password)
     set_player(sid, player)
     if player.has_account and player.new_user:
         sio.emit_info("Account successfully created.", to=sid)
@@ -90,7 +88,7 @@ def on_change_password(sid: str, cur_password: object, new_password: object) -> 
         raise Exception("Argument cur_password is not a string!")
     if not isinstance(new_password, str):
         raise Exception("Argument new_password is not a string!")
-    change_password(sio, sid, get_player(sid), cur_password, new_password)
+    change_password(get_player(sid), cur_password, new_password)
     sio.emit_info("Password changed successfully.", to=sid)
 
 
