@@ -17,6 +17,7 @@ export default defineConfig(({ mode }) => {
         filePath.endsWith(".svg") &&
         !filePath.includes("/flower/") &&
         !filePath.includes("/season/"),
+      manifest: true,
       rollupOptions: {
         input: {
           main: "index.html",
