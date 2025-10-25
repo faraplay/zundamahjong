@@ -1,29 +1,34 @@
-from typing import Optional
+from typing import final
 
-from .exceptions import InvalidOperationException
-from .tile import TileId
 from .action import Action
-from .game_options import GameOptions
-from .win import Win
-from .round import Round, RoundStatus
-from .scoring import Scoring, Scorer
 from .action_selector import ActionSelector
+from .exceptions import InvalidOperationException
+from .game_options import GameOptions
+from .round import Round, RoundStatus
+from .scoring import Scorer, Scoring
+from .tile import TileId
+from .win import Win
 
 
+@final
 class Game:
     def __init__(
         self,
         *,
-        first_deck_tiles: Optional[list[TileId]] = None,
-        options: GameOptions = GameOptions(),
+        first_deck_tiles: list[TileId] | None = None,
+        options: GameOptions | None = None,
     ):
-        self._player_count = options.player_count
-        self._options = options
+        if options is not None:
+            _options = options
+        else:
+            _options = GameOptions()
+        self._player_count = _options.player_count
+        self._options = _options
         self._wind_round: int = 0
         self._sub_round: int = 0
-        self._player_scores = [options.start_score] * self._player_count
-        self._win: Optional[Win] = None
-        self._scoring: Optional[Scoring] = None
+        self._player_scores = [_options.start_score] * self._player_count
+        self._win: Win | None = None
+        self._scoring: Scoring | None = None
         self._draw_count: int = 0
         self._create_round(first_deck_tiles)
 
@@ -52,11 +57,11 @@ class Game:
         return tuple(self._player_scores)
 
     @property
-    def win(self) -> Optional[Win]:
+    def win(self) -> Win | None:
         return self._win
 
     @property
-    def scoring(self) -> Optional[Scoring]:
+    def scoring(self) -> Scoring | None:
         return self._scoring
 
     @property
@@ -81,10 +86,10 @@ class Game:
 
     def submit_action(
         self, player_index: int, action: Action, history_index: int
-    ) -> Optional[list[tuple[int, Action]]]:
+    ) -> list[tuple[int, Action]] | None:
         return self._action_selector.submit_action(player_index, action, history_index)
 
-    def start_next_round(self, deck_tiles: Optional[list[int]] = None) -> None:
+    def start_next_round(self, deck_tiles: list[int] | None = None) -> None:
         if not self.can_start_next_round:
             raise InvalidOperationException()
         if not self.is_dealer_repeat:
@@ -103,7 +108,7 @@ class Game:
             next_sub_round = 0
         return next_wind_round, next_sub_round
 
-    def _create_round(self, deck_tiles: Optional[list[TileId]]) -> None:
+    def _create_round(self, deck_tiles: list[TileId] | None) -> None:
         def on_round_end() -> None:
             self._calculate_win_score()
 

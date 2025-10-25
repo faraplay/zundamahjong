@@ -4,9 +4,8 @@ Revision ID: 249e8cbf38f8
 Create Date: 2025-10-12 22:37:44.772065+00:00
 
 """
-
+from collections.abc import Sequence
 from enum import IntEnum
-from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
@@ -14,9 +13,9 @@ import sqlalchemy as sa
 
 # revision identifiers, used by Alembic.
 revision: str = "9e41b71ccd79"
-down_revision: Union[str, Sequence[str], None] = None
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = None
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 
 class Avatar(IntEnum):

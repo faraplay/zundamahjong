@@ -1,5 +1,8 @@
+# pyright: reportPrivateUsage=false
+
 import unittest
 
+from tests.decks import test_deck1, test_deck2, test_deck3
 from zundamahjong.mahjong.action import (
     ActionType,
     AddKanAction,
@@ -12,7 +15,6 @@ from zundamahjong.mahjong.action import (
 from zundamahjong.mahjong.call import CallType, OpenCall
 from zundamahjong.mahjong.game_options import GameOptions
 from zundamahjong.mahjong.round import Round
-from tests.decks import test_deck1, test_deck2, test_deck3
 
 
 class AllowedActionTest(unittest.TestCase):

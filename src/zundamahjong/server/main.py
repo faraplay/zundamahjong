@@ -5,7 +5,6 @@ from ..database.security import change_password, login
 from ..mahjong.action import action_adapter
 from ..mahjong.game_options import GameOptions
 from ..types.avatar import Avatar
-
 from .game_room import GameRoom
 from .name_sid import get_player, set_player, try_get_player, unset_player, verify_name
 from .sio import sio, sio_on
@@ -15,7 +14,7 @@ logger.setLevel(logging.INFO)
 
 
 @sio_on("connect")
-def connect(sid: str, environ: dict[str, Any], auth: object = None) -> None:
+def connect(sid: str, environ: dict[str, Any], auth: object = None) -> None:  # pyright: ignore[reportExplicitAny]
     logger.info(f"Client connecting with sid {sid}")
 
 
@@ -52,7 +51,7 @@ def start_next_round(sid: str) -> None:
         raise Exception("Player is not in a game room!")
     if game_room.game_controller is None:
         raise Exception("Game room has no active game!")
-    if not game_room.game_controller._game.is_game_end:
+    if not game_room.game_controller.game.is_game_end:
         game_room.game_controller.start_next_round(player)
     else:
         game_room.end_game()

@@ -1,22 +1,23 @@
-from typing import Optional
+from typing import final
 
 from pydantic import BaseModel
 
+from .form_hand import formed_hand_possibilities
+from .game_options import GameOptions
 from .meld import Meld
 from .win import Win
 from .yaku import YakuCalculator, yaku_display_names
-from .game_options import GameOptions
-from .form_hand import formed_hand_possibilities
 
 
 class Scoring(BaseModel):
     win_player: int
-    lose_player: Optional[int]
+    lose_player: int | None
     yaku_hans: dict[str, int]
     han_total: int
     player_scores: list[float]
 
 
+@final
 class Scorer:
     def __init__(self, win: Win, options: GameOptions) -> None:
         self._win = win
@@ -26,7 +27,7 @@ class Scorer:
         player_count = self._options.player_count
         win_player = self._win.win_player
         lose_player = self._win.lose_player
-        han_multiplier: int = 2 ** min(han_total, 6)
+        han_multiplier: int = 1 << min(han_total, 6)
         if lose_player is None:
             if win_player == self._win.sub_round:
                 player_pay_in_amount = (

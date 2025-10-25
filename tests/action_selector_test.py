@@ -1,5 +1,6 @@
 import unittest
 
+from tests.decks import test_deck4, test_deck_one_discard_option
 from zundamahjong.mahjong.action import (
     ActionType,
     ClosedKanAction,
@@ -7,10 +8,8 @@ from zundamahjong.mahjong.action import (
     OpenCallAction,
     SimpleAction,
 )
-from zundamahjong.mahjong.round import Round, RoundStatus
 from zundamahjong.mahjong.action_selector import ActionSelector
-
-from tests.decks import test_deck4, test_deck_one_discard_option
+from zundamahjong.mahjong.round import Round, RoundStatus
 
 
 class ActionSelectorTest(unittest.TestCase):

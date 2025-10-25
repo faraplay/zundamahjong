@@ -1,6 +1,5 @@
 from ..types.avatar import Avatar
 from ..types.player import Player
-
 from . import db
 from .users import get_user
 

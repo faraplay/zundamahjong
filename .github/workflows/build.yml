@@ -36,7 +36,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.12", "3.13", "3.14"]
+        python-version: ["3.10", "3.12", "3.13", "3.14"]
 
     steps:
       - uses: actions/checkout@v4
@@ -53,10 +53,13 @@ jobs:
           uv run ruff check --output-format=github .
       - name: Type check with mypy
         run: |
-          uv run mypy --strict src tests
+          uv run mypy
+      - name: Type check with basedpyright
+        run: |
+          uv run basedpyright
       - name: Test with pytest
         run: |
-          uv run pytest tests
+          uv run pytest
       - name: Build Python wheel
         run: |
           uv build
@@ -72,7 +75,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        python-version: ["3.9", "3.12", "3.13", "3.14"]
+        python-version: ["3.10", "3.12", "3.13", "3.14"]
 
     steps:
       - name: Set up Python ${{ matrix.python-version }}

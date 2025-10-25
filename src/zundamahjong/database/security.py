@@ -3,8 +3,8 @@ from werkzeug.security import check_password_hash, generate_password_hash
 
 from ..types.player import Player
 from . import db
-from .users import get_user, try_get_user
 from .models import User
+from .users import get_user, try_get_user
 
 max_users = 256
 
