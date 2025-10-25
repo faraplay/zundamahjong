@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
     ? Number(env.DEBUG_SERVER_PORT)
     : 5000;
   return {
-    base: "/zundamahjong/",
+    base: "./",
     plugins: [preact()],
     build: {
       outDir: "../client_build",
@@ -17,6 +17,13 @@ export default defineConfig(({ mode }) => {
         filePath.endsWith(".svg") &&
         !filePath.includes("/flower/") &&
         !filePath.includes("/season/"),
+      manifest: true,
+      rollupOptions: {
+        input: {
+          main: "index.html",
+          login: "login/index.html",
+        },
+      },
     },
     server: {
       proxy: {
