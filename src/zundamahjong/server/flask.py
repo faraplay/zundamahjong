@@ -51,3 +51,9 @@ def login_route() -> Response:
         return redirect(url_for("index"))
 
     return app.send_static_file("login/index.html")
+
+
+@app.route("/zundamahjong/logout/")
+def logout_route() -> Response:
+    session.clear()
+    return redirect(url_for("login_route"))
