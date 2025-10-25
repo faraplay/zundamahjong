@@ -8,7 +8,7 @@ Represents the value of a mahjong tile.
 - 1-9 are manzu (characters)
 - 11-19 are pinzu (dots)
 - 21-29 are souzu (bamboos)
-- 31-37 are jihai (winds and dragons, in the oreder ESWNWhGR)
+- 31-37 are jihai (winds and dragons, in the order ESWNWhGR)
 - 41-48 are flowers (seasons and flowers)
 """
 
