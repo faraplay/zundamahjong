@@ -1,8 +1,6 @@
-import { useContext } from "preact/hooks";
 import type { Player } from "../../types/player";
 
 import "./user_welcome.css";
-import { Emitter } from "../emitter/emitter";
 
 export function UserWelcome({
   myPlayer,
@@ -11,16 +9,9 @@ export function UserWelcome({
   myPlayer: Player;
   goToSettings: () => void;
 }) {
-  const emit = useContext(Emitter);
-
   const onGoToSettingsClick = (e: Event) => {
     e.preventDefault();
     goToSettings();
-  };
-
-  const onLogoutClick = (e: Event) => {
-    e.preventDefault();
-    emit("unset_name");
   };
 
   const goToSettingsButton = (
@@ -30,7 +21,10 @@ export function UserWelcome({
   );
 
   const logoutButton = (
-    <button type="button" onClick={onLogoutClick}>
+    <button
+      type="button"
+      onClick={() => (window.location.href = "/zundamahjong/logout")}
+    >
       Logout
     </button>
   );

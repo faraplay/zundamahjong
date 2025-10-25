@@ -70,12 +70,6 @@ def start_next_round(sid: str) -> None:
         game_room.end_game()
 
 
-@sio_on("unset_name")
-def on_unset_name(sid: str) -> None:
-    GameRoom.try_disconnect(get_player(sid))
-    unset_player(sid)
-
-
 @sio_on("change_password")
 def on_change_password(sid: str, cur_password: object, new_password: object) -> None:
     if not isinstance(cur_password, str):
