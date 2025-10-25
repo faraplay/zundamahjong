@@ -9,13 +9,17 @@ from .users import get_user, try_get_user
 max_users = 256
 
 
+class WrongPasswordException(Exception):
+    """The client typed in an incorrect password."""
+
+
 def login(name: str, password: str) -> Player:
     with db.session.begin():
         user = try_get_user(name)
 
         if user:
             if not check_password_hash(user.password, password):
-                raise Exception("Incorrect password!")
+                raise WrongPasswordException()
 
             else:
                 return Player(name=name, has_account=True)
