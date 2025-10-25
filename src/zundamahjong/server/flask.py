@@ -4,7 +4,7 @@ from flask import Flask, redirect, request, session, url_for
 from werkzeug.wrappers import Response
 
 from ..database import db
-from ..database.security import login
+from ..database.security import WrongPasswordException, login
 
 app = Flask("zundamahjong", static_url_path="/zundamahjong/", static_folder="client")
 
@@ -42,7 +42,12 @@ def login_route() -> Response:
         if name is None or password is None:
             raise RuntimeError
 
-        player = login(name, password)
+        try:
+            player = login(name, password)
+
+        except WrongPasswordException:
+            return redirect(url_for("login_route"))
+
         session.clear()
 
         session["player"] = player.model_dump_json()
