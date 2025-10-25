@@ -7,7 +7,7 @@ from werkzeug.wrappers import Response
 from ..database import db
 from ..database.security import WrongPasswordException, login
 
-app = Flask("zundamahjong", static_url_path="/zundamahjong/", static_folder="client")
+app = Flask("zundamahjong", static_url_path="/", static_folder="client")
 
 secret_key = os.getenv("FLASK_SECRET_KEY")
 
@@ -31,11 +31,6 @@ db.init_app(app)
 
 
 @app.route("/")
-def base() -> Response:
-    return redirect(url_for("index"))
-
-
-@app.route("/zundamahjong/")
 def index() -> Response:
     if "player" not in session:
         return redirect(url_for("login_route"))
@@ -43,7 +38,7 @@ def index() -> Response:
     return app.send_static_file("index.html")
 
 
-@app.route("/zundamahjong/login/", methods=["GET", "POST"])
+@app.route("/login/", methods=["GET", "POST"])
 def login_route() -> Response:
     if request.method == "POST":
         name = request.form.get("name")
@@ -68,7 +63,7 @@ def login_route() -> Response:
     return app.send_static_file("login/index.html")
 
 
-@app.route("/zundamahjong/logout/")
+@app.route("/logout/")
 def logout_route() -> Response:
     session.clear()
     return redirect(url_for("login_route"))
