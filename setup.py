@@ -34,7 +34,6 @@ class build_client(Command):
             shutil.copytree("client_build", self.client_dir)
 
 
-
 class custom_build(build):
     sub_commands = [("build_client", None)] + build.sub_commands
 

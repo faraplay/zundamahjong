@@ -3,12 +3,12 @@ name = "zundamahjong"
 dynamic = ["version"]
 dependencies = [
   "flask",
+  "flask-socketio",
   "pydantic",
-  "python-socketio",
   "sqlalchemy",
   "werkzeug",
 ]
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 
 # Project metadata
@@ -54,6 +54,7 @@ dev = [
 ]
 
 lint = [
+  "basedpyright",
   "mypy",
   "ruff",
 ]
@@ -81,6 +82,26 @@ alembic = [
 ]
 
 
+# Type checker configuration
+
+[tool.mypy]
+files = ["src", "tests"]
+strict = true
+
+[[tool.mypy.overrides]]
+module = ["flask_socketio.*"]
+ignore_missing_imports = true
+
+[tool.basedpyright]
+include = ["src", "tests"]
+allowedUntypedLibraries = ["flask_socketio"]
+pythonVersion = "3.10"
+
+reportUnusedCallResult = false
+reportUnusedFunction = false
+reportUnusedParameter = false
+
+
 # Other tool configs
 
 [tool.alembic]
@@ -93,9 +114,5 @@ type = "module"
 module = "ruff"
 options = "check --fix REVISION_SCRIPT_FILENAME"
 
-[[tool.mypy.overrides]]
-module = ["socketio.*"]
-ignore_missing_imports = true
-
-[tool.pyright]
-typeCheckingMode = "standard"
+[tool.ruff]
+extend-exclude = ["alembic"]

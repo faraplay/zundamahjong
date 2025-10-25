@@ -1,10 +1,8 @@
+# pyright: reportPrivateUsage=false
+
 import unittest
 
-from zundamahjong.mahjong.form_hand import is_winning
-from zundamahjong.mahjong.tile import N, all_tiles
-from zundamahjong.mahjong.deck import Deck
-from zundamahjong.mahjong.hand import Hand
-from zundamahjong.mahjong.round import Round
+from tests.decks import test_deck1, test_deck2, test_deck3
 from zundamahjong.mahjong.action import (
     ActionType,
     AddKanAction,
@@ -18,9 +16,12 @@ from zundamahjong.mahjong.call import (
     CallType,
     OpenCall,
 )
+from zundamahjong.mahjong.deck import Deck
+from zundamahjong.mahjong.form_hand import is_winning
 from zundamahjong.mahjong.game_options import GameOptions
-
-from tests.decks import test_deck1, test_deck2, test_deck3
+from zundamahjong.mahjong.hand import Hand
+from zundamahjong.mahjong.round import Round
+from zundamahjong.mahjong.tile import N, all_tiles
 
 
 class RoundWaitsTest(unittest.TestCase):

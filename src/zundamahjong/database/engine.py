@@ -1,11 +1,8 @@
-import logging
 import os
 
 from sqlalchemy import create_engine
 
 from .models import Base
-
-logging.getLogger("sqlalchemy.engine").setLevel(logging.INFO)
 
 db_host = os.getenv("DB_HOST")
 
