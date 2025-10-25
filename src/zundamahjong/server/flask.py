@@ -1,6 +1,7 @@
 import os
 
 from flask import Flask, redirect, request, session, url_for
+from werkzeug.serving import is_running_from_reloader
 from werkzeug.wrappers import Response
 
 from ..database import db
@@ -10,8 +11,17 @@ app = Flask("zundamahjong", static_url_path="/zundamahjong/", static_folder="cli
 
 secret_key = os.getenv("FLASK_SECRET_KEY")
 
+NO_SECRET_KEY_ERROR_MESSAGE = """\
+*********************************************************
+FLASK_SECRET_KEY not found in the process environment!
+Please generate a secure secret key for signing sessions.
+Using an unsafe value from here on out.
+*********************************************************
+"""
+
 if secret_key is None:
-    print("Please set an actual secret key!")
+    if not is_running_from_reloader():
+        print(NO_SECRET_KEY_ERROR_MESSAGE)
     app.config["SECRET_KEY"] = "dev"
 
 else:
