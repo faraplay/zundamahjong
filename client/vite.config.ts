@@ -8,7 +8,7 @@ export default defineConfig(({ mode }) => {
     ? Number(env.DEBUG_SERVER_PORT)
     : 5000;
   return {
-    base: "/zundamahjong/",
+    base: "./",
     plugins: [preact()],
     build: {
       outDir: "../client_build",

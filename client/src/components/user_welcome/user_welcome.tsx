@@ -21,10 +21,7 @@ export function UserWelcome({
   );
 
   const logoutButton = (
-    <button
-      type="button"
-      onClick={() => (window.location.href = "/zundamahjong/logout")}
-    >
+    <button type="button" onClick={() => (window.location.href = "./logout")}>
       Logout
     </button>
   );

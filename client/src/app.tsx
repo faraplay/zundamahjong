@@ -46,7 +46,7 @@ export function App() {
     socket.current?.emit(event, ...args);
 
   useEffect(() => {
-    socket.current = io();
+    socket.current = io({ path: `${location.pathname}socket.io` });
 
     socket.current.on(
       "server_message",

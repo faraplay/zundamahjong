@@ -2,7 +2,7 @@ import "./name_form.css";
 
 export function NameForm() {
   return (
-    <form id="name_form" method="POST" action="/zundamahjong/login/">
+    <form id="name_form" method="POST" action="../login">
       Enter a name
       <div>
         <label for="name_input">Name</label>
