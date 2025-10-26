@@ -1,5 +1,6 @@
 from importlib.resources import files
 
+from flask import Flask
 from pydantic import BaseModel, TypeAdapter
 
 
@@ -30,3 +31,8 @@ def imported_chunks(
         ret.add(manifest[import_name])
 
     return ret
+
+
+def init_app(app: Flask) -> None:
+    app.context_processor(lambda: {"manifest": vite_manifest})
+    app.add_template_global(imported_chunks)
