@@ -10,7 +10,17 @@ from ..templates import imported_chunks, vite_manifest
 
 
 app = Flask("zundamahjong", static_folder="client", static_url_path="/")
-"""To-Do"""
+"""The `zundamahjong` Flask application instance."""
+
+
+dev = False
+"""Are we running in development mode?"""
+
+
+def dev_mode_on() -> None:
+    """Turn development mode on."""
+    global dev
+    dev = True
 
 
 secret_key = os.getenv("FLASK_SECRET_KEY")
@@ -46,6 +56,7 @@ def index() -> ResponseReturnValue:
         "base.html",
         manifest=vite_manifest,
         name="src/main.tsx",
+        dev=dev,
     )
 
 
@@ -75,6 +86,7 @@ def login_route() -> ResponseReturnValue:
         "base.html",
         manifest=vite_manifest,
         name="src/login.tsx",
+        dev=dev,
     )
 
 
