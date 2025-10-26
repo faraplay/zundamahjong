@@ -4,13 +4,16 @@ from flask import Flask, flash, redirect, render_template, request, session, url
 from flask.typing import ResponseReturnValue
 from werkzeug.serving import is_running_from_reloader
 
+from .. import templates
 from ..database import db
 from ..database.security import WrongPasswordException, login
-from ..templates import imported_chunks, vite_manifest
-
 
 app = Flask("zundamahjong", static_folder="client", static_url_path="/")
 """The `zundamahjong` Flask application instance."""
+
+# Do some basic setup.
+db.init_app(app)
+templates.init_app(app)
 
 
 secret_key = os.getenv("FLASK_SECRET_KEY")
@@ -32,21 +35,12 @@ else:
     app.config["SECRET_KEY"] = secret_key
 
 
-# Other app housekeeping steps.
-app.add_template_global(imported_chunks)
-db.init_app(app)
-
-
 @app.route("/")
 def index() -> ResponseReturnValue:
     if "player" not in session:
         return redirect(url_for("login_route"))
 
-    return render_template(
-        "base.html",
-        manifest=vite_manifest,
-        name="src/main.tsx",
-    )
+    return render_template("base.html", name="src/main.tsx")
 
 
 @app.route("/login/", methods=["GET", "POST"])
@@ -71,11 +65,7 @@ def login_route() -> ResponseReturnValue:
     if "player" in session:
         return redirect(url_for("index"))
 
-    return render_template(
-        "base.html",
-        manifest=vite_manifest,
-        name="src/login.tsx",
-    )
+    return render_template("base.html", name="src/login.tsx")
 
 
 @app.route("/logout/")
