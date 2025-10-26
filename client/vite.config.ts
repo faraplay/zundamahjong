@@ -20,8 +20,8 @@ export default defineConfig(({ mode }) => {
       manifest: true,
       rollupOptions: {
         input: {
-          main: "index.html",
-          login: "login/index.html",
+          main: "src/main.tsx",
+          login: "src/login.tsx",
         },
       },
     },

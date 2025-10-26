@@ -1,13 +1,17 @@
 import os
 
-from flask import Flask, redirect, request, session, url_for
+from flask import Flask, flash, redirect, render_template, request, session, url_for
+from flask.typing import ResponseReturnValue
 from werkzeug.serving import is_running_from_reloader
-from werkzeug.wrappers import Response
 
 from ..database import db
 from ..database.security import WrongPasswordException, login
+from ..templates import imported_chunks, vite_manifest
 
-app = Flask("zundamahjong", static_url_path="/", static_folder="client")
+
+app = Flask("zundamahjong", static_folder="client", static_url_path="/")
+"""To-Do"""
+
 
 secret_key = os.getenv("FLASK_SECRET_KEY")
 
@@ -27,19 +31,26 @@ if secret_key is None:
 else:
     app.config["SECRET_KEY"] = secret_key
 
+
+# Other app housekeeping steps.
+app.add_template_global(imported_chunks)
 db.init_app(app)
 
 
 @app.route("/")
-def index() -> Response:
+def index() -> ResponseReturnValue:
     if "player" not in session:
         return redirect(url_for("login_route"))
 
-    return app.send_static_file("index.html")
+    return render_template(
+        "base.html",
+        manifest=vite_manifest,
+        name="src/main.tsx",
+    )
 
 
 @app.route("/login/", methods=["GET", "POST"])
-def login_route() -> Response:
+def login_route() -> ResponseReturnValue:
     if request.method == "POST":
         name = request.form.get("name")
         password = request.form.get("password")
@@ -51,6 +62,7 @@ def login_route() -> Response:
             player = login(name, password)
 
         except WrongPasswordException:
+            flash("Incorrect password!")
             return redirect(url_for("login_route"))
 
         session.clear()
@@ -60,10 +72,14 @@ def login_route() -> Response:
     if "player" in session:
         return redirect(url_for("index"))
 
-    return app.send_static_file("login/index.html")
+    return render_template(
+        "base.html",
+        manifest=vite_manifest,
+        name="src/login.tsx",
+    )
 
 
 @app.route("/logout/")
-def logout_route() -> Response:
+def logout_route() -> ResponseReturnValue:
     session.clear()
     return redirect(url_for("login_route"))
