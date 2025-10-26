@@ -8,7 +8,6 @@
   .server_message_list_item {
     padding: 0.5cqw;
     display: flex;
-    flex-direction: row-reverse;
     justify-content: space-between;
     border: 1px solid black;
 
