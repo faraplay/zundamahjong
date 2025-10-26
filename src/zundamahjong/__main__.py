@@ -1,8 +1,10 @@
 # pyright: reportAny=false
 
 import argparse
+import http.client
 import os
 from importlib.metadata import version
+from subprocess import DEVNULL, Popen
 
 from flask import Flask
 from werkzeug import run_simple
@@ -37,6 +39,15 @@ if __name__ == "__main__":
     if args.debug:
         flask_app.debug = True
 
+        if not is_running_from_reloader():
+            try:
+                conn = http.client.HTTPConnection("localhost", 5173)
+                conn.request("GET", "/")
+
+            except ConnectionRefusedError:
+                print("Starting Vite debug server listening on port 5173...")
+                Popen(["npm", "--prefix", "client", "run", "dev"], stdout=DEVNULL)
+
         app = ProxyMiddleware(
             flask_app,
             {
@@ -45,7 +56,7 @@ if __name__ == "__main__":
         )
 
     if not is_running_from_reloader():
-        print(f"Starting Zundamahjong server version {version('zundamahjong')}.")
+        print(f"Starting Zundamahjong server version {version('zundamahjong')}...")
         print(f"Go to http://localhost:{port} to play some Mahjong.")
 
     run_simple("localhost", port, app, threaded=True, use_reloader=args.debug)
