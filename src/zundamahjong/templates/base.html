@@ -7,21 +7,30 @@
   <link rel="icon" type="image/svg+xml" href="{{ url_for("static", filename=manifest["src/assets/mahjongtiles/bamboo/01.svg"].file) }}" />
   <title>Zundamahjong</title>
 
-  {% for css_file in manifest[name].css %}
-    <link rel="stylesheet" href="{{ url_for("static", filename=css_file) }}" />
-  {% endfor %}
+  {% if dev %}
 
-  {% for chunk in imported_chunks(manifest, name) %}
-    {% for css_file in chunk.css %}
+    <script type="module" src="http://localhost:5173/@vite/client"></script>
+    <script type="module" src="http://localhost:5173/{{ name }}"></script>
+
+  {% else %}
+
+    {% for css_file in manifest[name].css %}
       <link rel="stylesheet" href="{{ url_for("static", filename=css_file) }}" />
     {% endfor %}
-  {% endfor %}
 
-  <script type="module" src="{{ url_for("static", filename=manifest[name].file) }}"></script>
+    {% for chunk in imported_chunks(manifest, name) %}
+      {% for css_file in chunk.css %}
+        <link rel="stylesheet" href="{{ url_for("static", filename=css_file) }}" />
+      {% endfor %}
+    {% endfor %}
 
-  {% for chunk in imported_chunks(manifest, name) %}
-    <link rel="modulepreload" href="{{ url_for("static", filename=chunk.file) }}" />
-  {% endfor %}
+    <script type="module" src="{{ url_for("static", filename=manifest[name].file) }}"></script>
+
+    {% for chunk in imported_chunks(manifest, name) %}
+      <link rel="modulepreload" href="{{ url_for("static", filename=chunk.file) }}" />
+    {% endfor %}
+
+  {% endif %}
 </head>
 
 <body>

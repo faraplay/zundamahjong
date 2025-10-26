@@ -5,8 +5,10 @@ import os
 from importlib.metadata import version
 
 from werkzeug import run_simple
+from werkzeug.middleware.http_proxy import ProxyMiddleware
 from werkzeug.serving import is_running_from_reloader
 
+from .server.flask import dev_mode_on
 from .server import app
 
 parser = argparse.ArgumentParser(
@@ -28,6 +30,15 @@ if __name__ == "__main__":
 
     else:
         port = args.port
+
+    if args.debug:
+        app = ProxyMiddleware(  # type: ignore[assignment]
+            app,
+            {
+                "/src/assets": {"target": "http://localhost:5173"},
+            },
+        )
+        dev_mode_on()
 
     if not is_running_from_reloader():
         print(f"Starting Zundamahjong server version {version('zundamahjong')}.")
