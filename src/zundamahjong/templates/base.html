@@ -3,14 +3,29 @@
 
 <head>
   <meta charset="UTF-8" />
-  <link rel="icon" type="image/svg+xml" href="/{{% to-do %}}" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/svg+xml" href="{{ url_for("static", filename=manifest["src/assets/mahjongtiles/bamboo/01.svg"].file) }}" />
   <title>Zundamahjong</title>
+
+  {% for css_file in manifest[name].css %}
+    <link rel="stylesheet" href="{{ url_for("static", filename=css_file) }}" />
+  {% endfor %}
+
+  {% for chunk in imported_chunks(manifest, name) %}
+    {% for css_file in chunk.css %}
+      <link rel="stylesheet" href="{{ url_for("static", filename=css_file) }}" />
+    {% endfor %}
+  {% endfor %}
+
+  <script type="module" src="{{ url_for("static", filename=manifest[name].file) }}"></script>
+
+  {% for chunk in imported_chunks(manifest, name) %}
+    <link rel="modulepreload" href="{{ url_for("static", filename=chunk.file) }}" />
+  {% endfor %}
 </head>
 
 <body>
   <div id="app"></div>
-  <script type="module" src="/{{% route-dependent js %}}"></script>
 </body>
 
 </html>
