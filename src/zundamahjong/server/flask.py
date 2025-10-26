@@ -63,11 +63,10 @@ def login_route() -> ResponseReturnValue:
 
         except WrongPasswordException:
             flash("Incorrect password!")
-            return redirect(url_for("login_route"))
 
-        session.clear()
-
-        session["player"] = player.model_dump_json()
+        else:
+            session.clear()
+            session["player"] = player.model_dump_json()
 
     if "player" in session:
         return redirect(url_for("index"))

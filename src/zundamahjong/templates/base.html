@@ -25,7 +25,19 @@
 </head>
 
 <body>
-  <div id="app"></div>
+  <div id="wrapper">
+    <div id="app"></div>
+
+    {% with messages = get_flashed_messages() %}
+      <div class="server_message_list">
+      {% for message in messages %}
+        <div class="server_message_list_item error"} >
+          <span>{{ message }}</span>
+        </div>
+      {% endfor %}
+      </div>
+    {% endwith %}
+  </div>
 </body>
 
 </html>
