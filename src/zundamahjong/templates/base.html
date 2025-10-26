@@ -7,7 +7,7 @@
   <link rel="icon" type="image/svg+xml" href="{{ url_for("static", filename=manifest["src/assets/mahjongtiles/bamboo/01.svg"].file) }}" />
   <title>Zundamahjong</title>
 
-  {% if dev %}
+  {% if config["DEBUG"] %}
 
     <script type="module" src="http://localhost:5173/@vite/client"></script>
     <script type="module" src="http://localhost:5173/{{ name }}"></script>

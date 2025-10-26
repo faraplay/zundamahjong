@@ -4,12 +4,12 @@ import argparse
 import os
 from importlib.metadata import version
 
+from flask import Flask
 from werkzeug import run_simple
 from werkzeug.middleware.http_proxy import ProxyMiddleware
 from werkzeug.serving import is_running_from_reloader
 
-from .server.flask import dev_mode_on
-from .server import app
+from .server import app as flask_app
 
 parser = argparse.ArgumentParser(
     prog="zundamahjong", description="Web-based Mahjong game server"
@@ -20,6 +20,9 @@ parser.add_argument("-p", "--port", type=int, help="port on which to listen")
 parser.add_argument(
     "--debug", action="store_true", help="run server in development mode"
 )
+
+app: Flask | ProxyMiddleware = flask_app
+"""Object which we eventually pass to :py:func:`werkzeug.run_simple`."""
 
 
 if __name__ == "__main__":
@@ -32,13 +35,14 @@ if __name__ == "__main__":
         port = args.port
 
     if args.debug:
-        app = ProxyMiddleware(  # type: ignore[assignment]
-            app,
+        flask_app.debug = True
+
+        app = ProxyMiddleware(
+            flask_app,
             {
                 "/src/assets": {"target": "http://localhost:5173"},
             },
         )
-        dev_mode_on()
 
     if not is_running_from_reloader():
         print(f"Starting Zundamahjong server version {version('zundamahjong')}.")
