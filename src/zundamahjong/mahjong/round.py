@@ -1,27 +1,27 @@
 from __future__ import annotations
-from typing import Optional
-from collections.abc import Sequence, Callable
-from enum import Enum
 
+from collections.abc import Callable, Sequence
+from enum import IntEnum
+from typing import final
 
-from .exceptions import InvalidMoveException
-from .tile import TileId, get_tile_value
-from .call import Call, get_call_tiles
 from .action import (
     Action,
-    ActionType,
     ActionList,
+    ActionType,
     SimpleAction,
     call_action_types,
 )
+from .call import Call, get_call_tiles
 from .deck import Deck, four_player_deck, three_player_deck
 from .discard_pool import Discard, DiscardPool
-from .hand import Hand
-from .win import Win
+from .exceptions import InvalidMoveException
 from .game_options import GameOptions
+from .hand import Hand
+from .tile import TileId, get_tile_value
+from .win import Win
 
 
-class RoundStatus(Enum):
+class RoundStatus(IntEnum):
     START = 0  # Options: nothing, flower
     PLAY = 1  # Options: discard, added kan, closed kan, flower, tsumo
     CALLED_PLAY = 2  # Options: discard
@@ -60,6 +60,7 @@ def _register_do_action(
     return _register_do_action_inner
 
 
+@final
 class Round:
     def __init__(
         self,
@@ -67,20 +68,24 @@ class Round:
         wind_round: int = 0,
         sub_round: int = 0,
         draw_count: int = 0,
-        tiles: Optional[list[TileId]] = None,
-        options: GameOptions = GameOptions(),
+        tiles: list[TileId] | None = None,
+        options: GameOptions | None = None,
         round_end_callback: Callable[[], None] = lambda: None,
     ):
+        if options is not None:
+            _options = options
+        else:
+            _options = GameOptions()
         self._wind_round = wind_round
         self._sub_round = sub_round
         self._draw_count = draw_count
-        self._player_count = options.player_count
-        self._options = options
+        self._player_count = _options.player_count
+        self._options = _options
         self._end_callback = round_end_callback
         if tiles is not None:
             self._deck = Deck(tiles)
         else:
-            if options.player_count == 3:
+            if _options.player_count == 3:
                 self._deck = Deck.shuffled_deck(three_player_deck)
             else:
                 self._deck = Deck.shuffled_deck(four_player_deck)
@@ -100,7 +105,7 @@ class Round:
         self._status = RoundStatus.START
         self._last_tile: TileId = 0
         self._history: list[tuple[int, Action]] = []
-        self._win_info: Optional[Win] = None
+        self._win_info: Win | None = None
 
         self._calculate_allowed_actions()
 
@@ -130,12 +135,20 @@ class Round:
         return self._hands[player].flowers
 
     @property
+    def player_count(self) -> int:
+        return self._player_count
+
+    @property
     def current_player(self) -> int:
         return self._current_player
 
     @property
     def status(self) -> RoundStatus:
         return self._status
+
+    @property
+    def wind_round(self) -> int:
+        return self._wind_round
 
     @property
     def allowed_actions(self) -> tuple[ActionList, ...]:
@@ -166,7 +179,7 @@ class Round:
         return self._history
 
     @property
-    def win_info(self) -> Optional[Win]:
+    def win_info(self) -> Win | None:
         return self._win_info
 
     def display_info(self) -> None:
@@ -212,11 +225,11 @@ class Round:
             self._end_callback()
 
     def get_priority_action(
-        self, actions: Sequence[Optional[Action]]
-    ) -> Optional[tuple[int, Action]]:
+        self, actions: Sequence[Action | None]
+    ) -> tuple[int, Action] | None:
         if len(actions) != self._player_count:
             raise Exception("Incorrect number of elements in actions")
-        validated_actions: list[Optional[Action]] = []
+        validated_actions: list[Action | None] = []
         for player, action in enumerate(actions):
             allowed_actions = self.allowed_actions[player]
             if action is None:

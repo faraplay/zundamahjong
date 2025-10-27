@@ -1,31 +1,57 @@
-from typing import Optional
+# pyright: reportIgnoreCommentWithoutRule=false
 
-from socketio import Server
+import logging
+from typing import final
+
 import sqlalchemy as sa
-from sqlalchemy.orm import Session, sessionmaker
+from flask import Flask
+from flask.globals import app_ctx
+from sqlalchemy.orm import Session, scoped_session, sessionmaker
 
 from .engine import engine
-from .models import Base as Base, User
+from .models import Base
 
-session_factory = sessionmaker(engine)
-
-
-def get_db(sio: Server, sid: str) -> Session:
-    with sio.session(sid) as session:
-        if "db" not in session:
-            session["db"] = session_factory()
-        return session["db"]  # type: ignore[no-any-return]
+logger = logging.getLogger(__name__)
 
 
-def close_db(sio: Server, sid: str) -> None:
-    with sio.session(sid) as session:
-        if "db" in session:
-            session["db"].close()
+def _app_ctx_id() -> int:
+    """Get the id of the current Flask application context object."""
+
+    # Flask lies about `app_ctx`: it's not an instance of `AppContext` but
+    # of `LocalProxy[AppContext]`, which confuses type checkers here.
+
+    return id(app_ctx._get_current_object())  # type: ignore  # pyright: ignore
 
 
-def get_user(db: Session, name: str) -> User:
-    return db.execute(sa.select(User).where(User.name == name)).scalar_one()
+@final
+class SQLAlchemy:
+    def __init__(self, engine: sa.Engine) -> None:
+        self._session = scoped_session(sessionmaker(engine), _app_ctx_id)
+
+    def init_app(self, app: Flask) -> None:
+        if "sqlalchemy" in app.extensions:
+            raise Exception("SQLAlchemy extension has already been initialized!")
+        app.extensions["sqlalchemy"] = self
+
+        app.teardown_appcontext(self._close)
+
+    @property
+    def session(self) -> Session:
+        if not self._session.registry.has():
+            logger.info(
+                f"Opening database session within Flask application context {_app_ctx_id()}"
+            )
+        return self._session()
+
+    def _close(self, exc: BaseException | None) -> None:
+        if self._session.registry.has():
+            logger.info(
+                f"Closing database session within Flask application context {_app_ctx_id()}"
+            )
+        self._session.remove()
 
 
-def try_get_user(db: Session, name: str) -> Optional[User]:
-    return db.execute(sa.select(User).where(User.name == name)).scalar_one_or_none()
+db = SQLAlchemy(engine)
+
+
+__all__ = ["Base", "db", "engine"]
