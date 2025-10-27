@@ -80,6 +80,8 @@ def index() -> ResponseReturnValue:
     if check_player() != PlayerStatus.OK_PLAYER:
         return redirect(url_for("login_route"))
 
+    session["first"] = False if "first" in session else True
+
     return render_template("base.html", name="src/main.tsx")
 
 
