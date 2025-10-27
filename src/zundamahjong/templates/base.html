@@ -2,51 +2,41 @@
 <html lang="en">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <link rel="icon" type="image/svg+xml" href="{{ url_for("static", filename=manifest["src/assets/mahjongtiles/bamboo/01.svg"].file) }}" />
-  <title>Zundamahjong</title>
+  {% block head %}
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="{{ url_for("static", filename=manifest["src/assets/mahjongtiles/bamboo/01.svg"].file) }}" />
+    <title>{% block title %}Zundamahjong{% endblock %}</title>
 
-  {% if config["DEBUG"] %}
+    {% if config["DEBUG"] %}
 
-    <script type="module" src="http://localhost:5173/@vite/client"></script>
-    <script type="module" src="http://localhost:5173/{{ name }}"></script>
+      <script type="module" src="http://localhost:5173/@vite/client"></script>
+      <script type="module" src="http://localhost:5173/{{ name }}"></script>
 
-  {% else %}
+    {% else %}
 
-    {% for css_file in manifest[name].css %}
-      <link rel="stylesheet" href="{{ url_for("static", filename=css_file) }}" />
-    {% endfor %}
-
-    {% for chunk in imported_chunks(manifest, name) %}
-      {% for css_file in chunk.css %}
+      {% for css_file in manifest[name].css %}
         <link rel="stylesheet" href="{{ url_for("static", filename=css_file) }}" />
       {% endfor %}
-    {% endfor %}
 
-    <script type="module" src="{{ url_for("static", filename=manifest[name].file) }}"></script>
+      {% for chunk in imported_chunks(manifest, name) %}
+        {% for css_file in chunk.css %}
+          <link rel="stylesheet" href="{{ url_for("static", filename=css_file) }}" />
+        {% endfor %}
+      {% endfor %}
 
-    {% for chunk in imported_chunks(manifest, name) %}
-      <link rel="modulepreload" href="{{ url_for("static", filename=chunk.file) }}" />
-    {% endfor %}
+      <script type="module" src="{{ url_for("static", filename=manifest[name].file) }}"></script>
 
-  {% endif %}
+      {% for chunk in imported_chunks(manifest, name) %}
+        <link rel="modulepreload" href="{{ url_for("static", filename=chunk.file) }}" />
+      {% endfor %}
+
+    {% endif %}
+  {% endblock %}
 </head>
 
 <body>
-  <div id="wrapper">
-    <div id="app"></div>
-
-    {% with messages = get_flashed_messages() %}
-      <div class="server_message_list">
-      {% for message in messages %}
-        <div class="server_message_list_item error"} >
-          <span>{{ message }}</span>
-        </div>
-      {% endfor %}
-      </div>
-    {% endwith %}
-  </div>
+  {% block body %} {% endblock %}
 </body>
 
 </html>

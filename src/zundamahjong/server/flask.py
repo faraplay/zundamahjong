@@ -82,7 +82,7 @@ def index() -> ResponseReturnValue:
 
     session["first"] = False if "first" in session else True
 
-    return render_template("base.html", name="src/main.tsx")
+    return render_template("index.html")
 
 
 @app.route("/login/", methods=["GET", "POST"])
@@ -127,7 +127,7 @@ def login_route() -> ResponseReturnValue:
                 session["player"] = player.model_dump_json()
                 return redirect(url_for("index"))
 
-    return render_template("base.html", name="src/login.tsx")
+    return render_template("login.html")
 
 
 @app.route("/logout/")

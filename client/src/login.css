@@ -1,0 +1,38 @@
+#wrapper {
+  width: 100vw;
+  height: 56.25vw;
+  max-width: 177.778vh;
+  max-height: 100vh;
+  container-type: size;
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin: auto;
+  overflow: hidden;
+  background-color: white;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  font-size: 1.8cqw;
+}
+
+.flashed_message_list {
+  width: 90cqw;
+  position: absolute;
+  left: 5cqw;
+  bottom: 0;
+  z-index: 100;
+
+  .flashed_message {
+    padding: 0.5cqw;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid black;
+    background-color: rgb(255, 0, 0, 30%);
+  }
+}
