@@ -7,7 +7,7 @@ from werkzeug.serving import is_running_from_reloader
 
 from .. import templates
 from ..database import db
-from ..database.security import WrongPasswordException, login
+from ..database.security import UserLimitException, WrongPasswordException, login
 from ..types.player import Player
 from .name_sid import id_to_sid
 
@@ -109,6 +109,9 @@ def login_route() -> ResponseReturnValue:
                 request.form["name"],
                 request.form["password"],
             )
+
+        except UserLimitException:
+            flash("Unable to create new user accounts!")
 
         except WrongPasswordException:
             flash("Incorrect password!")

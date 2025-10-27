@@ -13,6 +13,10 @@ class WrongPasswordException(Exception):
     """The client typed in an incorrect password."""
 
 
+class UserLimitException(Exception):
+    """We have reached the configured user limit."""
+
+
 def login(name: str, password: str) -> Player:
     with db.session.begin():
         user = try_get_user(name)
@@ -28,7 +32,7 @@ def login(name: str, password: str) -> Player:
             num_users = db.session.scalar(sa.select(sa.func.count(User.id)))
 
             if num_users and num_users >= max_users:
-                raise Exception("Unable to register new user!")
+                raise UserLimitException
 
             else:
                 db.session.add(
