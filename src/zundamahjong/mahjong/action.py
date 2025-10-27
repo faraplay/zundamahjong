@@ -1,11 +1,11 @@
-from enum import IntEnum
 from collections.abc import Iterable
-from typing import Annotated, Literal, Optional, Union
+from enum import IntEnum
+from typing import Annotated, Literal, final
+
 from pydantic import BaseModel, Field, TypeAdapter
 
-
-from .tile import TileId
 from .call import OpenCall
+from .tile import TileId
 
 
 class ActionType(IntEnum):
@@ -72,32 +72,33 @@ class ClosedKanAction(BaseModel, frozen=True):
 
 
 Action = Annotated[
-    Union[
-        SimpleAction,
-        HandTileAction,
-        OpenCallAction,
-        OpenKanAction,
-        AddKanAction,
-        ClosedKanAction,
-    ],
+    SimpleAction
+    | HandTileAction
+    | OpenCallAction
+    | OpenKanAction
+    | AddKanAction
+    | ClosedKanAction,
     Field(discriminator="action_type"),
 ]
 
 action_adapter: TypeAdapter[Action] = TypeAdapter(Action)
 
 
+@final
 class ActionList:
-    def __init__(
-        self, default_action: Action = SimpleAction(action_type=ActionType.PASS)
-    ) -> None:
-        self._actions = [default_action]
+    def __init__(self, default_action: Action | None = None) -> None:
+        if default_action is not None:
+            _default_action = default_action
+        else:
+            _default_action = SimpleAction(action_type=ActionType.PASS)
+        self._actions = [_default_action]
 
     @property
     def default(self) -> Action:
         return self._actions[0]
 
     @property
-    def auto(self) -> Optional[Action]:
+    def auto(self) -> Action | None:
         if len(self._actions) == 1:
             return self._actions[0]
         else:
