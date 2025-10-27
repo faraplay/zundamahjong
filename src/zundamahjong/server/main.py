@@ -23,7 +23,7 @@ def connect(sid: str, environ: dict[str, Any], auth: object = None) -> None:  # 
         raise Exception("Please log in first.")
     player = Player.model_validate_json(session["player"])  # pyright: ignore[reportAny]
     set_player(sid, player)
-    if player.has_account and player.new_user:
+    if player.new_user and session["first"]:
         sio.emit_info("Account successfully created.", to=sid)
     sio.emit("player_info", player.model_dump(), to=sid)
     game_room = GameRoom.try_reconnect(player)
