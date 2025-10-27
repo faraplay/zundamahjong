@@ -17,8 +17,8 @@ function MessageListItem({
     <div
       class={`server_message_list_item ${serverMessage.severity.toLowerCase()}`}
     >
-      <span>{serverMessage.message}</span>
       <button onClick={onClick}>&times;</button>
+      <span>{serverMessage.message}</span>
     </div>
   );
 }

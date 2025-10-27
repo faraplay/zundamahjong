@@ -1,11 +1,9 @@
 import { render } from "preact";
 import { NameForm } from "./components/name_form/name_form";
 
-import "./components/server_message_list/server_message_list.css";
-
-import "./index.css";
+import "./base.css";
+import "./login.css";
 import "./fonts.css";
-import "./app.css";
 
 function App() {
   return (
