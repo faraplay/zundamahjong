@@ -1,23 +1,8 @@
-import { useContext } from "preact/hooks";
-
-import { Emitter } from "../emitter/emitter";
-
 import "./name_form.css";
 
 export function NameForm() {
-  const emit = useContext(Emitter);
-  const onSubmit = (e: SubmitEvent) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget as HTMLFormElement);
-    const name = formData.get("name");
-    const password = formData.get("password");
-    if (name) {
-      emit("set_name", name, password);
-      emit("get_rooms");
-    }
-  };
   return (
-    <form id="name_form" action="" onSubmit={onSubmit}>
+    <form id="name_form" method="POST" action="../login">
       Enter a name
       <div>
         <label for="name_input">Name</label>
