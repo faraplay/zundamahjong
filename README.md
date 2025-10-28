@@ -29,38 +29,55 @@ python -m zundamahjong [-p PORT]  # defaults to 5000
 
 ## Running in Production
 
-Install Gunicorn (or another [production WSGI server](https://flask.palletsprojects.com/en/stable/deploying/)) to your venv with
+Install Gunicorn (or some other [production WSGI server](https://flask.palletsprojects.com/en/stable/deploying/))
+to your virtual environment with
 
 ```sh
 pip install gunicorn
 ```
 
-And tell Gunicorn to start `zundamahjong` up by running
+You'll need to generate a secret key for Flask to sign sessions. As an
+example, you can run
+
+```python
+>>> import secrets
+>>> print(secrets.token_hex())
+```
+
+and pass the result to `zundamahjong` through the `FLASK_SECRET_KEY`
+environment variable.
+
+Once you've figured out how to do that, tell Gunicorn to start `zundamahjong`
+up by running
 
 ```sh
 gunicorn --threads 100 --bind 127.0.0.1:5000 zundamahjong.server:app
 ```
 
 > [!NOTE]
-> It is recommended to run Gunicorn [behind a reverse proxy](https://docs.gunicorn.org/en/stable/deploy.html) such as nginx.
-> But make sure to proxy [WebSocket requests](https://nginx.org/en/docs/http/websocket.html) to Gunicorn!
-> If you don't, Socket.IO will fall back to using HTTP long-polling.
+> It is recommended to run Gunicorn [behind a reverse proxy](https://docs.gunicorn.org/en/stable/deploy.html)
+> such as nginx. But make sure to proxy [WebSocket requests](https://nginx.org/en/docs/http/websocket.html)
+> to Gunicorn! If you don't, Socket.IO will fall back to using HTTP
+> long-polling.
 
 ### Database configuration
 
-By default, `zundamahjong` uses a SQLite database with filename `debug.db` in the working directory.
+By default, `zundamahjong` uses a SQLite database with filename `debug.db` in
+the working directory.
 
-To instead use a PostgreSQL database, you'll have to install the needed optional dependencies with
+To instead use a PostgreSQL database, you'll have to install the needed
+optional dependencies with
 
 ```sh
 pip install 'zundamahjong[postgresql]'
 ```
 
-The database connection is configured using environment variables. Check the `.env.example` file.
+The database connection is configured using environment variables. Check the
+`.env.example` file.
 
 ## Hacking on zundamahjong
 
-Set up the Python virtual environment and dev dependencies by running
+Set up a Python virtual environment and the project's dependencies with
 
 ```sh
 uv venv
@@ -80,7 +97,10 @@ Start the bundled Werkzeug server in debug mode by running
 uv run -m zundamahjong --debug
 ```
 
-To run the debug client, navigate to the `client` folder and start the Vite debug server with
+This will take care of starting the [Vite](https://vite.dev/) debug server in
+the background and proxy requests for static assets directly to it. You are
+free to start it manually (before running the above!) by navigating to the
+`client` folder and running
 
 ```sh
 npm run dev
