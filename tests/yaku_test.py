@@ -754,7 +754,7 @@ class PatternTest(TestCase):
             {
                 "OPEN_WAIT": 1,
                 "ORPHAN_CLOSED_TRIPLET": 1,
-                "CLOSED_HAND_RON": 1,
+                "NO_CALLS_RON": 1,
                 "NO_CALLS": 1,
             },
         )
@@ -804,7 +804,7 @@ class PatternTest(TestCase):
             {
                 "OPEN_WAIT": 1,
                 "ORPHAN_CLOSED_QUAD": 1,
-                "CLOSED_HAND_RON": 1,
+                "NO_CALLS_RON": 1,
                 "NO_CALLS": 1,
             },
         )

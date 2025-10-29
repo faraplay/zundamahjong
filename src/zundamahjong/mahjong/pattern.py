@@ -992,8 +992,8 @@ class PatternCalculator:
         )
 
     @_register_pattern(
-        "CLOSED_HAND_RON",
-        display_name="Closed Hand Ron",
+        "NO_CALLS_RON",
+        display_name="No Calls Ron",
         han=0,
         fu=0,
     )

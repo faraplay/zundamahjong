@@ -260,7 +260,7 @@ class YakumanTest(TestCase):
                 "ORPHAN_OPEN_TRIPLET": 1,
                 "SIMPLE_CLOSED_TRIPLET": 2,
                 "ORPHAN_CLOSED_QUAD": 1,
-                "CLOSED_HAND_RON": 1,
+                "NO_CALLS_RON": 1,
                 "NO_CALLS": 1,
                 "ALL_TRIPLETS": 1,
                 "THREE_CONCEALED_TRIPLETS": 1,
@@ -291,7 +291,7 @@ class YakumanTest(TestCase):
                 "SIMPLE_CLOSED_TRIPLET": 2,
                 "ORPHAN_CLOSED_TRIPLET": 1,
                 "ORPHAN_CLOSED_QUAD": 1,
-                "CLOSED_HAND_RON": 1,
+                "NO_CALLS_RON": 1,
                 "NO_CALLS": 1,
                 "ALL_TRIPLETS": 1,
                 "FOUR_CONCEALED_TRIPLETS_1_SIDED_WAIT": 1,
@@ -429,9 +429,7 @@ class YakumanTest(TestCase):
             calls=[],
             flowers=[420],
         )
-        self.assertDictEqual(
-            pattern_mults, {"CLOSED_HAND_RON": 1, "THIRTEEN_ORPHANS": 1}
-        )
+        self.assertDictEqual(pattern_mults, {"NO_CALLS_RON": 1, "THIRTEEN_ORPHANS": 1})
 
     def test_thirteen_orphans_13_sided_wait(self) -> None:
         pattern_mults = get_pattern_mults(
@@ -463,7 +461,7 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            pattern_mults, {"CLOSED_HAND_RON": 1, "THIRTEEN_ORPHANS_13_SIDED_WAIT": 1}
+            pattern_mults, {"NO_CALLS_RON": 1, "THIRTEEN_ORPHANS_13_SIDED_WAIT": 1}
         )
 
     def test_four_quads(self) -> None:
@@ -525,7 +523,7 @@ class YakumanTest(TestCase):
             {
                 "DUAL_PON_WAIT": 1,
                 "ORPHAN_OPEN_TRIPLET": 1,
-                "CLOSED_HAND_RON": 1,
+                "NO_CALLS_RON": 1,
                 "NO_CALLS": 1,
                 "FULL_FLUSH": 1,
                 "NINE_GATES": 1,
@@ -551,7 +549,7 @@ class YakumanTest(TestCase):
             {
                 "OPEN_WAIT": 1,
                 "ORPHAN_CLOSED_TRIPLET": 1,
-                "CLOSED_HAND_RON": 1,
+                "NO_CALLS_RON": 1,
                 "NO_CALLS": 1,
                 "FULL_FLUSH": 1,
                 "TRUE_NINE_GATES": 1,
@@ -577,7 +575,7 @@ class YakumanTest(TestCase):
             {
                 "OPEN_WAIT": 1,
                 "ORPHAN_CLOSED_TRIPLET": 1,
-                "CLOSED_HAND_RON": 1,
+                "NO_CALLS_RON": 1,
                 "NO_CALLS": 1,
                 "FULL_FLUSH": 1,
             },
