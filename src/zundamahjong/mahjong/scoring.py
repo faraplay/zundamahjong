@@ -6,7 +6,7 @@ from .form_hand import formed_hand_possibilities
 from .game_options import GameOptions
 from .meld import Meld
 from .win import Win
-from .pattern import PatternCalculator, pattern_display_names
+from .pattern import PatternCalculator, default_pattern_data
 
 
 class Scoring(BaseModel):
@@ -22,6 +22,7 @@ class Scorer:
     def __init__(self, win: Win, options: GameOptions) -> None:
         self._win = win
         self._options = options
+        self._pattern_data = default_pattern_data | options.pattern_data
 
     def _get_player_scores(self, han_total: int) -> list[float]:
         player_count = self._options.player_count
@@ -65,14 +66,13 @@ class Scorer:
 
     def _get_formed_hand_scoring(self, formed_hand: list[Meld]) -> Scoring:
         pattern_mults = PatternCalculator(self._win, formed_hand).get_pattern_mults()
-        pattern_values = self._options.pattern_values
         pattern_hans = dict(
             (
-                pattern_display_names[pattern],
-                pattern_values[pattern] * pattern_mults[pattern],
+                default_pattern_data[pattern].display_name,
+                self._pattern_data[pattern].han * pattern_mults[pattern],
             )
             for pattern in pattern_mults.keys()
-            if pattern_values[pattern] != 0
+            if self._pattern_data[pattern].han != 0
         )
         han_total = sum(pattern_hans.values())
         player_scores = self._get_player_scores(han_total)

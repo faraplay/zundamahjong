@@ -8,6 +8,8 @@ from typing import Optional
 
 from .call import CallType, get_call_tiles, get_meld_type
 from .meld import Meld, MeldType, TileValueMeld
+from pydantic import BaseModel
+
 from .tile import (
     TileValue,
     dragons,
@@ -20,16 +22,21 @@ from .tile import (
 )
 from .win import Win
 
-pattern_display_names: dict[str, str] = {}
-default_pattern_han: dict[str, int] = {}
+
+class PatternData(BaseModel):
+    display_name: str
+    han: int
+    fu: int
+
+
+default_pattern_data: dict[str, PatternData] = {}
 pattern_mult_funcs: dict[str, Callable[[PatternCalculator], int]] = {}
 
 
 def _register_pattern(
-    name: str, display_name: str, han: int
+    name: str, display_name: str, han: int, fu: int
 ) -> Callable[[Callable[[PatternCalculator], int]], Callable[[PatternCalculator], int]]:
-    pattern_display_names[name] = display_name
-    default_pattern_han[name] = han
+    default_pattern_data[name] = PatternData(display_name=display_name, han=han, fu=fu)
 
     def _register_pattern_inner(
         func: Callable[[PatternCalculator], int],
@@ -204,15 +211,30 @@ class PatternCalculator:
                 pattern_mults[pattern] = pattern_mult
         return pattern_mults
 
-    @_register_pattern("BLESSING_OF_HEAVEN", "Blessing of Heaven", 20)
+    @_register_pattern(
+        "BLESSING_OF_HEAVEN",
+        display_name="Blessing of Heaven",
+        han=20,
+        fu=0,
+    )
     def _blessing_of_heaven(self) -> int:
         return int(self._win.is_tenhou)
 
-    @_register_pattern("BLESSING_OF_EARTH", "Blessing of Earth", 19)
+    @_register_pattern(
+        "BLESSING_OF_EARTH",
+        display_name="Blessing of Earth",
+        han=19,
+        fu=0,
+    )
     def _blessing_of_earth(self) -> int:
         return int(self._win.is_chiihou)
 
-    @_register_pattern("LITTLE_THREE_DRAGONS", "Little Three Dragons", 5)
+    @_register_pattern(
+        "LITTLE_THREE_DRAGONS",
+        display_name="Little Three Dragons",
+        han=5,
+        fu=0,
+    )
     def _little_three_dragons(self) -> int:
         total = 0
         for tile in dragons:
@@ -222,11 +244,21 @@ class PatternCalculator:
             total += tile_count
         return int(total == 8)
 
-    @_register_pattern("BIG_THREE_DRAGONS", "Big Three Dragons", 8)
+    @_register_pattern(
+        "BIG_THREE_DRAGONS",
+        display_name="Big Three Dragons",
+        han=8,
+        fu=0,
+    )
     def _big_three_dragons(self) -> int:
         return dragons <= self._triplet_tiles
 
-    @_register_pattern("FOUR_LITTLE_WINDS", "Four Little Winds", 12)
+    @_register_pattern(
+        "FOUR_LITTLE_WINDS",
+        display_name="Four Little Winds",
+        han=12,
+        fu=0,
+    )
     def _four_little_winds(self) -> int:
         total = 0
         for tile in winds:
@@ -236,11 +268,21 @@ class PatternCalculator:
             total += tile_count
         return int(total == 11)
 
-    @_register_pattern("FOUR_BIG_WINDS", "Four Big Winds", 16)
+    @_register_pattern(
+        "FOUR_BIG_WINDS",
+        display_name="Four Big Winds",
+        han=16,
+        fu=0,
+    )
     def _four_big_winds(self) -> int:
         return int(winds <= self._triplet_tiles)
 
-    @_register_pattern("FOUR_CONCEALED_TRIPLETS", "Four Concealed Triplets", 12)
+    @_register_pattern(
+        "FOUR_CONCEALED_TRIPLETS",
+        display_name="Four Concealed Triplets",
+        han=12,
+        fu=0,
+    )
     def _four_concealed_triplets(self) -> int:
         return int(
             self._concealed_triplets == 4 and self._wait_pattern == WaitPattern.SHANPON
@@ -248,37 +290,66 @@ class PatternCalculator:
 
     @_register_pattern(
         "FOUR_CONCEALED_TRIPLETS_1_SIDED_WAIT",
-        "Four Concealed Triplets 1-sided Wait",
-        0,
+        display_name="Four Concealed Triplets 1-sided Wait",
+        han=12,
+        fu=0,
     )
     def _four_concealed_triplets_1_sided_wait(self) -> int:
         return int(
             self._concealed_triplets == 4 and self._wait_pattern == WaitPattern.TANKI
         )
 
-    @_register_pattern("ALL_HONOURS", "All Honours", 10)
+    @_register_pattern(
+        "ALL_HONOURS",
+        display_name="All Honours",
+        han=10,
+        fu=0,
+    )
     def _all_honours(self) -> int:
         return int(self._used_suits == {self._honour_suit})
 
-    @_register_pattern("ALL_GREENS", "All Greens", 16)
+    @_register_pattern(
+        "ALL_GREENS",
+        display_name="All Greens",
+        han=16,
+        fu=0,
+    )
     def _all_greens(self) -> int:
         return int(all(tile in green_tiles for tile in self._hand_tiles))
 
-    @_register_pattern("ALL_TERMINALS", "All Terminals", 13)
+    @_register_pattern(
+        "ALL_TERMINALS",
+        display_name="All Terminals",
+        han=13,
+        fu=0,
+    )
     def _all_terminals(self) -> int:
         return int(all(tile in terminals for tile in self._hand_tiles))
 
-    @_register_pattern("THIRTEEN_ORPHANS", "Thirteen Orphans", 13)
+    @_register_pattern(
+        "THIRTEEN_ORPHANS",
+        display_name="Thirteen Orphans",
+        han=13,
+        fu=0,
+    )
     def _thirteen_orphans(self) -> int:
         return int(self._wait_pattern == WaitPattern.KOKUSHI)
 
     @_register_pattern(
-        "THIRTEEN_ORPHANS_13_SIDED_WAIT", "Thirteen Orphans 13-sided Wait", 13
+        "THIRTEEN_ORPHANS_13_SIDED_WAIT",
+        display_name="Thirteen Orphans 13-sided Wait",
+        han=13,
+        fu=0,
     )
     def _thirteen_orphans_13_sided_wait(self) -> int:
         return int(self._wait_pattern == WaitPattern.KOKUSHI_13)
 
-    @_register_pattern("FOUR_QUADS", "Four Quads", 18)
+    @_register_pattern(
+        "FOUR_QUADS",
+        display_name="Four Quads",
+        han=18,
+        fu=0,
+    )
     def _four_quads(self) -> int:
         return int(self._quads == 4)
 
@@ -309,7 +380,12 @@ class PatternCalculator:
             return None
         return next(tile_counter.elements())
 
-    @_register_pattern("NINE_GATES", "Nine Gates", 11)
+    @_register_pattern(
+        "NINE_GATES",
+        display_name="Nine Gates",
+        han=11,
+        fu=0,
+    )
     def _nine_gates(self) -> int:
         nine_gates_last_tile = self._get_nine_gates_last_tile()
         return int(
@@ -317,22 +393,42 @@ class PatternCalculator:
             and nine_gates_last_tile != self._winning_tile
         )
 
-    @_register_pattern("TRUE_NINE_GATES", "True Nine Gates", 19)
+    @_register_pattern(
+        "TRUE_NINE_GATES",
+        display_name="True Nine Gates",
+        han=19,
+        fu=0,
+    )
     def _true_nine_gates(self) -> int:
         nine_gates_last_tile = self._get_nine_gates_last_tile()
         return int(nine_gates_last_tile == self._winning_tile)
 
-    @_register_pattern("ALL_RUNS", "All Runs", 1)
+    @_register_pattern(
+        "ALL_RUNS",
+        display_name="All Runs",
+        han=1,
+        fu=0,
+    )
     def _all_runs(self) -> int:
         return int(sum(self._chi_start_tiles.values()) == 4)
 
-    @_register_pattern("ALL_SIMPLES", "All Simples", 1)
+    @_register_pattern(
+        "ALL_SIMPLES",
+        display_name="All Simples",
+        han=1,
+        fu=0,
+    )
     def _all_simples(self) -> int:
         return int(
             all((is_number(tile) and 2 <= tile % 10 <= 8) for tile in self._hand_tiles)
         )
 
-    @_register_pattern("PURE_STRAIGHT", "Pure Straight", 3)
+    @_register_pattern(
+        "PURE_STRAIGHT",
+        display_name="Pure Straight",
+        han=3,
+        fu=0,
+    )
     def _pure_straight(self) -> int:
         return int(
             any(
@@ -341,19 +437,39 @@ class PatternCalculator:
             )
         )
 
-    @_register_pattern("ALL_TRIPLETS", "All Triplets", 3)
+    @_register_pattern(
+        "ALL_TRIPLETS",
+        display_name="All Triplets",
+        han=3,
+        fu=0,
+    )
     def _all_triplets(self) -> int:
         return int(len(self._triplet_tiles) == 4)
 
-    @_register_pattern("HALF_FLUSH", "Half Flush", 3)
+    @_register_pattern(
+        "HALF_FLUSH",
+        display_name="Half Flush",
+        han=3,
+        fu=0,
+    )
     def _half_flush(self) -> int:
         return int(len(self._used_suits) == 2 and self._honour_suit in self._used_suits)
 
-    @_register_pattern("FULL_FLUSH", "Full Flush", 7)
+    @_register_pattern(
+        "FULL_FLUSH",
+        display_name="Full Flush",
+        han=7,
+        fu=0,
+    )
     def _full_flush(self) -> int:
         return int(any(self._used_suits == {suit} for suit in self._number_suits))
 
-    @_register_pattern("SEVEN_PAIRS", "Seven Pairs", 3)
+    @_register_pattern(
+        "SEVEN_PAIRS",
+        display_name="Seven Pairs",
+        han=3,
+        fu=0,
+    )
     def _seven_pairs(self) -> int:
         return int(self._pair_count == 7)
 
@@ -375,31 +491,66 @@ class PatternCalculator:
             else:
                 return 0
 
-    @_register_pattern("HALF_OUTSIDE_HAND", "Half Outside Hand", 2)
+    @_register_pattern(
+        "HALF_OUTSIDE_HAND",
+        display_name="Half Outside Hand",
+        han=2,
+        fu=0,
+    )
     def _half_outside_hand(self) -> int:
         return int(self._call_outsidenesses == {1, 2})
 
-    @_register_pattern("FULLY_OUTSIDE_HAND", "Fully Outside Hand", 4)
+    @_register_pattern(
+        "FULLY_OUTSIDE_HAND",
+        display_name="Fully Outside Hand",
+        han=4,
+        fu=0,
+    )
     def _fully_outside_hand(self) -> int:
         return int(self._call_outsidenesses == {2})
 
-    @_register_pattern("PURE_DOUBLE_SEQUENCE", "Pure Double Sequence", 1)
+    @_register_pattern(
+        "PURE_DOUBLE_SEQUENCE",
+        display_name="Pure Double Sequence",
+        han=1,
+        fu=0,
+    )
     def _pure_double_sequence(self) -> int:
         return int(sum(count == 2 for count in self._chi_start_tiles.values()) == 1)
 
-    @_register_pattern("TWICE_PURE_DOUBLE_SEQUENCE", "Twice Pure Double Sequence", 4)
+    @_register_pattern(
+        "TWICE_PURE_DOUBLE_SEQUENCE",
+        display_name="Twice Pure Double Sequence",
+        han=4,
+        fu=0,
+    )
     def _twice_pure_double_sequence(self) -> int:
         return int(sum(count == 2 for count in self._chi_start_tiles.values()) == 2)
 
-    @_register_pattern("PURE_TRIPLE_SEQUENCE", "Pure Triple Sequence", 6)
+    @_register_pattern(
+        "PURE_TRIPLE_SEQUENCE",
+        display_name="Pure Triple Sequence",
+        han=6,
+        fu=0,
+    )
     def _pure_triple_sequence(self) -> int:
         return int(sum(count == 3 for count in self._chi_start_tiles.values()) == 1)
 
-    @_register_pattern("PURE_QUADRUPLE_SEQUENCE", "Pure Quadruple Sequence", 12)
+    @_register_pattern(
+        "PURE_QUADRUPLE_SEQUENCE",
+        display_name="Pure Quadruple Sequence",
+        han=12,
+        fu=0,
+    )
     def _pure_quadruple_sequence(self) -> int:
         return int(sum(count == 4 for count in self._chi_start_tiles.values()) == 1)
 
-    @_register_pattern("MIXED_TRIPLE_SEQUENCE", "Mixed Triple Sequence", 2)
+    @_register_pattern(
+        "MIXED_TRIPLE_SEQUENCE",
+        display_name="Mixed Triple Sequence",
+        han=2,
+        fu=0,
+    )
     def _mixed_triple_sequence(self) -> int:
         return int(
             any(
@@ -409,15 +560,30 @@ class PatternCalculator:
             )
         )
 
-    @_register_pattern("THREE_CONCEALED_TRIPLETS", "Three Concealed Triplets", 3)
+    @_register_pattern(
+        "THREE_CONCEALED_TRIPLETS",
+        display_name="Three Concealed Triplets",
+        han=3,
+        fu=0,
+    )
     def _three_concealed_triplets(self) -> int:
         return int(self._concealed_triplets == 3)
 
-    @_register_pattern("THREE_QUADS", "Three Quads", 4)
+    @_register_pattern(
+        "THREE_QUADS",
+        display_name="Three Quads",
+        han=4,
+        fu=0,
+    )
     def _three_quads(self) -> int:
         return int(self._quads == 3)
 
-    @_register_pattern("TRIPLE_TRIPLETS", "Triple Triplets", 4)
+    @_register_pattern(
+        "TRIPLE_TRIPLETS",
+        display_name="Triple Triplets",
+        han=4,
+        fu=0,
+    )
     def _triple_triplets(self) -> int:
         return int(
             any(
@@ -427,7 +593,12 @@ class PatternCalculator:
             )
         )
 
-    @_register_pattern("ALL_TERMINALS_AND_HONOURS", "All Terminals and Honours", 3)
+    @_register_pattern(
+        "ALL_TERMINALS_AND_HONOURS",
+        display_name="All Terminals and Honours",
+        han=3,
+        fu=0,
+    )
     def _all_terminals_and_honours(self) -> int:
         return int(
             len(self._chi_start_tiles) == 0
@@ -443,31 +614,66 @@ class PatternCalculator:
             )
         )
 
-    @_register_pattern("SEAT_WIND", "Seat Wind", 1)
+    @_register_pattern(
+        "SEAT_WIND",
+        display_name="Seat Wind",
+        han=1,
+        fu=0,
+    )
     def _player_wind(self) -> int:
         return self._yakuhai(self._seat + 31)
 
-    @_register_pattern("PREVALENT_WIND", "Prevalent Wind", 1)
+    @_register_pattern(
+        "PREVALENT_WIND",
+        display_name="Prevalent Wind",
+        han=1,
+        fu=0,
+    )
     def _prevalent_wind(self) -> int:
         return self._yakuhai(self._win.wind_round + 31)
 
-    @_register_pattern("NORTH_WIND", "North Wind", 1)
+    @_register_pattern(
+        "NORTH_WIND",
+        display_name="North Wind",
+        han=1,
+        fu=0,
+    )
     def _north_wind(self) -> int:
         return int(self._win.player_count == 3 and self._yakuhai(34))
 
-    @_register_pattern("WHITE_DRAGON", "White Dragon", 1)
+    @_register_pattern(
+        "WHITE_DRAGON",
+        display_name="White Dragon",
+        han=1,
+        fu=0,
+    )
     def _white_dragon(self) -> int:
         return self._yakuhai(35)
 
-    @_register_pattern("GREEN_DRAGON", "Green Dragon", 1)
+    @_register_pattern(
+        "GREEN_DRAGON",
+        display_name="Green Dragon",
+        han=1,
+        fu=0,
+    )
     def _green_dragon(self) -> int:
         return self._yakuhai(36)
 
-    @_register_pattern("RED_DRAGON", "Red Dragon", 1)
+    @_register_pattern(
+        "RED_DRAGON",
+        display_name="Red Dragon",
+        han=1,
+        fu=0,
+    )
     def _red_dragon(self) -> int:
         return self._yakuhai(37)
 
-    @_register_pattern("EYES", "Eyes", 1)
+    @_register_pattern(
+        "EYES",
+        display_name="Eyes",
+        han=1,
+        fu=0,
+    )
     def _eyes(self) -> int:
         if self._pair_count != 1:
             return 0
@@ -476,49 +682,99 @@ class PatternCalculator:
             return 0
         return int((tile % 10) % 3 == 2)
 
-    @_register_pattern("NO_CALLS", "No Calls", 1)
+    @_register_pattern(
+        "NO_CALLS",
+        display_name="No Calls",
+        han=1,
+        fu=0,
+    )
     def _no_calls(self) -> int:
         return int(
             self._pair_count == 1
             and all(call.call_type == CallType.CLOSED_KAN for call in self._win.calls)
         )
 
-    @_register_pattern("NO_CALLS_TSUMO", "No Calls Tsumo", 0)
+    @_register_pattern(
+        "NO_CALLS_TSUMO",
+        display_name="No Calls Tsumo",
+        han=0,
+        fu=0,
+    )
     def _no_calls_tsumo(self) -> int:
         return int(
             self._win.lose_player is None
             and all(call.call_type == CallType.CLOSED_KAN for call in self._win.calls)
         )
 
-    @_register_pattern("ROBBING_A_KAN", "Robbing a Kan", 1)
+    @_register_pattern(
+        "ROBBING_A_KAN",
+        display_name="Robbing a Kan",
+        han=1,
+        fu=0,
+    )
     def _robbing_a_kan(self) -> int:
         return int(self._win.is_chankan)
 
-    @_register_pattern("UNDER_THE_SEA", "Under the Sea", 1)
+    @_register_pattern(
+        "UNDER_THE_SEA",
+        display_name="Under the Sea",
+        han=1,
+        fu=0,
+    )
     def _under_the_sea(self) -> int:
         return int(self._win.is_haitei)
 
-    @_register_pattern("UNDER_THE_RIVER", "Under the River", 1)
+    @_register_pattern(
+        "UNDER_THE_RIVER",
+        display_name="Under the River",
+        han=1,
+        fu=0,
+    )
     def _under_the_river(self) -> int:
         return int(self._win.is_houtei)
 
-    @_register_pattern("AFTER_A_FLOWER", "After a Flower", 1)
+    @_register_pattern(
+        "AFTER_A_FLOWER",
+        display_name="After a Flower",
+        han=1,
+        fu=0,
+    )
     def _after_a_flower(self) -> int:
         return self._win.after_flower_count
 
-    @_register_pattern("AFTER_A_KAN", "After a Kan", 2)
+    @_register_pattern(
+        "AFTER_A_KAN",
+        display_name="After a Kan",
+        han=2,
+        fu=0,
+    )
     def _after_a_kan(self) -> int:
         return self._win.after_kan_count
 
-    @_register_pattern("NO_FLOWERS", "No Flowers", 1)
+    @_register_pattern(
+        "NO_FLOWERS",
+        display_name="No Flowers",
+        han=1,
+        fu=0,
+    )
     def _no_flowers(self) -> int:
         return int(len(self._flowers) == 0)
 
-    @_register_pattern("SEAT_FLOWER", "Seat Flower", 1)
+    @_register_pattern(
+        "SEAT_FLOWER",
+        display_name="Seat Flower",
+        han=1,
+        fu=0,
+    )
     def _player_flower(self) -> int:
         return sum((tile - 41) % 4 == self._seat for tile in self._flowers)
 
-    @_register_pattern("SET_OF_FLOWERS", "Set of Flowers", 2)
+    @_register_pattern(
+        "SET_OF_FLOWERS",
+        display_name="Set of Flowers",
+        han=2,
+        fu=0,
+    )
     def _set_of_flowers(self) -> int:
         if self._win.player_count == 3:
             return int(
@@ -533,78 +789,168 @@ class PatternCalculator:
                 == 1
             )
 
-    @_register_pattern("FIVE_FLOWERS", "Five Flowers", 2)
+    @_register_pattern(
+        "FIVE_FLOWERS",
+        display_name="Five Flowers",
+        han=2,
+        fu=0,
+    )
     def _five_flowers(self) -> int:
         return int(self._win.player_count == 3 and len(self._flowers) == 5)
 
-    @_register_pattern("SEVEN_FLOWERS", "Seven Flowers", 2)
+    @_register_pattern(
+        "SEVEN_FLOWERS",
+        display_name="Seven Flowers",
+        han=2,
+        fu=0,
+    )
     def _seven_flowers(self) -> int:
         return int(len(self._flowers) == 7)
 
-    @_register_pattern("TWO_SETS_OF_FLOWERS", "Two Sets of Flowers", 8)
+    @_register_pattern(
+        "TWO_SETS_OF_FLOWERS",
+        display_name="Two Sets of Flowers",
+        han=8,
+        fu=0,
+    )
     def _two_sets_of_flowers(self) -> int:
         if self._win.player_count == 3:
             return int(len(self._flowers) == 6)
         else:
             return int(len(self._flowers) == 8)
 
-    @_register_pattern("DRAW", "Draw", 1)
+    @_register_pattern(
+        "DRAW",
+        display_name="Draw",
+        han=1,
+        fu=0,
+    )
     def _draw(self) -> int:
         return self._win.draw_count
 
-    @_register_pattern("OPEN_WAIT", "Open Wait", 0)
+    @_register_pattern(
+        "OPEN_WAIT",
+        display_name="Open Wait",
+        han=0,
+        fu=0,
+    )
     def _open_wait(self) -> int:
         return int(self._wait_pattern == WaitPattern.RYANMEN)
 
-    @_register_pattern("CLOSED_WAIT", "Closed Wait", 0)
+    @_register_pattern(
+        "CLOSED_WAIT",
+        display_name="Closed Wait",
+        han=0,
+        fu=0,
+    )
     def _closed_wait(self) -> int:
         return int(self._wait_pattern == WaitPattern.KANCHAN)
 
-    @_register_pattern("EDGE_WAIT", "Edge Wait", 0)
+    @_register_pattern(
+        "EDGE_WAIT",
+        display_name="Edge Wait",
+        han=0,
+        fu=0,
+    )
     def _edge_wait(self) -> int:
         return int(self._wait_pattern == WaitPattern.PENCHAN)
 
-    @_register_pattern("DUAL_PON_WAIT", "Dual Pon Wait", 0)
+    @_register_pattern(
+        "DUAL_PON_WAIT",
+        display_name="Dual Pon Wait",
+        han=0,
+        fu=0,
+    )
     def _dual_pon_wait(self) -> int:
         return int(self._wait_pattern == WaitPattern.SHANPON)
 
-    @_register_pattern("PAIR_WAIT", "Pair Wait", 0)
+    @_register_pattern(
+        "PAIR_WAIT",
+        display_name="Pair Wait",
+        han=0,
+        fu=0,
+    )
     def _pair_wait(self) -> int:
         return int(self._wait_pattern == WaitPattern.TANKI and self._pair_count == 1)
 
-    @_register_pattern("SIMPLE_OPEN_TRIPLET", "Simple Open Triplet", 0)
+    @_register_pattern(
+        "SIMPLE_OPEN_TRIPLET",
+        display_name="Simple Open Triplet",
+        han=0,
+        fu=0,
+    )
     def _simple_open_triplet(self) -> int:
         return self._simple_open_triplet_count
 
-    @_register_pattern("ORPHAN_OPEN_TRIPLET", "Orphan Open Triplet", 0)
+    @_register_pattern(
+        "ORPHAN_OPEN_TRIPLET",
+        display_name="Orphan Open Triplet",
+        han=0,
+        fu=0,
+    )
     def _orphan_open_triplet(self) -> int:
         return self._orphan_open_triplet_count
 
-    @_register_pattern("SIMPLE_CLOSED_TRIPLET", "Simple Closed Triplet", 0)
+    @_register_pattern(
+        "SIMPLE_CLOSED_TRIPLET",
+        display_name="Simple Closed Triplet",
+        han=0,
+        fu=0,
+    )
     def _simple_closed_triplet(self) -> int:
         return self._simple_closed_triplet_count
 
-    @_register_pattern("ORPHAN_CLOSED_TRIPLET", "Orphan Closed Triplet", 0)
+    @_register_pattern(
+        "ORPHAN_CLOSED_TRIPLET",
+        display_name="Orphan Closed Triplet",
+        han=0,
+        fu=0,
+    )
     def _orphan_closed_triplet(self) -> int:
         return self._orphan_closed_triplet_count
 
-    @_register_pattern("SIMPLE_OPEN_QUAD", "Simple Open Quad", 0)
+    @_register_pattern(
+        "SIMPLE_OPEN_QUAD",
+        display_name="Simple Open Quad",
+        han=0,
+        fu=0,
+    )
     def _simple_open_quad(self) -> int:
         return self._simple_open_quad_count
 
-    @_register_pattern("ORPHAN_OPEN_QUAD", "Orphan Open Quad", 0)
+    @_register_pattern(
+        "ORPHAN_OPEN_QUAD",
+        display_name="Orphan Open Quad",
+        han=0,
+        fu=0,
+    )
     def _orphan_open_quad(self) -> int:
         return self._orphan_open_quad_count
 
-    @_register_pattern("SIMPLE_CLOSED_QUAD", "Simple Closed Quad", 0)
+    @_register_pattern(
+        "SIMPLE_CLOSED_QUAD",
+        display_name="Simple Closed Quad",
+        han=0,
+        fu=0,
+    )
     def _simple_closed_quad(self) -> int:
         return self._simple_closed_quad_count
 
-    @_register_pattern("ORPHAN_CLOSED_QUAD", "Orphan Closed Quad", 0)
+    @_register_pattern(
+        "ORPHAN_CLOSED_QUAD",
+        display_name="Orphan Closed Quad",
+        han=0,
+        fu=0,
+    )
     def _orphan_closed_quad(self) -> int:
         return self._orphan_closed_quad_count
 
-    @_register_pattern("YAKUHAI_PAIR", "Yakuhai Pair", 0)
+    @_register_pattern(
+        "YAKUHAI_PAIR",
+        display_name="Yakuhai Pair",
+        han=0,
+        fu=0,
+    )
     def _yakuhai_pair(self) -> int:
         if self._pair_count != 1:
             return 0
@@ -617,7 +963,12 @@ class PatternCalculator:
         ]
         return sum(self._pair_tile == tile for tile in yakuhai)
 
-    @_register_pattern("PINFU", "Pinfu", 0)
+    @_register_pattern(
+        "PINFU",
+        display_name="Pinfu",
+        han=0,
+        fu=0,
+    )
     def _pinfu(self) -> int:
         return int(
             len(self._win.calls) == 0
@@ -626,7 +977,12 @@ class PatternCalculator:
             and not self._yakuhai_pair()
         )
 
-    @_register_pattern("OPEN_PINFU", "Open Pinfu", 0)
+    @_register_pattern(
+        "OPEN_PINFU",
+        display_name="Open Pinfu",
+        han=0,
+        fu=0,
+    )
     def _open_pinfu(self) -> int:
         return int(
             len(self._win.calls) != 0
@@ -635,13 +991,23 @@ class PatternCalculator:
             and not self._yakuhai_pair()
         )
 
-    @_register_pattern("CLOSED_HAND_RON", "Closed Hand Ron", 0)
+    @_register_pattern(
+        "CLOSED_HAND_RON",
+        display_name="Closed Hand Ron",
+        han=0,
+        fu=0,
+    )
     def _ron(self) -> int:
         return int(
             self._win.lose_player is not None
             and all(call.call_type == CallType.CLOSED_KAN for call in self._win.calls)
         )
 
-    @_register_pattern("NON_PINFU_TSUMO", "Non Pinfu Tsumo", 0)
+    @_register_pattern(
+        "NON_PINFU_TSUMO",
+        display_name="Non Pinfu Tsumo",
+        han=0,
+        fu=0,
+    )
     def _non_pinfu_tsumo(self) -> int:
         return int(self._win.lose_player is None and not self._pinfu())

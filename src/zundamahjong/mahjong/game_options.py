@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from .pattern import default_pattern_han
+from .pattern import PatternData
 
 
 class GameOptions(BaseModel):
@@ -20,7 +20,7 @@ class GameOptions(BaseModel):
     score_nondealer_tsumo_nondealer_base_value: float = 0.5
     score_nondealer_tsumo_dealer_base_value: float = 1.0
 
-    pattern_values: dict[str, int] = default_pattern_han
+    pattern_data: dict[str, PatternData] = {}
 
     @property
     def game_length(self) -> tuple[int, int]:
