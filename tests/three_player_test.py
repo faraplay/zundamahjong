@@ -42,7 +42,12 @@ class ThreePlayerPatternTest(unittest.TestCase):
         pattern_mults = PatternCalculator(win, formed_hand).get_pattern_mults()
         self.assertDictEqual(
             pattern_mults,
-            {"OPEN_WAIT": 1, "NORTH_WIND": 1},
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "NORTH_WIND": 1,
+            },
         )
 
     def test_one_set_of_flowers(self) -> None:
@@ -71,7 +76,14 @@ class ThreePlayerPatternTest(unittest.TestCase):
         )
         pattern_mults = PatternCalculator(win, formed_hand).get_pattern_mults()
         self.assertDictEqual(
-            pattern_mults, {"OPEN_WAIT": 1, "SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1}
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "SEAT_FLOWER": 1,
+                "SET_OF_FLOWERS": 1,
+            },
         )
 
     def test_five_flowers(self) -> None:
@@ -101,7 +113,14 @@ class ThreePlayerPatternTest(unittest.TestCase):
         pattern_mults = PatternCalculator(win, formed_hand).get_pattern_mults()
         self.assertDictEqual(
             pattern_mults,
-            {"OPEN_WAIT": 1, "SEAT_FLOWER": 1, "SET_OF_FLOWERS": 1, "FIVE_FLOWERS": 1},
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "SEAT_FLOWER": 1,
+                "SET_OF_FLOWERS": 1,
+                "FIVE_FLOWERS": 1,
+            },
         )
 
     def test_two_sets_of_flowers(self) -> None:
@@ -130,5 +149,12 @@ class ThreePlayerPatternTest(unittest.TestCase):
         )
         pattern_mults = PatternCalculator(win, formed_hand).get_pattern_mults()
         self.assertDictEqual(
-            pattern_mults, {"OPEN_WAIT": 1, "SEAT_FLOWER": 2, "TWO_SETS_OF_FLOWERS": 1}
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "SEAT_FLOWER": 2,
+                "TWO_SETS_OF_FLOWERS": 1,
+            },
         )

@@ -1001,6 +1001,7 @@ class PatternCalculator:
         return int(
             self._win.lose_player is not None
             and all(call.call_type == CallType.CLOSED_KAN for call in self._win.calls)
+            and not self._pair_count == 7
         )
 
     @_register_pattern(
