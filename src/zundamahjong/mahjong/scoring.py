@@ -1,4 +1,5 @@
 from typing import final
+from math import ceil
 
 from pydantic import BaseModel
 
@@ -6,15 +7,24 @@ from .form_hand import formed_hand_possibilities
 from .game_options import GameOptions
 from .meld import Meld
 from .win import Win
-from .pattern import PatternCalculator, default_pattern_data
+from .pattern import PatternCalculator, PatternData, default_pattern_data
 
 
 class Scoring(BaseModel):
     win_player: int
     lose_player: int | None
-    pattern_hans: dict[str, int]
-    han_total: int
+    patterns: dict[str, PatternData]
+    han: int
+    fu: int
     player_scores: list[float]
+
+
+def round_up_int(value: int, step: int) -> int:
+    return step * ceil(value / step)
+
+
+def round_up_float(value: float, step: float) -> float:
+    return step * ceil(value / step)
 
 
 @final
@@ -24,27 +34,33 @@ class Scorer:
         self._options = options
         self._pattern_data = default_pattern_data | options.pattern_data
 
-    def _get_player_scores(self, han_total: int) -> list[float]:
+    def _get_player_scores(self, han: int, fu: int) -> list[float]:
         player_count = self._options.player_count
         win_player = self._win.win_player
         lose_player = self._win.lose_player
-        han_multiplier: int = 1 << min(han_total, 6)
+        han_multiplier: int = 1 << min(han, 6)
+        base_score = fu * 4 * han_multiplier
         if lose_player is None:
             if win_player == self._win.sub_round:
                 player_pay_in_amount = (
-                    self._options.score_dealer_tsumo_base_value * han_multiplier
+                    self._options.score_dealer_tsumo_base_value * base_score
                 )
+                if self._options.round_up_points:
+                    player_pay_in_amount = round_up_float(player_pay_in_amount, 100)
                 player_scores = [-player_pay_in_amount] * player_count
                 player_scores[win_player] = player_pay_in_amount * (player_count - 1)
             else:
                 player_pay_in_amount = (
                     self._options.score_nondealer_tsumo_nondealer_base_value
-                    * han_multiplier
+                    * base_score
                 )
+                if self._options.round_up_points:
+                    player_pay_in_amount = round_up_float(player_pay_in_amount, 100)
                 dealer_pay_in_amount = (
-                    self._options.score_nondealer_tsumo_dealer_base_value
-                    * han_multiplier
+                    self._options.score_nondealer_tsumo_dealer_base_value * base_score
                 )
+                if self._options.round_up_points:
+                    dealer_pay_in_amount = round_up_float(dealer_pay_in_amount, 100)
                 player_scores = [-player_pay_in_amount] * player_count
                 player_scores[self._win.sub_round] = -dealer_pay_in_amount
                 player_scores[win_player] = (
@@ -53,12 +69,14 @@ class Scorer:
         else:
             if win_player == self._win.sub_round:
                 player_pay_in_amount = (
-                    self._options.score_dealer_ron_base_value * han_multiplier
+                    self._options.score_dealer_ron_base_value * base_score
                 )
             else:
                 player_pay_in_amount = (
-                    self._options.score_nondealer_ron_base_value * han_multiplier
+                    self._options.score_nondealer_ron_base_value * base_score
                 )
+            if self._options.round_up_points:
+                player_pay_in_amount = round_up_float(player_pay_in_amount, 100)
             player_scores = [0.0] * player_count
             player_scores[win_player] = player_pay_in_amount
             player_scores[lose_player] = -player_pay_in_amount
@@ -66,21 +84,46 @@ class Scorer:
 
     def _get_formed_hand_scoring(self, formed_hand: list[Meld]) -> Scoring:
         pattern_mults = PatternCalculator(self._win, formed_hand).get_pattern_mults()
-        pattern_hans = dict(
+        patterns = [
             (
-                default_pattern_data[pattern].display_name,
-                self._pattern_data[pattern].han * pattern_mults[pattern],
+                pattern,
+                PatternData(
+                    display_name=pattern_data.display_name,
+                    han=pattern_data.han * pattern_mults[pattern],
+                    fu=pattern_data.fu * pattern_mults[pattern],
+                ),
             )
-            for pattern in pattern_mults.keys()
-            if self._pattern_data[pattern].han != 0
-        )
-        han_total = sum(pattern_hans.values())
-        player_scores = self._get_player_scores(han_total)
+            for pattern, pattern_data in self._pattern_data.items()
+            if pattern in pattern_mults
+        ]
+        han = sum(pattern_data.han for (_, pattern_data) in patterns)
+        if self._options.use_fu:
+            fu = self._options.base_fu + sum(
+                pattern_data.fu for (_, pattern_data) in patterns
+            )
+        else:
+            fu = self._options.base_fu
+        if self._options.round_up_fu:
+            fu = round_up_int(fu, 10)
+        player_scores = self._get_player_scores(han, fu)
+        if self._options.use_fu:
+            patterns_dict = dict(
+                (pattern, pattern_data)
+                for (pattern, pattern_data) in patterns
+                if pattern_data.han != 0 or pattern_data.fu != 0
+            )
+        else:
+            patterns_dict = dict(
+                (pattern, pattern_data)
+                for (pattern, pattern_data) in patterns
+                if pattern_data.han != 0
+            )
         return Scoring(
             win_player=self._win.win_player,
             lose_player=self._win.lose_player,
-            pattern_hans=pattern_hans,
-            han_total=han_total,
+            patterns=patterns_dict,
+            han=han,
+            fu=fu,
             player_scores=player_scores,
         )
 
@@ -90,8 +133,12 @@ class Scorer:
             for formed_hand in formed_hand_possibilities(self._win.hand)
         ]
 
-        def key(scoring: Scoring) -> tuple[int, float]:
-            return (scoring.han_total, scoring.player_scores[self._win.win_player])
+        def key(scoring: Scoring) -> tuple[float, int, int]:
+            return (
+                scoring.player_scores[self._win.win_player],
+                scoring.han,
+                scoring.fu,
+            )
 
         return max(scorings, key=key)
 

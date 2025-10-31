@@ -1,5 +1,7 @@
 import unittest
 
+from zundamahjong.mahjong.call import CallType, OpenCall
+from zundamahjong.mahjong.pattern import PatternData
 from zundamahjong.mahjong.game_options import GameOptions
 from zundamahjong.mahjong.scoring import Scorer
 from zundamahjong.mahjong.win import Win
@@ -23,7 +25,7 @@ class ScoringTest(unittest.TestCase):
             sub_round=0,
         )
         player_scores = self.get_player_scores(win)
-        self.assertSequenceEqual(player_scores, [12.0, -12.0, 0.0, 0.0])
+        self.assertSequenceEqual(player_scores, [1200.0, -1200.0, 0.0, 0.0])
 
     def test_dealer_tsumo(self) -> None:
         win = Win(
@@ -37,7 +39,7 @@ class ScoringTest(unittest.TestCase):
             sub_round=0,
         )
         player_scores = self.get_player_scores(win)
-        self.assertSequenceEqual(player_scores, [24.0, -8.0, -8.0, -8.0])
+        self.assertSequenceEqual(player_scores, [2400.0, -800.0, -800.0, -800.0])
 
     def test_nondealer_ron(self) -> None:
         win = Win(
@@ -51,7 +53,7 @@ class ScoringTest(unittest.TestCase):
             sub_round=0,
         )
         player_scores = self.get_player_scores(win)
-        self.assertSequenceEqual(player_scores, [0.0, -8.0, 8.0, 0.0])
+        self.assertSequenceEqual(player_scores, [0.0, -800.0, 800.0, 0.0])
 
     def test_nondealer_tsumo(self) -> None:
         win = Win(
@@ -65,7 +67,7 @@ class ScoringTest(unittest.TestCase):
             sub_round=0,
         )
         player_scores = self.get_player_scores(win)
-        self.assertSequenceEqual(player_scores, [-8.0, -4.0, 16.0, -4.0])
+        self.assertSequenceEqual(player_scores, [-800.0, -400.0, 1600.0, -400.0])
 
     def test_sub_round_dealer_ron(self) -> None:
         win = Win(
@@ -93,7 +95,7 @@ class ScoringTest(unittest.TestCase):
             sub_round=1,
         )
         player_scores = self.get_player_scores(win)
-        self.assertSequenceEqual(player_scores, [-8.0, 24.0, -8.0, -8.0])
+        self.assertSequenceEqual(player_scores, [-800.0, 2400.0, -800.0, -800.0])
 
     def test_sub_round_nondealer_ron(self) -> None:
         win = Win(
@@ -178,3 +180,101 @@ class ScoringTest(unittest.TestCase):
         )
         player_scores = self.get_player_scores(win)
         self.assertSequenceEqual(player_scores, [-8.0, -4.0, 12.0])
+        self.assertSequenceEqual(player_scores, [800.0, -800.0, 0.0, 0.0])
+
+    def test_use_fu(self) -> None:
+        win = Win(
+            win_player=0,
+            lose_player=1,
+            hand=[20, 30, 150, 160, 170, 190, 191, 192, 330, 331, 10],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[420],
+            player_count=4,
+            wind_round=0,
+            sub_round=0,
+        )
+        scoring = Scorer.score(win, GameOptions(use_fu=True, base_fu=20))
+        self.assertDictEqual(
+            scoring.patterns,
+            {
+                "ORPHAN_CLOSED_TRIPLET": PatternData(
+                    display_name="Orphan Closed Triplet", han=0, fu=8
+                ),
+            },
+        )
+        self.assertEqual(scoring.han, 0)
+        self.assertEqual(scoring.fu, 28)
+        self.assertSequenceEqual(scoring.player_scores, [168.0, -168.0, 0.0, 0.0])
+
+    def test_fu_rounding(self) -> None:
+        win = Win(
+            win_player=0,
+            lose_player=1,
+            hand=[20, 30, 150, 160, 170, 190, 191, 192, 330, 331, 10],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[420],
+            player_count=4,
+            wind_round=0,
+            sub_round=0,
+        )
+        scoring = Scorer.score(
+            win, GameOptions(use_fu=True, base_fu=20, round_up_fu=True)
+        )
+        self.assertDictEqual(
+            scoring.patterns,
+            {
+                "ORPHAN_CLOSED_TRIPLET": PatternData(
+                    display_name="Orphan Closed Triplet", han=0, fu=8
+                ),
+            },
+        )
+        self.assertEqual(scoring.han, 0)
+        self.assertEqual(scoring.fu, 30)
+        self.assertSequenceEqual(scoring.player_scores, [180.0, -180.0, 0.0, 0.0])
+
+    def test_point_rounding(self) -> None:
+        win = Win(
+            win_player=0,
+            lose_player=1,
+            hand=[20, 30, 150, 160, 170, 190, 191, 192, 330, 331, 10],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[420],
+            player_count=4,
+            wind_round=0,
+            sub_round=0,
+        )
+        scoring = Scorer.score(
+            win, GameOptions(use_fu=True, base_fu=20, round_up_points=True)
+        )
+        self.assertDictEqual(
+            scoring.patterns,
+            {
+                "ORPHAN_CLOSED_TRIPLET": PatternData(
+                    display_name="Orphan Closed Triplet", han=0, fu=8
+                ),
+            },
+        )
+        self.assertEqual(scoring.han, 0)
+        self.assertEqual(scoring.fu, 28)
+        self.assertSequenceEqual(scoring.player_scores, [200.0, -200.0, 0.0, 0.0])

@@ -841,7 +841,7 @@ class PatternCalculator:
         "CLOSED_WAIT",
         display_name="Closed Wait",
         han=0,
-        fu=0,
+        fu=2,
     )
     def _closed_wait(self) -> int:
         return int(self._wait_pattern == WaitPattern.KANCHAN)
@@ -850,7 +850,7 @@ class PatternCalculator:
         "EDGE_WAIT",
         display_name="Edge Wait",
         han=0,
-        fu=0,
+        fu=2,
     )
     def _edge_wait(self) -> int:
         return int(self._wait_pattern == WaitPattern.PENCHAN)
@@ -868,7 +868,7 @@ class PatternCalculator:
         "PAIR_WAIT",
         display_name="Pair Wait",
         han=0,
-        fu=0,
+        fu=2,
     )
     def _pair_wait(self) -> int:
         return int(self._wait_pattern == WaitPattern.TANKI and self._pair_count == 1)
@@ -877,7 +877,7 @@ class PatternCalculator:
         "SIMPLE_OPEN_TRIPLET",
         display_name="Simple Open Triplet",
         han=0,
-        fu=0,
+        fu=2,
     )
     def _simple_open_triplet(self) -> int:
         return self._simple_open_triplet_count
@@ -886,7 +886,7 @@ class PatternCalculator:
         "ORPHAN_OPEN_TRIPLET",
         display_name="Orphan Open Triplet",
         han=0,
-        fu=0,
+        fu=4,
     )
     def _orphan_open_triplet(self) -> int:
         return self._orphan_open_triplet_count
@@ -895,7 +895,7 @@ class PatternCalculator:
         "SIMPLE_CLOSED_TRIPLET",
         display_name="Simple Closed Triplet",
         han=0,
-        fu=0,
+        fu=4,
     )
     def _simple_closed_triplet(self) -> int:
         return self._simple_closed_triplet_count
@@ -904,7 +904,7 @@ class PatternCalculator:
         "ORPHAN_CLOSED_TRIPLET",
         display_name="Orphan Closed Triplet",
         han=0,
-        fu=0,
+        fu=8,
     )
     def _orphan_closed_triplet(self) -> int:
         return self._orphan_closed_triplet_count
@@ -913,7 +913,7 @@ class PatternCalculator:
         "SIMPLE_OPEN_QUAD",
         display_name="Simple Open Quad",
         han=0,
-        fu=0,
+        fu=8,
     )
     def _simple_open_quad(self) -> int:
         return self._simple_open_quad_count
@@ -922,7 +922,7 @@ class PatternCalculator:
         "ORPHAN_OPEN_QUAD",
         display_name="Orphan Open Quad",
         han=0,
-        fu=0,
+        fu=16,
     )
     def _orphan_open_quad(self) -> int:
         return self._orphan_open_quad_count
@@ -931,7 +931,7 @@ class PatternCalculator:
         "SIMPLE_CLOSED_QUAD",
         display_name="Simple Closed Quad",
         han=0,
-        fu=0,
+        fu=16,
     )
     def _simple_closed_quad(self) -> int:
         return self._simple_closed_quad_count
@@ -940,7 +940,7 @@ class PatternCalculator:
         "ORPHAN_CLOSED_QUAD",
         display_name="Orphan Closed Quad",
         han=0,
-        fu=0,
+        fu=32,
     )
     def _orphan_closed_quad(self) -> int:
         return self._orphan_closed_quad_count
@@ -949,7 +949,7 @@ class PatternCalculator:
         "YAKUHAI_PAIR",
         display_name="Yakuhai Pair",
         han=0,
-        fu=0,
+        fu=2,
     )
     def _yakuhai_pair(self) -> int:
         if self._pair_count != 1:
@@ -981,7 +981,7 @@ class PatternCalculator:
         "OPEN_PINFU",
         display_name="Open Pinfu",
         han=0,
-        fu=0,
+        fu=2,
     )
     def _open_pinfu(self) -> int:
         return int(
@@ -995,7 +995,7 @@ class PatternCalculator:
         "NO_CALLS_RON",
         display_name="No Calls Ron",
         han=0,
-        fu=0,
+        fu=10,
     )
     def _ron(self) -> int:
         return int(
@@ -1008,7 +1008,7 @@ class PatternCalculator:
         "NON_PINFU_TSUMO",
         display_name="Non Pinfu Tsumo",
         han=0,
-        fu=0,
+        fu=2,
     )
     def _non_pinfu_tsumo(self) -> int:
         return int(self._win.lose_player is None and not self._pinfu())
