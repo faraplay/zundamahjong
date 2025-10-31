@@ -31,11 +31,9 @@ export function WinInfo({
           alt={winnerAvatar.name}
         />
         <div id="patterns">
-          {Object.entries(info.scoring_info.pattern_hans).map(
-            ([pattern, han]) => (
-              <PatternInfo key={pattern} pattern={pattern} han={han} />
-            ),
-          )}
+          {Object.entries(info.scoring_info.patterns).map(([pattern, data]) => (
+            <PatternInfo key={pattern} data={data} />
+          ))}
         </div>
       </>
     );

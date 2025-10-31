@@ -2,25 +2,24 @@
   width: 27cqw;
   height: 5cqw;
   position: relative;
-}
 
-.pattern_name,
-.pattern_han {
-  text-align: center;
-}
+  .display_name,
+  .han {
+    text-align: center;
+  }
 
-.pattern_name {
-  width: 22cqw;
-  height: 5cqw;
-  position: absolute;
-  left: 0;
-  font-size: 1.5cqw;
-}
+  .display_name {
+    width: 22cqw;
+    height: 5cqw;
+    position: absolute;
+    left: 0;
+    font-size: 1.5cqw;
+  }
 
-.pattern_han {
-  width: 5cqw;
-  height: 5cqw;
-  position: absolute;
-  right: 0;
-  font-size: 2cqw;
+  .values {
+    height: 5cqw;
+    position: absolute;
+    right: 0;
+    font-size: 2cqw;
+  }
 }

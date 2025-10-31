@@ -62,7 +62,6 @@ export function GameOptionsForm({
     emit("start_game");
   };
 
-  console.log("gameOptions is", gameOptions);
   return (
     <div class="game_controls">
       <form id={formId} onSubmit={onSubmit} hidden />
