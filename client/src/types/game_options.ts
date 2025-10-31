@@ -15,6 +15,11 @@ export type GameOptions = {
   score_nondealer_tsumo_nondealer_base_value: number;
   score_nondealer_tsumo_dealer_base_value: number;
 
+  use_fu: boolean;
+  base_fu: number;
+  round_up_fu: boolean;
+  round_up_points: boolean;
+
   pattern_data: PatternDataDict;
 };
 

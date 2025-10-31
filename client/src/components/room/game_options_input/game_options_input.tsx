@@ -110,7 +110,6 @@ export function GameOptionsPatternInput({
   formId: string;
   sendGameOptions: () => void;
 }) {
-  console.log(data);
   const onChange = (e: Event) => {
     e.preventDefault();
     sendGameOptions();

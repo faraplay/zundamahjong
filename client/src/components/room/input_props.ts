@@ -1,4 +1,4 @@
-import type { GameOptions, Pattern } from "../../types/game_options";
+import type { GameOptions } from "../../types/game_options";
 
 type GameOptionsOfValueType<T> = {
   [key in keyof GameOptions as GameOptions[key] extends T ? key : never]: T;
@@ -19,16 +19,6 @@ export type CheckboxInputProps = {
   labelText: string;
   type: "checkbox";
   disabled?: boolean;
-};
-
-export type PatternInputProps = {
-  name: Pattern;
-  labelText: string;
-  type: "number";
-  min?: number;
-  max?: number;
-  step?: number;
-  readonly?: boolean;
 };
 
 export type InputExpanderProps = {
@@ -116,6 +106,33 @@ export const inputPropsList: GameOptionsInputProps[] = [
         labelText: "Nondealer-dealer tsumo base score",
         type: "number",
         step: 0.5,
+      },
+    ],
+  },
+  {
+    type: "collection",
+    name: "Fu options",
+    children: [
+      {
+        name: "use_fu",
+        labelText: "Use fu",
+        type: "checkbox",
+      },
+      {
+        name: "base_fu",
+        labelText: "Base fu",
+        type: "number",
+        step: 1,
+      },
+      {
+        name: "round_up_fu",
+        labelText: "Round up fu",
+        type: "checkbox",
+      },
+      {
+        name: "round_up_points",
+        labelText: "Round up points",
+        type: "checkbox",
       },
     ],
   },
