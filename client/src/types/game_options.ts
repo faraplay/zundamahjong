@@ -15,7 +15,13 @@ export type GameOptions = {
   score_nondealer_tsumo_nondealer_base_value: number;
   score_nondealer_tsumo_dealer_base_value: number;
 
-  pattern_values: PatternValues;
+  pattern_data: PatternDataDict;
+};
+
+export type PatternData = {
+  display_name: string;
+  han: number;
+  fu: number;
 };
 
 export const patterns: Pattern[] = [
@@ -79,6 +85,19 @@ export const patterns: Pattern[] = [
   "EDGE_WAIT",
   "DUAL_PON_WAIT",
   "PAIR_WAIT",
+  "SIMPLE_OPEN_TRIPLET",
+  "ORPHAN_OPEN_TRIPLET",
+  "SIMPLE_CLOSED_TRIPLET",
+  "ORPHAN_CLOSED_TRIPLET",
+  "SIMPLE_OPEN_QUAD",
+  "ORPHAN_OPEN_QUAD",
+  "SIMPLE_CLOSED_QUAD",
+  "ORPHAN_CLOSED_QUAD",
+  "YAKUHAI_PAIR",
+  "PINFU",
+  "OPEN_PINFU",
+  "NO_CALLS_RON",
+  "NON_PINFU_TSUMO",
 ];
 
 export const patternDisplayNames = {
@@ -142,10 +161,23 @@ export const patternDisplayNames = {
   EDGE_WAIT: "Edge Wait",
   DUAL_PON_WAIT: "Dual Pon Wait",
   PAIR_WAIT: "Pair Wait",
+  SIMPLE_OPEN_TRIPLET: "Simple Open Triplet",
+  ORPHAN_OPEN_TRIPLET: "Orphan Open Triplet",
+  SIMPLE_CLOSED_TRIPLET: "Simple Closed Triplet",
+  ORPHAN_CLOSED_TRIPLET: "Orphan Closed Triplet",
+  SIMPLE_OPEN_QUAD: "Simple Open Quad",
+  ORPHAN_OPEN_QUAD: "Orphan Open Quad",
+  SIMPLE_CLOSED_QUAD: "Simple Closed Quad",
+  ORPHAN_CLOSED_QUAD: "Orphan Closed Quad",
+  YAKUHAI_PAIR: "Yakuhai Pair",
+  PINFU: "Pinfu",
+  OPEN_PINFU: "Open Pinfu",
+  NO_CALLS_RON: "No Calls Ron",
+  NON_PINFU_TSUMO: "Non Pinfu Tsumo",
 } as const;
 
 export type Pattern = keyof typeof patternDisplayNames;
 
-export type PatternValues = {
-  [pattern in Pattern]: number;
+export type PatternDataDict = {
+  [pattern in Pattern]: PatternData;
 };

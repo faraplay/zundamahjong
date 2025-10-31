@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from .pattern import PatternData
+from .pattern import PatternData, default_pattern_data
 
 
 class GameOptions(BaseModel):
@@ -25,7 +25,7 @@ class GameOptions(BaseModel):
     round_up_fu: bool = False
     round_up_points: bool = False
 
-    pattern_data: dict[str, PatternData] = {}
+    pattern_data: dict[str, PatternData] = default_pattern_data
 
     @property
     def game_length(self) -> tuple[int, int]:

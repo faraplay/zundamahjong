@@ -1,9 +1,5 @@
-import {
-  type PatternValues,
-  patterns,
-  patternDisplayNames,
-} from "../../../types/game_options";
-import { GameOptionsNumberInput } from "../game_options_input/game_options_input";
+import { type PatternDataDict, patterns } from "../../../types/game_options";
+import { GameOptionsPatternInput } from "../game_options_input/game_options_input";
 
 export function PatternForm({
   patternValues,
@@ -11,7 +7,7 @@ export function PatternForm({
   isEditable,
   sendGameOptions,
 }: {
-  patternValues: PatternValues;
+  patternValues: PatternDataDict;
   patternFormId: string;
   isEditable: boolean;
   sendGameOptions: () => void;
@@ -19,15 +15,11 @@ export function PatternForm({
   return (
     <>
       {patterns.map((pattern) => (
-        <GameOptionsNumberInput
+        <GameOptionsPatternInput
           key={pattern}
           isEditable={isEditable}
-          inputProps={{
-            name: pattern,
-            labelText: patternDisplayNames[pattern],
-            type: "number",
-          }}
-          value={patternValues[pattern]}
+          name={pattern}
+          data={patternValues[pattern]}
           formId={patternFormId}
           sendGameOptions={sendGameOptions}
         />

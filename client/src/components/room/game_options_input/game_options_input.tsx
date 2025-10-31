@@ -2,11 +2,14 @@ import { useId } from "preact/hooks";
 import type {
   NumberInputProps,
   CheckboxInputProps,
-  PatternInputProps,
   GameOptionsInputProps,
   InputExpanderProps,
 } from "../input_props";
-import type { GameOptions } from "../../../types/game_options";
+import type {
+  GameOptions,
+  Pattern,
+  PatternData,
+} from "../../../types/game_options";
 
 export function GameOptionsNumberInput({
   isEditable,
@@ -16,7 +19,7 @@ export function GameOptionsNumberInput({
   sendGameOptions,
 }: {
   isEditable: boolean;
-  inputProps: NumberInputProps | PatternInputProps;
+  inputProps: NumberInputProps;
   value: number;
   formId: string;
   sendGameOptions: () => void;
@@ -74,6 +77,61 @@ export function GameOptionsCheckboxInput({
     <>
       <label for={inputId}>{inputProps.labelText}</label>
       <input form={formId} id={inputId} {...inputProps} {...editableProps} />
+    </>
+  );
+}
+
+function getEditableProps<T>(
+  value: T,
+  isEditable: boolean,
+  onChange: (e: Event) => void,
+) {
+  return isEditable
+    ? {
+        defaultValue: value,
+        onChange,
+      }
+    : {
+        value,
+        readonly: true,
+      };
+}
+
+export function GameOptionsPatternInput({
+  isEditable,
+  name,
+  data,
+  formId,
+  sendGameOptions,
+}: {
+  isEditable: boolean;
+  name: Pattern;
+  data: PatternData;
+  formId: string;
+  sendGameOptions: () => void;
+}) {
+  console.log(data);
+  const onChange = (e: Event) => {
+    e.preventDefault();
+    sendGameOptions();
+  };
+  const hanEditableProps = getEditableProps(data.han, isEditable, onChange);
+  const fuEditableProps = getEditableProps(data.fu, isEditable, onChange);
+  return (
+    <>
+      <label>{data.display_name}</label>
+      <input
+        form={formId}
+        name={`${name}___han`}
+        type="number"
+        {...hanEditableProps}
+      />
+      <input
+        form={formId}
+        name={`${name}___fu`}
+        type="number"
+        {...fuEditableProps}
+      />
     </>
   );
 }
