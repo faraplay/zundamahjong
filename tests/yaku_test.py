@@ -1,8 +1,6 @@
 from typing import Any
 from unittest import TestCase
 
-from zundamahjong.mahjong.tile import TileId
-from zundamahjong.mahjong.meld import Meld, MeldType
 from zundamahjong.mahjong.call import (
     AddKanCall,
     Call,
@@ -11,8 +9,10 @@ from zundamahjong.mahjong.call import (
     OpenCall,
     OpenKanCall,
 )
-from zundamahjong.mahjong.win import Win
+from zundamahjong.mahjong.meld import Meld, MeldType
 from zundamahjong.mahjong.pattern import PatternCalculator
+from zundamahjong.mahjong.tile import TileId
+from zundamahjong.mahjong.win import Win
 
 
 def get_pattern_mults(

@@ -2,14 +2,13 @@ from __future__ import annotations
 
 from collections import Counter
 from collections.abc import Callable
-from typing import final
 from enum import IntEnum
-from typing import Optional
+from typing import final
+
+from pydantic import BaseModel
 
 from .call import CallType, get_call_tiles, get_meld_type
 from .meld import Meld, MeldType, TileValueMeld
-from pydantic import BaseModel
-
 from .tile import (
     TileValue,
     dragons,
@@ -353,7 +352,7 @@ class PatternCalculator:
     def _four_quads(self) -> int:
         return int(self._quads == 4)
 
-    def _get_nine_gates_last_tile(self) -> Optional[TileValue]:
+    def _get_nine_gates_last_tile(self) -> TileValue | None:
         if not self._no_calls():
             return None
         if not self._full_flush():

@@ -1,8 +1,8 @@
 import unittest
 
 from zundamahjong.mahjong.call import CallType, OpenCall
-from zundamahjong.mahjong.pattern import PatternData
 from zundamahjong.mahjong.game_options import GameOptions
+from zundamahjong.mahjong.pattern import PatternData
 from zundamahjong.mahjong.scoring import Scorer
 from zundamahjong.mahjong.win import Win
 

@@ -1,5 +1,6 @@
 from collections.abc import Sequence
 
+from .meld import Meld, MeldType, TileValueMeld
 from .tile import (
     TileId,
     TileValue,
@@ -8,7 +9,6 @@ from .tile import (
     orphans,
     remove_tile_value,
 )
-from .meld import MeldType, Meld, TileValueMeld
 
 
 def is_winning(tiles: list[TileId]) -> bool:

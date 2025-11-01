@@ -1,13 +1,13 @@
-from typing import final
 from math import ceil
+from typing import final
 
 from pydantic import BaseModel
 
 from .form_hand import formed_hand_possibilities
 from .game_options import GameOptions
 from .meld import Meld
-from .win import Win
 from .pattern import PatternCalculator, PatternData, default_pattern_data
+from .win import Win
 
 
 class Scoring(BaseModel):
