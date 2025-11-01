@@ -181,7 +181,7 @@ class ScoringTest(unittest.TestCase):
         player_scores = self.get_player_scores(win)
         self.assertSequenceEqual(player_scores, [-800.0, -400.0, 1200.0])
 
-    def test_use_fu(self) -> None:
+    def test_calculate_fu(self) -> None:
         win = Win(
             win_player=0,
             lose_player=1,
@@ -199,7 +199,7 @@ class ScoringTest(unittest.TestCase):
             wind_round=0,
             sub_round=0,
         )
-        scoring = Scorer.score(win, GameOptions(use_fu=True, base_fu=20))
+        scoring = Scorer.score(win, GameOptions(calculate_fu=True, base_fu=20))
         self.assertDictEqual(
             scoring.patterns,
             {
@@ -231,7 +231,7 @@ class ScoringTest(unittest.TestCase):
             sub_round=0,
         )
         scoring = Scorer.score(
-            win, GameOptions(use_fu=True, base_fu=20, round_up_fu=True)
+            win, GameOptions(calculate_fu=True, base_fu=20, round_up_fu=True)
         )
         self.assertDictEqual(
             scoring.patterns,
@@ -264,7 +264,7 @@ class ScoringTest(unittest.TestCase):
             sub_round=0,
         )
         scoring = Scorer.score(
-            win, GameOptions(use_fu=True, base_fu=20, round_up_points=True)
+            win, GameOptions(calculate_fu=True, base_fu=20, round_up_points=True)
         )
         self.assertDictEqual(
             scoring.patterns,

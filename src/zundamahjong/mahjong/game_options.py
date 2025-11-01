@@ -20,7 +20,7 @@ class GameOptions(BaseModel):
     score_nondealer_tsumo_nondealer_base_value: float = 0.5
     score_nondealer_tsumo_dealer_base_value: float = 1.0
 
-    use_fu: bool = False
+    calculate_fu: bool = False
     base_fu: int = 25
     round_up_fu: bool = False
     round_up_points: bool = False

@@ -114,8 +114,8 @@ export const inputPropsList: GameOptionsInputProps[] = [
     name: "Fu options",
     children: [
       {
-        name: "use_fu",
-        labelText: "Use fu",
+        name: "calculate_fu",
+        labelText: "Calculate fu",
         type: "checkbox",
       },
       {

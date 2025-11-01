@@ -97,7 +97,7 @@ class Scorer:
             if pattern in pattern_mults
         ]
         han = sum(pattern_data.han for (_, pattern_data) in patterns)
-        if self._options.use_fu:
+        if self._options.calculate_fu:
             fu = self._options.base_fu + sum(
                 pattern_data.fu for (_, pattern_data) in patterns
             )
@@ -106,7 +106,7 @@ class Scorer:
         if self._options.round_up_fu:
             fu = round_up_int(fu, 10)
         player_scores = self._get_player_scores(han, fu)
-        if self._options.use_fu:
+        if self._options.calculate_fu:
             patterns_dict = dict(
                 (pattern, pattern_data)
                 for (pattern, pattern_data) in patterns
