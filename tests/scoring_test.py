@@ -81,7 +81,7 @@ class ScoringTest(unittest.TestCase):
             sub_round=1,
         )
         player_scores = self.get_player_scores(win)
-        self.assertSequenceEqual(player_scores, [-12.0, 12.0, 0.0, 0.0])
+        self.assertSequenceEqual(player_scores, [-1200.0, 1200.0, 0.0, 0.0])
 
     def test_sub_round_dealer_tsumo(self) -> None:
         win = Win(
@@ -109,7 +109,7 @@ class ScoringTest(unittest.TestCase):
             sub_round=1,
         )
         player_scores = self.get_player_scores(win)
-        self.assertSequenceEqual(player_scores, [8.0, -8.0, 0.0, 0.0])
+        self.assertSequenceEqual(player_scores, [800.0, -800.0, 0.0, 0.0])
 
     def test_sub_round_nondealer_tsumo(self) -> None:
         win = Win(
@@ -123,7 +123,7 @@ class ScoringTest(unittest.TestCase):
             sub_round=1,
         )
         player_scores = self.get_player_scores(win)
-        self.assertSequenceEqual(player_scores, [16.0, -8.0, -4.0, -4.0])
+        self.assertSequenceEqual(player_scores, [1600.0, -800.0, -400.0, -400.0])
 
     def test_3player_dealer_ron(self) -> None:
         win = Win(
@@ -137,7 +137,7 @@ class ScoringTest(unittest.TestCase):
             sub_round=0,
         )
         player_scores = self.get_player_scores(win)
-        self.assertSequenceEqual(player_scores, [12.0, -12.0, 0.0])
+        self.assertSequenceEqual(player_scores, [1200.0, -1200.0, 0.0])
 
     def test_3player_dealer_tsumo(self) -> None:
         win = Win(
@@ -151,7 +151,7 @@ class ScoringTest(unittest.TestCase):
             sub_round=0,
         )
         player_scores = self.get_player_scores(win)
-        self.assertSequenceEqual(player_scores, [16.0, -8.0, -8.0])
+        self.assertSequenceEqual(player_scores, [1600.0, -800.0, -800.0])
 
     def test_3player_nondealer_ron(self) -> None:
         win = Win(
@@ -165,7 +165,7 @@ class ScoringTest(unittest.TestCase):
             sub_round=0,
         )
         player_scores = self.get_player_scores(win)
-        self.assertSequenceEqual(player_scores, [0.0, -8.0, 8.0])
+        self.assertSequenceEqual(player_scores, [0.0, -800.0, 800.0])
 
     def test_3player_nondealer_tsumo(self) -> None:
         win = Win(
@@ -179,8 +179,7 @@ class ScoringTest(unittest.TestCase):
             sub_round=0,
         )
         player_scores = self.get_player_scores(win)
-        self.assertSequenceEqual(player_scores, [-8.0, -4.0, 12.0])
-        self.assertSequenceEqual(player_scores, [800.0, -800.0, 0.0, 0.0])
+        self.assertSequenceEqual(player_scores, [-800.0, -400.0, 1200.0])
 
     def test_use_fu(self) -> None:
         win = Win(
