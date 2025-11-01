@@ -4,14 +4,64 @@ import {
   patternDisplayNames,
   patterns,
   type GameOptions,
+  type PatternDataDict,
 } from "../../../types/game_options";
 
 import { Emitter } from "../../emitter/emitter";
-import { inputPropsList } from "../input_props";
+import {
+  inputPropsList,
+  type CheckboxInputProps,
+  type GameOptionsInputProps,
+  type NumberInputProps,
+} from "../input_props";
 import { GameOptionsInputList } from "../game_options_input/game_options_input";
 import { PatternForm } from "../pattern_form/pattern_form";
 
 import "./game_options_form.css";
+import {
+  riichi_3player_preset,
+  riichi_4player_preset,
+} from "../../../types/game_options_presets";
+
+function flattenInputPropsList(propsList: GameOptionsInputProps[]) {
+  const newPropsList: (NumberInputProps | CheckboxInputProps)[] = [];
+  for (const props of propsList) {
+    if (props.type == "collection") {
+      newPropsList.push(...flattenInputPropsList(props.children));
+    } else {
+      newPropsList.push(props);
+    }
+  }
+  return newPropsList;
+}
+
+function getGameOptions(formId: string, patternFormId: string) {
+  const formData = new FormData(
+    document.getElementById(formId) as HTMLFormElement,
+  );
+  const patternFormData = new FormData(
+    document.getElementById(patternFormId) as HTMLFormElement,
+  );
+  const formObject = {} as GameOptions;
+  for (const inputProps of flattenInputPropsList(inputPropsList)) {
+    if (inputProps.type == "number") {
+      formObject[inputProps.name] = Number(formData.get(inputProps.name));
+    } else {
+      formObject[inputProps.name] = formData.has(inputProps.name);
+    }
+  }
+  formObject.pattern_data = Object.fromEntries(
+    patterns.map((pattern) => [
+      pattern,
+      {
+        display_name: patternDisplayNames[pattern],
+        han: Number(patternFormData.get(`${pattern}___han`)),
+        fu: Number(patternFormData.get(`${pattern}___fu`)),
+      },
+    ]),
+  ) as PatternDataDict;
+  return formObject;
+}
 
 export function GameOptionsForm({
   gameOptions,
@@ -27,43 +77,32 @@ export function GameOptionsForm({
   const patternFormId = useId();
 
   const sendGameOptions = () => {
-    const formData = new FormData(
-      document.getElementById(formId) as HTMLFormElement,
-    );
-    const patternFormData = new FormData(
-      document.getElementById(patternFormId) as HTMLFormElement,
-    );
-    for (const inputProps of inputPropsList) {
-      if (inputProps.type == "checkbox") {
-        formData.set(
-          inputProps.name,
-          formData.has(inputProps.name) ? "True" : "False",
-        );
-      }
-    }
-    const formObject = Object.fromEntries(formData) as {
-      [key in keyof GameOptions]: unknown;
-    };
-    formObject.pattern_data = Object.fromEntries(
-      patterns.map((pattern) => [
-        pattern,
-        {
-          display_name: patternDisplayNames[pattern],
-          han: Number(patternFormData.get(`${pattern}___han`)),
-          fu: Number(patternFormData.get(`${pattern}___fu`)),
-        },
-      ]),
-    );
-
-    emit("game_options", formObject);
+    emit("game_options", getGameOptions(formId, patternFormId));
   };
   const onSubmit = (e: SubmitEvent) => {
     e.preventDefault();
     emit("start_game");
   };
+  const sendRiichiPresetGameOptions = (e: Event) => {
+    e.preventDefault();
+    if (gameOptions.player_count == 4) {
+      emit("game_options", riichi_4player_preset);
+    } else {
+      emit("game_options", riichi_3player_preset);
+    }
+  };
 
   return (
     <div class="game_controls">
+      {isEditable ? (
+        <div class="presets">
+          <button type="button" onClick={sendRiichiPresetGameOptions}>
+            Use riichi preset
+          </button>
+        </div>
+      ) : (
+        <></>
+      )}
       <form id={formId} onSubmit={onSubmit} hidden />
       <form id={patternFormId} onSubmit={onSubmit} hidden />
       <div class="game_options">

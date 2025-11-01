@@ -29,7 +29,7 @@ export type PatternData = {
   fu: number;
 };
 
-export const patterns: Pattern[] = [
+export const patterns = [
   "BLESSING_OF_HEAVEN",
   "BLESSING_OF_EARTH",
   "LITTLE_THREE_DRAGONS",
@@ -103,7 +103,7 @@ export const patterns: Pattern[] = [
   "OPEN_PINFU",
   "NO_CALLS_RON",
   "NON_PINFU_TSUMO",
-];
+] as const;
 
 export const patternDisplayNames = {
   BLESSING_OF_HEAVEN: "Blessing of Heaven",

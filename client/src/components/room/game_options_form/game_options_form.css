@@ -6,7 +6,6 @@
   top: 5cqw;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 
   * {
     font-family: "Chiron GoRound TC", sans-serif;
@@ -15,9 +14,19 @@
     font-style: normal;
   }
 
+  .presets {
+    margin: 0cqw 0.5cqw 0.5cqw 0.5cqw;
+
+    button {
+      font-size: 1.5cqw;
+    }
+  }
+
   .game_options {
+    flex-grow: 1;
     display: grid;
     grid-template-columns: auto 10cqw;
+    align-content: start;
     overflow: scroll;
     padding-inline: 1cqw;
 

@@ -11,6 +11,10 @@ import type {
   PatternData,
 } from "../../../types/game_options";
 
+function getEditableProps(isEditable: boolean, onChange: (e: Event) => void) {
+  return isEditable ? { onChange } : { readonly: true };
+}
+
 export function GameOptionsNumberInput({
   isEditable,
   inputProps,
@@ -29,19 +33,17 @@ export function GameOptionsNumberInput({
     e.preventDefault();
     sendGameOptions();
   };
-  const editableProps = isEditable
-    ? {
-        defaultValue: value,
-        onChange,
-      }
-    : {
-        value,
-        readonly: true,
-      };
+  const editableProps = getEditableProps(isEditable, onChange);
   return (
     <>
       <label for={inputId}>{inputProps.labelText}</label>
-      <input form={formId} id={inputId} {...inputProps} {...editableProps} />
+      <input
+        form={formId}
+        id={inputId}
+        value={value}
+        {...inputProps}
+        {...editableProps}
+      />
     </>
   );
 }
@@ -64,37 +66,19 @@ export function GameOptionsCheckboxInput({
     e.preventDefault();
     sendGameOptions();
   };
-  const editableProps = isEditable
-    ? {
-        defaultChecked: value,
-        onChange,
-      }
-    : {
-        checked: value,
-        disabled: true,
-      };
+  const editableProps = getEditableProps(isEditable, onChange);
   return (
     <>
       <label for={inputId}>{inputProps.labelText}</label>
-      <input form={formId} id={inputId} {...inputProps} {...editableProps} />
+      <input
+        form={formId}
+        id={inputId}
+        checked={value}
+        {...inputProps}
+        {...editableProps}
+      />
     </>
   );
-}
-
-function getEditableProps<T>(
-  value: T,
-  isEditable: boolean,
-  onChange: (e: Event) => void,
-) {
-  return isEditable
-    ? {
-        defaultValue: value,
-        onChange,
-      }
-    : {
-        value,
-        readonly: true,
-      };
 }
 
 export function GameOptionsPatternInput({
@@ -114,8 +98,7 @@ export function GameOptionsPatternInput({
     e.preventDefault();
     sendGameOptions();
   };
-  const hanEditableProps = getEditableProps(data.han, isEditable, onChange);
-  const fuEditableProps = getEditableProps(data.fu, isEditable, onChange);
+  const editableProps = getEditableProps(isEditable, onChange);
   return (
     <>
       <label>{data.display_name}</label>
@@ -123,13 +106,15 @@ export function GameOptionsPatternInput({
         form={formId}
         name={`${name}___han`}
         type="number"
-        {...hanEditableProps}
+        value={data.han}
+        {...editableProps}
       />
       <input
         form={formId}
         name={`${name}___fu`}
         type="number"
-        {...fuEditableProps}
+        value={data.fu}
+        {...editableProps}
       />
     </>
   );
