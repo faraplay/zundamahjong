@@ -9,11 +9,11 @@ export type GameOptions = {
   show_shanten_info: boolean;
 
   start_score: number;
-  score_dealer_ron_base_value: number;
-  score_dealer_tsumo_base_value: number;
-  score_nondealer_ron_base_value: number;
-  score_nondealer_tsumo_nondealer_base_value: number;
-  score_nondealer_tsumo_dealer_base_value: number;
+  score_dealer_ron_multiplier: number;
+  score_dealer_tsumo_multiplier: number;
+  score_nondealer_ron_multiplier: number;
+  score_nondealer_tsumo_nondealer_multiplier: number;
+  score_nondealer_tsumo_dealer_multiplier: number;
 
   calculate_fu: boolean;
   base_fu: number;

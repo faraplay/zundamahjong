@@ -43,7 +43,7 @@ class Scorer:
         if lose_player is None:
             if win_player == self._win.sub_round:
                 player_pay_in_amount = (
-                    self._options.score_dealer_tsumo_base_value * base_score
+                    self._options.score_dealer_tsumo_multiplier * base_score
                 )
                 if self._options.round_up_points:
                     player_pay_in_amount = round_up_float(player_pay_in_amount, 100)
@@ -51,13 +51,13 @@ class Scorer:
                 player_scores[win_player] = player_pay_in_amount * (player_count - 1)
             else:
                 player_pay_in_amount = (
-                    self._options.score_nondealer_tsumo_nondealer_base_value
+                    self._options.score_nondealer_tsumo_nondealer_multiplier
                     * base_score
                 )
                 if self._options.round_up_points:
                     player_pay_in_amount = round_up_float(player_pay_in_amount, 100)
                 dealer_pay_in_amount = (
-                    self._options.score_nondealer_tsumo_dealer_base_value * base_score
+                    self._options.score_nondealer_tsumo_dealer_multiplier * base_score
                 )
                 if self._options.round_up_points:
                     dealer_pay_in_amount = round_up_float(dealer_pay_in_amount, 100)
@@ -69,11 +69,11 @@ class Scorer:
         else:
             if win_player == self._win.sub_round:
                 player_pay_in_amount = (
-                    self._options.score_dealer_ron_base_value * base_score
+                    self._options.score_dealer_ron_multiplier * base_score
                 )
             else:
                 player_pay_in_amount = (
-                    self._options.score_nondealer_ron_base_value * base_score
+                    self._options.score_nondealer_ron_multiplier * base_score
                 )
             if self._options.round_up_points:
                 player_pay_in_amount = round_up_float(player_pay_in_amount, 100)
