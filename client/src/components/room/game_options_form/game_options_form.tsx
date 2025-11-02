@@ -19,6 +19,8 @@ import { PatternForm } from "../pattern_form/pattern_form";
 
 import "./game_options_form.css";
 import {
+  default_3player_preset,
+  default_4player_preset,
   riichi_3player_preset,
   riichi_4player_preset,
 } from "../../../types/game_options_presets";
@@ -83,6 +85,14 @@ export function GameOptionsForm({
     e.preventDefault();
     emit("start_game");
   };
+  const sendDefaultPresetGameOptions = (e: Event) => {
+    e.preventDefault();
+    if (gameOptions.player_count == 4) {
+      emit("game_options", default_4player_preset);
+    } else {
+      emit("game_options", default_3player_preset);
+    }
+  };
   const sendRiichiPresetGameOptions = (e: Event) => {
     e.preventDefault();
     if (gameOptions.player_count == 4) {
@@ -96,6 +106,9 @@ export function GameOptionsForm({
     <div class="game_controls">
       {isEditable ? (
         <div class="presets">
+          <button type="button" onClick={sendDefaultPresetGameOptions}>
+            Use default preset
+          </button>
           <button type="button" onClick={sendRiichiPresetGameOptions}>
             Use riichi preset
           </button>
