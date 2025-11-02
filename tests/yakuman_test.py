@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from tests.yaku_test import get_yaku_mults
+from tests.yaku_test import get_pattern_mults
 from zundamahjong.mahjong.call import (
     AddKanCall,
     CallType,
@@ -13,11 +13,11 @@ from zundamahjong.mahjong.meld import Meld, MeldType
 
 class YakumanTest(TestCase):
     def test_blessing_of_heaven(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
                 Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
                 Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
                 Meld(meld_type=MeldType.CHI, tiles=[230, 240, 250]),
@@ -27,14 +27,24 @@ class YakumanTest(TestCase):
             flowers=[420],
             is_tenhou=True,
         )
-        self.assertDictEqual(yaku_mults, {"NO_CALLS": 1, "BLESSING_OF_HEAVEN": 1})
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "NO_CALLS": 1,
+                "NO_CALLS_TSUMO": 1,
+                "BLESSING_OF_HEAVEN": 1,
+            },
+        )
 
     def test_blessing_of_earth(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=1,
             lose_player=None,
             formed_hand=[
-                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
                 Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
                 Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
                 Meld(meld_type=MeldType.CHI, tiles=[230, 240, 250]),
@@ -44,14 +54,24 @@ class YakumanTest(TestCase):
             flowers=[430],
             is_chiihou=True,
         )
-        self.assertDictEqual(yaku_mults, {"NO_CALLS": 1, "BLESSING_OF_EARTH": 1})
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "NO_CALLS": 1,
+                "NO_CALLS_TSUMO": 1,
+                "BLESSING_OF_EARTH": 1,
+            },
+        )
 
     def test_little_three_dragons(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
                 Meld(meld_type=MeldType.PON, tiles=[350, 351, 352]),
                 Meld(meld_type=MeldType.PON, tiles=[230, 231, 232]),
                 Meld(meld_type=MeldType.PAIR, tiles=[360, 361]),
@@ -67,15 +87,26 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults, {"WHITE_DRAGON": 1, "RED_DRAGON": 1, "LITTLE_THREE_DRAGONS": 1}
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 1,
+                "SIMPLE_CLOSED_TRIPLET": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "YAKUHAI_PAIR": 1,
+                "NON_PINFU_TSUMO": 1,
+                "WHITE_DRAGON": 1,
+                "RED_DRAGON": 1,
+                "LITTLE_THREE_DRAGONS": 1,
+            },
         )
 
     def test_big_three_dragons(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
                 Meld(meld_type=MeldType.PON, tiles=[350, 351, 352]),
                 Meld(meld_type=MeldType.PON, tiles=[360, 361, 362]),
                 Meld(meld_type=MeldType.PAIR, tiles=[230, 231]),
@@ -91,8 +122,12 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
+                "OPEN_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 1,
+                "ORPHAN_CLOSED_TRIPLET": 2,
+                "NON_PINFU_TSUMO": 1,
                 "WHITE_DRAGON": 1,
                 "GREEN_DRAGON": 1,
                 "RED_DRAGON": 1,
@@ -101,11 +136,11 @@ class YakumanTest(TestCase):
         )
 
     def test_four_little_winds(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Meld(meld_type=MeldType.CHI, tiles=[20, 30, 40]),
+                Meld(meld_type=MeldType.CHI, tiles=[20, 30, 40], winning_tile_index=0),
                 Meld(meld_type=MeldType.PON, tiles=[330, 331, 332]),
                 Meld(meld_type=MeldType.PON, tiles=[340, 341, 342]),
                 Meld(meld_type=MeldType.PAIR, tiles=[310, 311]),
@@ -121,19 +156,26 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
+                "OPEN_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 1,
+                "ORPHAN_CLOSED_TRIPLET": 2,
+                "YAKUHAI_PAIR": 2,
+                "NON_PINFU_TSUMO": 1,
                 "HALF_FLUSH": 1,
                 "FOUR_LITTLE_WINDS": 1,
             },
         )
 
     def test_four_big_winds(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
-            lose_player=None,
+            lose_player=1,
             formed_hand=[
-                Meld(meld_type=MeldType.PON, tiles=[310, 311, 312]),
+                Meld(
+                    meld_type=MeldType.PON, tiles=[310, 311, 312], winning_tile_index=0
+                ),
                 Meld(meld_type=MeldType.PON, tiles=[330, 331, 332]),
                 Meld(meld_type=MeldType.PON, tiles=[340, 341, 342]),
                 Meld(meld_type=MeldType.PAIR, tiles=[30, 31]),
@@ -149,8 +191,11 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
+                "DUAL_PON_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 2,
+                "ORPHAN_CLOSED_TRIPLET": 2,
                 "SEAT_WIND": 1,
                 "PREVALENT_WIND": 1,
                 "HALF_FLUSH": 1,
@@ -160,11 +205,11 @@ class YakumanTest(TestCase):
         )
 
     def test_four_concealed_triplets(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12]),
+                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12], winning_tile_index=0),
                 Meld(meld_type=MeldType.PON, tiles=[150, 151, 152]),
                 Meld(meld_type=MeldType.PON, tiles=[230, 231, 232]),
                 Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
@@ -177,15 +222,90 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults, {"NO_CALLS": 1, "ALL_TRIPLETS": 1, "FOUR_CONCEALED_TRIPLETS": 1}
+            pattern_mults,
+            {
+                "DUAL_PON_WAIT": 1,
+                "SIMPLE_CLOSED_TRIPLET": 2,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "ORPHAN_CLOSED_QUAD": 1,
+                "NON_PINFU_TSUMO": 1,
+                "NO_CALLS": 1,
+                "NO_CALLS_TSUMO": 1,
+                "ALL_TRIPLETS": 1,
+                "FOUR_CONCEALED_TRIPLETS": 1,
+            },
+        )
+
+    def test_one_open_triplet(self) -> None:
+        pattern_mults = get_pattern_mults(
+            win_player=0,
+            lose_player=1,
+            formed_hand=[
+                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12], winning_tile_index=0),
+                Meld(meld_type=MeldType.PON, tiles=[150, 151, 152]),
+                Meld(meld_type=MeldType.PON, tiles=[230, 231, 232]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
+            ],
+            calls=[
+                ClosedKanCall(
+                    call_type=CallType.CLOSED_KAN, tiles=(190, 191, 192, 193)
+                ),
+            ],
+            flowers=[420],
+        )
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "DUAL_PON_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 1,
+                "SIMPLE_CLOSED_TRIPLET": 2,
+                "ORPHAN_CLOSED_QUAD": 1,
+                "NO_CALLS_RON": 1,
+                "NO_CALLS": 1,
+                "ALL_TRIPLETS": 1,
+                "THREE_CONCEALED_TRIPLETS": 1,
+            },
+        )
+
+    def test_four_concealed_triplets_1_sided_wait(self) -> None:
+        pattern_mults = get_pattern_mults(
+            win_player=0,
+            lose_player=1,
+            formed_hand=[
+                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12]),
+                Meld(meld_type=MeldType.PON, tiles=[150, 151, 152]),
+                Meld(meld_type=MeldType.PON, tiles=[230, 231, 232]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331], winning_tile_index=0),
+            ],
+            calls=[
+                ClosedKanCall(
+                    call_type=CallType.CLOSED_KAN, tiles=(190, 191, 192, 193)
+                ),
+            ],
+            flowers=[420],
+        )
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "PAIR_WAIT": 1,
+                "SIMPLE_CLOSED_TRIPLET": 2,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "ORPHAN_CLOSED_QUAD": 1,
+                "NO_CALLS_RON": 1,
+                "NO_CALLS": 1,
+                "ALL_TRIPLETS": 1,
+                "FOUR_CONCEALED_TRIPLETS_1_SIDED_WAIT": 1,
+            },
         )
 
     def test_all_honours(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
-            lose_player=None,
+            lose_player=1,
             formed_hand=[
-                Meld(meld_type=MeldType.PON, tiles=[360, 361, 362]),
+                Meld(
+                    meld_type=MeldType.PON, tiles=[360, 361, 362], winning_tile_index=0
+                ),
                 Meld(meld_type=MeldType.PON, tiles=[330, 331, 332]),
                 Meld(meld_type=MeldType.PON, tiles=[340, 341, 342]),
                 Meld(meld_type=MeldType.PAIR, tiles=[350, 351]),
@@ -201,8 +321,12 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults,
+            pattern_mults,
             {
+                "DUAL_PON_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 2,
+                "ORPHAN_CLOSED_TRIPLET": 2,
+                "YAKUHAI_PAIR": 1,
                 "GREEN_DRAGON": 1,
                 "ALL_TRIPLETS": 1,
                 "ALL_HONOURS": 1,
@@ -210,11 +334,13 @@ class YakumanTest(TestCase):
         )
 
     def test_all_greens(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Meld(meld_type=MeldType.CHI, tiles=[220, 230, 240]),
+                Meld(
+                    meld_type=MeldType.CHI, tiles=[220, 230, 240], winning_tile_index=0
+                ),
                 Meld(meld_type=MeldType.PON, tiles=[231, 232, 233]),
                 Meld(meld_type=MeldType.CHI, tiles=[280, 281, 282]),
                 Meld(meld_type=MeldType.PAIR, tiles=[360, 361]),
@@ -229,14 +355,25 @@ class YakumanTest(TestCase):
             ],
             flowers=[420],
         )
-        self.assertDictEqual(yaku_mults, {"HALF_FLUSH": 1, "ALL_GREENS": 1})
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "SIMPLE_OPEN_TRIPLET": 1,
+                "SIMPLE_CLOSED_TRIPLET": 1,
+                "YAKUHAI_PAIR": 1,
+                "NON_PINFU_TSUMO": 1,
+                "HALF_FLUSH": 1,
+                "ALL_GREENS": 1,
+            },
+        )
 
     def test_all_terminals(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
-            lose_player=None,
+            lose_player=1,
             formed_hand=[
-                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12]),
+                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12], winning_tile_index=0),
                 Meld(meld_type=MeldType.PON, tiles=[110, 111, 112]),
                 Meld(meld_type=MeldType.PON, tiles=[290, 291, 292]),
                 Meld(meld_type=MeldType.PAIR, tiles=[210, 211]),
@@ -252,45 +389,87 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults, {"ALL_TRIPLETS": 1, "FULLY_OUTSIDE_HAND": 1, "ALL_TERMINALS": 1}
+            pattern_mults,
+            {
+                "DUAL_PON_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 2,
+                "ORPHAN_CLOSED_TRIPLET": 2,
+                "ALL_TRIPLETS": 1,
+                "FULLY_OUTSIDE_HAND": 1,
+                "ALL_TERMINALS": 1,
+            },
         )
 
     def test_thirteen_orphans(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
-            lose_player=None,
+            lose_player=1,
             formed_hand=[
                 Meld(
                     meld_type=MeldType.THIRTEEN_ORPHANS,
                     tiles=[
-                        4,
-                        36,
-                        44,
-                        76,
-                        84,
-                        116,
-                        124,
-                        128,
-                        129,
-                        132,
-                        136,
-                        140,
-                        144,
-                        148,
+                        10,
+                        90,
+                        110,
+                        190,
+                        210,
+                        290,
+                        310,
+                        320,
+                        321,
+                        330,
+                        340,
+                        350,
+                        360,
+                        370,
                     ],
+                    winning_tile_index=0,
                 ),
             ],
             calls=[],
             flowers=[420],
         )
-        self.assertDictEqual(yaku_mults, {"THIRTEEN_ORPHANS": 1})
+        self.assertDictEqual(pattern_mults, {"NO_CALLS_RON": 1, "THIRTEEN_ORPHANS": 1})
+
+    def test_thirteen_orphans_13_sided_wait(self) -> None:
+        pattern_mults = get_pattern_mults(
+            win_player=0,
+            lose_player=1,
+            formed_hand=[
+                Meld(
+                    meld_type=MeldType.THIRTEEN_ORPHANS,
+                    tiles=[
+                        10,
+                        90,
+                        110,
+                        190,
+                        210,
+                        290,
+                        310,
+                        320,
+                        321,
+                        330,
+                        340,
+                        350,
+                        360,
+                        370,
+                    ],
+                    winning_tile_index=8,
+                ),
+            ],
+            calls=[],
+            flowers=[420],
+        )
+        self.assertDictEqual(
+            pattern_mults, {"NO_CALLS_RON": 1, "THIRTEEN_ORPHANS_13_SIDED_WAIT": 1}
+        )
 
     def test_four_quads(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
             lose_player=None,
             formed_hand=[
-                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331], winning_tile_index=0),
             ],
             calls=[
                 OpenKanCall(
@@ -312,14 +491,25 @@ class YakumanTest(TestCase):
             ],
             flowers=[420],
         )
-        self.assertDictEqual(yaku_mults, {"ALL_TRIPLETS": 1, "FOUR_QUADS": 1})
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "PAIR_WAIT": 1,
+                "SIMPLE_OPEN_QUAD": 2,
+                "ORPHAN_OPEN_QUAD": 1,
+                "ORPHAN_CLOSED_QUAD": 1,
+                "NON_PINFU_TSUMO": 1,
+                "ALL_TRIPLETS": 1,
+                "FOUR_QUADS": 1,
+            },
+        )
 
     def test_nine_gates(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
-            lose_player=None,
+            lose_player=1,
             formed_hand=[
-                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12]),
+                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12], winning_tile_index=0),
                 Meld(meld_type=MeldType.CHI, tiles=[20, 30, 40]),
                 Meld(meld_type=MeldType.CHI, tiles=[41, 50, 60]),
                 Meld(meld_type=MeldType.CHI, tiles=[70, 80, 90]),
@@ -329,15 +519,49 @@ class YakumanTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            yaku_mults, {"NO_CALLS": 1, "FULL_FLUSH": 1, "NINE_GATES": 1}
+            pattern_mults,
+            {
+                "DUAL_PON_WAIT": 1,
+                "ORPHAN_OPEN_TRIPLET": 1,
+                "NO_CALLS_RON": 1,
+                "NO_CALLS": 1,
+                "FULL_FLUSH": 1,
+                "NINE_GATES": 1,
+            },
+        )
+
+    def test_true_nine_gates(self) -> None:
+        pattern_mults = get_pattern_mults(
+            win_player=0,
+            lose_player=1,
+            formed_hand=[
+                Meld(meld_type=MeldType.PON, tiles=[10, 11, 12]),
+                Meld(meld_type=MeldType.CHI, tiles=[20, 30, 40]),
+                Meld(meld_type=MeldType.CHI, tiles=[41, 50, 60], winning_tile_index=0),
+                Meld(meld_type=MeldType.CHI, tiles=[70, 80, 90]),
+                Meld(meld_type=MeldType.PAIR, tiles=[91, 92]),
+            ],
+            calls=[],
+            flowers=[420],
+        )
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NO_CALLS_RON": 1,
+                "NO_CALLS": 1,
+                "FULL_FLUSH": 1,
+                "TRUE_NINE_GATES": 1,
+            },
         )
 
     def test_full_flush_not_nine_gates(self) -> None:
-        yaku_mults = get_yaku_mults(
+        pattern_mults = get_pattern_mults(
             win_player=0,
-            lose_player=None,
+            lose_player=1,
             formed_hand=[
-                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30]),
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
                 Meld(meld_type=MeldType.CHI, tiles=[50, 60, 70]),
                 Meld(meld_type=MeldType.PON, tiles=[90, 91, 92]),
                 Meld(meld_type=MeldType.PAIR, tiles=[31, 32]),
@@ -346,4 +570,13 @@ class YakumanTest(TestCase):
             calls=[],
             flowers=[420],
         )
-        self.assertDictEqual(yaku_mults, {"NO_CALLS": 1, "FULL_FLUSH": 1})
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NO_CALLS_RON": 1,
+                "NO_CALLS": 1,
+                "FULL_FLUSH": 1,
+            },
+        )

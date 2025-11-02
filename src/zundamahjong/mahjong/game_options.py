@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from .yaku import default_yaku_han
+from .pattern import PatternData, default_pattern_data
 
 
 class GameOptions(BaseModel):
@@ -14,13 +14,18 @@ class GameOptions(BaseModel):
     show_shanten_info: bool = False
 
     start_score: float = 0.0
-    score_dealer_ron_base_value: float = 1.5
-    score_dealer_tsumo_base_value: float = 1.0
-    score_nondealer_ron_base_value: float = 1.0
-    score_nondealer_tsumo_nondealer_base_value: float = 0.5
-    score_nondealer_tsumo_dealer_base_value: float = 1.0
+    score_dealer_ron_multiplier: float = 6.0
+    score_dealer_tsumo_multiplier: float = 2.0
+    score_nondealer_ron_multiplier: float = 4.0
+    score_nondealer_tsumo_nondealer_multiplier: float = 1.0
+    score_nondealer_tsumo_dealer_multiplier: float = 2.0
 
-    yaku_values: dict[str, int] = default_yaku_han
+    calculate_fu: bool = False
+    base_fu: int = 25
+    round_up_fu: bool = False
+    round_up_points: bool = False
+
+    pattern_data: dict[str, PatternData] = default_pattern_data
 
     @property
     def game_length(self) -> tuple[int, int]:

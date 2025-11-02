@@ -1,4 +1,4 @@
-import type { GameOptions, Yaku } from "../../types/game_options";
+import type { GameOptions } from "../../types/game_options";
 
 type GameOptionsOfValueType<T> = {
   [key in keyof GameOptions as GameOptions[key] extends T ? key : never]: T;
@@ -19,16 +19,6 @@ export type CheckboxInputProps = {
   labelText: string;
   type: "checkbox";
   disabled?: boolean;
-};
-
-export type YakuInputProps = {
-  name: Yaku;
-  labelText: string;
-  type: "number";
-  min?: number;
-  max?: number;
-  step?: number;
-  readonly?: boolean;
 };
 
 export type InputExpanderProps = {
@@ -88,34 +78,61 @@ export const inputPropsList: GameOptionsInputProps[] = [
         type: "number",
       },
       {
-        name: "score_dealer_ron_base_value",
+        name: "score_dealer_ron_multiplier",
         labelText: "Dealer ron base score",
         type: "number",
         step: 0.5,
       },
       {
-        name: "score_dealer_tsumo_base_value",
+        name: "score_dealer_tsumo_multiplier",
         labelText: "Dealer tsumo base score",
         type: "number",
         step: 0.5,
       },
       {
-        name: "score_nondealer_ron_base_value",
+        name: "score_nondealer_ron_multiplier",
         labelText: "Nondealer ron base score",
         type: "number",
         step: 0.5,
       },
       {
-        name: "score_nondealer_tsumo_nondealer_base_value",
+        name: "score_nondealer_tsumo_nondealer_multiplier",
         labelText: "Nondealer-nondealer tsumo base score",
         type: "number",
         step: 0.5,
       },
       {
-        name: "score_nondealer_tsumo_dealer_base_value",
+        name: "score_nondealer_tsumo_dealer_multiplier",
         labelText: "Nondealer-dealer tsumo base score",
         type: "number",
         step: 0.5,
+      },
+    ],
+  },
+  {
+    type: "collection",
+    name: "Fu options",
+    children: [
+      {
+        name: "calculate_fu",
+        labelText: "Calculate fu",
+        type: "checkbox",
+      },
+      {
+        name: "base_fu",
+        labelText: "Base fu",
+        type: "number",
+        step: 1,
+      },
+      {
+        name: "round_up_fu",
+        labelText: "Round up fu",
+        type: "checkbox",
+      },
+      {
+        name: "round_up_points",
+        labelText: "Round up points",
+        type: "checkbox",
       },
     ],
   },

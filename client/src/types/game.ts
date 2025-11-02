@@ -2,6 +2,7 @@ import type { TileId } from "./tile.ts";
 import type { Call } from "./call.ts";
 import type { Action } from "./action.ts";
 import type { Player } from "./player.ts";
+import type { PatternData } from "./game_options.ts";
 
 export type Discard = {
   player: number;
@@ -60,8 +61,9 @@ export type Win = {
 export type Scoring = {
   win_player: number;
   lose_player: number | null;
-  yaku_hans: { [yaku: string]: number };
-  han_total: number;
+  patterns: { [pattern: string]: PatternData };
+  han: number;
+  fu: number;
   player_scores: number[];
 };
 

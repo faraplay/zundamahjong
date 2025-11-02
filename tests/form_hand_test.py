@@ -32,13 +32,17 @@ class FormHandTest(unittest.TestCase):
         tiles = [10, 20, 21, 30, 40]
         self.assertFalse(is_winning(tiles))
 
+    def test_two_winning_tile_melds(self) -> None:
+        tiles = [10, 20, 30, 40, 50, 160, 161, 31]
+        self.assertEqual(len(formed_hand_possibilities(tiles)), 2)
+
     def test_number_triple_run(self) -> None:
         tiles = [10, 11, 12, 20, 21, 22, 30, 31, 32, 80, 81]
         self.assertEqual(len(formed_hand_possibilities(tiles)), 2)
 
     def test_number_double_run(self) -> None:
         tiles = [30, 31, 40, 41, 50, 51, 60, 61]
-        self.assertEqual(len(formed_hand_possibilities(tiles)), 2)
+        self.assertEqual(len(formed_hand_possibilities(tiles)), 3)
 
     def test_honor_run(self) -> None:
         tiles = [20, 21, 310, 320, 330]
@@ -50,7 +54,7 @@ class FormHandTest(unittest.TestCase):
 
     def test_number_pon_run(self) -> None:
         tiles = [30, 31, 32, 40, 50, 60, 61, 62]
-        self.assertEqual(len(formed_hand_possibilities(tiles)), 2)
+        self.assertEqual(len(formed_hand_possibilities(tiles)), 3)
 
     def test_many_suits_win(self) -> None:
         tiles = [40, 50, 60, 110, 111, 112, 260, 270, 271, 272, 280, 330, 331, 332]
