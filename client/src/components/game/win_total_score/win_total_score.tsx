@@ -16,26 +16,26 @@ export function WinTotalScore({
     goToResults();
   };
   const seeResultsButton = (
-    <button type="button" id="see_results" onClick={onSeeResultsClick}>
+    <button type="button" class="see_results" onClick={onSeeResultsClick}>
       Next
     </button>
   );
   if (!scoring_info) {
     return (
-      <div id="win_totals">
-        <div id="win_player">The round is a draw...</div>
+      <div class="win_totals">
+        <div class="win_player">The round is a draw...</div>
         {seeResultsButton}
       </div>
     );
   }
   return (
-    <div id="win_totals">
-      <div id="win_player">{`${win_player_name} wins!`}</div>
-      <div id="total_han">{`${scoring_info.han_total} han`}</div>
-      <div id="tsumo_or_ron">
+    <div class="win_totals">
+      <div class="win_player">{`${win_player_name} wins!`}</div>
+      <div class="scoring_values">{`${scoring_info.han} han, ${scoring_info.fu} fu`}</div>
+      <div class="tsumo_or_ron">
         {scoring_info.lose_player == null ? "Tsumo" : "Ron"}
       </div>
-      <div id="total_score">
+      <div class="total_score">
         {scoring_info.player_scores[scoring_info.win_player]}
       </div>
       {seeResultsButton}

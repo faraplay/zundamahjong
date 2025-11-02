@@ -9,16 +9,27 @@ export type GameOptions = {
   show_shanten_info: boolean;
 
   start_score: number;
-  score_dealer_ron_base_value: number;
-  score_dealer_tsumo_base_value: number;
-  score_nondealer_ron_base_value: number;
-  score_nondealer_tsumo_nondealer_base_value: number;
-  score_nondealer_tsumo_dealer_base_value: number;
+  score_dealer_ron_multiplier: number;
+  score_dealer_tsumo_multiplier: number;
+  score_nondealer_ron_multiplier: number;
+  score_nondealer_tsumo_nondealer_multiplier: number;
+  score_nondealer_tsumo_dealer_multiplier: number;
 
-  yaku_values: YakuValues;
+  calculate_fu: boolean;
+  base_fu: number;
+  round_up_fu: boolean;
+  round_up_points: boolean;
+
+  pattern_data: PatternDataDict;
 };
 
-export const yakus: Yaku[] = [
+export type PatternData = {
+  display_name: string;
+  han: number;
+  fu: number;
+};
+
+export const patterns = [
   "BLESSING_OF_HEAVEN",
   "BLESSING_OF_EARTH",
   "LITTLE_THREE_DRAGONS",
@@ -26,12 +37,15 @@ export const yakus: Yaku[] = [
   "FOUR_LITTLE_WINDS",
   "FOUR_BIG_WINDS",
   "FOUR_CONCEALED_TRIPLETS",
+  "FOUR_CONCEALED_TRIPLETS_1_SIDED_WAIT",
   "ALL_HONOURS",
   "ALL_GREENS",
   "ALL_TERMINALS",
   "THIRTEEN_ORPHANS",
+  "THIRTEEN_ORPHANS_13_SIDED_WAIT",
   "FOUR_QUADS",
   "NINE_GATES",
+  "TRUE_NINE_GATES",
   "ALL_RUNS",
   "ALL_SIMPLES",
   "PURE_STRAIGHT",
@@ -43,7 +57,11 @@ export const yakus: Yaku[] = [
   "FULLY_OUTSIDE_HAND",
   "PURE_DOUBLE_SEQUENCE",
   "TWICE_PURE_DOUBLE_SEQUENCE",
+  "PURE_TRIPLE_SEQUENCE",
+  "PURE_QUADRUPLE_SEQUENCE",
   "MIXED_TRIPLE_SEQUENCE",
+  "THREE_CONCEALED_TRIPLETS",
+  "THREE_QUADS",
   "TRIPLE_TRIPLETS",
   "ALL_TERMINALS_AND_HONOURS",
   "SEAT_WIND",
@@ -54,6 +72,7 @@ export const yakus: Yaku[] = [
   "RED_DRAGON",
   "EYES",
   "NO_CALLS",
+  "NO_CALLS_TSUMO",
   "ROBBING_A_KAN",
   "UNDER_THE_SEA",
   "UNDER_THE_RIVER",
@@ -66,9 +85,27 @@ export const yakus: Yaku[] = [
   "SEVEN_FLOWERS",
   "TWO_SETS_OF_FLOWERS",
   "DRAW",
-];
+  "OPEN_WAIT",
+  "CLOSED_WAIT",
+  "EDGE_WAIT",
+  "DUAL_PON_WAIT",
+  "PAIR_WAIT",
+  "SIMPLE_OPEN_TRIPLET",
+  "ORPHAN_OPEN_TRIPLET",
+  "SIMPLE_CLOSED_TRIPLET",
+  "ORPHAN_CLOSED_TRIPLET",
+  "SIMPLE_OPEN_QUAD",
+  "ORPHAN_OPEN_QUAD",
+  "SIMPLE_CLOSED_QUAD",
+  "ORPHAN_CLOSED_QUAD",
+  "YAKUHAI_PAIR",
+  "PINFU",
+  "OPEN_PINFU",
+  "NO_CALLS_RON",
+  "NON_PINFU_TSUMO",
+] as const;
 
-export const yakuDisplayNames = {
+export const patternDisplayNames = {
   BLESSING_OF_HEAVEN: "Blessing of Heaven",
   BLESSING_OF_EARTH: "Blessing of Earth",
   LITTLE_THREE_DRAGONS: "Little Three Dragons",
@@ -76,12 +113,15 @@ export const yakuDisplayNames = {
   FOUR_LITTLE_WINDS: "Four Little Winds",
   FOUR_BIG_WINDS: "Four Big Winds",
   FOUR_CONCEALED_TRIPLETS: "Four Concealed Triplets",
+  FOUR_CONCEALED_TRIPLETS_1_SIDED_WAIT: "Four Concealed Triplets 1-sided Wait",
   ALL_HONOURS: "All Honours",
   ALL_GREENS: "All Greens",
   ALL_TERMINALS: "All Terminals",
   THIRTEEN_ORPHANS: "Thirteen Orphans",
+  THIRTEEN_ORPHANS_13_SIDED_WAIT: "Thirteen Orphans 13-sided Wait",
   FOUR_QUADS: "Four Quads",
   NINE_GATES: "Nine Gates",
+  TRUE_NINE_GATES: "True Nine Gates",
   ALL_RUNS: "All Runs",
   ALL_SIMPLES: "All Simples",
   PURE_STRAIGHT: "Pure Straight",
@@ -93,7 +133,11 @@ export const yakuDisplayNames = {
   FULLY_OUTSIDE_HAND: "Fully Outside Hand",
   PURE_DOUBLE_SEQUENCE: "Pure Double Sequence",
   TWICE_PURE_DOUBLE_SEQUENCE: "Twice Pure Double Sequence",
+  PURE_TRIPLE_SEQUENCE: "Pure Triple Sequence",
+  PURE_QUADRUPLE_SEQUENCE: "Pure Quadruple Sequence",
   MIXED_TRIPLE_SEQUENCE: "Mixed Triple Sequence",
+  THREE_CONCEALED_TRIPLETS: "Three Concealed Triplets",
+  THREE_QUADS: "Three Quads",
   TRIPLE_TRIPLETS: "Triple Triplets",
   ALL_TERMINALS_AND_HONOURS: "All Terminals and Honours",
   SEAT_WIND: "Seat Wind",
@@ -104,6 +148,7 @@ export const yakuDisplayNames = {
   RED_DRAGON: "Red Dragon",
   EYES: "Eyes",
   NO_CALLS: "No Calls",
+  NO_CALLS_TSUMO: "No Calls Tsumo",
   ROBBING_A_KAN: "Robbing a Kan",
   UNDER_THE_SEA: "Under the Sea",
   UNDER_THE_RIVER: "Under the River",
@@ -116,10 +161,28 @@ export const yakuDisplayNames = {
   SEVEN_FLOWERS: "Seven Flowers",
   TWO_SETS_OF_FLOWERS: "Two Sets of Flowers",
   DRAW: "Draw",
+  OPEN_WAIT: "Open Wait",
+  CLOSED_WAIT: "Closed Wait",
+  EDGE_WAIT: "Edge Wait",
+  DUAL_PON_WAIT: "Dual Pon Wait",
+  PAIR_WAIT: "Pair Wait",
+  SIMPLE_OPEN_TRIPLET: "Simple Open Triplet",
+  ORPHAN_OPEN_TRIPLET: "Orphan Open Triplet",
+  SIMPLE_CLOSED_TRIPLET: "Simple Closed Triplet",
+  ORPHAN_CLOSED_TRIPLET: "Orphan Closed Triplet",
+  SIMPLE_OPEN_QUAD: "Simple Open Quad",
+  ORPHAN_OPEN_QUAD: "Orphan Open Quad",
+  SIMPLE_CLOSED_QUAD: "Simple Closed Quad",
+  ORPHAN_CLOSED_QUAD: "Orphan Closed Quad",
+  YAKUHAI_PAIR: "Yakuhai Pair",
+  PINFU: "Pinfu",
+  OPEN_PINFU: "Open Pinfu",
+  NO_CALLS_RON: "No Calls Ron",
+  NON_PINFU_TSUMO: "Non Pinfu Tsumo",
 } as const;
 
-export type Yaku = keyof typeof yakuDisplayNames;
+export type Pattern = keyof typeof patternDisplayNames;
 
-export type YakuValues = {
-  [yaku in Yaku]: number;
+export type PatternDataDict = {
+  [pattern in Pattern]: PatternData;
 };
