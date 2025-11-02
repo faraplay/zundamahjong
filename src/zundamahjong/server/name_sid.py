@@ -1,5 +1,6 @@
 from threading import Lock
-from typing import Optional
+
+from flask_socketio import join_room
 
 from ..types.player import Player
 from .sio import sio
@@ -23,7 +24,7 @@ def get_player(sid: str) -> Player:
     return player
 
 
-def try_get_player(sid: str) -> Optional[Player]:
+def try_get_player(sid: str) -> Player | None:
     return sid_to_player.get(sid)
 
 
@@ -37,7 +38,7 @@ def set_player(sid: str, player: Player) -> None:
             sio.close_room(old_player.id)
         id_to_sid[player.id] = sid
         sid_to_player[sid] = player
-        sio.enter_room(sid, player.id)
+        join_room(player.id)
 
 
 def unset_player(sid: str) -> None:
