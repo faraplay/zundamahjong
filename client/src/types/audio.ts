@@ -26,6 +26,13 @@ import kiritanFa from "../assets/audio/kiritan/kiritan_fa.mp3";
 import kiritanRiichi from "../assets/audio/kiritan/kiritan_riichi.mp3";
 import kiritanRon from "../assets/audio/kiritan/kiritan_ron.mp3";
 import kiritanTsumo from "../assets/audio/kiritan/kiritan_tsumo.mp3";
+import hauChii from "../assets/audio/hau/hau_chii.mp3";
+import hauPon from "../assets/audio/hau/hau_pon.mp3";
+import hauKan from "../assets/audio/hau/hau_kan.mp3";
+import hauFa from "../assets/audio/hau/hau_fa.mp3";
+import hauRiichi from "../assets/audio/hau/hau_riichi.mp3";
+import hauRon from "../assets/audio/hau/hau_ron.mp3";
+import hauTsumo from "../assets/audio/hau/hau_tsumo.mp3";
 
 export type VoiceCollectionUrls = {
   chii: string;
@@ -83,5 +90,14 @@ export const voiceCollections = [
     riichi: kiritanRiichi,
     ron: kiritanRon,
     tsumo: kiritanTsumo,
+  },
+  {
+    chii: hauChii,
+    pon: hauPon,
+    kan: hauKan,
+    fa: hauFa,
+    riichi: hauRiichi,
+    ron: hauRon,
+    tsumo: hauTsumo,
   },
 ] as const;
