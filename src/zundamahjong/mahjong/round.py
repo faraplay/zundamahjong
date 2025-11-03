@@ -1,6 +1,8 @@
 from __future__ import annotations
 
+import uuid
 from collections.abc import Callable, Sequence
+from datetime import datetime
 from enum import IntEnum
 from typing import final
 
@@ -112,6 +114,8 @@ class Round:
             _options = options
         else:
             _options = GameOptions()
+        self._uuid = uuid.uuid4()
+        self._start_time = datetime.now()
         self._wind_round = wind_round
         self._sub_round = sub_round
         self._draw_count = draw_count
@@ -222,6 +226,14 @@ class Round:
                 and player_hand.is_own_discard_furiten
             )
         )
+
+    @property
+    def uuid(self) -> uuid.UUID:
+        return self._uuid
+
+    @property
+    def start_time(self) -> datetime:
+        return self._start_time
 
     @property
     def player_count(self) -> int:
