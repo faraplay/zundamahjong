@@ -1,4 +1,5 @@
 import uuid
+from collections.abc import Callable
 from typing import final
 
 from .action import Action
@@ -27,6 +28,7 @@ class Game:
         *,
         first_deck_tiles: list[TileId] | None = None,
         options: GameOptions | None = None,
+        round_end_callback: Callable[[Round, Win | None], None] = lambda x, y: None,
     ):
         if options is not None:
             _options = options
@@ -35,6 +37,7 @@ class Game:
         self._uuid = uuid.uuid4()
         self._player_count = _options.player_count
         self._options = _options
+        self._round_end_callback = round_end_callback
         self._wind_round: int = 0
         self._sub_round: int = 0
         self._player_scores = [_options.start_score] * self._player_count
@@ -183,6 +186,7 @@ class Game:
     def _create_round(self, deck_tiles: list[TileId] | None) -> None:
         def on_round_end() -> None:
             self._calculate_win_score()
+            self._round_end_callback(self._round, self._win)
 
         self._round = Round(
             wind_round=self._wind_round % 4,
