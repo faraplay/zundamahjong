@@ -1,3 +1,4 @@
+import uuid
 from typing import final
 
 from .action import Action
@@ -22,6 +23,7 @@ class Game:
             _options = options
         else:
             _options = GameOptions()
+        self._uuid = uuid.uuid4()
         self._player_count = _options.player_count
         self._options = _options
         self._wind_round: int = 0
@@ -31,6 +33,10 @@ class Game:
         self._scoring: Scoring | None = None
         self._draw_count: int = 0
         self._create_round(first_deck_tiles)
+
+    @property
+    def uuid(self) -> uuid.UUID:
+        return self._uuid
 
     @property
     def player_count(self) -> int:
