@@ -2,19 +2,17 @@
 {% set name = "src/login.tsx" %}
 
 {% block body %}
-  <div id="wrapper">
-    <div id="app"></div>
+  <div id="app"></div>
 
-    {% with messages = get_flashed_messages() %}
-      <div class="flashed_message_list">
+  {% with messages = get_flashed_messages() %}
+    <div class="flashed_message_list">
 
-      {% for message in messages %}
-        <div class="flashed_message"}>
-          <span>{{ message }}</span>
-        </div>
-      {% endfor %}
-
+    {% for message in messages %}
+      <div class="flashed_message"}>
+        <span>{{ message }}</span>
       </div>
-    {% endwith %}
-  </div>
+    {% endfor %}
+
+    </div>
+  {% endwith %}
 {% endblock %}
