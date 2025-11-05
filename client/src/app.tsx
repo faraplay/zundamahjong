@@ -10,6 +10,7 @@ import type { EmitFunc } from "./types/emit_func";
 
 import { Emitter } from "./components/emitter/emitter";
 
+import { LoadingScreen } from "./components/loading_screen/loading_screen";
 import { ServerMessageList } from "./components/server_message_list/server_message_list";
 import { UserWelcome } from "./components/user_welcome/user_welcome";
 import { UserSettingsForm } from "./components/user_settings_form/user_settings_form";
@@ -130,7 +131,7 @@ function getScreen(
   setShowSettings: (value: boolean) => void,
 ) {
   if (!myPlayer) {
-    return <> </>;
+    return LoadingScreen;
   }
   if (showSettings) {
     return (

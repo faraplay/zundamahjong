@@ -20,7 +20,7 @@ logger.setLevel(logging.INFO)
 def connect(sid: str, environ: dict[str, Any], auth: object = None) -> None:  # pyright: ignore[reportExplicitAny]
     logger.info(f"Client connecting with sid {sid}")
     if "player" not in session:
-        raise Exception("Please log in first.")
+        raise Exception("Player object missing from client session!")
     player = Player.model_validate_json(session["player"])  # pyright: ignore[reportAny]
     set_player(sid, player)
     if player.new_user and session["first"]:
