@@ -51,6 +51,7 @@ if __name__ == "__main__":
         app = ProxyMiddleware(
             flask_app,
             {
+                "/node_modules": {"target": "http://localhost:5173"},
                 "/src/assets": {"target": "http://localhost:5173"},
             },
         )
