@@ -29,11 +29,14 @@ classifiers = [
   "Programming Language :: Python",
 ]
 
+[project.urls]
+Repository = "https://github.com/faraplay/zundamahjong"
+
 [project.optional-dependencies]
 postgresql = ["sqlalchemy[postgresql-psycopgbinary]"]
 
-[project.urls]
-Repository = "https://github.com/faraplay/zundamahjong"
+[project.scripts]
+zundamahjong = "zundamahjong.cli:main"
 
 
 # Building zundamahjong

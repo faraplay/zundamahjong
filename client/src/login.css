@@ -1,0 +1,15 @@
+.flashed_message_list {
+  width: 90cqw;
+  position: absolute;
+  left: 5cqw;
+  bottom: 0;
+  z-index: 100;
+
+  .flashed_message {
+    padding: 0.5cqw;
+    display: flex;
+    justify-content: space-between;
+    border: 1px solid black;
+    background-color: rgb(255, 0, 0, 30%);
+  }
+}

@@ -10,8 +10,8 @@ import type { EmitFunc } from "./types/emit_func";
 
 import { Emitter } from "./components/emitter/emitter";
 
+import { LoadingScreen } from "./components/loading_screen/loading_screen";
 import { ServerMessageList } from "./components/server_message_list/server_message_list";
-import { NameForm } from "./components/name_form/name_form";
 import { UserWelcome } from "./components/user_welcome/user_welcome";
 import { UserSettingsForm } from "./components/user_settings_form/user_settings_form";
 import { JoinRoomForm } from "./components/join_room_form/join_room_form";
@@ -47,7 +47,7 @@ export function App() {
     socket.current?.emit(event, ...args);
 
   useEffect(() => {
-    socket.current = io();
+    socket.current = io({ path: `${location.pathname}socket.io` });
 
     socket.current.on(
       "server_message",
@@ -65,9 +65,6 @@ export function App() {
     );
     socket.current.on("player_info", (player: Player) => {
       setMyPlayer(player);
-    });
-    socket.current.on("unset_name", () => {
-      setMyPlayer(undefined);
     });
     socket.current.on("rooms_info", (rooms: Array<BasicRoom>) => {
       setRooms(rooms);
@@ -134,11 +131,7 @@ function getScreen(
   setShowSettings: (value: boolean) => void,
 ) {
   if (!myPlayer) {
-    return (
-      <div id="name_screen" class="screen">
-        <NameForm />
-      </div>
-    );
+    return LoadingScreen;
   }
   if (showSettings) {
     return (

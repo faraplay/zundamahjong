@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% set name = "src/login.tsx" %}
+
+{% block body %}
+  <div id="app"></div>
+
+  {% with messages = get_flashed_messages() %}
+    <div class="flashed_message_list">
+
+    {% for message in messages %}
+      <div class="flashed_message"}>
+        <span>{{ message }}</span>
+      </div>
+    {% endfor %}
+
+    </div>
+  {% endwith %}
+{% endblock %}
