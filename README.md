@@ -21,7 +21,7 @@ pip install zundamahjong
 To start the bundled WSGI server, listening at the port `PORT`, run
 
 ```sh
-python -m zundamahjong [-p PORT]  # defaults to 5000
+zundamahjong [-p PORT]  # defaults to 5000
 ```
 
 > [!WARNING]
@@ -100,7 +100,7 @@ npm run build
 Start the bundled Werkzeug server in debug mode by running
 
 ```sh
-uv run -m zundamahjong --debug [--vite-port PORT]  # defaults to 5173
+uv run zundamahjong --debug [--vite-port PORT]  # defaults to 5173
 ```
 
 This will take care of starting the [Vite](https://vite.dev/) debug server in
