@@ -5,6 +5,8 @@ export type GameOptions = {
   auto_replace_flowers: boolean;
   end_wall_count: number;
 
+  allow_riichi: boolean;
+
   show_waits: boolean;
   show_shanten_info: boolean;
 

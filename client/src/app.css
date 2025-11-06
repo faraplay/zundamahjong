@@ -23,18 +23,24 @@
 }
 
 .action_5 {
+  --text-inner-color: rgb(255, 250, 207);
+  --text-border-color: rgb(235, 141, 0);
+  --plate-color: rgb(248, 188, 23);
+}
+
+.action_6 {
   --text-inner-color: rgb(255, 204, 182);
   --text-border-color: rgb(181, 43, 0);
   --plate-color: rgb(248, 95, 23);
 }
 
-.action_6 {
+.action_7 {
   --text-inner-color: rgb(247, 195, 211);
   --text-border-color: rgb(160, 0, 88);
   --plate-color: rgb(223, 31, 130);
 }
 
-.action_7 {
+.action_8 {
   --text-inner-color: rgb(225, 225, 225);
   --text-border-color: rgb(53, 53, 53);
   --plate-color: rgb(150, 150, 150);

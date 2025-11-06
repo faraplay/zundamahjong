@@ -59,6 +59,17 @@ export const inputPropsList: GameOptionsInputProps[] = [
     type: "checkbox",
   },
   {
+    name: "end_wall_count",
+    labelText: "Number of tiles in dead wall",
+    type: "number",
+    min: 0,
+  },
+  {
+    name: "allow_riichi",
+    labelText: "Allow riichi",
+    type: "checkbox",
+  },
+  {
     name: "show_waits",
     labelText: "Show waits",
     type: "checkbox",

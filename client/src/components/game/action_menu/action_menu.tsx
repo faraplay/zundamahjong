@@ -53,7 +53,7 @@ export function ActionMenu({ actions }: { actions: ReadonlyArray<Action> }) {
   if (actions.length <= 1) {
     return <></>;
   }
-  const action_buckets: Action[][] = [[], [], [], [], [], [], [], []];
+  const action_buckets: Action[][] = [[], [], [], [], [], [], [], [], []];
   for (const action of actions) {
     const action_supertype = getActionSupertype(action.action_type);
     action_buckets[action_supertype].push(action);
