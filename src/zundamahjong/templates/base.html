@@ -10,8 +10,8 @@
 
     {% if config["DEBUG"] %}
 
-      <script type="module" src="http://localhost:5173/@vite/client"></script>
-      <script type="module" src="http://localhost:5173/{{ name }}"></script>
+      <script type="module" src="http://localhost:{{ config["VITE_PORT"] }}/@vite/client"></script>
+      <script type="module" src="http://localhost:{{ config["VITE_PORT"] }}/{{ name }}"></script>
 
     {% else %}
 

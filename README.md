@@ -94,7 +94,7 @@ npm install
 Start the bundled Werkzeug server in debug mode by running
 
 ```sh
-uv run -m zundamahjong --debug
+uv run -m zundamahjong --debug [--vite-port PORT]  # defaults to 5173
 ```
 
 This will take care of starting the [Vite](https://vite.dev/) debug server in

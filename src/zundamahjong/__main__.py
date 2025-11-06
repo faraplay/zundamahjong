@@ -17,10 +17,18 @@ parser = argparse.ArgumentParser(
     prog="zundamahjong", description="Web-based Mahjong game server"
 )
 
-parser.add_argument("-p", "--port", type=int, help="port on which to listen")
-
 parser.add_argument(
-    "--debug", action="store_true", help="run server in development mode"
+    "-p", "--port", type=int, help="port on which to run the Zundamahjong web server"
+)
+
+dev_args = parser.add_argument_group("dev options")
+
+dev_args.add_argument(
+    "--debug", action="store_true", help="run Zundamahjong in development mode"
+)
+
+dev_args.add_argument(
+    "--vite-port", type=int, help="port on which to run the Vite development server"
 )
 
 app: Flask | ProxyMiddleware = flask_app
@@ -31,7 +39,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     if args.port is None:
-        port = int(os.getenv("DEBUG_SERVER_PORT", 5000))
+        port = int(os.getenv("FLASK_PORT", 5000))
 
     else:
         port = args.port
@@ -39,20 +47,54 @@ if __name__ == "__main__":
     if args.debug:
         flask_app.debug = True
 
+        if args.vite_port is None:
+            vite_port = int(os.getenv("VITE_PORT", 5173))
+
+        else:
+            vite_port = args.vite_port
+
+        flask_app.config["VITE_PORT"] = vite_port
+
         if not is_running_from_reloader():
             try:
-                conn = http.client.HTTPConnection("localhost", 5173)
-                conn.request("GET", "/")
+                conn = http.client.HTTPConnection(
+                    "localhost",
+                    vite_port,
+                )
+                conn.request(
+                    "GET",
+                    "/src/app.tsx",
+                )
+                res = conn.getresponse()
+
+                if res.status != 200:
+                    print(
+                        f"[ERROR]: Port {vite_port} is in use but not by the Vite debug server!\n"
+                        + "Use the `--vite-port` command-line switch to use another port."
+                    )
+                    exit(1)
 
             except ConnectionRefusedError:
-                print("Starting Vite debug server listening on port 5173...")
-                Popen(["npm", "--prefix", "client", "run", "dev"], stdout=DEVNULL)
+                print(f"Starting Vite debug server listening on port {vite_port}...")
+                Popen(
+                    [
+                        "npm",
+                        "--prefix",
+                        "client",
+                        "run",
+                        "dev",
+                        "--",
+                        "--port",
+                        str(vite_port),
+                    ],
+                    stdout=DEVNULL,
+                )
 
         app = ProxyMiddleware(
             flask_app,
             {
-                "/node_modules": {"target": "http://localhost:5173"},
-                "/src/assets": {"target": "http://localhost:5173"},
+                "/node_modules": {"target": f"http://localhost:{vite_port}"},
+                "/src/assets": {"target": f"http://localhost:{vite_port}"},
             },
         )
 
