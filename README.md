@@ -36,8 +36,8 @@ to your virtual environment with
 pip install gunicorn
 ```
 
-You'll need to generate a secret key for Flask to sign sessions. As an
-example, you can run
+You'll need to generate a secret key for Flask to sign sessions. For example,
+you can run
 
 ```python
 >>> import secrets
@@ -46,6 +46,9 @@ example, you can run
 
 and pass the result to `zundamahjong` through the `FLASK_SECRET_KEY`
 environment variable.
+
+One way to go about this is with a `.env` file. Use `.env.example` as a
+starting point.
 
 Once you've figured out how to do that, tell Gunicorn to start `zundamahjong`
 up by running
