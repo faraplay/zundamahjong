@@ -41,7 +41,7 @@ class Hand:
         self._calls: list[Call] = []
         self._flowers: list[TileId] = []
         self._waits: frozenset[TileValue] | None = None
-        self.is_riichi: bool = False
+        self._is_riichi: bool = False
 
     @property
     def tiles(self) -> Sequence[TileId]:
@@ -62,6 +62,10 @@ class Hand:
     @property
     def flowers(self) -> Sequence[TileId]:
         return self._flowers
+
+    @property
+    def is_riichi(self) -> bool:
+        return self._is_riichi
 
     def sort(self) -> None:
         self._tiles.sort()
@@ -108,6 +112,12 @@ class Hand:
             )
             > 0
         ]
+
+    def riichi(self, tile: TileId) -> None:
+        self._is_riichi = True
+        self._tiles.remove(tile)
+        self.sort()
+        self._waits = None
 
     def get_chiis(self, last_discard: TileId) -> list[Action]:
         if self.is_riichi:

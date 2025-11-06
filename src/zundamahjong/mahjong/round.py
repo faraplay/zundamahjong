@@ -416,8 +416,7 @@ class Round:
     def _riichi(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.RIICHI
         tile = action.tile
-        self._hands[player].is_riichi = True
-        self._hands[player].discard(tile)
+        self._hands[player].riichi(tile)
         self._discard_pool.append(player, tile)
         if self.tiles_left > 0:
             self._status = RoundStatus.DISCARDED
