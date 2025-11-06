@@ -73,6 +73,35 @@ function setDiscardAnimation(
   return 250;
 }
 
+function setRiichiAnimation(
+  playerIndex: number,
+  avatarId: number,
+  action: Action,
+  delayMilliseconds: number,
+) {
+  const cutinElement = document.querySelector<HTMLElement>(
+    `.cutins .cutin.action_${getActionSupertype(action.action_type)}.player_${playerIndex}`,
+  );
+  const discardedTileElement = document.querySelector<HTMLElement>(
+    `#discard_pool .player_discards.player_${playerIndex} > *:last-child`,
+  );
+  const riichiAudioElement = document.querySelector<HTMLAudioElement>(
+    `audio.avatar_${avatarId}.riichi`,
+  );
+  const discardAudioElement =
+    document.querySelector<HTMLAudioElement>("audio.discard");
+  addAudio(riichiAudioElement, delayMilliseconds);
+  addAnimation(cutinElement, "cutinAnimation", 1000, delayMilliseconds);
+  addAnimation(
+    discardedTileElement,
+    "discardAnimation",
+    250,
+    delayMilliseconds + 1000,
+  );
+  addAudio(discardAudioElement, delayMilliseconds + 1125);
+  return 1250;
+}
+
 function setCallAnimation(
   playerIndex: number,
   avatarId: number,
@@ -278,6 +307,7 @@ const setAnimationFuncs = {
   },
   [ActionType.DRAW]: setDrawAnimation,
   [ActionType.DISCARD]: setDiscardAnimation,
+  [ActionType.RIICHI]: setRiichiAnimation,
   [ActionType.CHII]: setChiiAnimation,
   [ActionType.PON]: setPonAnimation,
   [ActionType.OPEN_KAN]: setNewKanAnimation,
