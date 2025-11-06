@@ -10,6 +10,8 @@ class GameOptions(BaseModel):
     auto_replace_flowers: bool = True
     end_wall_count: int = 14
 
+    allow_riichi: bool = False
+
     show_waits: bool = True
     show_shanten_info: bool = False
 

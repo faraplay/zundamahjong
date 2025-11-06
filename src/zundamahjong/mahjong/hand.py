@@ -101,7 +101,12 @@ class Hand:
         return [
             HandTileAction(action_type=ActionType.RIICHI, tile=tile)
             for index, tile in enumerate(self._tiles)
-            if len(get_waits(self._tiles[:index] + self._tiles[index + 1 :])) > 0
+            if len(
+                get_waits(
+                    get_tile_values(self._tiles[:index] + self._tiles[index + 1 :])
+                )
+            )
+            > 0
         ]
 
     def get_chiis(self, last_discard: TileId) -> list[Action]:

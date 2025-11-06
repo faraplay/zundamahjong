@@ -276,7 +276,8 @@ class Round:
                 discard_actions = hand.get_discards()
                 actions = ActionList(discard_actions[-1])
                 actions.add_actions(discard_actions[:-1])
-                actions.add_actions(hand.get_riichis())
+                if self._options.allow_riichi:
+                    actions.add_actions(hand.get_riichis())
                 actions.add_actions(hand.get_add_kans())
                 actions.add_actions(hand.get_closed_kans())
                 actions.add_actions(flower_actions)
