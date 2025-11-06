@@ -91,6 +91,12 @@ To install the Node.js dependencies, navigate to the `client` folder and run
 npm install
 ```
 
+While you are still in the `client` folder, run an initial build of the client files
+
+```sh
+npm run build
+```
+
 Start the bundled Werkzeug server in debug mode by running
 
 ```sh
