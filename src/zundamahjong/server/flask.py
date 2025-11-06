@@ -21,6 +21,13 @@ manifest.init_app(app)
 
 secret_key = os.getenv("FLASK_SECRET_KEY")
 
+BAD_SECRET_KEY_ERROR_MESSAGE = """\
+*********************************************************
+Unsafe FLASK_SECRET_KEY found in process environment!
+Please generate a secure secret key for signing sessions.
+*********************************************************
+"""
+
 NO_SECRET_KEY_ERROR_MESSAGE = """\
 *********************************************************
 FLASK_SECRET_KEY not found in the process environment!
@@ -29,13 +36,16 @@ Using an unsafe value from here on out.
 *********************************************************
 """
 
+if secret_key == "dev":
+    if not is_running_from_reloader():
+        print(BAD_SECRET_KEY_ERROR_MESSAGE)
+
 if secret_key is None:
     if not is_running_from_reloader():
         print(NO_SECRET_KEY_ERROR_MESSAGE)
-    app.config["SECRET_KEY"] = "dev"
+    secret_key = "dev"
 
-else:
-    app.config["SECRET_KEY"] = secret_key
+app.config["SECRET_KEY"] = secret_key
 
 
 class PlayerStatus(Enum):
