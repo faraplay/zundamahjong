@@ -41,6 +41,7 @@ class Hand:
         self._calls: list[Call] = []
         self._flowers: list[TileId] = []
         self._waits: frozenset[TileValue] | None = None
+        self.is_riichi: bool = False
 
     @property
     def tiles(self) -> Sequence[TileId]:
@@ -78,6 +79,10 @@ class Hand:
         self._tiles.append(self._deck.popleft())
 
     def get_discards(self) -> list[Action]:
+        if self.is_riichi:
+            return [
+                HandTileAction(action_type=ActionType.DISCARD, tile=self._tiles[-1])
+            ]
         return [
             HandTileAction(action_type=ActionType.DISCARD, tile=tile)
             for tile in self._tiles
@@ -87,6 +92,17 @@ class Hand:
         self._tiles.remove(tile)
         self.sort()
         self._waits = None
+
+    def get_riichis(self) -> list[Action]:
+        if self.is_riichi or not all(
+            call.call_type == CallType.CLOSED_KAN for call in self._calls
+        ):
+            return []
+        return [
+            HandTileAction(action_type=ActionType.RIICHI, tile=tile)
+            for index, tile in enumerate(self._tiles)
+            if len(get_waits(self._tiles[:index] + self._tiles[index + 1 :])) > 0
+        ]
 
     def get_chiis(self, last_discard: TileId) -> list[Action]:
         discard_value = get_tile_value(last_discard)

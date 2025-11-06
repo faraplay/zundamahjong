@@ -217,7 +217,7 @@ class Round:
 
     def do_action(self, player: int, action: Action) -> None:
         if action not in self.allowed_actions[player].actions:
-            raise InvalidMoveException()
+            raise InvalidMoveException(action, self.allowed_actions[player].actions)
         _do_action_funcs[action.action_type](self, player, action)
         self._history.append((player, action))
         self._calculate_allowed_actions()
@@ -276,6 +276,7 @@ class Round:
                 discard_actions = hand.get_discards()
                 actions = ActionList(discard_actions[-1])
                 actions.add_actions(discard_actions[:-1])
+                actions.add_actions(hand.get_riichis())
                 actions.add_actions(hand.get_add_kans())
                 actions.add_actions(hand.get_closed_kans())
                 actions.add_actions(flower_actions)
@@ -290,12 +291,17 @@ class Round:
         self, player: int, hand: Hand, last_tile: TileId
     ) -> ActionList:
         if self._current_player == player:
-            discard_actions = hand.get_discards()
-            actions = ActionList(discard_actions[-1])
-            actions.add_actions(discard_actions[:-1])
+            flower_actions = hand.get_flowers()
+            if self._options.auto_replace_flowers and len(flower_actions) > 0:
+                return ActionList(flower_actions[0])
+            else:
+                discard_actions = hand.get_discards()
+                actions = ActionList(discard_actions[-1])
+                actions.add_actions(discard_actions[:-1])
+                actions.add_actions(flower_actions)
+                return actions
         else:
-            actions = ActionList()
-        return actions
+            return ActionList()
 
     @_register_allowed_actions(RoundStatus.ADD_KAN_AFTER)
     def _allowed_actions_add_kan_after(
@@ -397,6 +403,19 @@ class Round:
     def _discard(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.DISCARD
         tile = action.tile
+        self._hands[player].discard(tile)
+        self._discard_pool.append(player, tile)
+        if self.tiles_left > 0:
+            self._status = RoundStatus.DISCARDED
+        else:
+            self._status = RoundStatus.LAST_DISCARDED
+        self._last_tile = tile
+
+    @_register_do_action(ActionType.RIICHI)
+    def _riichi(self, player: int, action: Action) -> None:
+        assert action.action_type == ActionType.RIICHI
+        tile = action.tile
+        self._hands[player].is_riichi = True
         self._hands[player].discard(tile)
         self._discard_pool.append(player, tile)
         if self.tiles_left > 0:

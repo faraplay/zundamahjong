@@ -13,6 +13,7 @@ class ActionType(IntEnum):
     CONTINUE = 1
     DRAW = 2
     DISCARD = 3
+    RIICHI = 4
     CHII = 6
     PON = 7
     OPEN_KAN = 8
@@ -43,7 +44,7 @@ class SimpleAction(BaseModel, frozen=True):
 
 
 class HandTileAction(BaseModel, frozen=True):
-    action_type: Literal[ActionType.DISCARD, ActionType.FLOWER]
+    action_type: Literal[ActionType.DISCARD, ActionType.RIICHI, ActionType.FLOWER]
     tile: TileId
 
 
@@ -56,7 +57,7 @@ class OpenCallAction(BaseModel, frozen=True):
 
 
 class OpenKanAction(BaseModel, frozen=True):
-    action_type: Literal[ActionType.OPEN_KAN,] = ActionType.OPEN_KAN
+    action_type: Literal[ActionType.OPEN_KAN] = ActionType.OPEN_KAN
     other_tiles: tuple[TileId, TileId, TileId]
 
 
