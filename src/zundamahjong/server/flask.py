@@ -5,9 +5,9 @@ from flask import Flask, flash, redirect, render_template, request, session, url
 from flask.typing import ResponseReturnValue
 from werkzeug.serving import is_running_from_reloader
 
-from .. import templates
 from ..database import db
 from ..database.security import UserLimitException, WrongPasswordException, login
+from ..templates import manifest
 from ..types.player import Player
 from .name_sid import id_to_sid
 
@@ -16,7 +16,7 @@ app = Flask("zundamahjong", static_folder="client", static_url_path="/")
 
 # Do some basic setup.
 db.init_app(app)
-templates.init_app(app)
+manifest.init_app(app)
 
 
 secret_key = os.getenv("FLASK_SECRET_KEY")
