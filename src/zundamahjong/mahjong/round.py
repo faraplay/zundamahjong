@@ -405,7 +405,7 @@ class Round:
         assert action.action_type == ActionType.DISCARD
         tile = action.tile
         self._hands[player].discard(tile)
-        self._discard_pool.append(player, tile)
+        self._discard_pool.append(player, tile, self._hands[player].is_riichi)
         if self.tiles_left > 0:
             self._status = RoundStatus.DISCARDED
         else:
@@ -417,7 +417,7 @@ class Round:
         assert action.action_type == ActionType.RIICHI
         tile = action.tile
         self._hands[player].riichi(tile)
-        self._discard_pool.append(player, tile)
+        self._discard_pool.append(player, tile, self._hands[player].is_riichi)
         if self.tiles_left > 0:
             self._status = RoundStatus.DISCARDED
         else:
