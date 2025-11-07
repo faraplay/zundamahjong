@@ -26,8 +26,13 @@ export type SimpleAction = {
     | ActionType.TSUMO;
 };
 
+export type HandTileActionType =
+  | ActionType.DISCARD
+  | ActionType.RIICHI
+  | ActionType.FLOWER;
+
 export type HandTileAction = {
-  action_type: ActionType.DISCARD | ActionType.RIICHI | ActionType.FLOWER;
+  action_type: HandTileActionType;
   tile: TileId;
 };
 

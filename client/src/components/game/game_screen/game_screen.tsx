@@ -1,7 +1,11 @@
-import { useContext, useLayoutEffect, useState } from "preact/hooks";
+import { useContext, useEffect, useLayoutEffect, useState } from "preact/hooks";
 
 import type { AvatarIdDict } from "../../../types/avatars";
-import type { Action } from "../../../types/action";
+import {
+  ActionType,
+  type Action,
+  type HandTileActionType,
+} from "../../../types/action";
 import { RoundStatus } from "../../../types/game";
 import { type AllInfo } from "../../../process_info";
 
@@ -42,12 +46,27 @@ export function GameScreen({
   goToResults: () => void;
 }) {
   const [hoverTile, setHoverTile] = useState<TileId | null>(null);
+  const [handActionType, setHandActionType] = useState<HandTileActionType>(
+    ActionType.DISCARD,
+  );
 
   const emit = useContext(Emitter);
   const emit_action = (action: Action) => {
     setActionSubmitted();
     emit("action", action, info.round_info.history.length);
   };
+
+  useEffect(() => {
+    if (info.round_info.current_player == info.player_index) {
+      if (info.round_info.status == RoundStatus.START) {
+        setHandActionType(ActionType.FLOWER);
+      } else {
+        setHandActionType(ActionType.DISCARD);
+      }
+    } else {
+      setHandActionType(ActionType.DISCARD);
+    }
+  }, [info]);
 
   useLayoutEffect(() => {
     // calculate this inside to avoid triggering this effect every time
@@ -103,6 +122,7 @@ export function GameScreen({
           playerAvatarIds={playerAvatarIds}
         />
         <Hand
+          handActionType={handActionType}
           tiles={info.player_info.hand}
           actions={info.player_info.actions}
           actionSubmitted={actionSubmitted}
@@ -111,7 +131,10 @@ export function GameScreen({
         {actionSubmitted ? (
           <></>
         ) : (
-          <ActionMenu actions={info.player_info.actions} />
+          <ActionMenu
+            actions={info.player_info.actions}
+            setHandActionType={setHandActionType}
+          />
         )}
         {info.player_info.shanten_info ? (
           <ShantenDisplayButton
