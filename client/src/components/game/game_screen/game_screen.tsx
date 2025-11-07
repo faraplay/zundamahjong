@@ -133,6 +133,7 @@ export function GameScreen({
         ) : (
           <ActionMenu
             actions={info.player_info.actions}
+            handActionType={handActionType}
             setHandActionType={setHandActionType}
           />
         )}

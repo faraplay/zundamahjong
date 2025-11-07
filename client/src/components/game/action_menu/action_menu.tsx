@@ -50,6 +50,24 @@ function ActionMenuItem({
   );
 }
 
+function BackButton({ goBack }: { goBack: () => void }) {
+  const backString = "Back";
+  const onClick = (e: Event) => {
+    e.preventDefault();
+    goBack();
+  };
+  return (
+    <button
+      type="button"
+      class={`action_button action_8`}
+      data-text={backString}
+      onClick={onClick}
+    >
+      <div class="action_button_text">{backString}</div>
+    </button>
+  );
+}
+
 function getClickFunction(
   action_supertype: number,
   actions: readonly Action[],
@@ -82,9 +100,11 @@ function getClickFunction(
 
 export function ActionMenu({
   actions,
+  handActionType,
   setHandActionType,
 }: {
   actions: ReadonlyArray<Action>;
+  handActionType: HandTileActionType;
   setHandActionType: (actionType: HandTileActionType) => void;
 }) {
   const [disambigActions, setDisambigActions] =
@@ -92,30 +112,47 @@ export function ActionMenu({
   if (actions.length <= 1) {
     return <></>;
   }
+  const goBack = () => {
+    setHandActionType(ActionType.DISCARD);
+    setDisambigActions(null);
+  };
   const action_buckets: Action[][] = [[], [], [], [], [], [], [], [], []];
   for (const action of actions) {
     const action_supertype = getActionSupertype(action.action_type);
     action_buckets[action_supertype].push(action);
   }
 
-  if (!disambigActions) {
-    const actionMenuItems = action_buckets.map((actions, bucket_index) => (
-      <ActionMenuItem
-        key={bucket_index}
-        action_supertype={bucket_index as ActionSupertype}
-        actions={actions}
-        setDisambig={() => setDisambigActions(actions)}
-        setHandActionType={setHandActionType}
-      />
-    ));
-    return <div id="actions">{actionMenuItems.reverse()}</div>;
+  if (disambigActions) {
+    return (
+      <>
+        <div id="actions_disambiguation">
+          <ActionDisambigMenu
+            disambigActions={disambigActions}
+            unsetDisambig={() => setDisambigActions(null)}
+          />
+        </div>
+        <div id="actions">
+          <BackButton goBack={goBack} />
+        </div>
+      </>
+    );
   }
-  return (
-    <div id="actions_disambiguation">
-      <ActionDisambigMenu
-        disambigActions={disambigActions}
-        unsetDisambig={() => setDisambigActions(null)}
-      />
-    </div>
-  );
+  if (handActionType != ActionType.DISCARD) {
+    return (
+      <div id="actions">
+        <BackButton goBack={goBack} />
+      </div>
+    );
+  }
+
+  const actionMenuItems = action_buckets.map((actions, bucket_index) => (
+    <ActionMenuItem
+      key={bucket_index}
+      action_supertype={bucket_index as ActionSupertype}
+      actions={actions}
+      setDisambig={() => setDisambigActions(actions)}
+      setHandActionType={setHandActionType}
+    />
+  ));
+  return <div id="actions">{actionMenuItems.reverse()}</div>;
 }
