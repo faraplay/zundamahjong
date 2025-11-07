@@ -10,11 +10,13 @@ import { EmitAction } from "../emit_action/emit_action";
 function HandTile({
   action_type,
   tile,
+  isDrawnTile,
   canDoAction,
   setHoverTile,
 }: {
   action_type: HandTileActionType;
   tile: TileId;
+  isDrawnTile: boolean;
   canDoAction: boolean;
   setHoverTile: (tile: TileId | null) => void;
 }) {
@@ -36,7 +38,7 @@ function HandTile({
     <button
       key={tile}
       type="button"
-      class="hand_tile_button"
+      class={`hand_tile_button ${isDrawnTile ? "drawn_tile" : ""}`}
       disabled={!canDoAction}
       onClick={submitAction}
       onMouseEnter={startHoverAction}
@@ -50,23 +52,26 @@ function HandTile({
 export function Hand({
   handActionType,
   tiles,
+  didDrawTile,
   actions,
   actionSubmitted,
   setHoverTile,
 }: {
   handActionType: HandTileActionType;
   tiles: ReadonlyArray<TileId>;
+  didDrawTile: boolean;
   actions: ReadonlyArray<Action>;
   actionSubmitted: boolean;
   setHoverTile: (tile: TileId | null) => void;
 }) {
   return (
     <div id="hand">
-      {tiles.map((tile) => (
+      {tiles.map((tile, index) => (
         <HandTile
           key={tile}
           action_type={handActionType}
           tile={tile}
+          isDrawnTile={didDrawTile && index == tiles.length - 1}
           canDoAction={
             !actionSubmitted &&
             actions.some(

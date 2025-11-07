@@ -23,6 +23,10 @@
     padding: 0;
     background-color: transparent;
 
+    &.drawn_tile {
+      margin-left: calc(var(--tile-width) / 2);
+    }
+
     &:disabled {
       .tile_2d.tile_div::after {
         background-color: rgb(0, 0, 0, 20%);
@@ -43,8 +47,4 @@
 
 .status_7 #hand {
   display: none;
-}
-
-.status_1 .hand_tile_button:nth-child(3n + 2):nth-last-child(1) {
-  margin-left: calc(var(--tile-width) / 2);
 }

@@ -7,6 +7,15 @@
   }
 }
 
+@keyframes fadeInAnimation {
+  from {
+    opacity: 0%;
+  }
+  to {
+    opacity: 100%;
+  }
+}
+
 @keyframes drawAnimation {
   from {
     visibility: hidden;

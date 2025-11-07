@@ -102,6 +102,42 @@ export function GameScreen({
       />
     );
 
+  function didDrawTile(info: AllInfo) {
+    console.log(info.round_info.history);
+    if (info.round_info.current_player != info.player_index) {
+      return false;
+    }
+    if (
+      info.round_info.history.every(
+        (historyItem) =>
+          historyItem.action.action_type == ActionType.FLOWER ||
+          historyItem.action.action_type == ActionType.CONTINUE,
+      )
+    ) {
+      return false;
+    }
+    const lastHistoryItem = info.round_info.history.at(-1);
+    if (!lastHistoryItem) {
+      return false;
+    }
+    const lastActionType = lastHistoryItem.action.action_type;
+    const isDrawActionType = {
+      [ActionType.PASS]: false,
+      [ActionType.CONTINUE]: true,
+      [ActionType.DRAW]: true,
+      [ActionType.DISCARD]: false,
+      [ActionType.RIICHI]: false,
+      [ActionType.CHII]: false,
+      [ActionType.PON]: false,
+      [ActionType.OPEN_KAN]: true,
+      [ActionType.ADD_KAN]: true,
+      [ActionType.CLOSED_KAN]: true,
+      [ActionType.FLOWER]: true,
+      [ActionType.RON]: true,
+      [ActionType.TSUMO]: false,
+    } as const;
+    return isDrawActionType[lastActionType];
+  }
   const discard_shanten_info =
     info.player_info.discard_shanten_info &&
     hoverTile &&
@@ -124,6 +160,7 @@ export function GameScreen({
         <Hand
           handActionType={handActionType}
           tiles={info.player_info.hand}
+          didDrawTile={didDrawTile(info)}
           actions={info.player_info.actions}
           actionSubmitted={actionSubmitted}
           setHoverTile={setHoverTile}
