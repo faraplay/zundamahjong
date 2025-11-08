@@ -3,8 +3,8 @@ import unittest
 from tests.decks import test_deck_riichi
 from zundamahjong.mahjong.action import (
     ActionType,
-    HandTileAction,
     ClosedKanAction,
+    HandTileAction,
     OpenCallAction,
     OpenKanAction,
     SimpleAction,
