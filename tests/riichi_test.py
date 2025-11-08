@@ -210,3 +210,41 @@ class RiichiTest(unittest.TestCase):
             ClosedKanAction(tiles=(220, 221, 222, 223)),
             round.allowed_actions[0].actions,
         )
+
+    def test_riichi_ippatsu(self) -> None:
+        round = get_round()
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=160))
+        round.do_action(
+            3, OpenCallAction(action_type=ActionType.PON, other_tiles=(161, 162))
+        )
+        round.do_action(3, HandTileAction(action_type=ActionType.DISCARD, tile=51))
+        round.do_action(0, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(0, HandTileAction(action_type=ActionType.RIICHI, tile=350))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=13))
+        round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=231))
+        round.do_action(0, SimpleAction(action_type=ActionType.RON))
+        assert round.win_info is not None
+        self.assertTrue(round.win_info.is_riichi)
+        self.assertFalse(round.win_info.is_double_riichi)
+        self.assertTrue(round.win_info.is_ippatsu)
+
+    def test_double_riichi(self) -> None:
+        round = get_round()
+        round.do_action(0, HandTileAction(action_type=ActionType.RIICHI, tile=160))
+        round.do_action(
+            3, OpenCallAction(action_type=ActionType.PON, other_tiles=(161, 162))
+        )
+        round.do_action(3, HandTileAction(action_type=ActionType.DISCARD, tile=51))
+        round.do_action(0, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=350))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=13))
+        round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=231))
+        round.do_action(0, SimpleAction(action_type=ActionType.RON))
+        assert round.win_info is not None
+        self.assertTrue(round.win_info.is_riichi)
+        self.assertTrue(round.win_info.is_double_riichi)
+        self.assertFalse(round.win_info.is_ippatsu)

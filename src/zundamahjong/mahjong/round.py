@@ -253,6 +253,15 @@ class Round:
     def _next_player(self, player: int) -> int:
         return (player + 1) % self._player_count
 
+    def _is_instant(self, player: int, history_items: list[tuple[int, Action]]) -> bool:
+        return all(
+            (action.action_type not in call_action_types)
+            and not (
+                action.action_type == ActionType.DISCARD and history_player == player
+            )
+            for history_player, action in history_items
+        )
+
     @_register_allowed_actions(RoundStatus.START)
     def _allowed_actions_start(
         self, player: int, hand: Hand, last_tile: TileId
@@ -481,6 +490,25 @@ class Round:
     def _ron(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.RON
         hand = self._hands[player]
+
+        riichi_index = next(
+            (
+                index
+                for index, history_item in enumerate(self._history)
+                if history_item[0] == player
+                and history_item[1].action_type == ActionType.RIICHI
+            ),
+            None,
+        )
+        if riichi_index is not None:
+            is_riichi = True
+            is_double_riichi = self._is_instant(player, self._history[:riichi_index])
+            is_ippatsu = self._is_instant(player, self._history[riichi_index:])
+        else:
+            is_riichi = False
+            is_double_riichi = False
+            is_ippatsu = False
+
         is_chankan = (
             self._status == RoundStatus.ADD_KAN_AFTER
             or self._status == RoundStatus.CLOSED_KAN_AFTER
@@ -496,6 +524,9 @@ class Round:
             wind_round=self._wind_round,
             sub_round=self._sub_round,
             draw_count=self._draw_count,
+            is_riichi=is_riichi,
+            is_double_riichi=is_double_riichi,
+            is_ippatsu=is_ippatsu,
             is_chankan=is_chankan,
             is_houtei=is_houtei,
         )
@@ -519,14 +550,29 @@ class Round:
                 pass
             else:
                 break
+
+        riichi_index = next(
+            (
+                index
+                for index, history_item in enumerate(self._history)
+                if history_item[0] == player
+                and history_item[1].action_type == ActionType.RIICHI
+            ),
+            None,
+        )
+        if riichi_index is not None:
+            is_riichi = True
+            is_double_riichi = self._is_instant(player, self._history[:riichi_index])
+            is_ippatsu = self._is_instant(player, self._history[riichi_index:])
+        else:
+            is_riichi = False
+            is_double_riichi = False
+            is_ippatsu = False
+
         is_haitei = self.tiles_left <= 0
         is_tenhou = False
         is_chiihou = False
-        if not any(
-            (action.action_type in call_action_types)
-            or (action.action_type == ActionType.DISCARD and history_player == player)
-            for history_player, action in self._history
-        ):
+        if self._is_instant(player, self._history):
             if player == self._sub_round:
                 is_tenhou = True
             else:
@@ -543,6 +589,9 @@ class Round:
             draw_count=self._draw_count,
             after_flower_count=after_flower_count,
             after_kan_count=after_kan_count,
+            is_riichi=is_riichi,
+            is_double_riichi=is_double_riichi,
+            is_ippatsu=is_ippatsu,
             is_haitei=is_haitei,
             is_tenhou=is_tenhou,
             is_chiihou=is_chiihou,
