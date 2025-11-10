@@ -65,6 +65,12 @@ export const inputPropsList: GameOptionsInputProps[] = [
     min: 0,
   },
   {
+    name: "min_han",
+    labelText: "Minimum han to win",
+    type: "number",
+    min: 0,
+  },
+  {
     name: "allow_riichi",
     labelText: "Allow riichi",
     type: "checkbox",

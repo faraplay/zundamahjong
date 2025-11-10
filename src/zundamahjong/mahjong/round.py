@@ -4,6 +4,8 @@ from collections.abc import Callable, Sequence
 from enum import IntEnum
 from typing import final
 
+from zundamahjong.mahjong.scoring import Scorer
+
 from .action import (
     Action,
     ActionList,
@@ -105,7 +107,7 @@ class Round:
         self._status = RoundStatus.START
         self._last_tile: TileId = 0
         self._history: list[tuple[int, Action]] = []
-        self._win_info: Win | None = None
+        self._win: Win | None = None
 
         self._calculate_allowed_actions()
 
@@ -179,8 +181,8 @@ class Round:
         return self._history
 
     @property
-    def win_info(self) -> Win | None:
-        return self._win_info
+    def win(self) -> Win | None:
+        return self._win
 
     def display_info(self) -> None:
         print(
@@ -290,7 +292,7 @@ class Round:
                 actions.add_actions(hand.get_add_kans())
                 actions.add_actions(hand.get_closed_kans())
                 actions.add_actions(flower_actions)
-                if hand.can_tsumo():
+                if self._can_tsumo(player):
                     actions.add_simple_action(ActionType.TSUMO)
                 return actions
         else:
@@ -321,8 +323,7 @@ class Round:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
         else:
             actions = ActionList()
-            waits = hand.waits
-            if get_tile_value(last_tile) in waits:
+            if self._can_ron(player):
                 actions.add_simple_action(ActionType.RON)
         return actions
 
@@ -334,8 +335,7 @@ class Round:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
         else:
             actions = ActionList()
-            waits = hand.waits
-            if get_tile_value(last_tile) in waits:
+            if self._can_ron(player):
                 actions.add_simple_action(ActionType.RON)
         return actions
 
@@ -352,8 +352,7 @@ class Round:
         if self._current_player != player:
             actions.add_actions(hand.get_pons(last_tile))
             actions.add_actions(hand.get_open_kans(last_tile))
-            waits = hand.waits
-            if get_tile_value(last_tile) in waits:
+            if self._can_ron(player):
                 actions.add_simple_action(ActionType.RON)
         return actions
 
@@ -365,8 +364,7 @@ class Round:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
         else:
             actions = ActionList()
-            waits = hand.waits
-            if get_tile_value(last_tile) in waits:
+            if self._can_ron(player):
                 actions.add_simple_action(ActionType.RON)
         return actions
 
@@ -489,8 +487,16 @@ class Round:
     @_register_do_action(ActionType.RON)
     def _ron(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.RON
-        hand = self._hands[player]
+        self._win = self._get_win_ron(player)
+        self._status = RoundStatus.END
 
+    @_register_do_action(ActionType.TSUMO)
+    def _tsumo(self, player: int, action: Action) -> None:
+        assert action.action_type == ActionType.TSUMO
+        self._win = self._get_win_tsumo(player)
+        self._status = RoundStatus.END
+
+    def _get_riichi_flags(self, player: int) -> tuple[bool, bool, bool]:
         riichi_index = next(
             (
                 index
@@ -501,23 +507,31 @@ class Round:
             None,
         )
         if riichi_index is not None:
-            is_riichi = True
-            is_double_riichi = self._is_instant(player, self._history[:riichi_index])
-            is_ippatsu = self._is_instant(player, self._history[riichi_index:])
+            return (
+                True,
+                self._is_instant(player, self._history[:riichi_index]),
+                self._is_instant(player, self._history[riichi_index:]),
+            )
         else:
-            is_riichi = False
-            is_double_riichi = False
-            is_ippatsu = False
+            return (False, False, False)
 
+    def _get_win_ron(self, player: int) -> Win | None:
+        hand = self._hands[player]
+        last_tile = self._last_tile
+        waits = hand.waits
+        if get_tile_value(last_tile) not in waits:
+            return None
+
+        is_riichi, is_double_riichi, is_ippatsu = self._get_riichi_flags(player)
         is_chankan = (
             self._status == RoundStatus.ADD_KAN_AFTER
             or self._status == RoundStatus.CLOSED_KAN_AFTER
         )
         is_houtei = self._status == RoundStatus.LAST_DISCARDED
-        self._win_info = Win(
+        return Win(
             win_player=player,
             lose_player=self._current_player,
-            hand=list(hand.tiles) + [self._last_tile],
+            hand=list(hand.tiles) + [last_tile],
             calls=list(hand.calls),
             flowers=list(hand.flowers),
             player_count=self._player_count,
@@ -530,12 +544,12 @@ class Round:
             is_chankan=is_chankan,
             is_houtei=is_houtei,
         )
-        self._status = RoundStatus.END
 
-    @_register_do_action(ActionType.TSUMO)
-    def _tsumo(self, player: int, action: Action) -> None:
-        assert action.action_type == ActionType.TSUMO
+    def _get_win_tsumo(self, player: int) -> Win | None:
         hand = self._hands[player]
+        if not hand.can_tsumo():
+            return None
+
         after_flower_count = 0
         after_kan_count = 0
         for player, action in reversed(self._history):
@@ -551,24 +565,7 @@ class Round:
             else:
                 break
 
-        riichi_index = next(
-            (
-                index
-                for index, history_item in enumerate(self._history)
-                if history_item[0] == player
-                and history_item[1].action_type == ActionType.RIICHI
-            ),
-            None,
-        )
-        if riichi_index is not None:
-            is_riichi = True
-            is_double_riichi = self._is_instant(player, self._history[:riichi_index])
-            is_ippatsu = self._is_instant(player, self._history[riichi_index:])
-        else:
-            is_riichi = False
-            is_double_riichi = False
-            is_ippatsu = False
-
+        is_riichi, is_double_riichi, is_ippatsu = self._get_riichi_flags(player)
         is_haitei = self.tiles_left <= 0
         is_tenhou = False
         is_chiihou = False
@@ -577,7 +574,7 @@ class Round:
                 is_tenhou = True
             else:
                 is_chiihou = True
-        self._win_info = Win(
+        return Win(
             win_player=player,
             lose_player=None,
             hand=list(hand.tiles),
@@ -596,7 +593,18 @@ class Round:
             is_tenhou=is_tenhou,
             is_chiihou=is_chiihou,
         )
-        self._status = RoundStatus.END
+
+    def _is_valid_win(self, win: Win | None) -> bool:
+        if win is None:
+            return False
+        scoring = Scorer.score(win, self._options)
+        return scoring.han >= self._options.min_han
+
+    def _can_ron(self, player: int) -> bool:
+        return self._is_valid_win(self._get_win_ron(player))
+
+    def _can_tsumo(self, player: int) -> bool:
+        return self._is_valid_win(self._get_win_tsumo(player))
 
 
 AllowedActionsFunc = Callable[[Round, int, Hand, TileId], ActionList]

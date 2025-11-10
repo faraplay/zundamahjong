@@ -125,7 +125,7 @@ class Game:
         self._action_selector = ActionSelector(self._round)
 
     def _calculate_win_score(self) -> None:
-        self._win = self._round.win_info
+        self._win = self._round.win
         if self._win is None:
             self._scoring = None
         else:

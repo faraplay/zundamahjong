@@ -408,7 +408,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         round.do_action(2, SimpleAction(action_type=ActionType.RON))
         self.assertEqual(round.status, RoundStatus.END)
-        win_info = round.win_info
+        win_info = round.win
         assert win_info is not None
         self.assertEqual(win_info.win_player, 2)
         self.assertEqual(win_info.lose_player, 0)
@@ -426,7 +426,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
         round.do_action(2, SimpleAction(action_type=ActionType.TSUMO))
         self.assertEqual(round.status, RoundStatus.END)
-        win_info = round.win_info
+        win_info = round.win
         assert win_info is not None
         self.assertEqual(win_info.win_player, 2)
         self.assertEqual(win_info.lose_player, None)
@@ -460,7 +460,7 @@ class RoundTest(unittest.TestCase):
         )
         round.do_action(2, SimpleAction(action_type=ActionType.RON))
         self.assertEqual(round.status, RoundStatus.END)
-        win_info = round.win_info
+        win_info = round.win
         assert win_info is not None
         self.assertEqual(win_info.win_player, 2)
         self.assertEqual(win_info.lose_player, 1)
@@ -755,7 +755,7 @@ class RoundTest(unittest.TestCase):
             player, action = playeraction
             round.do_action(player, action)
         self.assertEqual(round.wall_count, 14)
-        self.assertIsNone(round.win_info)
+        self.assertIsNone(round.win)
 
     def test_haitei(self) -> None:
         round = Round(tiles=test_deck_haitei, options=GameOptions(end_wall_count=14))
@@ -768,8 +768,8 @@ class RoundTest(unittest.TestCase):
         self.assertEqual(round.current_player, 1)
         self.assertEqual(round.status, RoundStatus.PLAY)
         round.do_action(1, SimpleAction(action_type=ActionType.TSUMO))
-        assert round.win_info is not None
-        self.assertTrue(round.win_info.is_haitei)
+        assert round.win is not None
+        self.assertTrue(round.win.is_haitei)
 
     def test_houtei(self) -> None:
         round = Round(tiles=test_deck4, options=GameOptions(end_wall_count=14))
@@ -785,13 +785,13 @@ class RoundTest(unittest.TestCase):
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         self.assertEqual(round.status, RoundStatus.LAST_DISCARDED)
         round.do_action(3, SimpleAction(action_type=ActionType.RON))
-        assert round.win_info is not None
-        self.assertTrue(round.win_info.is_houtei)
+        assert round.win is not None
+        self.assertTrue(round.win.is_houtei)
 
     def test_after_flower(self) -> None:
         round = Round(tiles=test_deck_rinshan)
         round.do_action(0, SimpleAction(action_type=ActionType.TSUMO))
-        win_info = round.win_info
+        win_info = round.win
         assert win_info is not None
         self.assertEqual(win_info.after_flower_count, 5)
 
@@ -803,7 +803,7 @@ class RoundTest(unittest.TestCase):
         round.do_action(1, SimpleAction(action_type=ActionType.CONTINUE))
         round.do_action(1, HandTileAction(action_type=ActionType.FLOWER, tile=480))
         round.do_action(1, SimpleAction(action_type=ActionType.TSUMO))
-        win_info = round.win_info
+        win_info = round.win
         assert win_info is not None
         self.assertEqual(win_info.after_flower_count, 1)
         self.assertEqual(win_info.after_kan_count, 1)
@@ -811,30 +811,30 @@ class RoundTest(unittest.TestCase):
     def test_tenhou(self) -> None:
         round = Round(tiles=test_deck_kan_tenhou)
         round.do_action(0, SimpleAction(action_type=ActionType.TSUMO))
-        assert round.win_info is not None
-        self.assertTrue(round.win_info.is_tenhou)
+        assert round.win is not None
+        self.assertTrue(round.win.is_tenhou)
 
     def test_sub_round_tenhou(self) -> None:
         round = Round(tiles=test_deck_kan_tenhou, sub_round=1)
         round.do_action(1, SimpleAction(action_type=ActionType.TSUMO))
-        assert round.win_info is not None
-        self.assertTrue(round.win_info.is_tenhou)
+        assert round.win is not None
+        self.assertTrue(round.win.is_tenhou)
 
     def test_not_tenhou_after_call(self) -> None:
         round = Round(tiles=test_deck_kan_tenhou)
         round.do_action(0, ClosedKanAction(tiles=(160, 161, 162, 163)))
         round.do_action(0, SimpleAction(action_type=ActionType.CONTINUE))
         round.do_action(0, SimpleAction(action_type=ActionType.TSUMO))
-        assert round.win_info is not None
-        self.assertFalse(round.win_info.is_tenhou)
+        assert round.win is not None
+        self.assertFalse(round.win.is_tenhou)
 
     def test_chiihou(self) -> None:
         round = Round(tiles=test_deck_kan_tenhou)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=110))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
         round.do_action(1, SimpleAction(action_type=ActionType.TSUMO))
-        assert round.win_info is not None
-        self.assertTrue(round.win_info.is_chiihou)
+        assert round.win is not None
+        self.assertTrue(round.win.is_chiihou)
 
     def test_not_chiihou_after_call(self) -> None:
         round = Round(tiles=test_deck_kan_tenhou)
@@ -843,5 +843,5 @@ class RoundTest(unittest.TestCase):
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=110))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
         round.do_action(1, SimpleAction(action_type=ActionType.TSUMO))
-        assert round.win_info is not None
-        self.assertFalse(round.win_info.is_chiihou)
+        assert round.win is not None
+        self.assertFalse(round.win.is_chiihou)

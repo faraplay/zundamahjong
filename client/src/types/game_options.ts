@@ -4,6 +4,7 @@ export type GameOptions = {
   game_length_sub_rounds: number;
   auto_replace_flowers: boolean;
   end_wall_count: number;
+  min_han: number;
 
   allow_riichi: boolean;
 

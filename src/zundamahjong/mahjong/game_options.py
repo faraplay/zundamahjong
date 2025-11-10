@@ -9,6 +9,7 @@ class GameOptions(BaseModel):
     game_length_sub_rounds: int = 0
     auto_replace_flowers: bool = True
     end_wall_count: int = 14
+    min_han: int = 0
 
     allow_riichi: bool = False
 
