@@ -28,7 +28,6 @@ function addAnimation(
   delayMilliseconds: number,
 ) {
   if (!element) return durationMilliseconds;
-  element.classList.add("animate");
   let animation = element.style.getPropertyValue("animation");
   let fillMode = "both";
   if (animation) {
@@ -55,11 +54,14 @@ function setDrawAnimation(
 function setDiscardAnimation(
   playerIndex: number,
   _avatarId: number,
-  _action: Action,
+  action: Action,
   delayMilliseconds: number,
 ) {
+  if (action.action_type != ActionType.DISCARD) {
+    return 0;
+  }
   const discardedTileElement = document.querySelector<HTMLElement>(
-    `#discard_pool .player_discards.player_${playerIndex} > *:last-child`,
+    `#discard_pool .player_discards.player_${playerIndex} .tile_3d.tile_id_${action.tile}`,
   );
   const discardAudioElement =
     document.querySelector<HTMLAudioElement>("audio.discard");
@@ -71,6 +73,38 @@ function setDiscardAnimation(
   );
   addAudio(discardAudioElement, delayMilliseconds + 125);
   return 250;
+}
+
+function setRiichiAnimation(
+  playerIndex: number,
+  avatarId: number,
+  action: Action,
+  delayMilliseconds: number,
+) {
+  if (action.action_type != ActionType.RIICHI) {
+    return 0;
+  }
+  const cutinElement = document.querySelector<HTMLElement>(
+    `.cutins .cutin.action_${getActionSupertype(action.action_type)}.player_${playerIndex}`,
+  );
+  const discardedTileElement = document.querySelector<HTMLElement>(
+    `#discard_pool .player_discards.player_${playerIndex} .tile_3d.tile_id_${action.tile}`,
+  );
+  const riichiAudioElement = document.querySelector<HTMLAudioElement>(
+    `audio.avatar_${avatarId}.riichi`,
+  );
+  const discardAudioElement =
+    document.querySelector<HTMLAudioElement>("audio.discard");
+  addAudio(riichiAudioElement, delayMilliseconds);
+  addAnimation(cutinElement, "cutinAnimation", 1000, delayMilliseconds);
+  addAnimation(
+    discardedTileElement,
+    "discardAnimation",
+    250,
+    delayMilliseconds + 1000,
+  );
+  addAudio(discardAudioElement, delayMilliseconds + 1125);
+  return 1250;
 }
 
 function setCallAnimation(
@@ -225,7 +259,6 @@ function setWinAnimation(
   const cutinElement = document.querySelector<HTMLElement>(
     `.cutins .cutin.action_${getActionSupertype(action.action_type)}.player_${playerIndex}`,
   );
-  const winInfo = document.querySelector<HTMLElement>("#win_info");
   const winHandElement = document.querySelector<HTMLElement>(
     `.table_hand_outer.player_${playerIndex} .table_hand`,
   );
@@ -235,7 +268,6 @@ function setWinAnimation(
   addAudio(winAudioElement, delayMilliseconds);
   addAnimation(cutinElement, "cutinAnimation", 1000, delayMilliseconds);
   addAnimation(winHandElement, "winAnimation", 500, delayMilliseconds + 1000);
-  addAnimation(winInfo, "showAnimation", 0, delayMilliseconds + 2000);
   return 2000;
 }
 
@@ -269,6 +301,31 @@ function setTsumoAnimation(
   );
 }
 
+function setFinalAnimation(delayMilliseconds: number) {
+  let extraDelay = 0;
+  const drawnHandTile = document.querySelector<HTMLElement>(
+    "#hand .hand_tile_button.drawn_tile",
+  );
+  if (drawnHandTile) {
+    addAnimation(drawnHandTile, "fadeInAnimation", 50, delayMilliseconds);
+    extraDelay += 50;
+  }
+  const actionsMenu = document.querySelector<HTMLElement>("#actions");
+  if (actionsMenu) {
+    addAnimation(
+      actionsMenu,
+      "showAnimation",
+      0,
+      delayMilliseconds + extraDelay,
+    );
+  }
+  const winInfo = document.querySelector<HTMLElement>("#win_info");
+  if (winInfo) {
+    addAnimation(winInfo, "showAnimation", 0, delayMilliseconds + extraDelay);
+  }
+  return extraDelay;
+}
+
 const setAnimationFuncs = {
   [ActionType.PASS]: () => {
     return 0;
@@ -278,6 +335,7 @@ const setAnimationFuncs = {
   },
   [ActionType.DRAW]: setDrawAnimation,
   [ActionType.DISCARD]: setDiscardAnimation,
+  [ActionType.RIICHI]: setRiichiAnimation,
   [ActionType.CHII]: setChiiAnimation,
   [ActionType.PON]: setPonAnimation,
   [ActionType.OPEN_KAN]: setNewKanAnimation,
@@ -299,9 +357,10 @@ function setAnimation(
 }
 
 function unsetAnimations() {
-  const animatedElements = document.querySelectorAll<HTMLElement>(".animate");
+  const animatedElements = document.querySelectorAll<HTMLElement>(
+    `*[style*="animation:"]`,
+  );
   for (const animatedElement of animatedElements) {
-    animatedElement.classList.remove("animate");
     animatedElement.style.setProperty("animation", "");
   }
 }
@@ -310,6 +369,7 @@ export function setAnimations(
   historyUpdates: ReadonlyArray<HistoryItem>,
   avatarIds: number[],
 ) {
+  console.log(historyUpdates);
   unsetAnimations();
   let delayMilliseconds = 0;
   for (const historyItem of historyUpdates) {
@@ -320,4 +380,5 @@ export function setAnimations(
       delayMilliseconds,
     );
   }
+  setFinalAnimation(delayMilliseconds);
 }

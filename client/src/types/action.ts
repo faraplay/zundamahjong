@@ -6,6 +6,7 @@ export const enum ActionType {
   CONTINUE = 1,
   DRAW = 2,
   DISCARD = 3,
+  RIICHI = 4,
   CHII = 6,
   PON = 7,
   OPEN_KAN = 8,
@@ -25,8 +26,13 @@ export type SimpleAction = {
     | ActionType.TSUMO;
 };
 
+export type HandTileActionType =
+  | ActionType.DISCARD
+  | ActionType.RIICHI
+  | ActionType.FLOWER;
+
 export type HandTileAction = {
-  action_type: ActionType.DISCARD | ActionType.FLOWER;
+  action_type: HandTileActionType;
   tile: TileId;
 };
 
@@ -59,7 +65,21 @@ export type Action =
   | AddKanAction
   | ClosedKanAction;
 
-const action_supertypes = [7, 7, 7, 0, 1, 1, 1, 2, 3, 3, 3, 4, 5, 6] as const;
+const action_supertypes = {
+  [ActionType.PASS]: 8,
+  [ActionType.CONTINUE]: 8,
+  [ActionType.DRAW]: 8,
+  [ActionType.DISCARD]: 0,
+  [ActionType.RIICHI]: 5,
+  [ActionType.CHII]: 1,
+  [ActionType.PON]: 2,
+  [ActionType.OPEN_KAN]: 3,
+  [ActionType.ADD_KAN]: 3,
+  [ActionType.CLOSED_KAN]: 3,
+  [ActionType.FLOWER]: 4,
+  [ActionType.RON]: 6,
+  [ActionType.TSUMO]: 7,
+} as const;
 
 const action_supertype_strings = [
   "",
@@ -67,12 +87,13 @@ const action_supertype_strings = [
   "Pon",
   "Kan",
   "Flower",
+  "Riichi",
   "Ron",
   "Tsumo",
   "Pass",
 ] as const;
 
-export type ActionSupertype = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7;
+export type ActionSupertype = 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8;
 
 export function getActionSupertype(action_type: ActionType) {
   return action_supertypes[action_type];

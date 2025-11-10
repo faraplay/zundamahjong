@@ -1,19 +1,26 @@
-import type { TileId } from "../../../types/tile";
+import type { Discard } from "../../../types/game";
 
-import { Tile3DList } from "../tile_3d/tile_3d";
+import { Tile3D } from "../tile_3d/tile_3d";
 
 import "./table_discards.css";
 
 export function TableDiscards({
   player_index,
-  tiles,
+  discards,
 }: {
   player_index: number;
-  tiles: ReadonlyArray<TileId>;
+  discards: ReadonlyArray<Discard>;
 }) {
+  const firstRiichiIndex = discards.findIndex((discard) => discard.is_riichi);
   return (
     <div class={`player_discards player_${player_index}`}>
-      <Tile3DList tiles={tiles} />
+      {discards.map((discard, index) => (
+        <Tile3D
+          key={discard.tile}
+          tile={discard.tile}
+          isFirstRiichi={index == firstRiichiIndex}
+        />
+      ))}
     </div>
   );
 }

@@ -41,13 +41,14 @@ class Hand:
         self._calls: list[Call] = []
         self._flowers: list[TileId] = []
         self._waits: frozenset[TileValue] | None = None
+        self._is_riichi: bool = False
 
     @property
     def tiles(self) -> Sequence[TileId]:
         return self._tiles
 
     @property
-    def open_tiles(self) -> list[TileId]:
+    def call_tiles(self) -> list[TileId]:
         return [tile for call in self._calls for tile in get_call_tiles(call)]
 
     @property
@@ -61,6 +62,10 @@ class Hand:
     @property
     def flowers(self) -> Sequence[TileId]:
         return self._flowers
+
+    @property
+    def is_riichi(self) -> bool:
+        return self._is_riichi
 
     def sort(self) -> None:
         self._tiles.sort()
@@ -78,6 +83,10 @@ class Hand:
         self._tiles.append(self._deck.popleft())
 
     def get_discards(self) -> list[Action]:
+        if self.is_riichi:
+            return [
+                HandTileAction(action_type=ActionType.DISCARD, tile=self._tiles[-1])
+            ]
         return [
             HandTileAction(action_type=ActionType.DISCARD, tile=tile)
             for tile in self._tiles
@@ -88,7 +97,32 @@ class Hand:
         self.sort()
         self._waits = None
 
+    def get_riichis(self) -> list[Action]:
+        if self.is_riichi or not all(
+            call.call_type == CallType.CLOSED_KAN for call in self._calls
+        ):
+            return []
+        return [
+            HandTileAction(action_type=ActionType.RIICHI, tile=tile)
+            for index, tile in enumerate(self._tiles)
+            if len(
+                get_waits(
+                    get_tile_values(self._tiles[:index] + self._tiles[index + 1 :])
+                )
+            )
+            > 0
+        ]
+
+    def riichi(self, tile: TileId) -> None:
+        self._is_riichi = True
+        self._tiles.remove(tile)
+        self.sort()
+        self._waits = None
+
     def get_chiis(self, last_discard: TileId) -> list[Action]:
+        if self.is_riichi:
+            return []
+
         discard_value = get_tile_value(last_discard)
         actions: list[Action] = []
         if not is_number(discard_value):
@@ -147,6 +181,9 @@ class Hand:
         self._waits = None
 
     def get_pons(self, last_discard: TileId) -> list[Action]:
+        if self.is_riichi:
+            return []
+
         discard_value = get_tile_value(last_discard)
         actions: list[Action] = []
         same_tiles = [
@@ -180,6 +217,9 @@ class Hand:
         self._waits = None
 
     def get_open_kans(self, last_discard: TileId) -> list[Action]:
+        if self.is_riichi:
+            return []
+
         discard_value = get_tile_value(last_discard)
         actions: list[Action] = []
         same_tiles = [
@@ -243,8 +283,21 @@ class Hand:
         self._waits = None
 
     def get_closed_kans(self) -> list[Action]:
-        actions: list[Action] = []
         tile_value_buckets = get_tile_value_buckets(self._tiles)
+        if self.is_riichi:
+            last_tile_value = get_tile_value(self._tiles[-1])
+            bucket = tile_value_buckets[last_tile_value]
+            if len(bucket) >= 4:
+                kan_tiles = (bucket[0], bucket[1], bucket[2], bucket[3])
+                current_waits = self._calculate_waits(self._tiles[:-1])
+                tiles_copy = self._tiles.copy()
+                for tile in kan_tiles:
+                    tiles_copy.remove(tile)
+                new_waits = self._calculate_waits(tiles_copy)
+                if current_waits == new_waits:
+                    return [ClosedKanAction(tiles=kan_tiles)]
+            return []
+        actions: list[Action] = []
         for bucket in tile_value_buckets.values():
             if len(bucket) >= 4:
                 bucket.sort()
@@ -286,14 +339,14 @@ class Hand:
             self._waits = self._calculate_waits(self._tiles)
         return self._waits
 
-    def _calculate_waits(self, closed_tiles: list[TileId]) -> frozenset[TileValue]:
-        if len(closed_tiles) % 3 != 1:
+    def _calculate_waits(self, hand_tiles: list[TileId]) -> frozenset[TileValue]:
+        if len(hand_tiles) % 3 != 1:
             return frozenset()
-        all_tiles_buckets = get_tile_value_buckets(closed_tiles + self.open_tiles)
+        all_tiles_buckets = get_tile_value_buckets(hand_tiles + self.call_tiles)
         unusable_tile_values = {
             tileValue
             for (tileValue, tiles) in all_tiles_buckets.items()
             if len(tiles) >= 4
         }
-        waits = get_waits(get_tile_values(closed_tiles))
+        waits = get_waits(get_tile_values(hand_tiles))
         return waits - unusable_tile_values

@@ -4,17 +4,25 @@ import { TileImage } from "../tile_image/tile_image";
 
 import "./tile_3d.css";
 
-export function Tile3D({ tile }: { tile: TileId }) {
+export function Tile3D({
+  tile,
+  isFirstRiichi,
+}: {
+  tile: TileId;
+  isFirstRiichi?: boolean;
+}) {
   return (
-    <div class={`tile_3d tile_id_${tile}`}>
-      <span class="tile_face tile_back" />
-      <span class="tile_face tile_left" />
-      <span class="tile_face tile_right" />
-      <span class="tile_face tile_top" />
-      <span class="tile_face tile_bottom" />
-      <span class="tile_face tile_front">
-        <TileImage tile={tile} />
-      </span>
+    <div class={`tile_3d tile_id_${tile} ${isFirstRiichi ? "is_riichi" : ""}`}>
+      <div class={`tile_3d_extra_transform`}>
+        <span class="tile_face tile_back" />
+        <span class="tile_face tile_left" />
+        <span class="tile_face tile_right" />
+        <span class="tile_face tile_top" />
+        <span class="tile_face tile_bottom" />
+        <span class="tile_face tile_front">
+          <TileImage tile={tile} />
+        </span>
+      </div>
     </div>
   );
 }

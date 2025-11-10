@@ -9,6 +9,7 @@ from .tile import TileId
 class Discard(BaseModel):
     player: int
     tile: TileId
+    is_riichi: bool
 
 
 class DiscardPool:
@@ -19,8 +20,8 @@ class DiscardPool:
     def discards(self) -> Sequence[Discard]:
         return self._discards
 
-    def append(self, player: int, tile: TileId) -> None:
-        self._discards.append(Discard(player=player, tile=tile))
+    def append(self, player: int, tile: TileId, is_riichi: bool) -> None:
+        self._discards.append(Discard(player=player, tile=tile, is_riichi=is_riichi))
 
     def pop(self) -> Discard:
         return self._discards.pop()

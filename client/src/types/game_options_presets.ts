@@ -1,3 +1,5 @@
+import type { GameOptions } from "./game_options";
+
 const default_pattern_data = {
   BLESSING_OF_HEAVEN: {
     display_name: "Blessing of Heaven",
@@ -366,11 +368,13 @@ const default_pattern_data = {
   },
 };
 
-export const default_4player_preset = {
+export const default_4player_preset: GameOptions = {
   player_count: 4,
   game_length_wind_rounds: 1,
   game_length_sub_rounds: 0,
   auto_replace_flowers: true,
+  end_wall_count: 14,
+  allow_riichi: false,
   show_waits: true,
   show_shanten_info: false,
   start_score: 0,
@@ -386,11 +390,13 @@ export const default_4player_preset = {
   pattern_data: default_pattern_data,
 };
 
-export const default_3player_preset = {
+export const default_3player_preset: GameOptions = {
   player_count: 3,
   game_length_wind_rounds: 1,
   game_length_sub_rounds: 0,
   auto_replace_flowers: true,
+  end_wall_count: 14,
+  allow_riichi: false,
   show_waits: true,
   show_shanten_info: false,
   start_score: 0,
@@ -774,11 +780,13 @@ const riichi_pattern_data = {
   },
 };
 
-export const riichi_4player_preset = {
+export const riichi_4player_preset: GameOptions = {
   player_count: 4,
   game_length_wind_rounds: 1,
   game_length_sub_rounds: 0,
   auto_replace_flowers: true,
+  end_wall_count: 14,
+  allow_riichi: true,
   show_waits: true,
   start_score: 25000,
   score_dealer_ron_multiplier: 6,
@@ -794,11 +802,13 @@ export const riichi_4player_preset = {
   pattern_data: riichi_pattern_data,
 };
 
-export const riichi_3player_preset = {
+export const riichi_3player_preset: GameOptions = {
   player_count: 3,
   game_length_wind_rounds: 1,
   game_length_sub_rounds: 0,
   auto_replace_flowers: true,
+  end_wall_count: 14,
+  allow_riichi: true,
   show_waits: true,
   start_score: 35000,
   score_dealer_ron_multiplier: 6,

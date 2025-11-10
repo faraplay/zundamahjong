@@ -4,7 +4,7 @@
 
 #discard_pool .player_discards {
   --player-discard-gap: 1cqw;
-  width: calc(6 * var(--tile-width) + 1cqw);
+  width: calc((5 + 4 / 3) * var(--tile-width) + 1cqw);
   height: calc(3 * (4 / 3) * var(--tile-width));
   position: absolute;
   left: calc(50cqw - 3 * var(--tile-width));

@@ -17,6 +17,9 @@ class Win(BaseModel):
     draw_count: int = 0
     after_flower_count: int = 0
     after_kan_count: int = 0
+    is_riichi: bool = False
+    is_double_riichi: bool = False
+    is_ippatsu: bool = False
     is_chankan: bool = False
     is_haitei: bool = False
     is_houtei: bool = False

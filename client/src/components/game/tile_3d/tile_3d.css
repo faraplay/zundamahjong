@@ -7,83 +7,97 @@
   transform-origin: left top;
   transform-style: preserve-3d;
 
-  .tile_face {
-    position: absolute;
-    background-color: var(--tile-front-color);
-    transform-origin: left top;
-    backface-visibility: hidden;
+  &.is_riichi {
+    width: var(--tile-height);
 
-    &::after {
-      content: "";
-      box-sizing: border-box;
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      left: 0;
-      top: 0;
-      border: var(--tile-border-width) solid var(--tile-border-color);
-      background-color: rgba(0, 0, 0, var(--tile-face-darken-percent));
+    .tile_3d_extra_transform {
+      width: 0;
+      height: 0;
+      transform: translateY(3cqw) rotateZ(-90deg);
     }
   }
 
-  .tile_left,
-  .tile_right,
-  .tile_top,
-  .tile_bottom {
-    --tile-face-darken-percent: 8%;
-    height: var(--tile-depth);
-    background-image: linear-gradient(
-      var(--tile-front-color) 70%,
-      var(--tile-back-color) 70%
-    );
-  }
+  .tile_3d_extra_transform {
+    transform-style: preserve-3d;
 
-  .tile_back {
-    --tile-face-darken-percent: 8%;
-    width: var(--tile-width);
-    height: var(--tile-height);
-    background-color: var(--tile-back-color);
-    transform: translate3d(0, var(--tile-height), 0) rotateX(180deg);
-  }
-
-  .tile_left {
-    width: var(--tile-height);
-    transform: translate3d(0, 0, var(--tile-depth)) rotateZ(90deg)
-      rotateX(-90deg);
-  }
-
-  .tile_right {
-    width: var(--tile-height);
-    transform: translate3d(
-        var(--tile-width),
-        var(--tile-height),
-        var(--tile-depth)
-      )
-      rotateZ(-90deg) rotateX(-90deg);
-  }
-
-  .tile_top {
-    width: var(--tile-width);
-    transform: translate3d(var(--tile-width), 0, var(--tile-depth))
-      rotateZ(180deg) rotateX(-90deg);
-  }
-
-  .tile_bottom {
-    width: var(--tile-width);
-    transform: translate3d(0, var(--tile-height), var(--tile-depth))
-      rotateX(-90deg);
-  }
-
-  .tile_front {
-    --tile-face-darken-percent: 0%;
-    width: var(--tile-width);
-    height: var(--tile-height);
-    transform: translateZ(var(--tile-depth));
-
-    .tile_image {
+    .tile_face {
       position: absolute;
-      left: 0;
-      top: 0;
+      background-color: var(--tile-front-color);
+      transform-origin: left top;
+      backface-visibility: hidden;
+
+      &::after {
+        content: "";
+        box-sizing: border-box;
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        border: var(--tile-border-width) solid var(--tile-border-color);
+        background-color: rgba(0, 0, 0, var(--tile-face-darken-percent));
+      }
+    }
+
+    .tile_left,
+    .tile_right,
+    .tile_top,
+    .tile_bottom {
+      --tile-face-darken-percent: 8%;
+      height: var(--tile-depth);
+      background-image: linear-gradient(
+        var(--tile-front-color) 70%,
+        var(--tile-back-color) 70%
+      );
+    }
+
+    .tile_back {
+      --tile-face-darken-percent: 8%;
+      width: var(--tile-width);
+      height: var(--tile-height);
+      background-color: var(--tile-back-color);
+      transform: translate3d(0, var(--tile-height), 0) rotateX(180deg);
+    }
+
+    .tile_left {
+      width: var(--tile-height);
+      transform: translate3d(0, 0, var(--tile-depth)) rotateZ(90deg)
+        rotateX(-90deg);
+    }
+
+    .tile_right {
+      width: var(--tile-height);
+      transform: translate3d(
+          var(--tile-width),
+          var(--tile-height),
+          var(--tile-depth)
+        )
+        rotateZ(-90deg) rotateX(-90deg);
+    }
+
+    .tile_top {
+      width: var(--tile-width);
+      transform: translate3d(var(--tile-width), 0, var(--tile-depth))
+        rotateZ(180deg) rotateX(-90deg);
+    }
+
+    .tile_bottom {
+      width: var(--tile-width);
+      transform: translate3d(0, var(--tile-height), var(--tile-depth))
+        rotateX(-90deg);
+    }
+
+    .tile_front {
+      --tile-face-darken-percent: 0%;
+      width: var(--tile-width);
+      height: var(--tile-height);
+      transform: translateZ(var(--tile-depth));
+
+      .tile_image {
+        position: absolute;
+        left: 0;
+        top: 0;
+      }
     }
   }
 }

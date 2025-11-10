@@ -1,7 +1,11 @@
-import { useContext, useLayoutEffect, useState } from "preact/hooks";
+import { useContext, useEffect, useLayoutEffect, useState } from "preact/hooks";
 
 import type { AvatarIdDict } from "../../../types/avatars";
-import type { Action } from "../../../types/action";
+import {
+  ActionType,
+  type Action,
+  type HandTileActionType,
+} from "../../../types/action";
 import { RoundStatus } from "../../../types/game";
 import { type AllInfo } from "../../../process_info";
 
@@ -42,12 +46,27 @@ export function GameScreen({
   goToResults: () => void;
 }) {
   const [hoverTile, setHoverTile] = useState<TileId | null>(null);
+  const [handActionType, setHandActionType] = useState<HandTileActionType>(
+    ActionType.DISCARD,
+  );
 
   const emit = useContext(Emitter);
   const emit_action = (action: Action) => {
     setActionSubmitted();
     emit("action", action, info.round_info.history.length);
   };
+
+  useEffect(() => {
+    if (info.round_info.current_player == info.player_index) {
+      if (info.round_info.status == RoundStatus.START) {
+        setHandActionType(ActionType.FLOWER);
+      } else {
+        setHandActionType(ActionType.DISCARD);
+      }
+    } else {
+      setHandActionType(ActionType.DISCARD);
+    }
+  }, [info]);
 
   useLayoutEffect(() => {
     // calculate this inside to avoid triggering this effect every time
@@ -83,6 +102,42 @@ export function GameScreen({
       />
     );
 
+  function didDrawTile(info: AllInfo) {
+    console.log(info.round_info.history);
+    if (info.round_info.current_player != info.player_index) {
+      return false;
+    }
+    if (
+      info.round_info.history.every(
+        (historyItem) =>
+          historyItem.action.action_type == ActionType.FLOWER ||
+          historyItem.action.action_type == ActionType.CONTINUE,
+      )
+    ) {
+      return false;
+    }
+    const lastHistoryItem = info.round_info.history.at(-1);
+    if (!lastHistoryItem) {
+      return false;
+    }
+    const lastActionType = lastHistoryItem.action.action_type;
+    const isDrawActionType = {
+      [ActionType.PASS]: false,
+      [ActionType.CONTINUE]: true,
+      [ActionType.DRAW]: true,
+      [ActionType.DISCARD]: false,
+      [ActionType.RIICHI]: false,
+      [ActionType.CHII]: false,
+      [ActionType.PON]: false,
+      [ActionType.OPEN_KAN]: true,
+      [ActionType.ADD_KAN]: true,
+      [ActionType.CLOSED_KAN]: true,
+      [ActionType.FLOWER]: true,
+      [ActionType.RON]: true,
+      [ActionType.TSUMO]: false,
+    } as const;
+    return isDrawActionType[lastActionType];
+  }
   const discard_shanten_info =
     info.player_info.discard_shanten_info &&
     hoverTile &&
@@ -103,7 +158,9 @@ export function GameScreen({
           playerAvatarIds={playerAvatarIds}
         />
         <Hand
+          handActionType={handActionType}
           tiles={info.player_info.hand}
+          didDrawTile={didDrawTile(info)}
           actions={info.player_info.actions}
           actionSubmitted={actionSubmitted}
           setHoverTile={setHoverTile}
@@ -111,7 +168,11 @@ export function GameScreen({
         {actionSubmitted ? (
           <></>
         ) : (
-          <ActionMenu actions={info.player_info.actions} />
+          <ActionMenu
+            actions={info.player_info.actions}
+            handActionType={handActionType}
+            setHandActionType={setHandActionType}
+          />
         )}
         {info.player_info.shanten_info ? (
           <ShantenDisplayButton
