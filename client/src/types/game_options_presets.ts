@@ -81,6 +81,21 @@ const default_pattern_data = {
     han: 19,
     fu: 0,
   },
+  RIICHI: {
+    display_name: "Riichi",
+    han: 1,
+    fu: 0,
+  },
+  DOUBLE_RIICHI: {
+    display_name: "Double Riichi",
+    han: 2,
+    fu: 0,
+  },
+  IPPATSU: {
+    display_name: "Ippatsu",
+    han: 1,
+    fu: 0,
+  },
   ALL_RUNS: {
     display_name: "All Runs",
     han: 1,
@@ -491,6 +506,21 @@ const riichi_pattern_data = {
   TRUE_NINE_GATES: {
     display_name: "True Nine Gates",
     han: 13,
+    fu: 0,
+  },
+  RIICHI: {
+    display_name: "Riichi",
+    han: 1,
+    fu: 0,
+  },
+  DOUBLE_RIICHI: {
+    display_name: "Double Riichi",
+    han: 2,
+    fu: 0,
+  },
+  IPPATSU: {
+    display_name: "Ippatsu",
+    han: 1,
     fu: 0,
   },
   ALL_RUNS: {
