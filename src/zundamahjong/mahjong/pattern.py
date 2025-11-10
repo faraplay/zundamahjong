@@ -393,6 +393,16 @@ class PatternCalculator:
         )
 
     @_register_pattern(
+        "TRUE_NINE_GATES",
+        display_name="True Nine Gates",
+        han=19,
+        fu=0,
+    )
+    def _true_nine_gates(self) -> int:
+        nine_gates_last_tile = self._get_nine_gates_last_tile()
+        return int(nine_gates_last_tile == self._winning_tile)
+
+    @_register_pattern(
         "RIICHI",
         display_name="Riichi",
         han=1,
@@ -418,16 +428,6 @@ class PatternCalculator:
     )
     def _ippatsu(self) -> int:
         return int(self._win.is_ippatsu)
-
-    @_register_pattern(
-        "TRUE_NINE_GATES",
-        display_name="True Nine Gates",
-        han=19,
-        fu=0,
-    )
-    def _true_nine_gates(self) -> int:
-        nine_gates_last_tile = self._get_nine_gates_last_tile()
-        return int(nine_gates_last_tile == self._winning_tile)
 
     @_register_pattern(
         "ALL_RUNS",
