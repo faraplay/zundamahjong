@@ -54,6 +54,11 @@ export const inputPropsList: GameOptionsInputProps[] = [
     max: 3,
   },
   {
+    name: "use_flowers",
+    labelText: "Use flowers",
+    type: "checkbox",
+  },
+  {
     name: "auto_replace_flowers",
     labelText: "Auto flowers",
     type: "checkbox",

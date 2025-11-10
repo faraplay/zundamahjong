@@ -16,7 +16,10 @@ four_player_deck: list[TileId] = [
         + list(range(31, 38))
     )
     for r in range(4)
-] + [tile_value * N for tile_value in (list(range(41, 49)))]
+]
+four_player_flowers: list[TileId] = [
+    tile_value * N for tile_value in (list(range(41, 49)))
+]
 
 three_player_deck: list[TileId] = [
     tile_value * N + r
@@ -24,7 +27,10 @@ three_player_deck: list[TileId] = [
         [1, 9] + list(range(11, 20)) + list(range(21, 30)) + list(range(31, 38))
     )
     for r in range(4)
-] + [tile_value * N for tile_value in [41, 42, 43, 45, 46, 47]]
+]
+three_player_flowers: list[TileId] = [
+    tile_value * N for tile_value in [41, 42, 43, 45, 46, 47]
+]
 
 
 @final

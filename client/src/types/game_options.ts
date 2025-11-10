@@ -2,6 +2,7 @@ export type GameOptions = {
   player_count: number;
   game_length_wind_rounds: number;
   game_length_sub_rounds: number;
+  use_flowers: boolean;
   auto_replace_flowers: boolean;
   end_wall_count: number;
   min_han: number;

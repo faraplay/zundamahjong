@@ -14,7 +14,13 @@ from .action import (
     call_action_types,
 )
 from .call import Call, get_call_tiles
-from .deck import Deck, four_player_deck, three_player_deck
+from .deck import (
+    Deck,
+    four_player_deck,
+    four_player_flowers,
+    three_player_deck,
+    three_player_flowers,
+)
 from .discard_pool import Discard, DiscardPool
 from .exceptions import InvalidMoveException
 from .game_options import GameOptions
@@ -88,9 +94,14 @@ class Round:
             self._deck = Deck(tiles)
         else:
             if _options.player_count == 3:
-                self._deck = Deck.shuffled_deck(three_player_deck)
+                deck = three_player_deck.copy()
+                if _options.use_flowers:
+                    deck.extend(three_player_flowers)
             else:
-                self._deck = Deck.shuffled_deck(four_player_deck)
+                deck = four_player_deck.copy()
+                if _options.use_flowers:
+                    deck.extend(four_player_flowers)
+            self._deck = Deck.shuffled_deck(deck)
         self._discard_pool = DiscardPool()
         self._hands = [Hand(self._deck) for _ in range(self._player_count)]
         for tile_count in [4, 4, 4, 1]:

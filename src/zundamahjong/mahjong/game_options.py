@@ -7,6 +7,7 @@ class GameOptions(BaseModel):
     player_count: int = 4
     game_length_wind_rounds: int = 1
     game_length_sub_rounds: int = 0
+    use_flowers: bool = True
     auto_replace_flowers: bool = True
     end_wall_count: int = 14
     min_han: int = 0
