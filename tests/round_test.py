@@ -436,6 +436,20 @@ class RoundTest(unittest.TestCase):
         )
         self.assertCountEqual(win_info.calls, [])
 
+    def test_min_han_enough_han(self) -> None:
+        round = Round(tiles=test_deck2, options=GameOptions(min_han=8))
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
+        self.assertIn(
+            SimpleAction(action_type=ActionType.RON), round.allowed_actions[2].actions
+        )
+
+    def test_min_han_not_enough_han(self) -> None:
+        round = Round(tiles=test_deck2, options=GameOptions(min_han=9))
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
+        self.assertNotIn(
+            SimpleAction(action_type=ActionType.RON), round.allowed_actions[2].actions
+        )
+
     def test_chankan(self) -> None:
         round = Round(tiles=test_deck2)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
