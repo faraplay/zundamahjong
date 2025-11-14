@@ -29,7 +29,7 @@
     object-fit: contain;
   }
 
-  #win_hand {
+  .win_hand {
     grid-column: 1/3;
     grid-row: 1/2;
   }

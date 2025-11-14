@@ -1,20 +1,26 @@
-#win_hand {
+.win_hand {
   height: calc(1.5 * var(--tile-width));
   position: relative;
   display: flex;
-}
 
-#win_hand .call {
-  margin-left: calc(0.5 * var(--tile-width));
-}
+  .win_tiles > :last-child {
+    margin-left: calc(0.5 * var(--tile-width));
+  }
 
-#win_flowers {
-  position: absolute;
-  right: 0cqw;
-  display: flex;
-  flex-direction: row-reverse;
-}
+  .call {
+    margin-left: calc(0.5 * var(--tile-width));
+  }
 
-#win_flowers.overlap {
-  top: -3cqw;
+  .win_flowers {
+    position: absolute;
+    right: 0cqw;
+    display: flex;
+    flex-direction: row-reverse;
+
+    &.overlap {
+      top: -3cqw;
+      left: 0cqw;
+      right: unset;
+    }
+  }
 }
