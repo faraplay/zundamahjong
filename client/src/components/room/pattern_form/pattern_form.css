@@ -1,0 +1,13 @@
+.pattern_options {
+  &::details-content {
+    display: grid;
+    grid-template-columns: auto 6cqw 6cqw;
+  }
+
+  > .table_header {
+    grid-column: 1/4;
+    display: grid;
+    grid-template-columns: subgrid;
+    border-bottom: 0.15cqw solid black;
+  }
+}

@@ -17,7 +17,7 @@ export function GameOptionsInputExpander({
   sendGameOptions: () => void;
 }) {
   return (
-    <details>
+    <details class="game_options_expander">
       <summary>{inputProps.name}</summary>
       <GameOptionsInputList
         isEditable={isEditable}

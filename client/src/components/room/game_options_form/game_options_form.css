@@ -44,30 +44,11 @@
         border: 0.1cqw solid black;
         background-color: rgb(227, 239, 255);
       }
+    }
 
-      &::details-content {
-        display: grid;
-        grid-template-columns: auto 10cqw;
-      }
-
-      &.pattern_options::details-content {
-        grid-template-columns: auto 6cqw 6cqw;
-      }
-
-      &.score_limit_options.can_edit::details-content {
-        grid-template-columns: 6cqw auto 10cqw 3cqw;
-      }
-
-      &.score_limit_options.cannot_edit::details-content {
-        grid-template-columns: 6cqw auto 10cqw;
-      }
-
-      > .table_header {
-        grid-column: 1/4;
-        display: grid;
-        grid-template-columns: subgrid;
-        border-bottom: 0.15cqw solid black;
-      }
+    .game_options_expander::details-content {
+      display: grid;
+      grid-template-columns: auto 10cqw;
     }
   }
 

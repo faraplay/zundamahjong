@@ -5,6 +5,8 @@ import {
 } from "../../../types/game_options";
 import { GameOptionsPatternInput } from "./pattern_input";
 
+import "./pattern_form.css";
+
 export function PatternForm({
   patternValues,
   patternFormId,
@@ -17,7 +19,13 @@ export function PatternForm({
   sendGameOptions: () => void;
 }) {
   return (
-    <>
+    <details class="pattern_options">
+      <summary>Patterns</summary>
+      <div class="table_header">
+        <div>Pattern</div>
+        <div>Han</div>
+        <div>Fu</div>
+      </div>
       {patterns.map((pattern) => (
         <GameOptionsPatternInput
           key={pattern}
@@ -28,7 +36,7 @@ export function PatternForm({
           sendGameOptions={sendGameOptions}
         />
       ))}
-    </>
+    </details>
   );
 }
 

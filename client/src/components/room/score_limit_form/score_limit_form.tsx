@@ -21,7 +21,10 @@ export function ScoreLimitForm({
   onSubmit: (e: SubmitEvent) => void;
 }) {
   return (
-    <>
+    <details
+      class={`score_limit_options ${isEditable ? "can_edit" : "cannot_edit"}`}
+    >
+      <summary>Score limits</summary>
       <form
         id={scoreLimitFormId}
         data-count={scoreLimits.length}
@@ -50,7 +53,7 @@ export function ScoreLimitForm({
           Add new score limit...
         </button>
       ) : null}
-    </>
+    </details>
   );
 }
 

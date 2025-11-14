@@ -134,34 +134,21 @@ export function GameOptionsForm({
           formId={formId}
           sendGameOptions={sendGameOptions}
         />
-        <details
-          class={`score_limit_options ${isEditable ? "can_edit" : "cannot_edit"}`}
-        >
-          <summary>Score limits</summary>
-          <ScoreLimitForm
-            scoreLimits={gameOptions.base_score_limits}
-            scoreLimitFormId={scoreLimitFormId}
-            isEditable={isEditable}
-            addNewScoreLimit={addNewScoreLimit}
-            removeScoreLimit={removeScoreLimit}
-            sendGameOptions={sendGameOptions}
-            onSubmit={onSubmit}
-          />
-        </details>
-        <details class="pattern_options">
-          <summary>Patterns</summary>
-          <div class="table_header">
-            <div>Pattern</div>
-            <div>Han</div>
-            <div>Fu</div>
-          </div>
-          <PatternForm
-            patternValues={gameOptions.pattern_data}
-            patternFormId={patternFormId}
-            isEditable={isEditable}
-            sendGameOptions={sendGameOptions}
-          />
-        </details>
+        <ScoreLimitForm
+          scoreLimits={gameOptions.base_score_limits}
+          scoreLimitFormId={scoreLimitFormId}
+          isEditable={isEditable}
+          addNewScoreLimit={addNewScoreLimit}
+          removeScoreLimit={removeScoreLimit}
+          sendGameOptions={sendGameOptions}
+          onSubmit={onSubmit}
+        />
+        <PatternForm
+          patternValues={gameOptions.pattern_data}
+          patternFormId={patternFormId}
+          isEditable={isEditable}
+          sendGameOptions={sendGameOptions}
+        />
       </div>
       <button
         type="submit"
