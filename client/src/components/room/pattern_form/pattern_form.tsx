@@ -1,5 +1,5 @@
 import { type PatternDataDict, patterns } from "../../../types/game_options";
-import { GameOptionsPatternInput } from "../game_options_input/game_options_input";
+import { GameOptionsPatternInput } from "./pattern_input";
 
 export function PatternForm({
   patternValues,
