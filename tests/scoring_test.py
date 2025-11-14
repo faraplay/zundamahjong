@@ -1,7 +1,7 @@
 import unittest
 
 from zundamahjong.mahjong.call import CallType, OpenCall
-from zundamahjong.mahjong.game_options import GameOptions
+from zundamahjong.mahjong.game_options import GameOptions, ScoreLimit
 from zundamahjong.mahjong.pattern import PatternData
 from zundamahjong.mahjong.scoring import Scorer
 from zundamahjong.mahjong.win import Win
@@ -277,3 +277,111 @@ class ScoringTest(unittest.TestCase):
         self.assertEqual(scoring.han, 0)
         self.assertEqual(scoring.fu, 28)
         self.assertSequenceEqual(scoring.player_scores, [700.0, -700.0, 0.0, 0.0])
+
+    def test_low_han_base_score_limit(self) -> None:
+        win = Win(
+            win_player=0,
+            lose_player=1,
+            hand=[20, 30, 150, 160, 170, 190, 191, 192, 330, 331, 10],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[420],
+            player_count=4,
+            wind_round=0,
+            sub_round=0,
+        )
+        scoring = Scorer.score(
+            win,
+            GameOptions(
+                base_score_limits=[
+                    ScoreLimit(han=10, score=5.0),
+                    ScoreLimit(han=2, score=25.0),
+                ]
+            ),
+        )
+        self.assertEqual(scoring.han, 0)
+        self.assertSequenceEqual(scoring.player_scores, [30.0, -30.0, 0.0, 0.0])
+
+    def test_han_equal_score_limit(self) -> None:
+        win = Win(
+            win_player=0,
+            lose_player=1,
+            hand=[20, 30, 231, 241, 251, 190, 191, 192, 330, 331, 10],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[420],
+            player_count=4,
+            wind_round=0,
+            sub_round=0,
+        )
+        scoring = Scorer.score(
+            win, GameOptions(base_score_limits=[ScoreLimit(han=1, score=5000.0)])
+        )
+        self.assertEqual(scoring.han, 1)
+        self.assertSequenceEqual(scoring.player_scores, [30000.0, -30000.0, 0.0, 0.0])
+
+    def test_han_more_than_score_limit(self) -> None:
+        win = Win(
+            win_player=0,
+            lose_player=1,
+            hand=[20, 30, 231, 241, 251, 170, 180, 190, 330, 331, 10],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[420],
+            player_count=4,
+            wind_round=0,
+            sub_round=0,
+        )
+        scoring = Scorer.score(
+            win, GameOptions(base_score_limits=[ScoreLimit(han=1, score=5000.0)])
+        )
+        self.assertEqual(scoring.han, 2)
+        self.assertSequenceEqual(scoring.player_scores, [30000.0, -30000.0, 0.0, 0.0])
+
+    def test_han_between_score_limits(self) -> None:
+        win = Win(
+            win_player=0,
+            lose_player=1,
+            hand=[20, 30, 231, 241, 251, 170, 180, 190, 330, 331, 10],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[420],
+            player_count=4,
+            wind_round=0,
+            sub_round=0,
+        )
+        scoring = Scorer.score(
+            win,
+            GameOptions(
+                base_score_limits=[
+                    ScoreLimit(han=1, score=5000.0),
+                    ScoreLimit(han=3, score=6000.0),
+                ]
+            ),
+        )
+        self.assertEqual(scoring.han, 2)
+        self.assertSequenceEqual(scoring.player_scores, [30000.0, -30000.0, 0.0, 0.0])

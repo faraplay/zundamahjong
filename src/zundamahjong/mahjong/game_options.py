@@ -5,7 +5,7 @@ from .pattern import PatternData, default_pattern_data
 
 class ScoreLimit(BaseModel):
     han: int
-    score: int
+    score: float
 
 
 class GameOptions(BaseModel):
@@ -34,7 +34,7 @@ class GameOptions(BaseModel):
     round_up_fu: bool = False
     round_up_points: bool = False
 
-    base_score_limits: list[ScoreLimit] = []
+    base_score_limits: list[ScoreLimit] = [ScoreLimit(han=6, score=6400.0)]
 
     pattern_data: dict[str, PatternData] = default_pattern_data
 
