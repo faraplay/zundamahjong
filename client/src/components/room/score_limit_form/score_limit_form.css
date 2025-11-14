@@ -1,0 +1,10 @@
+.score_limit_options {
+  label {
+    padding-left: 0.5cqw;
+  }
+  .add_new_score_limit {
+    grid-column: 1/4;
+    margin: 0.5cqw 0.1cqw;
+    border: 1px dashed black;
+  }
+}

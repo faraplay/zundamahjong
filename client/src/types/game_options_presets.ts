@@ -404,6 +404,7 @@ export const default_4player_preset: GameOptions = {
   base_fu: 25,
   round_up_fu: false,
   round_up_points: false,
+  base_score_limits: [{ han: 6, score: 6400 }],
   pattern_data: default_pattern_data,
 };
 
@@ -428,6 +429,7 @@ export const default_3player_preset: GameOptions = {
   base_fu: 25,
   round_up_fu: false,
   round_up_points: false,
+  base_score_limits: [{ han: 6, score: 6400 }],
   pattern_data: default_pattern_data,
 };
 
@@ -835,6 +837,13 @@ export const riichi_4player_preset: GameOptions = {
   round_up_fu: true,
   round_up_points: true,
   show_shanten_info: false,
+  base_score_limits: [
+    { han: 5, score: 2000 },
+    { han: 6, score: 3000 },
+    { han: 8, score: 4000 },
+    { han: 11, score: 6000 },
+    { han: 13, score: 8000 },
+  ],
   pattern_data: riichi_pattern_data,
 };
 
@@ -859,5 +868,12 @@ export const riichi_3player_preset: GameOptions = {
   round_up_fu: true,
   round_up_points: true,
   show_shanten_info: false,
+  base_score_limits: [
+    { han: 5, score: 2000 },
+    { han: 6, score: 3000 },
+    { han: 8, score: 4000 },
+    { han: 11, score: 6000 },
+    { han: 13, score: 8000 },
+  ],
   pattern_data: riichi_pattern_data,
 };

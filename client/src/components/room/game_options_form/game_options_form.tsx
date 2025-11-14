@@ -1,11 +1,6 @@
 import { useContext, useId } from "preact/hooks";
 
-import {
-  patternDisplayNames,
-  patterns,
-  type GameOptions,
-  type PatternDataDict,
-} from "../../../types/game_options";
+import { type GameOptions } from "../../../types/game_options";
 
 import { Emitter } from "../../emitter/emitter";
 import {
@@ -15,7 +10,7 @@ import {
   type NumberInputProps,
 } from "../input_props";
 import { GameOptionsInputList } from "../game_options_input/game_options_input";
-import { PatternForm } from "../pattern_form/pattern_form";
+import { getPatternDataDict, PatternForm } from "../pattern_form/pattern_form";
 
 import "./game_options_form.css";
 import {
@@ -24,6 +19,10 @@ import {
   riichi_3player_preset,
   riichi_4player_preset,
 } from "../../../types/game_options_presets";
+import {
+  getScoreLimits,
+  ScoreLimitForm,
+} from "../score_limit_form/score_limit_form";
 
 function flattenInputPropsList(propsList: GameOptionsInputProps[]) {
   const newPropsList: (NumberInputProps | CheckboxInputProps)[] = [];
@@ -37,12 +36,13 @@ function flattenInputPropsList(propsList: GameOptionsInputProps[]) {
   return newPropsList;
 }
 
-function getGameOptions(formId: string, patternFormId: string) {
+function getGameOptions(
+  formId: string,
+  patternFormId: string,
+  scoreLimitFormId: string,
+) {
   const formData = new FormData(
     document.getElementById(formId) as HTMLFormElement,
-  );
-  const patternFormData = new FormData(
-    document.getElementById(patternFormId) as HTMLFormElement,
   );
   const formObject = {} as GameOptions;
   for (const inputProps of flattenInputPropsList(inputPropsList)) {
@@ -52,16 +52,8 @@ function getGameOptions(formId: string, patternFormId: string) {
       formObject[inputProps.name] = formData.has(inputProps.name);
     }
   }
-  formObject.pattern_data = Object.fromEntries(
-    patterns.map((pattern) => [
-      pattern,
-      {
-        display_name: patternDisplayNames[pattern],
-        han: Number(patternFormData.get(`${pattern}___han`)),
-        fu: Number(patternFormData.get(`${pattern}___fu`)),
-      },
-    ]),
-  ) as PatternDataDict;
+  formObject.pattern_data = getPatternDataDict(patternFormId);
+  formObject.base_score_limits = getScoreLimits(scoreLimitFormId);
   return formObject;
 }
 
@@ -77,13 +69,18 @@ export function GameOptionsForm({
   const emit = useContext(Emitter);
   const formId = useId();
   const patternFormId = useId();
+  const scoreLimitFormId = useId();
 
   const sendGameOptions = () => {
-    emit("game_options", getGameOptions(formId, patternFormId));
+    emit(
+      "game_options",
+      getGameOptions(formId, patternFormId, scoreLimitFormId),
+    );
   };
-  const onSubmit = (e: SubmitEvent) => {
-    e.preventDefault();
-    emit("start_game");
+  const addNewScoreLimit = () => {
+    const gameOptions = getGameOptions(formId, patternFormId, scoreLimitFormId);
+    gameOptions.base_score_limits.push({ han: 0, score: 0 });
+    emit("game_options", gameOptions);
   };
   const sendDefaultPresetGameOptions = (e: Event) => {
     e.preventDefault();
@@ -100,6 +97,11 @@ export function GameOptionsForm({
     } else {
       emit("game_options", riichi_3player_preset);
     }
+  };
+
+  const onSubmit = (e: SubmitEvent) => {
+    e.preventDefault();
+    emit("start_game");
   };
 
   return (
@@ -138,6 +140,17 @@ export function GameOptionsForm({
             patternFormId={patternFormId}
             isEditable={isEditable}
             sendGameOptions={sendGameOptions}
+          />
+        </details>
+        <details class="score_limit_options">
+          <summary>Score limits</summary>
+          <ScoreLimitForm
+            scoreLimits={gameOptions.base_score_limits}
+            scoreLimitFormId={scoreLimitFormId}
+            isEditable={isEditable}
+            addNewScoreLimit={addNewScoreLimit}
+            sendGameOptions={sendGameOptions}
+            onSubmit={onSubmit}
           />
         </details>
       </div>
