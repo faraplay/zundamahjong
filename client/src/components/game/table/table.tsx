@@ -16,7 +16,11 @@ export function Table({ info }: { info: AllServerInfo }) {
   }
   known_hands[info.player_index] = info.player_info.hand;
   if (info.win_info) {
-    known_hands[info.win_info.win_player] = info.win_info.hand;
+    if (info.win_info.lose_player == null) {
+      known_hands[info.win_info.win_player] = info.win_info.hand;
+    } else {
+      known_hands[info.win_info.win_player] = info.win_info.hand.slice(0, -1);
+    }
   }
 
   const player_discards: Discard[][] = [];
