@@ -5,12 +5,14 @@ export function GameOptionsScoreLimitInput({
   index,
   scoreLimit,
   formId,
+  removeThis,
   sendGameOptions,
 }: {
   isEditable: boolean;
   index: number;
   scoreLimit: ScoreLimit;
   formId: string;
+  removeThis: () => void;
   sendGameOptions: () => void;
 }) {
   const onChange = (e: Event) => {
@@ -35,6 +37,11 @@ export function GameOptionsScoreLimitInput({
         value={scoreLimit.score}
         {...editableProps}
       />
+      {isEditable ? (
+        <button class="remove_score_limit" type="button" onClick={removeThis}>
+          &times;
+        </button>
+      ) : null}
     </>
   );
 }

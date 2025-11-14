@@ -8,6 +8,7 @@ export function ScoreLimitForm({
   scoreLimitFormId,
   isEditable,
   addNewScoreLimit,
+  removeScoreLimit,
   sendGameOptions,
   onSubmit,
 }: {
@@ -15,6 +16,7 @@ export function ScoreLimitForm({
   scoreLimitFormId: string;
   isEditable: boolean;
   addNewScoreLimit: () => void;
+  removeScoreLimit: (index: number) => void;
   sendGameOptions: () => void;
   onSubmit: (e: SubmitEvent) => void;
 }) {
@@ -33,6 +35,9 @@ export function ScoreLimitForm({
           index={index}
           scoreLimit={scoreLimit}
           formId={scoreLimitFormId}
+          removeThis={() => {
+            removeScoreLimit(index);
+          }}
           sendGameOptions={sendGameOptions}
         />
       ))}

@@ -2,9 +2,27 @@
   label {
     padding-left: 0.5cqw;
   }
+
   .add_new_score_limit {
-    grid-column: 1/4;
+    grid-column: 1/5;
     margin: 0.5cqw 0.1cqw;
     border: 1px dashed black;
+    background-color: transparent;
+
+    &:hover {
+      background-color: rgb(128, 128, 128, 20%);
+    }
+  }
+
+  .remove_score_limit {
+    justify-self: center;
+    align-self: center;
+    border-radius: 0.5cqw;
+    border: 1px solid rgb(0, 0, 0, 70%);
+    background-color: transparent;
+
+    &:hover {
+      background-color: rgb(128, 128, 128, 20%);
+    }
   }
 }

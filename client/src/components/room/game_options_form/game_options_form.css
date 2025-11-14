@@ -54,7 +54,11 @@
         grid-template-columns: auto 6cqw 6cqw;
       }
 
-      &.score_limit_options::details-content {
+      &.score_limit_options.can_edit::details-content {
+        grid-template-columns: 6cqw auto 10cqw 3cqw;
+      }
+
+      &.score_limit_options.cannot_edit::details-content {
         grid-template-columns: 6cqw auto 10cqw;
       }
 

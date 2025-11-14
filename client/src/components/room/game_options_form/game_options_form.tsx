@@ -82,6 +82,12 @@ export function GameOptionsForm({
     gameOptions.base_score_limits.push({ han: 0, score: 0 });
     emit("game_options", gameOptions);
   };
+  const removeScoreLimit = (index: number) => {
+    const gameOptions = getGameOptions(formId, patternFormId, scoreLimitFormId);
+    gameOptions.base_score_limits.splice(index, 1);
+    emit("game_options", gameOptions);
+  };
+
   const sendDefaultPresetGameOptions = (e: Event) => {
     e.preventDefault();
     if (gameOptions.player_count == 4) {
@@ -128,6 +134,20 @@ export function GameOptionsForm({
           formId={formId}
           sendGameOptions={sendGameOptions}
         />
+        <details
+          class={`score_limit_options ${isEditable ? "can_edit" : "cannot_edit"}`}
+        >
+          <summary>Score limits</summary>
+          <ScoreLimitForm
+            scoreLimits={gameOptions.base_score_limits}
+            scoreLimitFormId={scoreLimitFormId}
+            isEditable={isEditable}
+            addNewScoreLimit={addNewScoreLimit}
+            removeScoreLimit={removeScoreLimit}
+            sendGameOptions={sendGameOptions}
+            onSubmit={onSubmit}
+          />
+        </details>
         <details class="pattern_options">
           <summary>Patterns</summary>
           <div class="table_header">
@@ -140,17 +160,6 @@ export function GameOptionsForm({
             patternFormId={patternFormId}
             isEditable={isEditable}
             sendGameOptions={sendGameOptions}
-          />
-        </details>
-        <details class="score_limit_options">
-          <summary>Score limits</summary>
-          <ScoreLimitForm
-            scoreLimits={gameOptions.base_score_limits}
-            scoreLimitFormId={scoreLimitFormId}
-            isEditable={isEditable}
-            addNewScoreLimit={addNewScoreLimit}
-            sendGameOptions={sendGameOptions}
-            onSubmit={onSubmit}
           />
         </details>
       </div>
