@@ -3,6 +3,11 @@ from pydantic import BaseModel
 from .pattern import PatternData, default_pattern_data
 
 
+class ScoreLimit(BaseModel):
+    han: int
+    score: float
+
+
 class GameOptions(BaseModel):
     player_count: int = 4
     game_length_wind_rounds: int = 1
@@ -28,6 +33,8 @@ class GameOptions(BaseModel):
     base_fu: int = 25
     round_up_fu: bool = False
     round_up_points: bool = False
+
+    base_score_limits: list[ScoreLimit] = [ScoreLimit(han=6, score=6400.0)]
 
     pattern_data: dict[str, PatternData] = default_pattern_data
 

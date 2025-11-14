@@ -32,14 +32,35 @@ class Scorer:
     def __init__(self, win: Win, options: GameOptions) -> None:
         self._win = win
         self._options = options
+        self._low_han_max_score = min(
+            (score_limit.score for score_limit in self._options.base_score_limits),
+            default=None,
+        )
         self._pattern_data = default_pattern_data | options.pattern_data
+
+    def _get_limit_base_score(self, han: int) -> float | None:
+        best_score_limit = max(
+            (
+                (score_limit.han, score_limit.score)
+                for score_limit in self._options.base_score_limits
+                if score_limit.han <= han
+            ),
+            default=None,
+        )
+        return best_score_limit[1] if best_score_limit is not None else None
 
     def _get_player_scores(self, han: int, fu: int) -> list[float]:
         player_count = self._options.player_count
         win_player = self._win.win_player
         lose_player = self._win.lose_player
-        han_multiplier: int = 1 << min(han, 6)
-        base_score = fu * 4 * han_multiplier
+        limit_base_score = self._get_limit_base_score(han)
+        if limit_base_score is None:
+            han_multiplier = 1 << han
+            base_score: float = fu * 4 * han_multiplier
+            if self._low_han_max_score is not None:
+                base_score = min(base_score, self._low_han_max_score)
+        else:
+            base_score = limit_base_score
         if lose_player is None:
             if win_player == self._win.sub_round:
                 player_pay_in_amount = (

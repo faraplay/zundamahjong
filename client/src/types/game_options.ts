@@ -24,7 +24,14 @@ export type GameOptions = {
   round_up_fu: boolean;
   round_up_points: boolean;
 
+  base_score_limits: ScoreLimit[];
+
   pattern_data: PatternDataDict;
+};
+
+export type ScoreLimit = {
+  han: number;
+  score: number;
 };
 
 export type PatternData = {

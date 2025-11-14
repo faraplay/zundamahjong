@@ -1,5 +1,11 @@
-import { type PatternDataDict, patterns } from "../../../types/game_options";
-import { GameOptionsPatternInput } from "../game_options_input/game_options_input";
+import {
+  type PatternDataDict,
+  patternDisplayNames,
+  patterns,
+} from "../../../types/game_options";
+import { GameOptionsPatternInput } from "./pattern_input";
+
+import "./pattern_form.css";
 
 export function PatternForm({
   patternValues,
@@ -13,7 +19,13 @@ export function PatternForm({
   sendGameOptions: () => void;
 }) {
   return (
-    <>
+    <details class="pattern_options">
+      <summary>Patterns</summary>
+      <div class="table_header">
+        <div>Pattern</div>
+        <div>Han</div>
+        <div>Fu</div>
+      </div>
       {patterns.map((pattern) => (
         <GameOptionsPatternInput
           key={pattern}
@@ -24,6 +36,22 @@ export function PatternForm({
           sendGameOptions={sendGameOptions}
         />
       ))}
-    </>
+    </details>
   );
+}
+
+export function getPatternDataDict(patternFormId: string): PatternDataDict {
+  const patternFormData = new FormData(
+    document.getElementById(patternFormId) as HTMLFormElement,
+  );
+  return Object.fromEntries(
+    patterns.map((pattern) => [
+      pattern,
+      {
+        display_name: patternDisplayNames[pattern],
+        han: Number(patternFormData.get(`${pattern}___han`)),
+        fu: Number(patternFormData.get(`${pattern}___fu`)),
+      },
+    ]),
+  ) as PatternDataDict;
 }
