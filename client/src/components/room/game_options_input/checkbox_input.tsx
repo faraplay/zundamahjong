@@ -19,7 +19,7 @@ export function GameOptionsCheckboxInput({
     e.preventDefault();
     sendGameOptions();
   };
-  const editableProps = isEditable ? { onChange } : { readonly: true };
+  const editableProps = isEditable ? { onChange } : { disabled: true };
   return (
     <>
       <label for={inputId}>{inputProps.labelText}</label>
