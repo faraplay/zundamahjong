@@ -7,6 +7,7 @@ import type { PatternData } from "./game_options.ts";
 export type Discard = {
   player: number;
   tile: TileId;
+  called: boolean;
   is_riichi: boolean;
 };
 

@@ -7,6 +7,10 @@
   transform-origin: left top;
   transform-style: preserve-3d;
 
+  &.called {
+    display: none;
+  }
+
   &.is_riichi {
     width: var(--tile-height);
 

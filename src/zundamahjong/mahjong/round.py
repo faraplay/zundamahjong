@@ -229,7 +229,11 @@ class Round:
     @property
     def discard_tiles(self) -> Sequence[TileId]:
         "The round's discards, as a sequence of :py:class:`TileId` s."
-        return [discard.tile for discard in self._discard_pool.discards]
+        return [
+            discard.tile
+            for discard in self._discard_pool.discards
+            if not discard.called
+        ]
 
     @property
     def last_tile(self) -> TileId:

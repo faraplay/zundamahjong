@@ -11,13 +11,16 @@ export function TableDiscards({
   player_index: number;
   discards: ReadonlyArray<Discard>;
 }) {
-  const firstRiichiIndex = discards.findIndex((discard) => discard.is_riichi);
+  const firstRiichiIndex = discards.findIndex(
+    (discard) => discard.is_riichi && !discard.called,
+  );
   return (
     <div class={`player_discards player_${player_index}`}>
       {discards.map((discard, index) => (
         <Tile3D
           key={discard.tile}
           tile={discard.tile}
+          called={discard.called}
           isFirstRiichi={index == firstRiichiIndex}
         />
       ))}

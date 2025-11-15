@@ -6,13 +6,17 @@ import "./tile_3d.css";
 
 export function Tile3D({
   tile,
+  called,
   isFirstRiichi,
 }: {
   tile: TileId;
+  called?: boolean;
   isFirstRiichi?: boolean;
 }) {
   return (
-    <div class={`tile_3d tile_id_${tile} ${isFirstRiichi ? "is_riichi" : ""}`}>
+    <div
+      class={`tile_3d tile_id_${tile} ${called ? "called" : ""} ${isFirstRiichi ? "is_riichi" : ""}`}
+    >
       <div class={`tile_3d_extra_transform`}>
         <span class="tile_face tile_back" />
         <span class="tile_face tile_left" />
