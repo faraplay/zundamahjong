@@ -57,9 +57,9 @@ dev = [
 ]
 
 lint = [
-  "basedpyright",
   "mypy",
   "ruff",
+  "ty",
 ]
 
 test = [
@@ -89,15 +89,6 @@ strict = true
 [[tool.mypy.overrides]]
 module = ["flask_socketio.*"]
 ignore_missing_imports = true
-
-[tool.basedpyright]
-include = ["src", "tests"]
-allowedUntypedLibraries = ["flask_socketio"]
-pythonVersion = "3.10"
-
-reportUnusedCallResult = false
-reportUnusedFunction = false
-reportUnusedParameter = false
 
 
 # Other tool configs

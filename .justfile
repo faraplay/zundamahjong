@@ -31,7 +31,7 @@ check-client: lint-client test-client
 lint-server:
     ruff check --select I
     mypy
-    basedpyright
+    ty check
 
 [doc("Run server tests")]
 test-server:

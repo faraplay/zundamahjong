@@ -54,9 +54,9 @@ jobs:
       - name: Type check with mypy
         run: |
           uv run mypy
-      - name: Type check with basedpyright
+      - name: Type check with ty
         run: |
-          uv run basedpyright
+          uv run ty check
       - name: Test with pytest
         run: |
           uv run pytest
