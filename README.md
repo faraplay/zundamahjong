@@ -115,6 +115,29 @@ free to start it manually (before running the above!) by navigating to the
 npm run dev
 ```
 
+## Generating documentation with Sphinx
+
+You'll need to make sure you install the docs dependencies as well with
+
+```sh
+uv venv
+source .venv/bin/activate
+uv sync --group docs
+```
+
+Then you can build the docs with
+
+```sh
+sphinx-build -M html docs/source/ docs/build/
+```
+
+If you're working on the docs and want the docs to be rebuilt every time
+an edit is saved, you can run
+
+```sh
+sphinx-autobuild docs/source docs/build/html --watch src
+```
+
 ## Generating password hashes
 
 To reset a user's password if they have forgotten it, you can use
