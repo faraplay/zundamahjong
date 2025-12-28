@@ -11,24 +11,47 @@ from .win import Win
 
 
 class Scoring(BaseModel):
+    """
+    Represents the score data associated to a win in a round of mahjong.
+    """
+
     win_player: int
+    "The index of the winning player."
     lose_player: int | None
+    "The index of the player who dealt in, or ``None`` if the win was tsumo."
     patterns: dict[str, PatternData]
+    """
+    A dictionary containing the :py:class:`PatternData` for the patterns
+    that the hand has.
+
+    Patterns are indexed by the internal names of the patterns
+    (in SCREAMING_SNAKE_CASE).
+    """
     han: int
+    "The total han value of the hand."
     fu: int
+    "The total fu value of the hand."
     player_scores: list[float]
+    "The amount of points each player wins or loses from this hand."
 
 
-def round_up_int(value: int, step: int) -> int:
+def _round_up_int(value: int, step: int) -> int:
     return step * ceil(value / step)
 
 
-def round_up_float(value: float, step: float) -> float:
+def _round_up_float(value: float, step: float) -> float:
     return step * ceil(value / step)
 
 
 @final
 class Scorer:
+    """
+    Class to calculate the score from a :py:class:`Win` object.
+
+    Objects in this class should not be instantiated directly;
+    instead, use the :py:meth:`score` class method.
+    """
+
     def __init__(self, win: Win, options: GameOptions) -> None:
         self._win = win
         self._options = options
@@ -67,7 +90,7 @@ class Scorer:
                     self._options.score_dealer_tsumo_multiplier * base_score
                 )
                 if self._options.round_up_points:
-                    player_pay_in_amount = round_up_float(player_pay_in_amount, 100)
+                    player_pay_in_amount = _round_up_float(player_pay_in_amount, 100)
                 player_scores = [-player_pay_in_amount] * player_count
                 player_scores[win_player] = player_pay_in_amount * (player_count - 1)
             else:
@@ -76,12 +99,12 @@ class Scorer:
                     * base_score
                 )
                 if self._options.round_up_points:
-                    player_pay_in_amount = round_up_float(player_pay_in_amount, 100)
+                    player_pay_in_amount = _round_up_float(player_pay_in_amount, 100)
                 dealer_pay_in_amount = (
                     self._options.score_nondealer_tsumo_dealer_multiplier * base_score
                 )
                 if self._options.round_up_points:
-                    dealer_pay_in_amount = round_up_float(dealer_pay_in_amount, 100)
+                    dealer_pay_in_amount = _round_up_float(dealer_pay_in_amount, 100)
                 player_scores = [-player_pay_in_amount] * player_count
                 player_scores[self._win.sub_round] = -dealer_pay_in_amount
                 player_scores[win_player] = (
@@ -97,7 +120,7 @@ class Scorer:
                     self._options.score_nondealer_ron_multiplier * base_score
                 )
             if self._options.round_up_points:
-                player_pay_in_amount = round_up_float(player_pay_in_amount, 100)
+                player_pay_in_amount = _round_up_float(player_pay_in_amount, 100)
             player_scores = [0.0] * player_count
             player_scores[win_player] = player_pay_in_amount
             player_scores[lose_player] = -player_pay_in_amount
@@ -125,7 +148,7 @@ class Scorer:
         else:
             fu = self._options.base_fu
         if self._options.round_up_fu:
-            fu = round_up_int(fu, 10)
+            fu = _round_up_int(fu, 10)
         player_scores = self._get_player_scores(han, fu)
         if self._options.calculate_fu:
             patterns_dict = dict(
@@ -165,4 +188,11 @@ class Scorer:
 
     @classmethod
     def score(cls, win: Win, options: GameOptions) -> Scoring:
+        """
+        Calculate the score a winning hand should get.
+
+        :param win: The :py:class:`Win` object to calculate the score for.
+        :param options: The :py:class:`GameOptions` object to use when scoring.
+        :return: A :py:class:`Scoring` object containing the scoring data.
+        """
         return cls(win, options)._get_scoring()

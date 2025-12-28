@@ -410,6 +410,12 @@ def calculate_shanten(
 
 
 def get_waits(tiles: list[TileValue]) -> frozenset[TileValue]:
+    """
+    Calculate all tiles that can be added to the hand to form a winning hand.
+
+    :param tiles: A list of the :py:class:`TileId` s of the tiles in the hand.
+    :return: A frozenset containing all the tiles that can complete the hand.
+    """
     if len(tiles) % 3 != 1:
         return frozenset()
     if any(tile >= tile_value_top for tile in tiles):
