@@ -25,7 +25,7 @@ class TileValueMeld(BaseModel):
     winning_tile_index: int | None = None
     """
     If the winning tile is in this meld, this is the index of the
-    winning tile in ``tiles``. Otherwise it is `None`.
+    winning tile in :py:data:`tiles`. Otherwise it is ``None``.
     """
 
 
@@ -39,5 +39,5 @@ class Meld(BaseModel):
     winning_tile_index: int | None = None
     """
     If the winning tile is in this meld, this is the index of the
-    winning tile in ``tiles``. Otherwise it is `None`.
+    winning tile in :py:data:`tiles`. Otherwise it is ``None``.
     """
