@@ -276,14 +276,6 @@ class PatternCalculator:
                 else:
                     self.orphan_closed_quad_count += 1
 
-    def get_pattern_mults(self) -> dict[str, int]:
-        pattern_mults: dict[str, int] = {}
-        for pattern, get_pattern_multiplicity in pattern_mult_funcs.items():
-            pattern_mult = get_pattern_multiplicity(self)
-            if pattern_mult != 0:
-                pattern_mults[pattern] = pattern_mult
-        return pattern_mults
-
     @register_pattern(
         "BLESSING_OF_HEAVEN",
         display_name="Blessing of Heaven",
@@ -972,78 +964,6 @@ class PatternCalculator:
     )
     def pair_wait(self: PatternCalculator) -> int:
         return int(self.wait_pattern == WaitPattern.TANKI and self.pair_count == 1)
-
-    @register_pattern(
-        "SIMPLE_OPEN_TRIPLET",
-        display_name="Simple Open Triplet",
-        han=0,
-        fu=2,
-    )
-    def simple_open_triplet(self: PatternCalculator) -> int:
-        return self.simple_open_triplet_count
-
-    @register_pattern(
-        "ORPHAN_OPEN_TRIPLET",
-        display_name="Orphan Open Triplet",
-        han=0,
-        fu=4,
-    )
-    def orphan_open_triplet(self: PatternCalculator) -> int:
-        return self.orphan_open_triplet_count
-
-    @register_pattern(
-        "SIMPLE_CLOSED_TRIPLET",
-        display_name="Simple Closed Triplet",
-        han=0,
-        fu=4,
-    )
-    def simple_closed_triplet(self: PatternCalculator) -> int:
-        return self.simple_closed_triplet_count
-
-    @register_pattern(
-        "ORPHAN_CLOSED_TRIPLET",
-        display_name="Orphan Closed Triplet",
-        han=0,
-        fu=8,
-    )
-    def orphan_closed_triplet(self: PatternCalculator) -> int:
-        return self.orphan_closed_triplet_count
-
-    @register_pattern(
-        "SIMPLE_OPEN_QUAD",
-        display_name="Simple Open Quad",
-        han=0,
-        fu=8,
-    )
-    def simple_open_quad(self: PatternCalculator) -> int:
-        return self.simple_open_quad_count
-
-    @register_pattern(
-        "ORPHAN_OPEN_QUAD",
-        display_name="Orphan Open Quad",
-        han=0,
-        fu=16,
-    )
-    def orphan_open_quad(self: PatternCalculator) -> int:
-        return self.orphan_open_quad_count
-
-    @register_pattern(
-        "SIMPLE_CLOSED_QUAD",
-        display_name="Simple Closed Quad",
-        han=0,
-        fu=16,
-    )
-    def simple_closed_quad(self: PatternCalculator) -> int:
-        return self.simple_closed_quad_count
-
-    @register_pattern(
-        "ORPHAN_CLOSED_QUAD",
-        display_name="Orphan Closed Quad",
-        han=0,
-        fu=32,
-    )
-    def orphan_closed_quad(self: PatternCalculator) -> int:
-        return self.orphan_closed_quad_count
 
     @register_pattern(
         "YAKUHAI_PAIR",

@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from tests.yaku_test import get_pattern_mults
+from tests.yaku_test import get_pattern_mults_test
 from zundamahjong.mahjong.call import (
     AddKanCall,
     CallType,
@@ -13,7 +13,7 @@ from zundamahjong.mahjong.meld import Meld, MeldType
 
 class YakumanTest(TestCase):
     def test_blessing_of_heaven(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -40,7 +40,7 @@ class YakumanTest(TestCase):
         )
 
     def test_blessing_of_earth(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=1,
             lose_player=None,
             formed_hand=[
@@ -67,7 +67,7 @@ class YakumanTest(TestCase):
         )
 
     def test_little_three_dragons(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -102,7 +102,7 @@ class YakumanTest(TestCase):
         )
 
     def test_big_three_dragons(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -136,7 +136,7 @@ class YakumanTest(TestCase):
         )
 
     def test_four_little_winds(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -169,7 +169,7 @@ class YakumanTest(TestCase):
         )
 
     def test_four_big_winds(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -205,7 +205,7 @@ class YakumanTest(TestCase):
         )
 
     def test_four_concealed_triplets(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -237,7 +237,7 @@ class YakumanTest(TestCase):
         )
 
     def test_one_open_triplet(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -268,7 +268,7 @@ class YakumanTest(TestCase):
         )
 
     def test_four_concealed_triplets_1_sided_wait(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -299,7 +299,7 @@ class YakumanTest(TestCase):
         )
 
     def test_all_honours(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -334,7 +334,7 @@ class YakumanTest(TestCase):
         )
 
     def test_all_greens(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -369,7 +369,7 @@ class YakumanTest(TestCase):
         )
 
     def test_all_terminals(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -401,7 +401,7 @@ class YakumanTest(TestCase):
         )
 
     def test_thirteen_orphans(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -432,7 +432,7 @@ class YakumanTest(TestCase):
         self.assertDictEqual(pattern_mults, {"NO_CALLS_RON": 1, "THIRTEEN_ORPHANS": 1})
 
     def test_thirteen_orphans_13_sided_wait(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -465,7 +465,7 @@ class YakumanTest(TestCase):
         )
 
     def test_four_quads(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -505,7 +505,7 @@ class YakumanTest(TestCase):
         )
 
     def test_nine_gates(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -531,7 +531,7 @@ class YakumanTest(TestCase):
         )
 
     def test_true_nine_gates(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -557,7 +557,7 @@ class YakumanTest(TestCase):
         )
 
     def test_full_flush_not_nine_gates(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[

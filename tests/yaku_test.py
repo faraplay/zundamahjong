@@ -10,12 +10,12 @@ from zundamahjong.mahjong.call import (
     OpenKanCall,
 )
 from zundamahjong.mahjong.meld import Meld, MeldType
-from zundamahjong.mahjong.pattern.pattern import PatternCalculator
+from zundamahjong.mahjong.pattern import get_pattern_mults
 from zundamahjong.mahjong.tile import TileId
 from zundamahjong.mahjong.win import Win
 
 
-def get_pattern_mults(
+def get_pattern_mults_test(
     *,
     win_player: int = 0,
     lose_player: int | None,
@@ -48,12 +48,12 @@ def get_pattern_mults(
         sub_round=sub_round,
         **kwargs,  # pyright: ignore[reportAny]
     )
-    return PatternCalculator(win, formed_hand).get_pattern_mults()
+    return get_pattern_mults(win, formed_hand)
 
 
 class PatternTest(TestCase):
     def test_open_wait(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -78,7 +78,7 @@ class PatternTest(TestCase):
         )
 
     def test_closed_wait(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -103,7 +103,7 @@ class PatternTest(TestCase):
         )
 
     def test_low_edge_wait(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -128,7 +128,7 @@ class PatternTest(TestCase):
         )
 
     def test_high_edge_wait(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -153,7 +153,7 @@ class PatternTest(TestCase):
         )
 
     def test_dual_pon_wait(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -180,7 +180,7 @@ class PatternTest(TestCase):
         )
 
     def test_pair_wait(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -205,7 +205,7 @@ class PatternTest(TestCase):
         )
 
     def test_no_flowers(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -235,7 +235,7 @@ class PatternTest(TestCase):
         )
 
     def test_player_flower(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -265,7 +265,7 @@ class PatternTest(TestCase):
         )
 
     def test_sub_round_player_flower(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -296,7 +296,7 @@ class PatternTest(TestCase):
         )
 
     def test_two_player_flowers(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -326,7 +326,7 @@ class PatternTest(TestCase):
         )
 
     def test_set_of_flowers(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -357,7 +357,7 @@ class PatternTest(TestCase):
         )
 
     def test_seven_flowers(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -389,7 +389,7 @@ class PatternTest(TestCase):
         )
 
     def test_two_sets_of_flowers(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -420,7 +420,7 @@ class PatternTest(TestCase):
         )
 
     def test_draw(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -451,7 +451,7 @@ class PatternTest(TestCase):
         )
 
     def test_after_a_flower(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -482,7 +482,7 @@ class PatternTest(TestCase):
         )
 
     def test_after_a_kan(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -513,7 +513,7 @@ class PatternTest(TestCase):
         )
 
     def test_player_wind(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=1,
             lose_player=None,
             formed_hand=[
@@ -543,7 +543,7 @@ class PatternTest(TestCase):
         )
 
     def test_sub_round_player_wind(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=2,
             lose_player=None,
             formed_hand=[
@@ -574,7 +574,7 @@ class PatternTest(TestCase):
         )
 
     def test_prevalent_wind(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=1,
             lose_player=None,
             formed_hand=[
@@ -604,7 +604,7 @@ class PatternTest(TestCase):
         )
 
     def test_white_dragon(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -634,7 +634,7 @@ class PatternTest(TestCase):
         )
 
     def test_green_dragon(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -664,7 +664,7 @@ class PatternTest(TestCase):
         )
 
     def test_red_dragon(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -694,7 +694,7 @@ class PatternTest(TestCase):
         )
 
     def test_eyes(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -736,7 +736,7 @@ class PatternTest(TestCase):
         )
 
     def test_no_calls(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -760,7 +760,7 @@ class PatternTest(TestCase):
         )
 
     def test_no_calls_tsumo(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -785,7 +785,7 @@ class PatternTest(TestCase):
         )
 
     def test_no_calls_closed_kan(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -810,7 +810,7 @@ class PatternTest(TestCase):
         )
 
     def test_no_calls_tsumo_closed_kan(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -836,7 +836,7 @@ class PatternTest(TestCase):
         )
 
     def test_chankan(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -862,7 +862,7 @@ class PatternTest(TestCase):
         )
 
     def test_haitei(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -893,7 +893,7 @@ class PatternTest(TestCase):
         )
 
     def test_houtei(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -924,7 +924,7 @@ class PatternTest(TestCase):
         )
 
     def test_all_runs(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -963,7 +963,7 @@ class PatternTest(TestCase):
         )
 
     def test_all_simples(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -999,7 +999,7 @@ class PatternTest(TestCase):
         )
 
     def test_pure_straight(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -1031,7 +1031,7 @@ class PatternTest(TestCase):
         )
 
     def test_all_triplets(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -1063,7 +1063,7 @@ class PatternTest(TestCase):
         )
 
     def test_half_flush(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -1093,7 +1093,7 @@ class PatternTest(TestCase):
         )
 
     def test_full_flush(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -1123,7 +1123,7 @@ class PatternTest(TestCase):
         )
 
     def test_seven_pairs(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -1141,7 +1141,7 @@ class PatternTest(TestCase):
         self.assertDictEqual(pattern_mults, {"SEVEN_PAIRS": 1})
 
     def test_half_outside_hand(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -1171,7 +1171,7 @@ class PatternTest(TestCase):
         )
 
     def test_fully_outside_hand(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -1201,7 +1201,7 @@ class PatternTest(TestCase):
         )
 
     def test_pure_double_sequence(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -1231,7 +1231,7 @@ class PatternTest(TestCase):
         )
 
     def test_twice_pure_double_sequence(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -1262,7 +1262,7 @@ class PatternTest(TestCase):
         )
 
     def test_pure_triple_sequence(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -1292,7 +1292,7 @@ class PatternTest(TestCase):
         )
 
     def test_pure_quadruple_sequence(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -1323,7 +1323,7 @@ class PatternTest(TestCase):
         )
 
     def test_mixed_triple_sequence(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -1353,7 +1353,7 @@ class PatternTest(TestCase):
         )
 
     def test_three_concealed_triplets(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[
@@ -1383,7 +1383,7 @@ class PatternTest(TestCase):
         )
 
     def test_three_quads(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -1419,7 +1419,7 @@ class PatternTest(TestCase):
         )
 
     def test_triple_triplets(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
             formed_hand=[
@@ -1450,7 +1450,7 @@ class PatternTest(TestCase):
         )
 
     def test_all_terminals_and_honours(self) -> None:
-        pattern_mults = get_pattern_mults(
+        pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=1,
             formed_hand=[

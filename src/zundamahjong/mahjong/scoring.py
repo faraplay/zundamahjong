@@ -6,7 +6,8 @@ from pydantic import BaseModel
 from .form_hand import formed_hand_possibilities
 from .game_options import GameOptions
 from .meld import Meld
-from .pattern.pattern import PatternCalculator, PatternData, default_pattern_data
+from .pattern import get_pattern_mults
+from .pattern.pattern import PatternData, default_pattern_data
 from .win import Win
 
 
@@ -127,7 +128,7 @@ class Scorer:
         return player_scores
 
     def _get_formed_hand_scoring(self, formed_hand: list[Meld]) -> Scoring:
-        pattern_mults = PatternCalculator(self._win, formed_hand).get_pattern_mults()
+        pattern_mults = get_pattern_mults(self._win, formed_hand)
         patterns = [
             (
                 pattern,
