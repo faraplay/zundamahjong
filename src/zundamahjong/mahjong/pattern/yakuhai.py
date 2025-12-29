@@ -1,6 +1,6 @@
 from ..meld import MeldType
 from ..tile import TileValue
-from .pattern import PatternCalculator, register_pattern
+from .pattern_calculator import PatternCalculator, register_pattern
 
 
 def _yakuhai(self: PatternCalculator, pattern_tile: TileValue) -> int:

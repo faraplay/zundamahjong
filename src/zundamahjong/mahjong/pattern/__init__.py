@@ -17,13 +17,13 @@ from . import (
     wait,  # noqa: F401
 )
 
-from .pattern import PatternData as PatternData
-from .pattern import default_pattern_data as default_pattern_data
+from .pattern_calculator import PatternData as PatternData
+from .pattern_calculator import default_pattern_data as default_pattern_data
 
 
 from ..meld import Meld
 from ..win import Win
-from .pattern import pattern_mult_funcs, PatternCalculator
+from .pattern_calculator import pattern_mult_funcs, PatternCalculator
 
 
 def get_pattern_mults(win: Win, formed_hand: list[Meld]) -> dict[str, int]:

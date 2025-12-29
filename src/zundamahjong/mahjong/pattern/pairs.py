@@ -1,5 +1,5 @@
 from ..tile import is_number
-from .pattern import PatternCalculator, register_pattern
+from .pattern_calculator import PatternCalculator, register_pattern
 
 
 @register_pattern(
