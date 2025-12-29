@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from .pattern import PatternData, default_pattern_data
+from .pattern.pattern import PatternData, default_pattern_data
 
 
 class ScoreLimit(BaseModel):

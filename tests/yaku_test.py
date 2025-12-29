@@ -10,7 +10,7 @@ from zundamahjong.mahjong.call import (
     OpenKanCall,
 )
 from zundamahjong.mahjong.meld import Meld, MeldType
-from zundamahjong.mahjong.pattern import PatternCalculator
+from zundamahjong.mahjong.pattern.pattern import PatternCalculator
 from zundamahjong.mahjong.tile import TileId
 from zundamahjong.mahjong.win import Win
 

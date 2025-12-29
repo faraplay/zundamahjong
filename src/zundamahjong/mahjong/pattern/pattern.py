@@ -7,9 +7,9 @@ from typing import final
 
 from pydantic import BaseModel
 
-from .call import CallType, get_call_tiles, get_meld_type
-from .meld import Meld, MeldType, TileValueMeld
-from .tile import (
+from ..call import CallType, get_call_tiles, get_meld_type
+from ..meld import Meld, MeldType, TileValueMeld
+from ..tile import (
     TileValue,
     dragons,
     get_tile_value,
@@ -19,7 +19,7 @@ from .tile import (
     terminals,
     winds,
 )
-from .win import Win
+from ..win import Win
 
 
 class PatternData(BaseModel):

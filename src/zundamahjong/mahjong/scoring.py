@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from .form_hand import formed_hand_possibilities
 from .game_options import GameOptions
 from .meld import Meld
-from .pattern import PatternCalculator, PatternData, default_pattern_data
+from .pattern.pattern import PatternCalculator, PatternData, default_pattern_data
 from .win import Win
 
 

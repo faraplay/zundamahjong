@@ -4,7 +4,7 @@ from zundamahjong.mahjong.call import CallType, OpenCall
 from zundamahjong.mahjong.game import Game
 from zundamahjong.mahjong.game_options import GameOptions
 from zundamahjong.mahjong.meld import Meld, MeldType
-from zundamahjong.mahjong.pattern import PatternCalculator
+from zundamahjong.mahjong.pattern.pattern import PatternCalculator
 from zundamahjong.mahjong.win import Win
 
 
