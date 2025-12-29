@@ -2,7 +2,6 @@ from __future__ import annotations
 
 from collections import Counter
 from collections.abc import Callable
-from enum import IntEnum
 from typing import final
 
 from pydantic import BaseModel
@@ -20,6 +19,8 @@ from ..tile import (
     winds,
 )
 from ..win import Win
+
+from .wait_pattern import WaitPattern, get_wait_pattern
 
 
 class PatternData(BaseModel):
@@ -82,79 +83,6 @@ def register_pattern(
     return _register_pattern_inner
 
 
-class WaitPattern(IntEnum):
-    """
-    Enum representing the wait pattern of a winning hand. This is determined by
-    how the winning tile fits into its meld.
-    """
-
-    RYANMEN = 0
-    """
-    The winning tile is on one end of a sequence, and the other end of the
-    sequence is not a 1 or 9.
-    """
-    KANCHAN = 1
-    """
-    The winning tile is in the middle of a sequence.
-    """
-    PENCHAN = 2
-    """
-    The winning tile is on one end of a sequence, and the other end of the
-    sequence is a 1 or 9.
-    """
-    SHANPON = 3
-    """
-    The winning tile is part of a triplet.
-    """
-    TANKI = 4
-    """
-    The winning tile is part of a pair.
-    """
-    KOKUSHI = 5
-    """
-    The hand is 13 orphans, and the winning tile appears in the hand once.
-    """
-    KOKUSHI_13 = 6
-    """
-    The hand is 13 orphans, and the winning tile appears in the hand twice.
-    """
-
-
-def _get_wait_pattern(meld: TileValueMeld) -> WaitPattern:
-    assert meld.winning_tile_index is not None
-    meld_type = meld.meld_type
-    if meld_type == MeldType.CHI:
-        if meld.winning_tile_index == 0:
-            if meld.tiles[0] % 10 == 7:
-                return WaitPattern.PENCHAN
-            else:
-                return WaitPattern.RYANMEN
-        elif meld.winning_tile_index == 1:
-            return WaitPattern.KANCHAN
-        elif meld.winning_tile_index == 2:
-            if meld.tiles[2] % 10 == 3:
-                return WaitPattern.PENCHAN
-            else:
-                return WaitPattern.RYANMEN
-        else:
-            raise Exception(
-                f"Unexpected winning tile index {meld.winning_tile_index} in chi meld!"
-            )
-    elif meld_type == MeldType.PON:
-        return WaitPattern.SHANPON
-    elif meld_type == MeldType.PAIR:
-        return WaitPattern.TANKI
-    elif meld_type == MeldType.THIRTEEN_ORPHANS:
-        if meld.tiles.count(meld.tiles[meld.winning_tile_index]) == 2:
-            return WaitPattern.KOKUSHI_13
-        else:
-            return WaitPattern.KOKUSHI
-    elif meld_type == MeldType.KAN:
-        raise Exception("Winning tile found in kan meld!")
-    else:
-        raise Exception("Unknown meld type!")
-
-
 @final
 class PatternCalculator:
     """
@@ -194,7 +122,7 @@ class PatternCalculator:
         )
         assert winning_meld.winning_tile_index is not None
         self.winning_tile = winning_meld.tiles[winning_meld.winning_tile_index]
-        self.wait_pattern = _get_wait_pattern(winning_meld)
+        self.wait_pattern = get_wait_pattern(winning_meld)
         self.hand_tiles = [tile for call in self.melds for tile in call.tiles]
         self.used_suits = set((tile // 10) * 10 for tile in self.hand_tiles)
         self.call_outsidenesses = set(
@@ -698,68 +626,6 @@ class PatternCalculator:
             and not self.thirteen_orphans()
         )
 
-    def _yakuhai(self, pattern_tile: TileValue) -> int:
-        return int(
-            any(
-                (call.tiles[0] == pattern_tile and call.meld_type != MeldType.PAIR)
-                for call in self.melds
-            )
-        )
-
-    @register_pattern(
-        "SEAT_WIND",
-        display_name="Seat Wind",
-        han=1,
-        fu=0,
-    )
-    def player_wind(self: PatternCalculator) -> int:
-        return self._yakuhai(self.seat + 31)
-
-    @register_pattern(
-        "PREVALENT_WIND",
-        display_name="Prevalent Wind",
-        han=1,
-        fu=0,
-    )
-    def prevalent_wind(self: PatternCalculator) -> int:
-        return self._yakuhai(self.win.wind_round + 31)
-
-    @register_pattern(
-        "NORTH_WIND",
-        display_name="North Wind",
-        han=1,
-        fu=0,
-    )
-    def north_wind(self: PatternCalculator) -> int:
-        return int(self.win.player_count == 3 and self._yakuhai(34))
-
-    @register_pattern(
-        "WHITE_DRAGON",
-        display_name="White Dragon",
-        han=1,
-        fu=0,
-    )
-    def white_dragon(self: PatternCalculator) -> int:
-        return self._yakuhai(35)
-
-    @register_pattern(
-        "GREEN_DRAGON",
-        display_name="Green Dragon",
-        han=1,
-        fu=0,
-    )
-    def green_dragon(self: PatternCalculator) -> int:
-        return self._yakuhai(36)
-
-    @register_pattern(
-        "RED_DRAGON",
-        display_name="Red Dragon",
-        han=1,
-        fu=0,
-    )
-    def red_dragon(self: PatternCalculator) -> int:
-        return self._yakuhai(37)
-
     @register_pattern(
         "EYES",
         display_name="Eyes",
@@ -921,97 +787,6 @@ class PatternCalculator:
         return self.win.draw_count
 
     @register_pattern(
-        "OPEN_WAIT",
-        display_name="Open Wait",
-        han=0,
-        fu=0,
-    )
-    def open_wait(self: PatternCalculator) -> int:
-        return int(self.wait_pattern == WaitPattern.RYANMEN)
-
-    @register_pattern(
-        "CLOSED_WAIT",
-        display_name="Closed Wait",
-        han=0,
-        fu=2,
-    )
-    def closed_wait(self: PatternCalculator) -> int:
-        return int(self.wait_pattern == WaitPattern.KANCHAN)
-
-    @register_pattern(
-        "EDGE_WAIT",
-        display_name="Edge Wait",
-        han=0,
-        fu=2,
-    )
-    def edge_wait(self: PatternCalculator) -> int:
-        return int(self.wait_pattern == WaitPattern.PENCHAN)
-
-    @register_pattern(
-        "DUAL_PON_WAIT",
-        display_name="Dual Pon Wait",
-        han=0,
-        fu=0,
-    )
-    def dual_pon_wait(self: PatternCalculator) -> int:
-        return int(self.wait_pattern == WaitPattern.SHANPON)
-
-    @register_pattern(
-        "PAIR_WAIT",
-        display_name="Pair Wait",
-        han=0,
-        fu=2,
-    )
-    def pair_wait(self: PatternCalculator) -> int:
-        return int(self.wait_pattern == WaitPattern.TANKI and self.pair_count == 1)
-
-    @register_pattern(
-        "YAKUHAI_PAIR",
-        display_name="Yakuhai Pair",
-        han=0,
-        fu=2,
-    )
-    def yakuhaipair(self: PatternCalculator) -> int:
-        if self.pair_count != 1:
-            return 0
-        yakuhai = [
-            self.seat + 31,
-            self.win.wind_round + 31,
-            35,
-            36,
-            37,
-        ]
-        return sum(self.pair_tile == tile for tile in yakuhai)
-
-    @register_pattern(
-        "PINFU",
-        display_name="Pinfu",
-        han=0,
-        fu=0,
-    )
-    def pinfu(self: PatternCalculator) -> int:
-        return int(
-            len(self.win.calls) == 0
-            and self.chii_meld_count == 4
-            and self.wait_pattern == WaitPattern.RYANMEN
-            and not self.yakuhaipair()
-        )
-
-    @register_pattern(
-        "OPEN_PINFU",
-        display_name="Open Pinfu",
-        han=0,
-        fu=2,
-    )
-    def open_pinfu(self: PatternCalculator) -> int:
-        return int(
-            len(self.win.calls) != 0
-            and self.chii_meld_count == 4
-            and self.wait_pattern == WaitPattern.RYANMEN
-            and not self.yakuhaipair()
-        )
-
-    @register_pattern(
         "NO_CALLS_RON",
         display_name="No Calls Ron",
         han=0,
@@ -1023,12 +798,3 @@ class PatternCalculator:
             and all(call.call_type == CallType.CLOSED_KAN for call in self.win.calls)
             and not self.pair_count == 7
         )
-
-    @register_pattern(
-        "NON_PINFU_TSUMO",
-        display_name="Non Pinfu Tsumo",
-        han=0,
-        fu=2,
-    )
-    def non_pinfu_tsumo(self: PatternCalculator) -> int:
-        return int(self.win.lose_player is None and not self.pinfu())
