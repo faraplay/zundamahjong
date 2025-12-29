@@ -1,8 +1,6 @@
 # ruff: noqa: I001
 
-from ..meld import Meld
-from ..win import Win
-
+# These are imported in order to register their functions.
 from . import (
     special_win,  # noqa: F401
     sequences,  # noqa: F401
@@ -19,6 +17,12 @@ from . import (
     wait,  # noqa: F401
 )
 
+from .pattern import PatternData as PatternData
+from .pattern import default_pattern_data as default_pattern_data
+
+
+from ..meld import Meld
+from ..win import Win
 from .pattern import pattern_mult_funcs, PatternCalculator
 
 
