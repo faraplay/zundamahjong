@@ -1,4 +1,4 @@
-from .pattern import register_pattern, PatternCalculator
+from .pattern import PatternCalculator, register_pattern
 
 
 @register_pattern(

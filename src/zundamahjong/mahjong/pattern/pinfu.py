@@ -1,5 +1,5 @@
+from .pattern import PatternCalculator, register_pattern
 from .wait_pattern import WaitPattern
-from .pattern import register_pattern, PatternCalculator
 from .yakuhai import yakuhaipair
 
 

@@ -1,9 +1,25 @@
-from ..win import Win
+# ruff: noqa: I001
+
 from ..meld import Meld
+from ..win import Win
+
+from . import (
+    special_win,  # noqa: F401
+    sequences,  # noqa: F401
+    pinfu,  # noqa: F401
+    sets,  # noqa: F401
+    pairs,  # noqa: F401
+    flush,  # noqa: F401
+    terminals,  # noqa: F401
+    honours,  # noqa: F401
+    yakuhai,  # noqa: F401
+    melds,  # noqa: F401
+    no_calls,  # noqa: F401
+    flower,  # noqa: F401
+    wait,  # noqa: F401
+)
 
 from .pattern import pattern_mult_funcs, PatternCalculator
-
-from . import melds
 
 
 def get_pattern_mults(win: Win, formed_hand: list[Meld]) -> dict[str, int]:
