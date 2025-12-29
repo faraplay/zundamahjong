@@ -15,7 +15,10 @@ class Win(BaseModel):
     lose_player: int | None
     "The index of the player who dealt in, or ``None`` if the win was tsumo."
     hand: list[TileId]
-    "A list of the :py:class:`TileId` s of the tiles in the hand."
+    """
+    A list of the :py:class:`TileId` s of the tiles in the hand
+    (does not include flowers or tiles in calls).
+    """
     calls: list[Call]
     "A list of the :py:class:`Call` s that the hand made."
     flowers: list[TileId]

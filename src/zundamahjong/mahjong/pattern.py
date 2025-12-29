@@ -23,19 +23,55 @@ from .win import Win
 
 
 class PatternData(BaseModel):
+    """
+    Represents a pattern and its han and fu values.
+    """
+
     display_name: str
+    "The name of the pattern."
     han: int
+    "The han value of the pattern."
     fu: int
+    "The fu value of the pattern."
 
 
 default_pattern_data: dict[str, PatternData] = {}
+"""
+A dictionary containing :py:class:`PatternData` objects
+with all the default han and fu values.
+
+Patterns are indexed by the internal names of the patterns
+(in SCREAMING_SNAKE_CASE).
+"""
 pattern_mult_funcs: dict[str, Callable[[PatternCalculator], int]] = {}
+"""
+A dictionary containing a :py:class:`PatternCalculator` method for each pattern.
+
+Each method calculates the number of times a pattern applies to the
+hand stored in the :py:class:`PatternCalculator` object.
+Usually the number of times a pattern applies is 0 or 1, but for some
+patterns (e.g. ``SEAT_FLOWER``) the pattern can apply with multiplicity
+(i.e. more than once).
+
+Patterns are indexed by the internal names of the patterns
+(in SCREAMING_SNAKE_CASE).
+"""
 
 
 def _register_pattern(
     name: str, display_name: str, han: int, fu: int
 ) -> Callable[[Callable[[PatternCalculator], int]], Callable[[PatternCalculator], int]]:
     default_pattern_data[name] = PatternData(display_name=display_name, han=han, fu=fu)
+    """
+    Decorator to register a :py:class:`PatternCalculator` method as a method
+    that calculates a pattern's multiplicity.
+
+    :param name: The internal name of the pattern. This should be in
+                 SCREAMING_SNAKE_CASE.
+    :param display_name: The name of the pattern to display.
+    :param han: The default han value of the pattern.
+    :param fu: The default fu value of the pattern.
+    """
 
     def _register_pattern_inner(
         func: Callable[[PatternCalculator], int],
@@ -47,13 +83,41 @@ def _register_pattern(
 
 
 class WaitPattern(IntEnum):
+    """
+    Enum representing the wait pattern of a winning hand. This is determined by
+    how the winning tile fits into its meld.
+    """
+
     RYANMEN = 0
+    """
+    The winning tile is on one end of a sequence, and the other end of the
+    sequence is not a 1 or 9.
+    """
     KANCHAN = 1
+    """
+    The winning tile is in the middle of a sequence.
+    """
     PENCHAN = 2
+    """
+    The winning tile is on one end of a sequence, and the other end of the
+    sequence is a 1 or 9.
+    """
     SHANPON = 3
+    """
+    The winning tile is part of a triplet.
+    """
     TANKI = 4
+    """
+    The winning tile is part of a pair.
+    """
     KOKUSHI = 5
+    """
+    The hand is 13 orphans, and the winning tile appears in the hand once.
+    """
     KOKUSHI_13 = 6
+    """
+    The hand is 13 orphans, and the winning tile appears in the hand twice.
+    """
 
 
 def _get_wait_pattern(meld: TileValueMeld) -> WaitPattern:
@@ -93,9 +157,20 @@ def _get_wait_pattern(meld: TileValueMeld) -> WaitPattern:
 
 @final
 class PatternCalculator:
+    """
+    Class to calculate the patterns in a winning hand.
+    Use the method :py:meth:`get_pattern_mults` to get the patterns.
+
+    :param win: The :py:class:`Win` object with the winning hand.
+    :param formed_hand: A list containing the winning hand's tiles arranged into
+                        :py:class:`Meld` s.
+    """
+
     def __init__(self, win: Win, formed_hand: list[Meld]) -> None:
         self._win = win
         self._formed_hand = formed_hand
+
+        self._count_melds()
 
         self._seat = (
             self._win.win_player - self._win.sub_round
@@ -142,6 +217,11 @@ class PatternCalculator:
             if call.meld_type in self._triplet_types
         }
 
+    _triplet_types = {MeldType.PON, MeldType.KAN}
+    _number_suits = [0, 10, 20]
+    _honour_suit = 30
+
+    def _count_melds(self) -> None:
         self._pair_count = 0
         self._pair_tile = 0
         self._chii_meld_count = 0
@@ -197,10 +277,6 @@ class PatternCalculator:
                     self._simple_closed_quad_count += 1
                 else:
                     self._orphan_closed_quad_count += 1
-
-    _triplet_types = {MeldType.PON, MeldType.KAN}
-    _number_suits = [0, 10, 20]
-    _honour_suit = 30
 
     def get_pattern_mults(self) -> dict[str, int]:
         pattern_mults: dict[str, int] = {}
