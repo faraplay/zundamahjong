@@ -923,7 +923,7 @@ class PatternTest(TestCase):
             },
         )
 
-    def test_all_runs(self) -> None:
+    def test_all_sequences(self) -> None:
         pattern_mults = get_pattern_mults_test(
             win_player=0,
             lose_player=None,
@@ -935,7 +935,7 @@ class PatternTest(TestCase):
                     call_type=CallType.CHI,
                     called_player_index=3,
                     called_tile=12,
-                    other_tiles=(0, 30),
+                    other_tiles=(20, 30),
                 ),
                 OpenCall(
                     call_type=CallType.CHI,
@@ -959,7 +959,7 @@ class PatternTest(TestCase):
             flowers=[420],
         )
         self.assertDictEqual(
-            pattern_mults, {"PAIR_WAIT": 1, "NON_PINFU_TSUMO": 1, "ALL_RUNS": 1}
+            pattern_mults, {"PAIR_WAIT": 1, "NON_PINFU_TSUMO": 1, "ALL_SEQUENCES": 1}
         )
 
     def test_all_simples(self) -> None:
@@ -1256,7 +1256,7 @@ class PatternTest(TestCase):
                 "OPEN_WAIT": 1,
                 "OPEN_PINFU": 1,
                 "NON_PINFU_TSUMO": 1,
-                "ALL_RUNS": 1,
+                "ALL_SEQUENCES": 1,
                 "TWICE_PURE_DOUBLE_SEQUENCE": 1,
             },
         )
@@ -1317,7 +1317,7 @@ class PatternTest(TestCase):
                 "OPEN_WAIT": 1,
                 "OPEN_PINFU": 1,
                 "NON_PINFU_TSUMO": 1,
-                "ALL_RUNS": 1,
+                "ALL_SEQUENCES": 1,
                 "PURE_QUADRUPLE_SEQUENCE": 1,
             },
         )

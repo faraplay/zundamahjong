@@ -2,12 +2,12 @@ from .pattern_calculator import PatternCalculator, register_pattern
 
 
 @register_pattern(
-    "ALL_RUNS",
-    display_name="All Runs",
+    "ALL_SEQUENCES",
+    display_name="All Sequences",
     han=1,
     fu=0,
 )
-def all_runs(self: PatternCalculator) -> int:
+def all_sequences(self: PatternCalculator) -> int:
     return int(sum(self.chii_start_tiles.values()) == 4)
 
 
