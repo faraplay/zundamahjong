@@ -25,9 +25,14 @@ jobs:
         with:
           name: zundamahjong-dist
           path: dist
+
       - name: Create GitHub release
         uses: softprops/action-gh-release@v2
         with:
-          files: dist/zundamahjong-*-py3-none-any.whl
+          files: |
+            dist/zundamahjong-*-py3-none-any.whl
+            dist/zundamahjong-*.tar.gz
+
       - name: Publish package to PyPI
+        if: github.repository == 'faraplay/zundamahjong'
         uses: pypa/gh-action-pypi-publish@release/v1
