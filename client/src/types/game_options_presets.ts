@@ -361,7 +361,7 @@ const default_pattern_data = {
     han: 0,
     fu: 2,
   },
-  PINFU: {
+  CLOSED_PINFU: {
     display_name: "Pinfu",
     han: 0,
     fu: 0,
@@ -794,7 +794,7 @@ const riichi_pattern_data = {
     han: 0,
     fu: 2,
   },
-  PINFU: {
+  CLOSED_PINFU: {
     display_name: "Pinfu",
     han: 1,
     fu: 0,

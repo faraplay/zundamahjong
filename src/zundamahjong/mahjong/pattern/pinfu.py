@@ -4,17 +4,17 @@ from .yakuhai import yakuhaipair
 
 
 @register_pattern(
-    "PINFU",
+    "CLOSED_PINFU",
     display_name="Pinfu",
     han=0,
     fu=0,
 )
-def pinfu(self: PatternCalculator) -> int:
+def closed_pinfu(self: PatternCalculator) -> int:
     return int(
-        len(self.win.calls) == 0
-        and self.chii_meld_count == 4
+        self.chii_meld_count == 4
         and self.wait_pattern == WaitPattern.RYANMEN
         and not yakuhaipair(self)
+        and self.is_closed_hand
     )
 
 
@@ -26,10 +26,10 @@ def pinfu(self: PatternCalculator) -> int:
 )
 def open_pinfu(self: PatternCalculator) -> int:
     return int(
-        len(self.win.calls) != 0
-        and self.chii_meld_count == 4
+        self.chii_meld_count == 4
         and self.wait_pattern == WaitPattern.RYANMEN
         and not yakuhaipair(self)
+        and not self.is_closed_hand
     )
 
 
@@ -40,4 +40,4 @@ def open_pinfu(self: PatternCalculator) -> int:
     fu=2,
 )
 def non_pinfu_tsumo(self: PatternCalculator) -> int:
-    return int(self.win.lose_player is None and not pinfu(self))
+    return int(self.win.lose_player is None and not closed_pinfu(self))
