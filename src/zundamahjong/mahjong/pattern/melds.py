@@ -8,6 +8,9 @@ from .pattern_calculator import PatternCalculator, register_pattern
     fu=2,
 )
 def simple_open_triplet(self: PatternCalculator) -> int:
+    """
+    The number of simple open triplet melds in the hand.
+    """
     return self.simple_open_triplet_count
 
 
@@ -18,6 +21,9 @@ def simple_open_triplet(self: PatternCalculator) -> int:
     fu=4,
 )
 def orphan_open_triplet(self: PatternCalculator) -> int:
+    """
+    The number of terminal/honour open triplet melds in the hand.
+    """
     return self.orphan_open_triplet_count
 
 
@@ -28,6 +34,9 @@ def orphan_open_triplet(self: PatternCalculator) -> int:
     fu=4,
 )
 def simple_closed_triplet(self: PatternCalculator) -> int:
+    """
+    The number of simple closed triplet melds in the hand.
+    """
     return self.simple_closed_triplet_count
 
 
@@ -38,6 +47,9 @@ def simple_closed_triplet(self: PatternCalculator) -> int:
     fu=8,
 )
 def orphan_closed_triplet(self: PatternCalculator) -> int:
+    """
+    The number of terminal/honour closed triplet melds in the hand.
+    """
     return self.orphan_closed_triplet_count
 
 
@@ -48,6 +60,9 @@ def orphan_closed_triplet(self: PatternCalculator) -> int:
     fu=8,
 )
 def simple_open_quad(self: PatternCalculator) -> int:
+    """
+    The number of simple open quad melds in the hand.
+    """
     return self.simple_open_quad_count
 
 
@@ -58,6 +73,9 @@ def simple_open_quad(self: PatternCalculator) -> int:
     fu=16,
 )
 def orphan_open_quad(self: PatternCalculator) -> int:
+    """
+    The number of terminal/honour open quad melds in the hand.
+    """
     return self.orphan_open_quad_count
 
 
@@ -68,6 +86,9 @@ def orphan_open_quad(self: PatternCalculator) -> int:
     fu=16,
 )
 def simple_closed_quad(self: PatternCalculator) -> int:
+    """
+    The number of simple closed quad melds in the hand.
+    """
     return self.simple_closed_quad_count
 
 
@@ -78,4 +99,7 @@ def simple_closed_quad(self: PatternCalculator) -> int:
     fu=32,
 )
 def orphan_closed_quad(self: PatternCalculator) -> int:
+    """
+    The number of terminal/honour closed quad melds in the hand.
+    """
     return self.orphan_closed_quad_count

@@ -10,6 +10,10 @@ from .yakuhai import yakuhaipair
     fu=0,
 )
 def closed_pinfu(self: PatternCalculator) -> int:
+    """
+    All four melds are sequences, the wait pattern is an open wait,
+    the pair is not a yakuhai tile, and the hand is closed.
+    """
     return int(
         self.chii_meld_count == 4
         and self.wait_pattern == WaitPattern.RYANMEN
@@ -25,6 +29,10 @@ def closed_pinfu(self: PatternCalculator) -> int:
     fu=2,
 )
 def open_pinfu(self: PatternCalculator) -> int:
+    """
+    All four melds are sequences, the wait pattern is an open wait,
+    the pair is not a yakuhai tile, and the hand is open.
+    """
     return int(
         self.chii_meld_count == 4
         and self.wait_pattern == WaitPattern.RYANMEN
@@ -40,4 +48,8 @@ def open_pinfu(self: PatternCalculator) -> int:
     fu=2,
 )
 def non_pinfu_tsumo(self: PatternCalculator) -> int:
+    """
+    The winning tile was drawn by the player, and the hand does not
+    qualify for closed pinfu.
+    """
     return int(self.win.lose_player is None and not closed_pinfu(self))

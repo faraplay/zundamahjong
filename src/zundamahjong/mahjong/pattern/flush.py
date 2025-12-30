@@ -11,6 +11,9 @@ from .pattern_calculator import PatternCalculator, register_pattern
     fu=0,
 )
 def half_flush(self: PatternCalculator) -> int:
+    """
+    The hand contains honour tiles and tiles from only one suit.
+    """
     return int(len(self.used_suits) == 2 and self._honour_suit in self.used_suits)
 
 
@@ -21,6 +24,9 @@ def half_flush(self: PatternCalculator) -> int:
     fu=0,
 )
 def full_flush(self: PatternCalculator) -> int:
+    """
+    The hand contains tiles from only one suit, with no honour tiles.
+    """
     return int(any(self.used_suits == {suit} for suit in self._number_suits))
 
 
@@ -59,6 +65,10 @@ def _get_nine_gates_last_tile(self: PatternCalculator) -> TileValue | None:
     fu=0,
 )
 def nine_gates(self: PatternCalculator) -> int:
+    """
+    The hand contains 1112345678999 in the same suit, plus one extra tile
+    of that suit, and the winning tile is not the extra tile.
+    """
     nine_gates_last_tile = _get_nine_gates_last_tile(self)
     return int(
         nine_gates_last_tile is not None and nine_gates_last_tile != self.winning_tile
@@ -72,6 +82,10 @@ def nine_gates(self: PatternCalculator) -> int:
     fu=0,
 )
 def true_nine_gates(self: PatternCalculator) -> int:
+    """
+    The hand contains 1112345678999 in the same suit, plus one extra tile
+    of that suit, and the winning tile is the extra tile.
+    """
     nine_gates_last_tile = _get_nine_gates_last_tile(self)
     return int(nine_gates_last_tile == self.winning_tile)
 
@@ -83,4 +97,7 @@ def true_nine_gates(self: PatternCalculator) -> int:
     fu=0,
 )
 def all_greens(self: PatternCalculator) -> int:
+    """
+    The hand only uses 2s, 3s, 4s, 6s, 8s and Hatsu.
+    """
     return int(all(tile in green_tiles for tile in self.hand_tiles))

@@ -10,6 +10,9 @@ from .wait_pattern import WaitPattern
     fu=0,
 )
 def all_simples(self: PatternCalculator) -> int:
+    """
+    The hand does not use any terminal or honour tiles.
+    """
     return int(
         all((is_number(tile) and 2 <= tile % 10 <= 8) for tile in self.hand_tiles)
     )
@@ -22,6 +25,10 @@ def all_simples(self: PatternCalculator) -> int:
     fu=0,
 )
 def half_outside_hand(self: PatternCalculator) -> int:
+    """
+    Every meld and pair uses a terminal or honour tile, and both
+    terminals and honours are used.
+    """
     return int(self.call_outsidenesses == {1, 2})
 
 
@@ -32,6 +39,9 @@ def half_outside_hand(self: PatternCalculator) -> int:
     fu=0,
 )
 def fully_outside_hand(self: PatternCalculator) -> int:
+    """
+    Every meld and pair uses a terminal tile.
+    """
     return int(self.call_outsidenesses == {2})
 
 
@@ -42,6 +52,10 @@ def fully_outside_hand(self: PatternCalculator) -> int:
     fu=0,
 )
 def all_terminals_and_honours(self: PatternCalculator) -> int:
+    """
+    Every tile is a terminal or honour tile, and both terminals and honours
+    are used.
+    """
     return int(
         len(self.chii_start_tiles) == 0
         and half_outside_hand(self)
@@ -56,6 +70,9 @@ def all_terminals_and_honours(self: PatternCalculator) -> int:
     fu=0,
 )
 def all_terminals(self: PatternCalculator) -> int:
+    """
+    Every tile is a terminal tile.
+    """
     return int(all(tile in terminals for tile in self.hand_tiles))
 
 
@@ -66,6 +83,11 @@ def all_terminals(self: PatternCalculator) -> int:
     fu=0,
 )
 def thirteen_orphans(self: PatternCalculator) -> int:
+    """
+    The hand consists of every terminal and honour tile, plus one extra
+    terminal or honour tile, and the winning tile is not the extra tile
+    (this is a special hand structure).
+    """
     return int(self.wait_pattern == WaitPattern.KOKUSHI)
 
 
@@ -76,4 +98,9 @@ def thirteen_orphans(self: PatternCalculator) -> int:
     fu=0,
 )
 def thirteen_orphans_13_sided_wait(self: PatternCalculator) -> int:
+    """
+    The hand consists of every terminal and honour tile, plus one extra
+    terminal or honour tile, and the winning tile is the extra tile
+    (this is a special hand structure).
+    """
     return int(self.wait_pattern == WaitPattern.KOKUSHI_13)

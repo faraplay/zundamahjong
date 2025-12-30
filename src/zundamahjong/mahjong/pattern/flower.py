@@ -8,6 +8,9 @@ from .pattern_calculator import PatternCalculator, register_pattern
     fu=0,
 )
 def no_flowers(self: PatternCalculator) -> int:
+    """
+    The hand contains no flowers.
+    """
     return int(len(self.flowers) == 0)
 
 
@@ -18,6 +21,9 @@ def no_flowers(self: PatternCalculator) -> int:
     fu=0,
 )
 def player_flower(self: PatternCalculator) -> int:
+    """
+    The number of flowers that match the player's seat.
+    """
     return sum((tile - 41) % 4 == self.seat for tile in self.flowers)
 
 
@@ -28,6 +34,9 @@ def player_flower(self: PatternCalculator) -> int:
     fu=0,
 )
 def set_of_flowers(self: PatternCalculator) -> int:
+    """
+    The hand contains one complete set of flowers.
+    """
     if self.win.player_count == 3:
         return int(
             (({41, 42, 43} <= self.flowers) + ({45, 46, 47} <= self.flowers)) == 1
@@ -46,6 +55,9 @@ def set_of_flowers(self: PatternCalculator) -> int:
     fu=0,
 )
 def five_flowers(self: PatternCalculator) -> int:
+    """
+    The hand contains five flowers.
+    """
     return int(self.win.player_count == 3 and len(self.flowers) == 5)
 
 
@@ -56,6 +68,9 @@ def five_flowers(self: PatternCalculator) -> int:
     fu=0,
 )
 def seven_flowers(self: PatternCalculator) -> int:
+    """
+    The hand contains seven flowers.
+    """
     return int(len(self.flowers) == 7)
 
 
@@ -66,6 +81,9 @@ def seven_flowers(self: PatternCalculator) -> int:
     fu=0,
 )
 def two_sets_of_flowers(self: PatternCalculator) -> int:
+    """
+    The hand contains two complete sets of flowers.
+    """
     if self.win.player_count == 3:
         return int(len(self.flowers) == 6)
     else:

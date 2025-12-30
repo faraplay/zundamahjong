@@ -9,6 +9,9 @@ from .wait_pattern import WaitPattern
     fu=0,
 )
 def all_triplets(self: PatternCalculator) -> int:
+    """
+    All four melds are triplets or quads.
+    """
     return int(len(self.triplet_tiles) == 4)
 
 
@@ -19,6 +22,9 @@ def all_triplets(self: PatternCalculator) -> int:
     fu=0,
 )
 def triple_triplets(self: PatternCalculator) -> int:
+    """
+    The hand has three triplets or quads of the same number in different suits.
+    """
     return int(
         any(
             {tile, tile + 10, tile + 20} <= self.triplet_tiles
@@ -35,6 +41,9 @@ def triple_triplets(self: PatternCalculator) -> int:
     fu=0,
 )
 def three_concealed_triplets(self: PatternCalculator) -> int:
+    """
+    The hand contains three closed triplets or quads.
+    """
     return int(self.concealed_triplets == 3)
 
 
@@ -45,6 +54,10 @@ def three_concealed_triplets(self: PatternCalculator) -> int:
     fu=0,
 )
 def four_concealed_triplets(self: PatternCalculator) -> int:
+    """
+    The hand contains four closed triplets or quads, and the winning tile
+    is not part of the pair.
+    """
     return int(
         self.concealed_triplets == 4 and self.wait_pattern == WaitPattern.SHANPON
     )
@@ -57,6 +70,10 @@ def four_concealed_triplets(self: PatternCalculator) -> int:
     fu=0,
 )
 def four_concealed_triplets_1_sided_wait(self: PatternCalculator) -> int:
+    """
+    The hand contains four closed triplets or quads, and the winning tile
+    is part of the pair.
+    """
     return int(self.concealed_triplets == 4 and self.wait_pattern == WaitPattern.TANKI)
 
 
@@ -67,6 +84,9 @@ def four_concealed_triplets_1_sided_wait(self: PatternCalculator) -> int:
     fu=0,
 )
 def three_quads(self: PatternCalculator) -> int:
+    """
+    The hand contains three quads.
+    """
     return int(self.quads == 3)
 
 
@@ -77,4 +97,7 @@ def three_quads(self: PatternCalculator) -> int:
     fu=0,
 )
 def four_quads(self: PatternCalculator) -> int:
+    """
+    The hand contains four quads.
+    """
     return int(self.quads == 4)

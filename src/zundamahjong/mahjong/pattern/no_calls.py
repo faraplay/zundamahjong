@@ -8,6 +8,9 @@ from .pattern_calculator import PatternCalculator, register_pattern
     fu=0,
 )
 def no_calls(self: PatternCalculator) -> int:
+    """
+    The hand is closed.
+    """
     return int(self.pair_count == 1 and self.is_closed_hand)
 
 
@@ -18,6 +21,9 @@ def no_calls(self: PatternCalculator) -> int:
     fu=0,
 )
 def no_calls_tsumo(self: PatternCalculator) -> int:
+    """
+    The hand is closed, and the player drew the winning tile.
+    """
     return int(self.win.lose_player is None and self.is_closed_hand)
 
 
@@ -27,7 +33,10 @@ def no_calls_tsumo(self: PatternCalculator) -> int:
     han=0,
     fu=10,
 )
-def ron(self: PatternCalculator) -> int:
+def no_calls_ron(self: PatternCalculator) -> int:
+    """
+    The hand is closed, and the winning tile was discarded by another player.
+    """
     return int(
         self.win.lose_player is not None
         and self.is_closed_hand

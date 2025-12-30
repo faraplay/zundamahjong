@@ -9,6 +9,10 @@ from .wait_pattern import WaitPattern
     fu=0,
 )
 def open_wait(self: PatternCalculator) -> int:
+    """
+    The winning tile is on one end of a sequence, and the other end of the
+    sequence is not a terminal.
+    """
     return int(self.wait_pattern == WaitPattern.RYANMEN)
 
 
@@ -19,6 +23,9 @@ def open_wait(self: PatternCalculator) -> int:
     fu=2,
 )
 def closed_wait(self: PatternCalculator) -> int:
+    """
+    The winning tile is in the middle of a sequence.
+    """
     return int(self.wait_pattern == WaitPattern.KANCHAN)
 
 
@@ -29,6 +36,10 @@ def closed_wait(self: PatternCalculator) -> int:
     fu=2,
 )
 def edge_wait(self: PatternCalculator) -> int:
+    """
+    The winning tile is on one end of a sequence, and the other end of the
+    sequence is a terminal.
+    """
     return int(self.wait_pattern == WaitPattern.PENCHAN)
 
 
@@ -39,6 +50,9 @@ def edge_wait(self: PatternCalculator) -> int:
     fu=0,
 )
 def dual_pon_wait(self: PatternCalculator) -> int:
+    """
+    The winning tile is part of a triplet.
+    """
     return int(self.wait_pattern == WaitPattern.SHANPON)
 
 
@@ -49,4 +63,7 @@ def dual_pon_wait(self: PatternCalculator) -> int:
     fu=2,
 )
 def pair_wait(self: PatternCalculator) -> int:
+    """
+    The winning tile is part of a pair.
+    """
     return int(self.wait_pattern == WaitPattern.TANKI and self.pair_count == 1)

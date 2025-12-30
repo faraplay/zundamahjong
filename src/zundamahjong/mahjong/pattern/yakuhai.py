@@ -19,6 +19,9 @@ def _yakuhai(self: PatternCalculator, pattern_tile: TileValue) -> int:
     fu=0,
 )
 def seat_wind(self: PatternCalculator) -> int:
+    """
+    The hand contains a triplet or quad of the player seat's wind.
+    """
     return _yakuhai(self, self.seat + 31)
 
 
@@ -29,6 +32,9 @@ def seat_wind(self: PatternCalculator) -> int:
     fu=0,
 )
 def prevalent_wind(self: PatternCalculator) -> int:
+    """
+    The hand contains a triplet or quad of the wind round's wind.
+    """
     return _yakuhai(self, self.win.wind_round + 31)
 
 
@@ -39,6 +45,9 @@ def prevalent_wind(self: PatternCalculator) -> int:
     fu=0,
 )
 def north_wind(self: PatternCalculator) -> int:
+    """
+    The hand contains a triplet or quad of the North wind.
+    """
     return int(self.win.player_count == 3 and _yakuhai(self, 34))
 
 
@@ -49,6 +58,9 @@ def north_wind(self: PatternCalculator) -> int:
     fu=0,
 )
 def white_dragon(self: PatternCalculator) -> int:
+    """
+    The hand contains a triplet or quad of the Whiteboard.
+    """
     return _yakuhai(self, 35)
 
 
@@ -59,6 +71,9 @@ def white_dragon(self: PatternCalculator) -> int:
     fu=0,
 )
 def green_dragon(self: PatternCalculator) -> int:
+    """
+    The hand contains a triplet or quad of the Fat Choi.
+    """
     return _yakuhai(self, 36)
 
 
@@ -69,6 +84,9 @@ def green_dragon(self: PatternCalculator) -> int:
     fu=0,
 )
 def red_dragon(self: PatternCalculator) -> int:
+    """
+    The hand contains a triplet or quad of the Centre.
+    """
     return _yakuhai(self, 37)
 
 
@@ -79,6 +97,10 @@ def red_dragon(self: PatternCalculator) -> int:
     fu=2,
 )
 def yakuhaipair(self: PatternCalculator) -> int:
+    """
+    The hand's pair is the player seat's wind, wind round's wind,
+    or a dragon.
+    """
     if self.pair_count != 1:
         return 0
     yakuhai = [
