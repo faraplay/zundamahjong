@@ -8,6 +8,7 @@ from .pattern_calculator import PatternCalculator, register_pattern
     fu=0,
 )
 def blessing_of_heaven(self: PatternCalculator) -> int:
+    "Win on the dealer's first draw."
     return int(self.win.is_tenhou)
 
 
@@ -18,6 +19,7 @@ def blessing_of_heaven(self: PatternCalculator) -> int:
     fu=0,
 )
 def blessing_of_earth(self: PatternCalculator) -> int:
+    "Win on a nondealer's first draw."
     return int(self.win.is_chiihou)
 
 
@@ -28,6 +30,7 @@ def blessing_of_earth(self: PatternCalculator) -> int:
     fu=0,
 )
 def riichi(self: PatternCalculator) -> int:
+    "Win after calling riichi."
     return int(self.win.is_riichi and not self.win.is_double_riichi)
 
 
@@ -38,6 +41,7 @@ def riichi(self: PatternCalculator) -> int:
     fu=0,
 )
 def double_riichi(self: PatternCalculator) -> int:
+    "Win after calling riichi on the first turn."
     return int(self.win.is_double_riichi)
 
 
@@ -48,6 +52,7 @@ def double_riichi(self: PatternCalculator) -> int:
     fu=0,
 )
 def ippatsu(self: PatternCalculator) -> int:
+    "Win immediately after calling riichi."
     return int(self.win.is_ippatsu)
 
 
@@ -58,6 +63,7 @@ def ippatsu(self: PatternCalculator) -> int:
     fu=0,
 )
 def robbing_a_kan(self: PatternCalculator) -> int:
+    "Win by stealing from another player's kan."
     return int(self.win.is_chankan)
 
 
@@ -68,6 +74,7 @@ def robbing_a_kan(self: PatternCalculator) -> int:
     fu=0,
 )
 def under_the_sea(self: PatternCalculator) -> int:
+    "Win on the last draw."
     return int(self.win.is_haitei)
 
 
@@ -78,6 +85,7 @@ def under_the_sea(self: PatternCalculator) -> int:
     fu=0,
 )
 def under_the_river(self: PatternCalculator) -> int:
+    "Win on the last discard."
     return int(self.win.is_houtei)
 
 
@@ -88,6 +96,7 @@ def under_the_river(self: PatternCalculator) -> int:
     fu=0,
 )
 def after_a_flower(self: PatternCalculator) -> int:
+    "Win on a tile drawn after replacing a flower."
     return self.win.after_flower_count
 
 
@@ -98,6 +107,7 @@ def after_a_flower(self: PatternCalculator) -> int:
     fu=0,
 )
 def after_a_kan(self: PatternCalculator) -> int:
+    "Win on a tile drawn after calling a kan."
     return self.win.after_kan_count
 
 
@@ -108,4 +118,5 @@ def after_a_kan(self: PatternCalculator) -> int:
     fu=0,
 )
 def draw(self: PatternCalculator) -> int:
+    "Win after a draw in the previous round."
     return self.win.draw_count

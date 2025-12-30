@@ -8,7 +8,10 @@ from .pattern_calculator import PatternCalculator, register_pattern
     fu=0,
 )
 def all_sequences(self: PatternCalculator) -> int:
-    return int(sum(self.chii_start_tiles.values()) == 4)
+    """
+    All four melds are sequences.
+    """
+    return int(self.chii_meld_count == 4)
 
 
 @register_pattern(
@@ -18,6 +21,9 @@ def all_sequences(self: PatternCalculator) -> int:
     fu=0,
 )
 def pure_double_sequence(self: PatternCalculator) -> int:
+    """
+    Hand contains one pair of identical sequences.
+    """
     return int(sum(count == 2 for count in self.chii_start_tiles.values()) == 1)
 
 
@@ -28,6 +34,9 @@ def pure_double_sequence(self: PatternCalculator) -> int:
     fu=0,
 )
 def twice_pure_double_sequence(self: PatternCalculator) -> int:
+    """
+    Hand contains two pairs of identical sequences.
+    """
     return int(sum(count == 2 for count in self.chii_start_tiles.values()) == 2)
 
 
@@ -38,6 +47,9 @@ def twice_pure_double_sequence(self: PatternCalculator) -> int:
     fu=0,
 )
 def pure_triple_sequence(self: PatternCalculator) -> int:
+    """
+    Hand contains three identical sequences.
+    """
     return int(sum(count == 3 for count in self.chii_start_tiles.values()) == 1)
 
 
@@ -48,6 +60,9 @@ def pure_triple_sequence(self: PatternCalculator) -> int:
     fu=0,
 )
 def pure_quadruple_sequence(self: PatternCalculator) -> int:
+    """
+    Hand contains four identical sequences.
+    """
     return int(sum(count == 4 for count in self.chii_start_tiles.values()) == 1)
 
 
@@ -58,6 +73,9 @@ def pure_quadruple_sequence(self: PatternCalculator) -> int:
     fu=0,
 )
 def pure_straight(self: PatternCalculator) -> int:
+    """
+    Hand contains sequences of 123, 456, 789 in the same suit.
+    """
     return int(
         any(
             {suit + 1, suit + 4, suit + 7} <= self.chii_start_tiles.keys()
@@ -73,6 +91,9 @@ def pure_straight(self: PatternCalculator) -> int:
     fu=0,
 )
 def mixed_triple_sequence(self: PatternCalculator) -> int:
+    """
+    Hand contains three sequences of the same numbers in different suits.
+    """
     return int(
         any(
             {tile, tile + 10, tile + 20} <= self.chii_start_tiles.keys()
