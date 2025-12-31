@@ -1,6 +1,6 @@
 from unittest import TestCase
 
-from tests.yaku_test import get_pattern_mults_test
+from .yaku_test import get_pattern_mults_test
 from zundamahjong.mahjong.call import (
     AddKanCall,
     CallType,
