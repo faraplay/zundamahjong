@@ -30,14 +30,26 @@ from .win import Win
 
 
 class RoundStatus(IntEnum):
+    """
+    Enum representing the state of a round of mahjong.
+    """
+
     START = 0  # Options: nothing, flower
+    "Start of the round, when everyone exchanges their flowers."
     PLAY = 1  # Options: discard, added kan, closed kan, flower, tsumo
+    "A player has drawn a tile, and needs to discard."
     CALLED_PLAY = 2  # Options: discard
+    "A player has called a chii or pon, and needs to discard."
     ADD_KAN_AFTER = 3  # Options: nothing, ron (chankan)
+    "A player has just called an added kan."
     CLOSED_KAN_AFTER = 4  # Options: nothing, ron (chankan)
+    "A player has just called a closed kan."
     DISCARDED = 5  # Options: draw, chi, pon, open kan, ron
+    "A player has just discarded a tile. Other players can call the discarded tile."
     LAST_DISCARDED = 6  # Options: nothing, ron
+    "A player has just discarded a tile, and there are no draws left in the deck."
     END = 7
+    "The round has ended."
 
 
 _allowed_actions_funcs: dict[RoundStatus, AllowedActionsFunc] = {}
@@ -70,6 +82,22 @@ def _register_do_action(
 
 @final
 class Round:
+    """
+    Represents a round of mahjong.
+
+    :param wind_round: The wind round that this round is in.
+    :param sub_round: The sub-round number of this round.
+    :param draw_count: The number of consecutive draws before this round.
+    :param tiles: (Optional) A list of :py:class:`TileId`s forming the deck to
+                  use in this game. If set to ``None``, then the round will use
+                  a shuffled deck.
+    :param options: (Optional) A :py:class:`GameOptions` object containing the
+                    game options. If set to ``None``, the default game options
+                    will be used.
+    :param round_end_callback: (Optional) A callback function to call when
+                               the round ends.
+    """
+
     def __init__(
         self,
         *,
@@ -132,9 +160,20 @@ class Round:
                 self.do_action(player, SimpleAction(action_type=ActionType.CONTINUE))
 
     def get_hand(self, player: int) -> Sequence[TileId]:
+        """
+        Get a given player's hand's tiles.
+        Does not include flowers or tiles in calls.
+
+        :param player: The index of the player to check.
+        """
         return self._hands[player].tiles
 
     def get_discard_tiles(self, player: int) -> Sequence[TileId]:
+        """
+        Get a given player's discarded tiles.
+
+        :param player: The index of the player to check.
+        """
         return [
             discard.tile
             for discard in self._discard_pool.discards
@@ -142,60 +181,86 @@ class Round:
         ]
 
     def get_calls(self, player: int) -> Sequence[Call]:
+        """
+        Get a given player's calls.
+
+        :param player: The index of the player to check.
+        """
         return self._hands[player].calls
 
     def get_flowers(self, player: int) -> Sequence[TileId]:
+        """
+        Get a given player's flowers.
+
+        :param player: The index of the player to check.
+        """
         return self._hands[player].flowers
 
     @property
     def player_count(self) -> int:
+        "The number of players."
         return self._player_count
 
     @property
     def current_player(self) -> int:
+        "The index of the player whose turn it is."
         return self._current_player
 
     @property
     def status(self) -> RoundStatus:
+        "The current status of the round."
         return self._status
 
     @property
     def wind_round(self) -> int:
+        "The wind round number of the round."
         return self._wind_round
 
     @property
     def allowed_actions(self) -> tuple[ActionList, ...]:
+        "A tuple of :py:class:`ActionList` s of the legal actions for each player."
         return self._allowed_actions
 
     @property
     def discards(self) -> Sequence[Discard]:
+        "The round's discards, as a sequence of :py:class:`Discard` s."
         return self._discard_pool.discards
 
     @property
     def discard_tiles(self) -> Sequence[TileId]:
+        "The round's discards, as a sequence of :py:class:`TileId` s."
         return [discard.tile for discard in self._discard_pool.discards]
 
     @property
     def last_tile(self) -> TileId:
+        "The last discarded tile."
         return self._last_tile
 
     @property
     def wall_count(self) -> int:
+        "The number of tiles currently left in the deck."
         return len(self._deck.tiles)
 
     @property
     def tiles_left(self) -> int:
+        "The number of tile draws currently left in the round."
         return len(self._deck.tiles) - self._options.end_wall_count
 
     @property
     def history(self) -> list[tuple[int, Action]]:
+        "A list of all the actions taken in this round."
         return self._history
 
     @property
     def win(self) -> Win | None:
+        """
+        A :py:class:`Win` object representing the win of this round,
+        or ``None`` if no player has won yet.
+        """
         return self._win
 
     def display_info(self) -> None:
+        "Print the current status of the round. For debug purposes."
         print(
             f"Current player: {self.current_player}, "
             + f"Status: {self.status}, "
@@ -229,6 +294,12 @@ class Round:
         )
 
     def do_action(self, player: int, action: Action) -> None:
+        """
+        Have a player perform an action in the round of mahjong.
+
+        :param player: The index of the player performing an action.
+        :param action: The action to perform.
+        """
         if action not in self.allowed_actions[player].actions:
             raise InvalidMoveException(action, self.allowed_actions[player].actions)
         _do_action_funcs[action.action_type](self, player, action)
@@ -240,6 +311,33 @@ class Round:
     def get_priority_action(
         self, actions: Sequence[Action | None]
     ) -> tuple[int, Action] | None:
+        """
+        Determine the highest priority action, given actions that
+        each player has submitted.
+
+        If all players have submitted legal actions, then the highest
+        priority action out of all submitted actions is selected.
+
+        * If a player submits an illegal action, they are treated as
+          having submitted their default action.
+        * If a player has only one legal action, they are treated as having
+          submitted that legal action regardless of whether they have actually
+          submitted an action.
+
+        If not all players have submitted actions, then this function
+        determines whether the highest priority action can be deduced
+        from what has already been submitted.
+        If all legal actions of players who have not submitted have a
+        lower priority than the highest priority submitted action,
+        then the highest priority submitted action will be returned.
+        Otherwise, the highest priority action cannot yet be determined,
+        and ``None`` is returned.
+
+        :param actions: The action each player has submitted, or ``None``
+                        if the player has not yet submitted an action.
+        :return: The highest priority action and the player who performs it,
+                 or ``None`` if this cannot yet be determined.
+        """
         if len(actions) != self._player_count:
             raise Exception("Incorrect number of elements in actions")
         validated_actions: list[Action | None] = []
