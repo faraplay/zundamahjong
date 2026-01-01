@@ -472,7 +472,7 @@ class Round:
             self._current_player, self._last_tile, action.other_tiles
         )
         self._current_player = player
-        self._status = RoundStatus.CALLED_PLAY
+        self._status = RoundStatus.PLAY
         self._last_tile = 0
 
     @_register_do_action(ActionType.ADD_KAN)
