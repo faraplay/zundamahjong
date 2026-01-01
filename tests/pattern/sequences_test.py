@@ -100,7 +100,6 @@ class SequencesTest(TestCase):
             {
                 "OPEN_WAIT": 1,
                 "OPEN_PINFU": 1,
-                "NON_PINFU_TSUMO": 1,
                 "ALL_SEQUENCES": 1,
                 "TWICE_PURE_DOUBLE_SEQUENCE": 1,
             },
@@ -161,7 +160,6 @@ class SequencesTest(TestCase):
             {
                 "OPEN_WAIT": 1,
                 "OPEN_PINFU": 1,
-                "NON_PINFU_TSUMO": 1,
                 "ALL_SEQUENCES": 1,
                 "PURE_QUADRUPLE_SEQUENCE": 1,
             },

@@ -60,6 +60,90 @@ class SpecialWinTest(TestCase):
             },
         )
 
+    def test_riichi(self) -> None:
+        pattern_mults = get_pattern_mults(
+            win_player=0,
+            lose_player=None,
+            formed_hand=[
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.CHI, tiles=[230, 240, 250]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
+            ],
+            calls=[],
+            flowers=[420],
+            is_riichi=True,
+        )
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "NO_CALLS": 1,
+                "NO_CALLS_TSUMO": 1,
+                "RIICHI": 1,
+            },
+        )
+
+    def test_double_riichi(self) -> None:
+        pattern_mults = get_pattern_mults(
+            win_player=0,
+            lose_player=None,
+            formed_hand=[
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.CHI, tiles=[230, 240, 250]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
+            ],
+            calls=[],
+            flowers=[420],
+            is_riichi=True,
+            is_double_riichi=True,
+        )
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "NO_CALLS": 1,
+                "NO_CALLS_TSUMO": 1,
+                "DOUBLE_RIICHI": 1,
+            },
+        )
+
+    def test_ippatsu(self) -> None:
+        pattern_mults = get_pattern_mults(
+            win_player=0,
+            lose_player=None,
+            formed_hand=[
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[190, 191, 192]),
+                Meld(meld_type=MeldType.CHI, tiles=[230, 240, 250]),
+                Meld(meld_type=MeldType.PAIR, tiles=[330, 331]),
+            ],
+            calls=[],
+            flowers=[420],
+            is_riichi=True,
+            is_ippatsu=True,
+        )
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "NO_CALLS": 1,
+                "NO_CALLS_TSUMO": 1,
+                "RIICHI": 1,
+                "IPPATSU": 1,
+            },
+        )
+
     def test_chankan(self) -> None:
         pattern_mults = get_pattern_mults(
             win_player=0,

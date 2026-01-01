@@ -219,3 +219,215 @@ class YakuhaiTest(TestCase):
                 "RED_DRAGON": 1,
             },
         )
+
+    def test_seat_wind_pair(self) -> None:
+        pattern_mults = get_pattern_mults(
+            win_player=1,
+            lose_player=None,
+            formed_hand=[
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[330, 331, 332]),
+                Meld(meld_type=MeldType.PAIR, tiles=[320, 321]),
+            ],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=0,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[440],
+        )
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "YAKUHAI_PAIR": 1,
+            },
+        )
+
+    def test_sub_round_seat_wind_pair(self) -> None:
+        pattern_mults = get_pattern_mults(
+            win_player=2,
+            lose_player=None,
+            formed_hand=[
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[330, 331, 332]),
+                Meld(meld_type=MeldType.PAIR, tiles=[320, 321]),
+            ],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=1,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[440],
+            sub_round=1,
+        )
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "YAKUHAI_PAIR": 1,
+            },
+        )
+
+    def test_prevalent_wind_pair(self) -> None:
+        pattern_mults = get_pattern_mults(
+            win_player=1,
+            lose_player=None,
+            formed_hand=[
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[330, 331, 332]),
+                Meld(meld_type=MeldType.PAIR, tiles=[310, 311]),
+            ],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[440],
+        )
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "YAKUHAI_PAIR": 1,
+            },
+        )
+
+    def test_north_wind_pair(self) -> None:
+        pattern_mults = get_pattern_mults(
+            win_player=0,
+            lose_player=None,
+            formed_hand=[
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[330, 331, 332]),
+                Meld(meld_type=MeldType.PAIR, tiles=[340, 341]),
+            ],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=2,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[430],
+            player_count=3,
+        )
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "YAKUHAI_PAIR": 1,
+            },
+        )
+
+    def test_white_dragon_pair(self) -> None:
+        pattern_mults = get_pattern_mults(
+            win_player=0,
+            lose_player=None,
+            formed_hand=[
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[330, 331, 332]),
+                Meld(meld_type=MeldType.PAIR, tiles=[350, 351]),
+            ],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[420],
+        )
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "YAKUHAI_PAIR": 1,
+            },
+        )
+
+    def test_green_dragon_pair(self) -> None:
+        pattern_mults = get_pattern_mults(
+            win_player=0,
+            lose_player=None,
+            formed_hand=[
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[330, 331, 332]),
+                Meld(meld_type=MeldType.PAIR, tiles=[360, 361]),
+            ],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[420],
+        )
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "YAKUHAI_PAIR": 1,
+            },
+        )
+
+    def test_red_dragon_pair(self) -> None:
+        pattern_mults = get_pattern_mults(
+            win_player=0,
+            lose_player=None,
+            formed_hand=[
+                Meld(meld_type=MeldType.CHI, tiles=[10, 20, 30], winning_tile_index=0),
+                Meld(meld_type=MeldType.CHI, tiles=[150, 160, 170]),
+                Meld(meld_type=MeldType.PON, tiles=[330, 331, 332]),
+                Meld(meld_type=MeldType.PAIR, tiles=[370, 371]),
+            ],
+            calls=[
+                OpenCall(
+                    call_type=CallType.CHI,
+                    called_player_index=3,
+                    called_tile=230,
+                    other_tiles=(240, 250),
+                ),
+            ],
+            flowers=[420],
+        )
+        self.assertDictEqual(
+            pattern_mults,
+            {
+                "OPEN_WAIT": 1,
+                "ORPHAN_CLOSED_TRIPLET": 1,
+                "NON_PINFU_TSUMO": 1,
+                "YAKUHAI_PAIR": 1,
+            },
+        )

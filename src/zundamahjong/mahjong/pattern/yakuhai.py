@@ -99,7 +99,7 @@ def red_dragon(self: PatternCalculator) -> int:
 def yakuhaipair(self: PatternCalculator) -> int:
     """
     The hand's pair is the player seat's wind, wind round's wind,
-    or a dragon.
+    or a dragon (or the North wind if playing with 3 players).
     """
     if self.pair_count != 1:
         return 0
@@ -110,4 +110,6 @@ def yakuhaipair(self: PatternCalculator) -> int:
         36,
         37,
     ]
+    if self.win.player_count == 3:
+        yakuhai.append(34)
     return sum(self.pair_tile == tile for tile in yakuhai)
