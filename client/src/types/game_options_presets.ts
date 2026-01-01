@@ -96,8 +96,8 @@ const default_pattern_data = {
     han: 1,
     fu: 0,
   },
-  ALL_RUNS: {
-    display_name: "All Runs",
+  ALL_SEQUENCES: {
+    display_name: "All Sequences",
     han: 1,
     fu: 0,
   },
@@ -361,7 +361,7 @@ const default_pattern_data = {
     han: 0,
     fu: 2,
   },
-  PINFU: {
+  CLOSED_PINFU: {
     display_name: "Pinfu",
     han: 0,
     fu: 0,
@@ -529,8 +529,8 @@ const riichi_pattern_data = {
     han: 1,
     fu: 0,
   },
-  ALL_RUNS: {
-    display_name: "All Runs",
+  ALL_SEQUENCES: {
+    display_name: "All Sequences",
     han: 0,
     fu: 0,
   },
@@ -794,7 +794,7 @@ const riichi_pattern_data = {
     han: 0,
     fu: 2,
   },
-  PINFU: {
+  CLOSED_PINFU: {
     display_name: "Pinfu",
     han: 1,
     fu: 0,

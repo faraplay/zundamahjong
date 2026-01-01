@@ -78,12 +78,6 @@ zundamahjong.mahjong.meld
    :members:
    :exclude-members: model_config
 
-zundamahjong.mahjong.pattern
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-.. automodule:: zundamahjong.mahjong.pattern
-   :members:
-
 zundamahjong.mahjong.round
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 

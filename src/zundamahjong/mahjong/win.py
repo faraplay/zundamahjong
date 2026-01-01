@@ -42,7 +42,7 @@ class Win(BaseModel):
     is_ippatsu: bool = False
     "Whether the hand was won immediately after riichi."
     is_chankan: bool = False
-    "Whether the winning tile was stolen from another player's added kan."
+    "Whether the winning tile was stolen from another player's kan."
     is_haitei: bool = False
     "Whether the winning tile was the last draw."
     is_houtei: bool = False
