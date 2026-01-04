@@ -22,18 +22,30 @@ rooms_lock = Lock()
 
 
 class RoomBasicInfo(BaseModel):
+    """
+    The basic info of a game room, to be displayed in the list of game rooms.
+    """
+
     room_name: str
     player_count: int
     joined_players: list[Player]
 
 
 class RoomDetailedInfo(RoomBasicInfo):
+    """
+    The info of a game room, broadcasted to all players in the game room.
+    """
+
     avatars: dict[str, Avatar]
     game_options: GameOptions
 
 
 @final
 class GameRoom:
+    """
+    Represents a game room that players can join.
+    """
+
     def __init__(
         self,
         creator: Player,
@@ -52,6 +64,9 @@ class GameRoom:
 
     @property
     def joined_players(self) -> list[Player]:
+        """
+        A list of players who have joined the room.
+        """
         return [
             player_connection.player
             for player_connection in self.joined_player_connections
@@ -59,6 +74,9 @@ class GameRoom:
 
     @property
     def room_basic_info(self) -> RoomBasicInfo:
+        """
+        A :py:class:`RoomBasicInfo` with the basic data for the room.
+        """
         return RoomBasicInfo(
             room_name=self.room_name,
             player_count=self.player_count,
@@ -67,6 +85,9 @@ class GameRoom:
 
     @property
     def room_detailed_info(self) -> RoomDetailedInfo:
+        """
+        A :py:class:`RoomDetailedInfo` with the detailed data for the room.
+        """
         return RoomDetailedInfo(
             room_name=self.room_name,
             player_count=self.player_count,
@@ -77,6 +98,11 @@ class GameRoom:
 
     @classmethod
     def emit_rooms_list(cls, sid: str) -> None:
+        """
+        Emit a list of all game rooms to the given Socket.IO session id.
+
+        :param sid: The Socket.IO session id to send the list to.
+        """
         sio.emit(
             "rooms_info",
             [game_room.room_basic_info.model_dump() for game_room in rooms.values()],
@@ -85,6 +111,11 @@ class GameRoom:
 
     @classmethod
     def verify_room_name(cls, room_name: str) -> None:
+        """
+        Raise an exception if the room name is empty or too long.
+
+        :param room_name: The room name to verify.
+        """
         if room_name == "":
             raise Exception("Room name cannot be empty!")
         if len(room_name) > 20:
@@ -92,11 +123,22 @@ class GameRoom:
 
     @classmethod
     def verify_player_count(cls, player_count: int) -> None:
+        """
+        Raise an exception if the player count is not 3 or 4.
+
+        :param player_count: The player count to verify.
+        """
         if not (player_count == 3 or player_count == 4):
             raise Exception("Player count is not 3 or 4!")
 
     @classmethod
     def get_player_room(cls, player: Player) -> GameRoom | None:
+        """
+        Get the game room a player is in, or ``None`` if the player
+        is not in a room.
+
+        :param player: The player to find the game room of.
+        """
         with rooms_lock:
             return player_rooms.get(player.id)
 
@@ -104,6 +146,13 @@ class GameRoom:
     def create_room(
         cls, creator: Player, room_name: str, player_count: int
     ) -> GameRoom:
+        """
+        Create a game room.
+
+        :param creator: The player who is creating the room.
+        :param room_name: The name of the room.
+        :param player_count: The number of players the room should hold.
+        """
         with rooms_lock:
             if creator.id in player_rooms:
                 raise Exception(f"Player {creator.id} is already in a room!")
@@ -118,6 +167,14 @@ class GameRoom:
 
     @classmethod
     def join_room(cls, player: Player, room_name: str) -> GameRoom:
+        """
+        Make a player join a game room.
+
+        The player should not already be in a game room.
+
+        :param player: The player to add to a game room.
+        :param room_name: The name of the game room to add the player to.
+        """
         with rooms_lock:
             if player.id in player_rooms:
                 raise Exception(f"Player {player.id} is already in a room!")
@@ -153,6 +210,11 @@ class GameRoom:
 
     @classmethod
     def leave_room(cls, player: Player) -> GameRoom:
+        """
+        Remove a player from the game room they are in.
+
+        :param player: The player to remove from a room.
+        """
         with rooms_lock:
             try:
                 game_room = player_rooms[player.id]
@@ -167,14 +229,27 @@ class GameRoom:
         return game_room
 
     def broadcast_room_info(self) -> None:
+        """
+        Send detailed room info to every player in the room.
+        """
         for player in self.joined_players:
             sio.emit("room_info", self.room_detailed_info.model_dump(), to=player.id)
 
     def broadcast_game_end(self) -> None:
+        """
+        Send to every player in the room an event saying the game room's
+        game has ended.
+        """
         for player in self.joined_players:
             sio.emit("info", None, to=player.id)
 
     def get_player_connection(self, player: Player) -> PlayerConnection:
+        """
+        Get the :py:class:`PlayerConnection` object associated to a player
+        in the game room.
+
+        :param player: The player to look up.
+        """
         return next(
             player_connection
             for player_connection in self.joined_player_connections
@@ -183,6 +258,12 @@ class GameRoom:
 
     @classmethod
     def try_disconnect(cls, player: Player) -> None:
+        """
+        Set a player's connection status to disconnected in the game room
+        they are in, and remove them from the game room if a game is not in progress.
+
+        :param player: The player to set as disconnected.
+        """
         with rooms_lock:
             game_room = player_rooms.get(player.id)
             if game_room is None:
@@ -210,6 +291,14 @@ class GameRoom:
 
     @classmethod
     def try_reconnect(cls, player: Player) -> GameRoom | None:
+        """
+        Set a player's connection status to connected in the game room
+        they are in (if they are in a game room).
+        Then emit an event to the player saying which game room (if any)
+        they are in.
+
+        :param player: The player to reconnect.
+        """
         with rooms_lock:
             game_room = player_rooms.get(player.id)
             if game_room is not None:
@@ -225,6 +314,12 @@ class GameRoom:
 
     @classmethod
     def set_avatar(cls, player: Player, avatar: Avatar) -> None:
+        """
+        Set a player's avatar in the game room the player is in.
+
+        :param player: The player to set an avatar for.
+        :param avatar: The avatar to set.
+        """
         game_room = cls.get_player_room(player)
         if game_room is None:
             raise Exception("Player is not in a room!")
@@ -239,6 +334,12 @@ class GameRoom:
 
     @classmethod
     def set_game_options(cls, player: Player, game_options: GameOptions) -> None:
+        """
+        Set the game options for the game room a player is in.
+
+        :param player: The player whose game room's options are to be modified.
+        :param game_options: The value of the game options to set.
+        """
         game_room = cls.get_player_room(player)
         if game_room is None:
             raise Exception("Player is not in a room!")
@@ -246,6 +347,9 @@ class GameRoom:
         game_room.broadcast_room_info()
 
     def start_game(self) -> None:
+        """
+        Start a game in this game room.
+        """
         if self.game_options.player_count != self.player_count:
             raise Exception("Wrong number of players!")
         with rooms_lock:
@@ -259,6 +363,10 @@ class GameRoom:
             )
 
     def end_game(self) -> None:
+        """
+        End the game in this game room. There must be a game in progress
+        and it must have reached the end of the final round.
+        """
         if self.game_controller is None:
             raise Exception("Game hasn't started!")
         with rooms_lock:
