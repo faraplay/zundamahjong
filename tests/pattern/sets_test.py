@@ -1,6 +1,4 @@
 from unittest import TestCase
-from .get_pattern_mults import get_pattern_mults
-
 
 from zundamahjong.mahjong.call import (
     AddKanCall,
@@ -10,6 +8,8 @@ from zundamahjong.mahjong.call import (
     OpenKanCall,
 )
 from zundamahjong.mahjong.meld import Meld, MeldType
+
+from .get_pattern_mults import get_pattern_mults
 
 
 class SetsTest(TestCase):

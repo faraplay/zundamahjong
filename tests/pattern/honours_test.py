@@ -1,8 +1,9 @@
 from unittest import TestCase
-from .get_pattern_mults import get_pattern_mults
 
 from zundamahjong.mahjong.call import CallType, OpenCall
 from zundamahjong.mahjong.meld import Meld, MeldType
+
+from .get_pattern_mults import get_pattern_mults
 
 
 class HonoursTest(TestCase):
