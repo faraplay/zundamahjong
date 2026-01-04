@@ -2,6 +2,7 @@
 
 import logging
 from collections.abc import Callable
+from functools import wraps
 from typing import TypeVar
 
 from flask import request
@@ -36,6 +37,7 @@ def sio_on(event: str) -> Callable[[Handler[P, T]], Callable[P, T | None]]:
     def sio_on_decorator(
         handler: Handler[P, T],
     ) -> Callable[P, T | None]:
+        @wraps(handler)
         def wrapped_handler(*args: P.args, **kwargs: P.kwargs) -> T | None:
             with app.app_context():
                 sid: str = request.sid  # type: ignore  # pyright: ignore

@@ -19,6 +19,11 @@ from .sio import sio
 
 
 class GameInfo(BaseModel):
+    """
+    Represents the information about a game of mahjong that is retained
+    across rounds.
+    """
+
     players: list[Player]
     wind_round: int
     sub_round: int
@@ -27,11 +32,19 @@ class GameInfo(BaseModel):
 
 
 class HistoryItem(BaseModel):
+    """
+    Represents an action taken and the player who performed it in a round of Mahjong.
+    """
+
     player_index: int
     action: Action
 
 
 class RoundInfo(BaseModel):
+    """
+    Represents the public information at a given moment in a round of mahjong.
+    """
+
     tiles_left: int
     current_player: int
     status: RoundStatus
@@ -43,6 +56,10 @@ class RoundInfo(BaseModel):
 
 
 class PlayerInfo(BaseModel):
+    """
+    Represents the information specific to a player during a round of mahjong.
+    """
+
     hand: list[TileId]
     last_tile: TileId
     actions: list[Action]
@@ -50,6 +67,11 @@ class PlayerInfo(BaseModel):
 
 
 class AllInfo(BaseModel):
+    """
+    Represents all the info a player should have at a given moment in a round
+    of mahjong.
+    """
+
     player_count: int
     player_index: int
     is_game_end: bool
@@ -63,6 +85,13 @@ class AllInfo(BaseModel):
 
 @final
 class GameController:
+    """
+    Controls a game of mahjong and handles sending game information to players.
+
+    :param players: A list of the players who will play the game.
+    :param options: The game options to use for the game.
+    """
+
     def __init__(self, players: list[Player], options: GameOptions) -> None:
         self._players = sample(players, len(players))
         self._game = Game(options=options)
@@ -72,14 +101,29 @@ class GameController:
 
     @property
     def game(self) -> Game:
+        """The underlying :py:class:`Game` object."""
         return self._game
 
     def emit_info(self, player: Player) -> None:
+        """
+        Send game info to one of the players playing the game.
+
+        :param player: The player to send info to.
+        """
         with self._lock:
             index = self._get_player_index(player)
             sio.emit("info", self._info(index, []).model_dump(), to=player.id)
 
     def submit_action(self, player: Player, action: Action, history_index: int) -> None:
+        """
+        Submit a player's action to the game.
+
+        :param player: The player submitting the action.
+        :param action_data: The :py:class:`Action` the player is submitting.
+        :param history_index: The moment within the game when they are submitting
+                            the action, measured in terms of number of actions
+                            in the game's history.
+        """
         with self._lock:
             player_index = self._get_player_index(player)
             history_updates = self._game.submit_action(
@@ -89,6 +133,13 @@ class GameController:
                 self._emit_info_all_inner(history_updates)
 
     def start_next_round(self, player: Player) -> None:
+        """
+        Start the next round of the game.
+
+        :param player: The player starting the next round.
+                       This will raise an exception if this is not one
+                       of the players in the game.
+        """
         with self._lock:
             self._get_player_index(player)
             if not self._game.can_start_next_round:
