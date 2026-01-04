@@ -1,4 +1,4 @@
-from ..tile import dragons, winds
+from ..tile import dragons, honour_suit, winds
 from .pattern_calculator import PatternCalculator, register_pattern
 
 
@@ -78,4 +78,4 @@ def all_honours(self: PatternCalculator) -> int:
     """
     Every tile is an honour tile.
     """
-    return int(self.used_suits == {self._honour_suit})
+    return int(self.used_suits == {honour_suit})

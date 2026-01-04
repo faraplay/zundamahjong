@@ -1,6 +1,6 @@
 from collections import Counter
 
-from ..tile import TileValue, green_tiles
+from ..tile import TileValue, green_tiles, honour_suit, number_suits
 from .pattern_calculator import PatternCalculator, register_pattern
 
 
@@ -14,7 +14,7 @@ def half_flush(self: PatternCalculator) -> int:
     """
     The hand contains honour tiles and tiles from only one suit.
     """
-    return int(len(self.used_suits) == 2 and self._honour_suit in self.used_suits)
+    return int(len(self.used_suits) == 2 and honour_suit in self.used_suits)
 
 
 @register_pattern(
@@ -27,7 +27,7 @@ def full_flush(self: PatternCalculator) -> int:
     """
     The hand contains tiles from only one suit, with no honour tiles.
     """
-    return int(any(self.used_suits == {suit} for suit in self._number_suits))
+    return int(any(self.used_suits == {suit} for suit in number_suits))
 
 
 def _get_nine_gates_last_tile(self: PatternCalculator) -> TileValue | None:

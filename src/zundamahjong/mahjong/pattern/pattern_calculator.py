@@ -137,12 +137,8 @@ class PatternCalculator:
         self.triplet_tiles = {
             call.tiles[0]
             for call in self.melds
-            if call.meld_type in self._triplet_types
+            if call.meld_type == MeldType.PON or call.meld_type == MeldType.KAN
         }
-
-    _triplet_types = {MeldType.PON, MeldType.KAN}
-    _number_suits = [0, 10, 20]
-    _honour_suit = 30
 
     def _count_melds(self) -> None:
         self.pair_count = 0

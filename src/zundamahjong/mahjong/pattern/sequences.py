@@ -1,3 +1,4 @@
+from ..tile import number_suits
 from .pattern_calculator import PatternCalculator, register_pattern
 
 
@@ -79,7 +80,7 @@ def pure_straight(self: PatternCalculator) -> int:
     return int(
         any(
             {suit + 1, suit + 4, suit + 7} <= self.chii_start_tiles.keys()
-            for suit in self._number_suits
+            for suit in number_suits
         )
     )
 

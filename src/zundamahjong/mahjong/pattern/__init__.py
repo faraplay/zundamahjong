@@ -1,3 +1,4 @@
+# pyright: reportUnusedImport=false
 # ruff: noqa: I001
 
 # These are imported in order to register their functions.

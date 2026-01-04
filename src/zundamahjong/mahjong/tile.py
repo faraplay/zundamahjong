@@ -102,3 +102,10 @@ dragons = frozenset({35, 36, 37})
 
 green_tiles = frozenset({22, 23, 24, 26, 28, 36})
 "A frozenset containing the values of all green tiles."
+
+
+number_suits = [0, 10, 20]
+"A list of the values of the number suits (characters/dots/bamboos)."
+
+honour_suit = 30
+"The value of the honours suit."
