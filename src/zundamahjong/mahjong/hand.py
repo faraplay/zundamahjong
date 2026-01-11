@@ -238,7 +238,6 @@ class Hand:
     def chii(
         self,
         called_player_index: int,
-        last_discard: TileId,
         other_tiles: tuple[TileId, TileId],
     ) -> None:
         """
@@ -247,7 +246,6 @@ class Hand:
 
         :param called_player_index: The index of the player who discarded the
                                     last tile.
-        :param last_discard: The :py:class:`TileId` of the last discarded tile.
         :param other_tiles: The tiles in the hand that are used to form a chii
                             :py:class:`OpenCall` with the last discarded tile.
         """
@@ -292,7 +290,6 @@ class Hand:
     def pon(
         self,
         called_player_index: int,
-        last_discard: TileId,
         other_tiles: tuple[TileId, TileId],
     ) -> None:
         """
@@ -301,7 +298,6 @@ class Hand:
 
         :param called_player_index: The index of the player who discarded the
                                     last tile.
-        :param last_discard: The :py:class:`TileId` of the last discarded tile.
         :param other_tiles: The tiles in the hand that are used to form a pon
                             :py:class:`OpenCall` with the last discarded tile.
         """
@@ -346,7 +342,6 @@ class Hand:
     def open_kan(
         self,
         called_player_index: int,
-        last_discard: TileId,
         other_tiles: tuple[TileId, TileId, TileId],
     ) -> None:
         """
@@ -356,7 +351,6 @@ class Hand:
 
         :param called_player_index: The index of the player who discarded the
                                     last tile.
-        :param last_discard: The :py:class:`TileId` of the last discarded tile.
         :param other_tiles: The tiles in the hand that are used to form an
                             :py:class:`OpenKanCall` with the last discarded tile.
         """

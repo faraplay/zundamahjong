@@ -61,7 +61,6 @@ class PlayerInfo(BaseModel):
     """
 
     hand: list[TileId]
-    last_tile: TileId
     actions: list[Action]
     action_selected: bool
 
@@ -201,7 +200,6 @@ class GameController:
         action_selected = False
         return PlayerInfo(
             hand=hand,
-            last_tile=self._game.round.last_tile,
             actions=actions,
             action_selected=action_selected,
         )

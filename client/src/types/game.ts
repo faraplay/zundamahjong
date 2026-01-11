@@ -48,7 +48,6 @@ export type RoundInfo = {
 
 export type PlayerInfo = {
   hand: TileId[];
-  last_tile: TileId;
   actions: Action[];
 };
 
