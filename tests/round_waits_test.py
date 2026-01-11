@@ -17,6 +17,7 @@ from zundamahjong.mahjong.call import (
     OpenCall,
 )
 from zundamahjong.mahjong.deck import Deck
+from zundamahjong.mahjong.discard_pool import DiscardPool
 from zundamahjong.mahjong.form_hand import is_winning
 from zundamahjong.mahjong.game_options import GameOptions
 from zundamahjong.mahjong.hand import Hand
@@ -34,7 +35,7 @@ class RoundWaitsTest(unittest.TestCase):
         self.assertSetEqual(round._hands[2].waits, frozenset({13, 16}))
 
     def test_8_tile_wait(self) -> None:
-        hand = Hand(Deck(tiles=test_deck1))
+        hand = Hand(0, Deck(tiles=test_deck1), DiscardPool())
         hand._tiles = [20, 21, 22, 30, 40, 50, 60, 61, 70, 71, 72, 73, 80]
         self.assertSetEqual(hand.waits, frozenset({1, 2, 3, 4, 5, 6, 8, 9}))
 

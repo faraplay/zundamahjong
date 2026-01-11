@@ -131,7 +131,10 @@ class Round:
                     deck.extend(four_player_flowers)
             self._deck = Deck.shuffled_deck(deck)
         self._discard_pool = DiscardPool()
-        self._hands = [Hand(self._deck) for _ in range(self._player_count)]
+        self._hands = [
+            Hand(player_index, self._deck, self._discard_pool)
+            for player_index in range(self._player_count)
+        ]
         for tile_count in [4, 4, 4, 1]:
             for wind in range(self._player_count):
                 self._hands[(sub_round + wind) % self._player_count].add_to_hand(
@@ -461,10 +464,10 @@ class Round:
         else:
             actions = ActionList()
         if self._current_player == self._previous_player(player):
-            actions.add_actions(hand.get_chiis(last_tile))
+            actions.add_actions(hand.get_chiis())
         if self._current_player != player:
-            actions.add_actions(hand.get_pons(last_tile))
-            actions.add_actions(hand.get_open_kans(last_tile))
+            actions.add_actions(hand.get_pons())
+            actions.add_actions(hand.get_open_kans())
             if self._can_ron(player):
                 actions.add_simple_action(ActionType.RON)
         return actions
@@ -525,7 +528,6 @@ class Round:
         assert action.action_type == ActionType.DISCARD
         tile = action.tile
         self._hands[player].discard(tile)
-        self._discard_pool.append(player, tile, self._hands[player].is_riichi)
         if self.tiles_left > 0:
             self._status = RoundStatus.DISCARDED
         else:
@@ -537,7 +539,6 @@ class Round:
         assert action.action_type == ActionType.RIICHI
         tile = action.tile
         self._hands[player].riichi(tile)
-        self._discard_pool.append(player, tile, self._hands[player].is_riichi)
         if self.tiles_left > 0:
             self._status = RoundStatus.DISCARDED
         else:
@@ -547,7 +548,6 @@ class Round:
     @_register_do_action(ActionType.CHII)
     def _chii(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.CHII
-        self._discard_pool.pop()
         self._hands[player].chii(
             self._current_player, self._last_tile, action.other_tiles
         )
@@ -558,7 +558,6 @@ class Round:
     @_register_do_action(ActionType.PON)
     def _pon(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.PON
-        self._discard_pool.pop()
         self._hands[player].pon(
             self._current_player, self._last_tile, action.other_tiles
         )
@@ -569,7 +568,6 @@ class Round:
     @_register_do_action(ActionType.OPEN_KAN)
     def _open_kan(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.OPEN_KAN
-        self._discard_pool.pop()
         self._hands[player].open_kan(
             self._current_player, self._last_tile, action.other_tiles
         )
