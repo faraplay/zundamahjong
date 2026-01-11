@@ -53,7 +53,7 @@ class Hand:
         self._calls: list[Call] = []
         self._flowers: list[TileId] = []
         self._waits: frozenset[TileValue] | None = None
-        self._is_riichi: bool = False
+        self._riichi_discard_index: int | None = None
 
     @property
     def tiles(self) -> Sequence[TileId]:
@@ -64,19 +64,29 @@ class Hand:
         return self._tiles
 
     @property
-    def call_tiles(self) -> list[TileId]:
-        """
-        Return a list of :py:class:`TileId` s of the tiles in the player's calls.
-        """
-        return [tile for call in self._calls for tile in get_call_tiles(call)]
-
-    @property
     def tile_values(self) -> Sequence[TileValue]:
         """
         Return a sequence of :py:class:`TileValue` s of the tiles in the player's
         hand (does not include flowers or tiles in calls).
         """
         return get_tile_values(self._tiles)
+
+    @property
+    def is_riichi(self) -> bool:
+        """
+        Return a bool indicating whether the hand has called riichi.
+        """
+        return self._riichi_discard_index is not None
+
+    @property
+    def riichi_discard_index(self) -> int | None:
+        """
+        Return the number of discards made before the hand called riichi,
+        or ``None`` if the hand has not called riichi.
+
+        :param player: The index of the player to check.
+        """
+        return self._riichi_discard_index
 
     @property
     def calls(self) -> Sequence[Call]:
@@ -86,18 +96,18 @@ class Hand:
         return self._calls
 
     @property
+    def call_tiles(self) -> list[TileId]:
+        """
+        Return a list of :py:class:`TileId` s of the tiles in the player's calls.
+        """
+        return [tile for call in self._calls for tile in get_call_tiles(call)]
+
+    @property
     def flowers(self) -> Sequence[TileId]:
         """
         Return a sequence of :py:class:`TileId` s of the player's flowers.
         """
         return self._flowers
-
-    @property
-    def is_riichi(self) -> bool:
-        """
-        Return a bool indicating whether the hand has called riichi.
-        """
-        return self._is_riichi
 
     def sort(self) -> None:
         "Sort the hand's tiles in ascending order of :py:class:`TileId` ."
@@ -129,7 +139,7 @@ class Hand:
         If the hand has riichi'd, then this is just the last drawn tile.
         Otherwise, every tile can be discarded.
         """
-        if self._is_riichi:
+        if self.is_riichi:
             return [
                 HandTileAction(action_type=ActionType.DISCARD, tile=self._tiles[-1])
             ]
@@ -145,7 +155,7 @@ class Hand:
         :param tile: The :py:class:`TileId` of the tile to discard.
         """
         self._tiles.remove(tile)
-        self._discard_pool.append(self._player_index, tile, self._is_riichi)
+        self._discard_pool.append(self._player_index, tile)
         self.sort()
         self._waits = None
 
@@ -178,9 +188,9 @@ class Hand:
 
         :param tile: The :py:class:`TileId` of the tile to discard.
         """
-        self._is_riichi = True
         self._tiles.remove(tile)
-        self._discard_pool.append(self._player_index, tile, self._is_riichi)
+        self._riichi_discard_index = len(self._discard_pool.discards)
+        self._discard_pool.append(self._player_index, tile)
         self.sort()
         self._waits = None
 

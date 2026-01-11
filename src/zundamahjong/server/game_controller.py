@@ -48,11 +48,12 @@ class RoundInfo(BaseModel):
     tiles_left: int
     current_player: int
     status: RoundStatus
-    hand_counts: list[int]
     discards: list[Discard]
+    history: list[HistoryItem]
+    hand_counts: list[int]
+    riichi_discard_indexes: list[int | None]
     calls: list[Sequence[Call]]
     flowers: list[Sequence[TileId]]
-    history: list[HistoryItem]
 
 
 class PlayerInfo(BaseModel):
@@ -162,6 +163,7 @@ class GameController:
         )
 
     def _round_info(self) -> RoundInfo:
+        discards = self._game.round.discards
         history = [
             HistoryItem(player_index=action[0], action=action[1])
             for action in self._game.round.history
@@ -170,7 +172,10 @@ class GameController:
             len(self._game.round.get_hand(player))
             for player in range(self._game.player_count)
         ]
-        discards = self._game.round.discards
+        riichi_discard_indexes = [
+            self._game.round.get_riichi_discard_index(player)
+            for player in range(self._game._player_count)
+        ]
         calls = [
             self._game.round.get_calls(player)
             for player in range(self._game.player_count)
@@ -183,11 +188,12 @@ class GameController:
             tiles_left=self._game.round.tiles_left,
             current_player=self._game.round.current_player,
             status=self._game.round.status,
-            hand_counts=hand_counts,
             discards=list(discards),
+            history=history,
+            hand_counts=hand_counts,
+            riichi_discard_indexes=riichi_discard_indexes,
             calls=calls,
             flowers=flowers,
-            history=history,
         )
 
     def _player_info(self, index: int) -> PlayerInfo:

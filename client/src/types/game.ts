@@ -8,7 +8,6 @@ export type Discard = {
   player: number;
   tile: TileId;
   called: boolean;
-  is_riichi: boolean;
 };
 
 export type HistoryItem = {
@@ -39,11 +38,12 @@ export type RoundInfo = {
   tiles_left: number;
   current_player: number;
   status: RoundStatus;
-  hand_counts: number[];
   discards: Discard[];
+  history: HistoryItem[];
+  hand_counts: number[];
+  riichi_discard_indexes: (number | null)[];
   calls: Call[][];
   flowers: TileId[][];
-  history: HistoryItem[];
 };
 
 export type PlayerInfo = {

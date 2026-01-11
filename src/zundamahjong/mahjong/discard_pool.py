@@ -15,8 +15,6 @@ class Discard(BaseModel):
     "The :py:class:`TileId` of the discarded tile."
     called: bool
     "Whether the discarded tile has been called."
-    is_riichi: bool
-    "Whether the player was in riichi when they discarded the tile."
 
 
 class DiscardPool:
@@ -43,7 +41,7 @@ class DiscardPool:
             return None
         return last_discard.tile
 
-    def append(self, player: int, tile: TileId, is_riichi: bool) -> None:
+    def append(self, player: int, tile: TileId) -> None:
         """
         Add a tile to the discard pool.
 
@@ -51,9 +49,7 @@ class DiscardPool:
         :param tile: The :py:class:`TileId` of the discarded tile.
         :param is_riichi: Whether the player was in riichi when they discarded the tile.
         """
-        self._discards.append(
-            Discard(player=player, tile=tile, is_riichi=is_riichi, called=False)
-        )
+        self._discards.append(Discard(player=player, tile=tile, called=False))
 
     def pop(self) -> TileId:
         """

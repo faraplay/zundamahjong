@@ -170,6 +170,15 @@ class Round:
         """
         return self._hands[player].tiles
 
+    def get_riichi_discard_index(self, player: int) -> int | None:
+        """
+        Get the number of discards made before a player's riichi,
+        or ``None`` if the player has not called riichi.
+
+        :param player: The index of the player to check.
+        """
+        return self._hands[player].riichi_discard_index
+
     def get_discard_tiles(self, player: int) -> Sequence[TileId]:
         """
         Get a given player's discarded tiles.
