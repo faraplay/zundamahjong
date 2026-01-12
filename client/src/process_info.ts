@@ -40,7 +40,9 @@ export function processInfo(info: AllServerInfo): AllInfo {
   }
 
   const visibleTiles = [
-    ...info.round_info.discards.map((discard) => discard.tile),
+    ...info.round_info.discards
+      .filter((discard) => !discard.is_called && !discard.is_kan)
+      .map((discard) => discard.tile),
     ...info.round_info.calls.flat(1).flatMap((call) => getCallTiles(call)),
     ...info.player_info.hand,
   ];
