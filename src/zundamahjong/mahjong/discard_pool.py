@@ -18,6 +18,8 @@ class Discard(BaseModel):
     "The index of the player who discarded the tile."
     tile: TileId
     "The :py:class:`TileId` of the discarded tile."
+    is_new: bool
+    "Whether the tile has just been discarded."
     is_called: bool
     "Whether the discarded tile has been called."
     is_kan: bool
@@ -59,8 +61,18 @@ class DiscardPool:
                        instead of being discarded.
         """
         self._discards.append(
-            Discard(player=player, tile=tile, is_called=False, is_kan=is_kan)
+            Discard(
+                player=player, tile=tile, is_new=True, is_called=False, is_kan=is_kan
+            )
         )
+
+    def unnew_last_discard(self) -> None:
+        """
+        Set the status of the last discard to not new.
+        """
+        if len(self._discards) == 0:
+            return
+        self._discards[-1].is_new = False
 
     def pop(self) -> TileId:
         """
@@ -69,5 +81,6 @@ class DiscardPool:
         :return: The :py:class:`TileId` representing the last discarded tile.
         """
         last_discard = self._discards[-1]
+        last_discard.is_new = False
         last_discard.is_called = True
         return last_discard.tile

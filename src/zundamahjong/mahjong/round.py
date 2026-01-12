@@ -495,13 +495,16 @@ class Round:
             self._status == RoundStatus.ADD_KAN_AFTER
             or self._status == RoundStatus.CLOSED_KAN_AFTER
         ):
+            self._discard_pool.unnew_last_discard()
             self._status = RoundStatus.PLAY
         elif self._status == RoundStatus.LAST_DISCARDED:
+            self._discard_pool.unnew_last_discard()
             self._status = RoundStatus.END
 
     @_register_do_action(ActionType.DRAW)
     def _draw(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.DRAW
+        self._discard_pool.unnew_last_discard()
         self._hands[player].draw()
         self._current_player = player
         self._status = RoundStatus.PLAY

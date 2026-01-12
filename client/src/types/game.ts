@@ -7,6 +7,7 @@ import type { PatternData } from "./game_options.ts";
 export type Discard = {
   player: number;
   tile: TileId;
+  is_new: boolean;
   is_called: boolean;
   is_kan: boolean;
 };
