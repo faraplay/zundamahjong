@@ -7,14 +7,21 @@ from .tile import TileId
 
 
 class Discard(BaseModel):
-    "Represents a discarded tile."
+    """
+    Represents a discarded tile.
+
+    Also represents a tile added to a kan or used to form a closed kan,
+    since those tiles can be won off of.
+    """
 
     player: int
     "The index of the player who discarded the tile."
     tile: TileId
     "The :py:class:`TileId` of the discarded tile."
-    called: bool
+    is_called: bool
     "Whether the discarded tile has been called."
+    is_kan: bool
+    "Whether the tile was part of an added kan or closed kan."
 
 
 class DiscardPool:
@@ -37,19 +44,23 @@ class DiscardPool:
         if len(self._discards) == 0:
             return None
         last_discard = self._discards[-1]
-        if last_discard.called:
+        if last_discard.is_called:
             return None
         return last_discard.tile
 
-    def append(self, player: int, tile: TileId) -> None:
+    def append(self, player: int, tile: TileId, *, is_kan: bool = False) -> None:
         """
         Add a tile to the discard pool.
 
         :param player: The index of the player who discarded the tile.
         :param tile: The :py:class:`TileId` of the discarded tile.
         :param is_riichi: Whether the player was in riichi when they discarded the tile.
+        :param is_kan: (Defaults to false) Whether the tile was actually part of a kan
+                       instead of being discarded.
         """
-        self._discards.append(Discard(player=player, tile=tile, called=False))
+        self._discards.append(
+            Discard(player=player, tile=tile, is_called=False, is_kan=is_kan)
+        )
 
     def pop(self) -> TileId:
         """
@@ -58,5 +69,5 @@ class DiscardPool:
         :return: The :py:class:`TileId` representing the last discarded tile.
         """
         last_discard = self._discards[-1]
-        last_discard.called = True
+        last_discard.is_called = True
         return last_discard.tile

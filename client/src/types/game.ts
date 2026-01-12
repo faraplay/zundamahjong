@@ -7,7 +7,8 @@ import type { PatternData } from "./game_options.ts";
 export type Discard = {
   player: number;
   tile: TileId;
-  called: boolean;
+  is_called: boolean;
+  is_kan: boolean;
 };
 
 export type HistoryItem = {

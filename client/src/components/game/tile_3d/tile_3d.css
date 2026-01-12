@@ -7,11 +7,12 @@
   transform-origin: left top;
   transform-style: preserve-3d;
 
-  &.called {
+  &.is_called,
+  &.is_kan {
     display: none;
   }
 
-  &.is_riichi {
+  &.is_first_riichi {
     width: var(--tile-height);
 
     .tile_3d_extra_transform {

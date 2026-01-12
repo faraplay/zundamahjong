@@ -415,6 +415,7 @@ class Hand:
             added_tile=tile,
             other_tiles=pon_call.other_tiles,
         )
+        self._discard_pool.append(self._player_index, tile, is_kan=True)
         self.sort()
         self._draw_from_back()
         self._waits = None
@@ -459,6 +460,7 @@ class Hand:
         self._tiles.remove(tiles[2])
         self._tiles.remove(tiles[3])
         self._calls.append(ClosedKanCall(tiles=tiles))
+        self._discard_pool.append(self._player_index, tiles[0], is_kan=True)
         self.sort()
         self._draw_from_back()
         self._waits = None

@@ -243,7 +243,7 @@ class Round:
         return [
             discard.tile
             for discard in self._discard_pool.discards
-            if not discard.called
+            if not discard.is_called and not discard.is_kan
         ]
 
     @property
@@ -599,13 +599,7 @@ class Round:
     def _get_win_ron(self, player: int) -> Win | None:
         hand = self._hands[player]
 
-        last_action = self._history[-1][1]
-        if last_action.action_type == ActionType.ADD_KAN:
-            last_tile: TileId | None = last_action.tile
-        elif last_action.action_type == ActionType.CLOSED_KAN:
-            last_tile = last_action.tiles[0]
-        else:
-            last_tile = self._discard_pool.last_discarded_tile
+        last_tile = self._discard_pool.last_discarded_tile
 
         waits = hand.waits
         if last_tile is None or get_tile_value(last_tile) not in waits:

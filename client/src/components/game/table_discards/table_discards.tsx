@@ -22,7 +22,7 @@ export function TableDiscards({
   if (riichi_discard_index !== null) {
     for (let i = riichi_discard_index; i < riichiDiscards.length; ++i) {
       const riichiDiscard = riichiDiscards[i];
-      if (riichiDiscard.player == player_index && !riichiDiscard.called) {
+      if (riichiDiscard.player == player_index && !riichiDiscard.is_called) {
         riichiDiscard.isFirstRiichi = true;
         break;
       }
