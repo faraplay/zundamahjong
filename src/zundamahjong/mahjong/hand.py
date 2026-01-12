@@ -518,3 +518,18 @@ class Hand:
         }
         waits = get_waits(get_tile_values(hand_tiles))
         return waits - unusable_tile_values
+
+    @property
+    def is_temporary_furiten(self) -> bool:
+        """
+        Whether any old discard since the player's last discard is
+        one of the hand's waits.
+        """
+        for discard in reversed(self._discard_pool.discards):
+            if discard.player == self._player_index:
+                break
+            if discard.is_new:
+                continue
+            if get_tile_value(discard.tile) in self.waits:
+                return True
+        return False
