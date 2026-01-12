@@ -15,10 +15,11 @@ from zundamahjong.mahjong.call import (
     CallType,
     OpenCall,
 )
+from zundamahjong.mahjong.game_options import GameOptions
 from zundamahjong.mahjong.round import Round
 
 
-class FuritenTest(unittest.TestCase):
+class TemporaryFuritenTest(unittest.TestCase):
     def test_furiten_deck_hands(self) -> None:
         round = Round(tiles=test_deck_furiten)
         self.assertCountEqual(
@@ -123,3 +124,96 @@ class FuritenTest(unittest.TestCase):
         round.do_action(0, SimpleAction(action_type=ActionType.CONTINUE))
         self.assertSetEqual(round._hands[2].waits, {4, 7})
         self.assertTrue(round._hands[2].is_temporary_furiten)
+
+
+class RiichiFuritenTest(unittest.TestCase):
+    def start_round_and_riichi(self) -> Round:
+        round = Round(tiles=test_deck_furiten, options=GameOptions(allow_riichi=True))
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=191))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=260))
+        round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(2, HandTileAction(action_type=ActionType.RIICHI, tile=30))
+        round.do_action(3, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(3, HandTileAction(action_type=ActionType.DISCARD, tile=261))
+        round.do_action(0, SimpleAction(action_type=ActionType.DRAW))
+        return round
+
+    def test_riichi_no_furiten_on_discard(self) -> None:
+        round = self.start_round_and_riichi()
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=70))
+        self.assertSetEqual(round._hands[2].waits, {4, 7})
+        self.assertFalse(round._hands[2].is_riichi_furiten)
+
+    def test_riichi_furiten_after_discard(self) -> None:
+        round = self.start_round_and_riichi()
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=70))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        self.assertTrue(round._hands[2].is_riichi_furiten)
+
+    def test_riichi_furiten_after_second_discard(self) -> None:
+        round = self.start_round_and_riichi()
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=70))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=43))
+        self.assertTrue(round._hands[2].is_riichi_furiten)
+
+    def test_riichi_furiten_after_own_discard(self) -> None:
+        round = self.start_round_and_riichi()
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=70))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=43))
+        round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=270))
+        self.assertTrue(round._hands[2].is_riichi_furiten)
+
+    def test_riichi_furiten_after_call(self) -> None:
+        round = self.start_round_and_riichi()
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=70))
+        round.do_action(
+            1, OpenCallAction(action_type=ActionType.CHII, other_tiles=(80, 90))
+        )
+        self.assertTrue(round._hands[2].is_riichi_furiten)
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=43))
+        self.assertTrue(round._hands[2].is_riichi_furiten)
+
+    def test_riichi_no_furiten_after_closed_kan(self) -> None:
+        round = self.start_round_and_riichi()
+        round.do_action(0, ClosedKanAction(tiles=(70, 71, 72, 73)))
+        self.assertFalse(round._hands[2].is_riichi_furiten)
+        round.do_action(0, SimpleAction(action_type=ActionType.CONTINUE))
+        self.assertFalse(round._hands[2].is_riichi_furiten)
+
+    def test_riichi_furiten_after_added_kan(self) -> None:
+        round = Round(tiles=test_deck_furiten, options=GameOptions(allow_riichi=True))
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=70))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=43))
+        round.do_action(
+            0, OpenCallAction(action_type=ActionType.PON, other_tiles=(40, 41))
+        )
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=50))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=30))
+        round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(2, HandTileAction(action_type=ActionType.RIICHI, tile=261))
+        round.do_action(3, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(3, HandTileAction(action_type=ActionType.DISCARD, tile=262))
+        round.do_action(0, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(
+            0,
+            AddKanAction(
+                tile=42,
+                pon_call=OpenCall(
+                    call_type=CallType.PON,
+                    called_player_index=1,
+                    called_tile=43,
+                    other_tiles=(40, 41),
+                ),
+            ),
+        )
+        self.assertSetEqual(round._hands[2].waits, {4, 7})
+        self.assertFalse(round._hands[2].is_riichi_furiten)
+        round.do_action(0, SimpleAction(action_type=ActionType.CONTINUE))
+        self.assertSetEqual(round._hands[2].waits, {4, 7})
+        self.assertTrue(round._hands[2].is_riichi_furiten)

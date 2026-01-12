@@ -535,3 +535,26 @@ class Hand:
             if get_tile_value(discard.tile) in self.waits:
                 return True
         return False
+
+    @property
+    def is_riichi_furiten(self) -> bool:
+        """
+        Whether any old discard since the player's riichi discard is
+        one of the hand's waits.
+        If the player has not called riichi, this will be ``False``.
+        """
+        if self._riichi_discard_index is None:
+            return False
+        riichi_back_index = (
+            len(self._discard_pool.discards) - 1 - self._riichi_discard_index
+        )
+        for back_index, discard in enumerate(reversed(self._discard_pool.discards)):
+            if back_index == riichi_back_index:
+                break
+            if discard.is_new:
+                continue
+            if discard.is_closed_kan:
+                continue
+            if get_tile_value(discard.tile) in self.waits:
+                return True
+        return False
