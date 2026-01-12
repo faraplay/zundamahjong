@@ -25,7 +25,8 @@
   }
 
   &.is_called,
-  &.is_kan {
+  &.is_added_kan,
+  &.is_closed_kan {
     display: none;
   }
 

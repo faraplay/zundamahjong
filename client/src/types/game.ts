@@ -9,7 +9,8 @@ export type Discard = {
   tile: TileId;
   is_new: boolean;
   is_called: boolean;
-  is_kan: boolean;
+  is_added_kan: boolean;
+  is_closed_kan: boolean;
 };
 
 export type HistoryItem = {
