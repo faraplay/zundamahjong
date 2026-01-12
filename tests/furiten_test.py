@@ -217,3 +217,82 @@ class RiichiFuritenTest(unittest.TestCase):
         round.do_action(0, SimpleAction(action_type=ActionType.CONTINUE))
         self.assertSetEqual(round._hands[2].waits, {4, 7})
         self.assertTrue(round._hands[2].is_riichi_furiten)
+
+
+class OwnDiscardFuritenTest(unittest.TestCase):
+    def test_own_discard_no_furiten_on_discard(self) -> None:
+        round = Round(tiles=test_deck_furiten)
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=70))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=43))
+        round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=30))
+        self.assertSetEqual(round._hands[2].waits, {4, 7})
+        self.assertFalse(round._hands[2].is_own_discard_furiten)
+
+    def test_own_discard_furiten_on_discard(self) -> None:
+        round = Round(tiles=test_deck_furiten)
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=70))
+        self.assertSetEqual(round._hands[0].waits, {4, 7, 19})
+        self.assertTrue(round._hands[0].is_own_discard_furiten)
+
+    def test_own_discard_furiten_after_discard(self) -> None:
+        round = Round(tiles=test_deck_furiten)
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=70))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        self.assertSetEqual(round._hands[0].waits, {4, 7, 19})
+        self.assertTrue(round._hands[0].is_own_discard_furiten)
+
+    def test_own_discard_furiten_after_call(self) -> None:
+        round = Round(tiles=test_deck_furiten)
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=70))
+        round.do_action(
+            1, OpenCallAction(action_type=ActionType.CHII, other_tiles=(80, 90))
+        )
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=43))
+        self.assertSetEqual(round._hands[0].waits, {4, 7, 19})
+        self.assertTrue(round._hands[0].is_own_discard_furiten)
+
+    def test_own_discard_no_furiten_after_closed_kan(self) -> None:
+        round = Round(tiles=test_deck_furiten)
+        round.do_action(0, ClosedKanAction(tiles=(70, 71, 72, 73)))
+        round.do_action(0, SimpleAction(action_type=ActionType.CONTINUE))
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=20))
+        self.assertSetEqual(round._hands[0].waits, {4, 19})
+        self.assertFalse(round._hands[0].is_own_discard_furiten)
+
+    def test_own_discard_no_furiten_after_added_kan(self) -> None:
+        round = Round(tiles=test_deck_furiten)
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=70))
+        round.do_action(
+            1, OpenCallAction(action_type=ActionType.CHII, other_tiles=(80, 90))
+        )
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=43))
+        round.do_action(
+            0, OpenCallAction(action_type=ActionType.PON, other_tiles=(40, 41))
+        )
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=50))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=310))
+        round.do_action(
+            3, OpenCallAction(action_type=ActionType.PON, other_tiles=(311, 312))
+        )
+        round.do_action(3, HandTileAction(action_type=ActionType.DISCARD, tile=210))
+        round.do_action(0, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(
+            0,
+            AddKanAction(
+                tile=42,
+                pon_call=OpenCall(
+                    call_type=CallType.PON,
+                    called_player_index=1,
+                    called_tile=43,
+                    other_tiles=(40, 41),
+                ),
+            ),
+        )
+        round.do_action(0, SimpleAction(action_type=ActionType.CONTINUE))
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=60))
+        round.display_info()
+        self.assertSetEqual(round._hands[0].waits, {1})
+        self.assertFalse(round._hands[0].is_own_discard_furiten)

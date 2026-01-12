@@ -558,3 +558,14 @@ class Hand:
             if get_tile_value(discard.tile) in self.waits:
                 return True
         return False
+
+    @property
+    def is_own_discard_furiten(self) -> bool:
+        """
+        Whether any of the player's own discards is one of the hand's waits.
+        """
+        return any(
+            discard.player == self._player_index
+            and get_tile_value(discard.tile) in self.waits
+            for discard in reversed(self._discard_pool.discards)
+        )
