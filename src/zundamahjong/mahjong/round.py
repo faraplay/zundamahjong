@@ -243,7 +243,9 @@ class Round:
         return [
             discard.tile
             for discard in self._discard_pool.discards
-            if not discard.is_called and not discard.is_kan
+            if not discard.is_called
+            and not discard.is_added_kan
+            and not discard.is_closed_kan
         ]
 
     @property

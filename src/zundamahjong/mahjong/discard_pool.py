@@ -22,8 +22,10 @@ class Discard(BaseModel):
     "Whether the tile has just been discarded."
     is_called: bool
     "Whether the discarded tile has been called."
-    is_kan: bool
-    "Whether the tile was part of an added kan or closed kan."
+    is_added_kan: bool
+    "Whether the tile was part of an added kan."
+    is_closed_kan: bool
+    "Whether the tile was part of a closed kan."
 
 
 class DiscardPool:
@@ -50,7 +52,14 @@ class DiscardPool:
             return None
         return last_discard.tile
 
-    def append(self, player: int, tile: TileId, *, is_kan: bool = False) -> None:
+    def append(
+        self,
+        player: int,
+        tile: TileId,
+        *,
+        is_added_kan: bool = False,
+        is_closed_kan: bool = False,
+    ) -> None:
         """
         Add a tile to the discard pool.
 
@@ -62,7 +71,12 @@ class DiscardPool:
         """
         self._discards.append(
             Discard(
-                player=player, tile=tile, is_new=True, is_called=False, is_kan=is_kan
+                player=player,
+                tile=tile,
+                is_new=True,
+                is_called=False,
+                is_added_kan=is_added_kan,
+                is_closed_kan=is_closed_kan,
             )
         )
 

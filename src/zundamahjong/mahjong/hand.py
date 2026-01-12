@@ -415,7 +415,7 @@ class Hand:
             added_tile=tile,
             other_tiles=pon_call.other_tiles,
         )
-        self._discard_pool.append(self._player_index, tile, is_kan=True)
+        self._discard_pool.append(self._player_index, tile, is_added_kan=True)
         self.sort()
         self._draw_from_back()
         self._waits = None
@@ -460,7 +460,7 @@ class Hand:
         self._tiles.remove(tiles[2])
         self._tiles.remove(tiles[3])
         self._calls.append(ClosedKanCall(tiles=tiles))
-        self._discard_pool.append(self._player_index, tiles[0], is_kan=True)
+        self._discard_pool.append(self._player_index, tiles[0], is_closed_kan=True)
         self.sort()
         self._draw_from_back()
         self._waits = None
@@ -529,6 +529,8 @@ class Hand:
             if discard.player == self._player_index:
                 break
             if discard.is_new:
+                continue
+            if discard.is_closed_kan:
                 continue
             if get_tile_value(discard.tile) in self.waits:
                 return True
