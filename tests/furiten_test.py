@@ -60,7 +60,7 @@ class TemporaryFuritenTest(unittest.TestCase):
         self.assertSetEqual(round._hands[2].waits, {4, 7})
         self.assertTrue(round._hands[2].is_temporary_furiten)
 
-    def test_temp_no_furiten_after_own_discard(self) -> None:
+    def test_temp_no_furiten_after_own_nonwait_discard(self) -> None:
         round = Round(tiles=test_deck_furiten)
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=70))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
@@ -69,6 +69,18 @@ class TemporaryFuritenTest(unittest.TestCase):
         round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=30))
         self.assertSetEqual(round._hands[2].waits, {4, 7})
         self.assertFalse(round._hands[2].is_temporary_furiten)
+
+    def test_temp_furiten_on_own_wait_discard(self) -> None:
+        round = Round(tiles=test_deck_furiten)
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=70))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=43))
+        round.do_action(
+            2, OpenCallAction(action_type=ActionType.CHII, other_tiles=(51, 61))
+        )
+        round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=192))
+        self.assertSetEqual(round._hands[2].waits, {19})
+        self.assertTrue(round._hands[2].is_temporary_furiten)
 
     def test_temp_furiten_after_call(self) -> None:
         round = Round(tiles=test_deck_furiten)
@@ -158,7 +170,7 @@ class RiichiFuritenTest(unittest.TestCase):
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=43))
         self.assertTrue(round._hands[2].is_riichi_furiten)
 
-    def test_riichi_furiten_after_own_discard(self) -> None:
+    def test_riichi_furiten_after_own_nonwait_discard(self) -> None:
         round = self.start_round_and_riichi()
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=70))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
@@ -166,6 +178,12 @@ class RiichiFuritenTest(unittest.TestCase):
         round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
         round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=270))
         self.assertTrue(round._hands[2].is_riichi_furiten)
+
+    def test_riichi_furiten_on_own_wait_discard(self) -> None:
+        round = Round(tiles=test_deck_furiten, options=GameOptions(allow_riichi=True))
+        round.do_action(0, HandTileAction(action_type=ActionType.RIICHI, tile=190))
+        self.assertSetEqual(round._hands[0].waits, {19})
+        self.assertTrue(round._hands[0].is_riichi_furiten)
 
     def test_riichi_furiten_after_call(self) -> None:
         round = self.start_round_and_riichi()

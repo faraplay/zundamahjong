@@ -527,6 +527,8 @@ class Hand:
         """
         for discard in reversed(self._discard_pool.discards):
             if discard.player == self._player_index:
+                if get_tile_value(discard.tile) in self.waits:
+                    return True
                 break
             if discard.is_new:
                 continue
@@ -550,6 +552,8 @@ class Hand:
         )
         for back_index, discard in enumerate(reversed(self._discard_pool.discards)):
             if back_index == riichi_back_index:
+                if get_tile_value(discard.tile) in self.waits:
+                    return True
                 break
             if discard.is_new:
                 continue
