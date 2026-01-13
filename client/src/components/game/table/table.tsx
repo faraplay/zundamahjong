@@ -1,4 +1,4 @@
-import type { AllServerInfo, Discard } from "../../../types/game";
+import type { AllServerInfo } from "../../../types/game";
 import type { TileId } from "../../../types/tile";
 
 import { CenterInfo } from "../center_info/center_info";
@@ -23,14 +23,6 @@ export function Table({ info }: { info: AllServerInfo }) {
     }
   }
 
-  const player_discards: Discard[][] = [];
-  for (let player_index = 0; player_index < info.player_count; ++player_index) {
-    player_discards.push(
-      info.round_info.discards.filter(
-        (discard) => discard.player == player_index,
-      ),
-    );
-  }
   return (
     <div id="table">
       <CenterInfo
@@ -54,9 +46,16 @@ export function Table({ info }: { info: AllServerInfo }) {
         ))}
       </div>
       <div id="discard_pool">
-        {player_discards.map((discards, index) => (
-          <TableDiscards key={index} player_index={index} discards={discards} />
-        ))}
+        {info.round_info.riichi_discard_indexes.map(
+          (riichi_discard_index, player_index) => (
+            <TableDiscards
+              key={player_index}
+              player_index={player_index}
+              discards={info.round_info.discards}
+              riichi_discard_index={riichi_discard_index}
+            />
+          ),
+        )}
       </div>
     </div>
   );

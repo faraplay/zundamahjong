@@ -7,7 +7,10 @@ import type { PatternData } from "./game_options.ts";
 export type Discard = {
   player: number;
   tile: TileId;
-  is_riichi: boolean;
+  is_new: boolean;
+  is_called: boolean;
+  is_added_kan: boolean;
+  is_closed_kan: boolean;
 };
 
 export type HistoryItem = {
@@ -38,17 +41,18 @@ export type RoundInfo = {
   tiles_left: number;
   current_player: number;
   status: RoundStatus;
-  hand_counts: number[];
   discards: Discard[];
+  history: HistoryItem[];
+  hand_counts: number[];
+  riichi_discard_indexes: (number | null)[];
   calls: Call[][];
   flowers: TileId[][];
-  history: HistoryItem[];
 };
 
 export type PlayerInfo = {
   hand: TileId[];
-  last_tile: TileId;
   actions: Action[];
+  is_furiten: boolean;
 };
 
 export type Win = {

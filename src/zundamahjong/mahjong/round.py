@@ -131,7 +131,10 @@ class Round:
                     deck.extend(four_player_flowers)
             self._deck = Deck.shuffled_deck(deck)
         self._discard_pool = DiscardPool()
-        self._hands = [Hand(self._deck) for _ in range(self._player_count)]
+        self._hands = [
+            Hand(player_index, self._deck, self._discard_pool)
+            for player_index in range(self._player_count)
+        ]
         for tile_count in [4, 4, 4, 1]:
             for wind in range(self._player_count):
                 self._hands[(sub_round + wind) % self._player_count].add_to_hand(
@@ -144,7 +147,6 @@ class Round:
 
         self._current_player = sub_round
         self._status = RoundStatus.START
-        self._last_tile: TileId = 0
         self._history: list[tuple[int, Action]] = []
         self._win: Win | None = None
 
@@ -167,6 +169,15 @@ class Round:
         :param player: The index of the player to check.
         """
         return self._hands[player].tiles
+
+    def get_riichi_discard_index(self, player: int) -> int | None:
+        """
+        Get the number of discards made before a player's riichi,
+        or ``None`` if the player has not called riichi.
+
+        :param player: The index of the player to check.
+        """
+        return self._hands[player].riichi_discard_index
 
     def get_discard_tiles(self, player: int) -> Sequence[TileId]:
         """
@@ -195,6 +206,22 @@ class Round:
         :param player: The index of the player to check.
         """
         return self._hands[player].flowers
+
+    def is_furiten(self, player: int) -> bool:
+        """
+        Get whether a given player is in furiten.
+
+        :param player: The index of the player to check.
+        """
+        player_hand = self._hands[player]
+        return (
+            (self._options.use_temporary_furiten and player_hand.is_temporary_furiten)
+            or (self._options.use_riichi_furiten and player_hand.is_riichi_furiten)
+            or (
+                self._options.use_own_discard_furiten
+                and player_hand.is_own_discard_furiten
+            )
+        )
 
     @property
     def player_count(self) -> int:
@@ -229,12 +256,13 @@ class Round:
     @property
     def discard_tiles(self) -> Sequence[TileId]:
         "The round's discards, as a sequence of :py:class:`TileId` s."
-        return [discard.tile for discard in self._discard_pool.discards]
-
-    @property
-    def last_tile(self) -> TileId:
-        "The last discarded tile."
-        return self._last_tile
+        return [
+            discard.tile
+            for discard in self._discard_pool.discards
+            if not discard.is_called
+            and not discard.is_added_kan
+            and not discard.is_closed_kan
+        ]
 
     @property
     def wall_count(self) -> int:
@@ -276,9 +304,7 @@ class Round:
 
     def _calculate_allowed_actions(self) -> None:
         self._allowed_actions = tuple(
-            _allowed_actions_funcs[self._status](
-                self, player, self._hands[player], self._last_tile
-            )
+            _allowed_actions_funcs[self._status](self, player, self._hands[player])
             for player in range(self._player_count)
         )
         self._all_allowed_actions = sorted(
@@ -374,9 +400,7 @@ class Round:
         )
 
     @_register_allowed_actions(RoundStatus.START)
-    def _allowed_actions_start(
-        self, player: int, hand: Hand, last_tile: TileId
-    ) -> ActionList:
+    def _allowed_actions_start(self, player: int, hand: Hand) -> ActionList:
         if self._current_player == player:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
             actions.add_actions(hand.get_flowers())
@@ -385,9 +409,7 @@ class Round:
             return ActionList()
 
     @_register_allowed_actions(RoundStatus.PLAY)
-    def _allowed_actions_play(
-        self, player: int, hand: Hand, last_tile: TileId
-    ) -> ActionList:
+    def _allowed_actions_play(self, player: int, hand: Hand) -> ActionList:
         if self._current_player == player:
             flower_actions = hand.get_flowers()
             if self._options.auto_replace_flowers and len(flower_actions) > 0:
@@ -408,9 +430,7 @@ class Round:
             return ActionList()
 
     @_register_allowed_actions(RoundStatus.CALLED_PLAY)
-    def _allowed_actions_called_play(
-        self, player: int, hand: Hand, last_tile: TileId
-    ) -> ActionList:
+    def _allowed_actions_called_play(self, player: int, hand: Hand) -> ActionList:
         if self._current_player == player:
             flower_actions = hand.get_flowers()
             if self._options.auto_replace_flowers and len(flower_actions) > 0:
@@ -425,9 +445,7 @@ class Round:
             return ActionList()
 
     @_register_allowed_actions(RoundStatus.ADD_KAN_AFTER)
-    def _allowed_actions_add_kan_after(
-        self, player: int, hand: Hand, last_tile: TileId
-    ) -> ActionList:
+    def _allowed_actions_add_kan_after(self, player: int, hand: Hand) -> ActionList:
         if self.current_player == player:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
         else:
@@ -437,9 +455,7 @@ class Round:
         return actions
 
     @_register_allowed_actions(RoundStatus.CLOSED_KAN_AFTER)
-    def _allowed_actions_closed_kan_after(
-        self, player: int, hand: Hand, last_tile: TileId
-    ) -> ActionList:
+    def _allowed_actions_closed_kan_after(self, player: int, hand: Hand) -> ActionList:
         if self.current_player == player:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
         else:
@@ -449,26 +465,22 @@ class Round:
         return actions
 
     @_register_allowed_actions(RoundStatus.DISCARDED)
-    def _allowed_actions_discarded(
-        self, player: int, hand: Hand, last_tile: TileId
-    ) -> ActionList:
+    def _allowed_actions_discarded(self, player: int, hand: Hand) -> ActionList:
         if self._current_player == self._previous_player(player):
             actions = ActionList(SimpleAction(action_type=ActionType.DRAW))
         else:
             actions = ActionList()
         if self._current_player == self._previous_player(player):
-            actions.add_actions(hand.get_chiis(last_tile))
+            actions.add_actions(hand.get_chiis())
         if self._current_player != player:
-            actions.add_actions(hand.get_pons(last_tile))
-            actions.add_actions(hand.get_open_kans(last_tile))
+            actions.add_actions(hand.get_pons())
+            actions.add_actions(hand.get_open_kans())
             if self._can_ron(player):
                 actions.add_simple_action(ActionType.RON)
         return actions
 
     @_register_allowed_actions(RoundStatus.LAST_DISCARDED)
-    def _allowed_actions_last_discarded(
-        self, player: int, hand: Hand, last_tile: TileId
-    ) -> ActionList:
+    def _allowed_actions_last_discarded(self, player: int, hand: Hand) -> ActionList:
         if self.current_player == player:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
         else:
@@ -478,9 +490,7 @@ class Round:
         return actions
 
     @_register_allowed_actions(RoundStatus.END)
-    def _allowed_actions_end(
-        self, player: int, hand: Hand, last_tile: TileId
-    ) -> ActionList:
+    def _allowed_actions_end(self, player: int, hand: Hand) -> ActionList:
         return ActionList()
 
     @_register_do_action(ActionType.PASS)
@@ -503,89 +513,72 @@ class Round:
             self._status == RoundStatus.ADD_KAN_AFTER
             or self._status == RoundStatus.CLOSED_KAN_AFTER
         ):
+            self._discard_pool.unnew_last_discard()
             self._status = RoundStatus.PLAY
-            self._last_tile = 0
         elif self._status == RoundStatus.LAST_DISCARDED:
+            self._discard_pool.unnew_last_discard()
             self._status = RoundStatus.END
 
     @_register_do_action(ActionType.DRAW)
     def _draw(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.DRAW
+        self._discard_pool.unnew_last_discard()
         self._hands[player].draw()
         self._current_player = player
         self._status = RoundStatus.PLAY
-        self._last_tile = 0
 
     @_register_do_action(ActionType.DISCARD)
     def _discard(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.DISCARD
         tile = action.tile
         self._hands[player].discard(tile)
-        self._discard_pool.append(player, tile, self._hands[player].is_riichi)
         if self.tiles_left > 0:
             self._status = RoundStatus.DISCARDED
         else:
             self._status = RoundStatus.LAST_DISCARDED
-        self._last_tile = tile
 
     @_register_do_action(ActionType.RIICHI)
     def _riichi(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.RIICHI
         tile = action.tile
         self._hands[player].riichi(tile)
-        self._discard_pool.append(player, tile, self._hands[player].is_riichi)
         if self.tiles_left > 0:
             self._status = RoundStatus.DISCARDED
         else:
             self._status = RoundStatus.LAST_DISCARDED
-        self._last_tile = tile
 
     @_register_do_action(ActionType.CHII)
     def _chii(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.CHII
-        self._discard_pool.pop()
-        self._hands[player].chii(
-            self._current_player, self._last_tile, action.other_tiles
-        )
+        self._hands[player].chii(self._current_player, action.other_tiles)
         self._current_player = player
         self._status = RoundStatus.CALLED_PLAY
-        self._last_tile = 0
 
     @_register_do_action(ActionType.PON)
     def _pon(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.PON
-        self._discard_pool.pop()
-        self._hands[player].pon(
-            self._current_player, self._last_tile, action.other_tiles
-        )
+        self._hands[player].pon(self._current_player, action.other_tiles)
         self._current_player = player
         self._status = RoundStatus.CALLED_PLAY
-        self._last_tile = 0
 
     @_register_do_action(ActionType.OPEN_KAN)
     def _open_kan(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.OPEN_KAN
-        self._discard_pool.pop()
-        self._hands[player].open_kan(
-            self._current_player, self._last_tile, action.other_tiles
-        )
+        self._hands[player].open_kan(self._current_player, action.other_tiles)
         self._current_player = player
         self._status = RoundStatus.PLAY
-        self._last_tile = 0
 
     @_register_do_action(ActionType.ADD_KAN)
     def _add_kan(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.ADD_KAN
         self._hands[player].add_kan(action.tile, action.pon_call)
         self._status = RoundStatus.ADD_KAN_AFTER
-        self._last_tile = action.tile
 
     @_register_do_action(ActionType.CLOSED_KAN)
     def _closed_kan(self, player: int, action: Action) -> None:
         assert action.action_type == ActionType.CLOSED_KAN
         self._hands[player].closed_kan(action.tiles)
         self._status = RoundStatus.CLOSED_KAN_AFTER
-        self._last_tile = action.tiles[0]
 
     @_register_do_action(ActionType.FLOWER)
     def _flower(self, player: int, action: Action) -> None:
@@ -626,9 +619,11 @@ class Round:
 
     def _get_win_ron(self, player: int) -> Win | None:
         hand = self._hands[player]
-        last_tile = self._last_tile
+
+        last_tile = self._discard_pool.last_discarded_tile
+
         waits = hand.waits
-        if get_tile_value(last_tile) not in waits:
+        if last_tile is None or get_tile_value(last_tile) not in waits:
             return None
 
         is_riichi, is_double_riichi, is_ippatsu = self._get_riichi_flags(player)
@@ -710,11 +705,13 @@ class Round:
         return scoring.han >= self._options.min_han
 
     def _can_ron(self, player: int) -> bool:
+        if self.is_furiten(player):
+            return False
         return self._is_valid_win(self._get_win_ron(player))
 
     def _can_tsumo(self, player: int) -> bool:
         return self._is_valid_win(self._get_win_tsumo(player))
 
 
-AllowedActionsFunc = Callable[[Round, int, Hand, TileId], ActionList]
+AllowedActionsFunc = Callable[[Round, int, Hand], ActionList]
 DoActionFunc = Callable[[Round, int, Action], None]

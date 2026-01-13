@@ -7,17 +7,41 @@
   transform-origin: left top;
   transform-style: preserve-3d;
 
-  &.is_riichi {
+  &.is_new {
+    --tile-front-color: color-mix(in oklab, rgb(243, 158, 36) 20%, white);
+    .tile_3d_extra_transform::before {
+      display: block;
+      width: calc(var(--tile-width) * 6 / 3);
+      height: calc(var(--tile-width) * 7 / 3);
+      position: absolute;
+      left: calc(var(--tile-width) * -1.5 / 3);
+      top: calc(var(--tile-width) * -1.5 / 3);
+      content: "";
+      border-image-width: calc(var(--tile-width) * 1.5 / 3);
+      border-image-source: radial-gradient(rgb(243, 158, 36), transparent 65%);
+      border-image-slice: 49%;
+      animation: 0.6s infinite alternate fadeInAnimation;
+    }
+  }
+
+  &.is_called,
+  &.is_added_kan,
+  &.is_closed_kan {
+    display: none;
+  }
+
+  &.is_first_riichi {
     width: var(--tile-height);
 
     .tile_3d_extra_transform {
-      width: 0;
-      height: 0;
-      transform: translateY(3cqw) rotateZ(-90deg);
+      transform: translateY(3.5cqw) rotateZ(-90deg);
     }
   }
 
   .tile_3d_extra_transform {
+    width: var(--tile-width);
+    height: var(--tile-height);
+    transform-origin: top left;
     transform-style: preserve-3d;
 
     .tile_face {

@@ -163,6 +163,7 @@ export function GameScreen({
           didDrawTile={didDrawTile(info)}
           actions={info.player_info.actions}
           actionSubmitted={actionSubmitted}
+          isFuriten={info.player_info.is_furiten}
           setHoverTile={setHoverTile}
         />
         {actionSubmitted ? (

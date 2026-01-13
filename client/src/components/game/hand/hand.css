@@ -15,6 +15,31 @@
   flex-direction: row;
   align-items: flex-end;
 
+  &.is_furiten {
+    &::before {
+      box-sizing: border-box;
+      width: calc(var(--tile-width) * 4 / 3);
+      height: calc(var(--tile-width) * 4 / 3);
+      position: absolute;
+      left: calc(var(--tile-width) * -4 / 3);
+      padding: calc(var(--tile-width) / 6);
+      content: "Furi\Aten";
+      text-align: right;
+      white-space: pre;
+      font-family: "Chiron GoRound TC", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 600;
+      font-style: normal;
+      font-size: 1.96cqw;
+      color: white;
+      background-image: linear-gradient(
+        to left,
+        rgb(204, 25, 13) 40%,
+        transparent
+      );
+    }
+  }
+
   .hand_tile_button {
     width: var(--tile-width);
     height: calc(var(--tile-width) * 1.8);

@@ -55,6 +55,7 @@ export function Hand({
   didDrawTile,
   actions,
   actionSubmitted,
+  isFuriten,
   setHoverTile,
 }: {
   handActionType: HandTileActionType;
@@ -62,10 +63,11 @@ export function Hand({
   didDrawTile: boolean;
   actions: ReadonlyArray<Action>;
   actionSubmitted: boolean;
+  isFuriten: boolean;
   setHoverTile: (tile: TileId | null) => void;
 }) {
   return (
-    <div id="hand">
+    <div id="hand" class={`${isFuriten ? "is_furiten " : ""}`}>
       {tiles.map((tile, index) => (
         <HandTile
           key={tile}

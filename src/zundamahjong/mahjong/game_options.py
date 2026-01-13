@@ -33,6 +33,28 @@ class GameOptions(BaseModel):
     allow_riichi: bool = False
     "Whether to allow riichi."
 
+    use_temporary_furiten: bool = True
+    """
+    Whether to use temporary furiten.
+
+    If this is active, players cannot ron if any of their waits
+    has been discarded since their last discard.
+    """
+    use_riichi_furiten: bool = True
+    """
+    Whether to use riichi furiten.
+
+    If this is active, players who have riichi'd cannot ron if any of their waits
+    has been discarded since they called riichi.
+    """
+    use_own_discard_furiten: bool = True
+    """
+    Whether to use own-discard furiten.
+
+    If this is active, players cannot ron if any of their waits
+    were discarded by themselves earlier.
+    """
+
     show_waits: bool = True
     "Whether to show waits in the client UI."
     show_shanten_info: bool = False
