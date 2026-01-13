@@ -175,7 +175,7 @@ class GameController:
         ]
         riichi_discard_indexes = [
             self._game.round.get_riichi_discard_index(player)
-            for player in range(self._game._player_count)
+            for player in range(self._game.player_count)
         ]
         calls = [
             self._game.round.get_calls(player)
