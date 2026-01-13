@@ -207,6 +207,22 @@ class Round:
         """
         return self._hands[player].flowers
 
+    def is_furiten(self, player: int) -> bool:
+        """
+        Get whether a given player is in furiten.
+
+        :param player: The index of the player to check.
+        """
+        player_hand = self._hands[player]
+        return (
+            (self._options.use_temporary_furiten and player_hand.is_temporary_furiten)
+            or (self._options.use_riichi_furiten and player_hand.is_riichi_furiten)
+            or (
+                self._options.use_own_discard_furiten
+                and player_hand.is_own_discard_furiten
+            )
+        )
+
     @property
     def player_count(self) -> int:
         "The number of players."
@@ -689,15 +705,7 @@ class Round:
         return scoring.han >= self._options.min_han
 
     def _can_ron(self, player: int) -> bool:
-        player_hand = self._hands[player]
-        if (
-            (self._options.use_temporary_furiten and player_hand.is_temporary_furiten)
-            or (self._options.use_riichi_furiten and player_hand.is_riichi_furiten)
-            or (
-                self._options.use_own_discard_furiten
-                and player_hand.is_own_discard_furiten
-            )
-        ):
+        if self.is_furiten(player):
             return False
         return self._is_valid_win(self._get_win_ron(player))
 

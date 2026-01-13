@@ -52,6 +52,7 @@ export type RoundInfo = {
 export type PlayerInfo = {
   hand: TileId[];
   actions: Action[];
+  is_furiten: boolean;
 };
 
 export type Win = {

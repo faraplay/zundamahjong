@@ -64,6 +64,7 @@ class PlayerInfo(BaseModel):
     hand: list[TileId]
     actions: list[Action]
     action_selected: bool
+    is_furiten: bool
 
 
 class AllInfo(BaseModel):
@@ -202,12 +203,14 @@ class GameController:
             actions = []
         else:
             actions = self._game.round.allowed_actions[index].actions
+        is_furiten = self._game.round.is_furiten(index)
 
         action_selected = False
         return PlayerInfo(
             hand=hand,
             actions=actions,
             action_selected=action_selected,
+            is_furiten=is_furiten,
         )
 
     def _info(self, index: int, history_updates: list[tuple[int, Action]]) -> AllInfo:
