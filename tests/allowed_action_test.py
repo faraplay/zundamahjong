@@ -321,7 +321,11 @@ class AllowedActionTest(unittest.TestCase):
             1, OpenCallAction(action_type=ActionType.PON, other_tiles=(131, 132))
         )
         round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=73))
-        round.do_action(0, OpenKanAction(other_tiles=(70, 71, 72)))
+        round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=92))
+        round.do_action(3, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(3, HandTileAction(action_type=ActionType.DISCARD, tile=30))
+        round.do_action(0, SimpleAction(action_type=ActionType.DRAW))
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
         round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
         round.do_action(
