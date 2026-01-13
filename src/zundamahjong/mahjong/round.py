@@ -689,6 +689,16 @@ class Round:
         return scoring.han >= self._options.min_han
 
     def _can_ron(self, player: int) -> bool:
+        player_hand = self._hands[player]
+        if (
+            (self._options.use_temporary_furiten and player_hand.is_temporary_furiten)
+            or (self._options.use_riichi_furiten and player_hand.is_riichi_furiten)
+            or (
+                self._options.use_own_discard_furiten
+                and player_hand.is_own_discard_furiten
+            )
+        ):
+            return False
         return self._is_valid_win(self._get_win_ron(player))
 
     def _can_tsumo(self, player: int) -> bool:

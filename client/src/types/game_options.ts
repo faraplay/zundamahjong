@@ -9,6 +9,10 @@ export type GameOptions = {
 
   allow_riichi: boolean;
 
+  use_temporary_furiten: boolean;
+  use_riichi_furiten: boolean;
+  use_own_discard_furiten: boolean;
+
   show_waits: boolean;
   show_shanten_info: boolean;
 

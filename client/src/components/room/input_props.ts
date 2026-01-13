@@ -81,6 +81,21 @@ export const inputPropsList: GameOptionsInputProps[] = [
     type: "checkbox",
   },
   {
+    name: "use_temporary_furiten",
+    labelText: "Use temporary furiten",
+    type: "checkbox",
+  },
+  {
+    name: "use_riichi_furiten",
+    labelText: "Use riichi furiten",
+    type: "checkbox",
+  },
+  {
+    name: "use_own_discard_furiten",
+    labelText: "Use own-discard furiten",
+    type: "checkbox",
+  },
+  {
     name: "show_waits",
     labelText: "Show waits",
     type: "checkbox",
