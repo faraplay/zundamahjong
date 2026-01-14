@@ -7,8 +7,8 @@ from .tile import (
     TileValue,
     all_tiles,
     get_tile_value,
-    get_tile_values,
     get_tile_value_buckets,
+    get_tile_values,
     orphans,
     remove_tile_value,
 )
