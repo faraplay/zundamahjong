@@ -25,10 +25,15 @@ class Player(BaseModel, frozen=True):
     @computed_field  # type: ignore[prop-decorator]
     @property
     def id(self) -> str:
-        """Unique id value used internally by `zundamahjong`."""
+        """Unique id value used internally by :py:mod:`zundamahjong`."""
         return f"player:{self.name}"
 
 
 class PlayerConnection(BaseModel):
+    """Used by :py:class:`.GameRoom` instances to track players in rooms."""
+
     player: Player
+    """Underlying :py:class:`.Player` object that gets tracked."""
+
     is_connected: bool = True
+    """Whether :py:obj:`self.player` is connected to a room or not."""
