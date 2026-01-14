@@ -21,8 +21,8 @@ def get_avatar(player: Player) -> Avatar:
 
 def save_avatar(player: Player, avatar: Avatar) -> None:
     """Store a player's newly chosen :py:class:`.Avatar` value in the
-    application database. If it so happens that :py:obj:`player` does not have
-    a user account then this is a no-op.
+    application database. If the given :py:obj:`player` does not have a user
+    account this is a no-op.
 
     :param player: Player for whom to save the new :py:class:`.Avatar` value.
 

@@ -9,7 +9,7 @@ db_host = os.getenv("DB_HOST")
 engine: Engine
 """Global instance of :py:class:`sqlalchemy.Engine` used to communicate
 with the database. The actual value of :py:obj:`engine.url` is as configured by
-the end consumer of `zundamahjong`."""
+the end consumer of :py:mod:`zundamahjong`."""
 
 
 if db_host:
