@@ -1,9 +1,6 @@
 zundamahjong.mahjong.pattern
 ----------------------------
 
-.. contents:: Table of Contents
-   :local:
-
 .. automodule:: zundamahjong.mahjong.pattern
    :members:
 
