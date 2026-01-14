@@ -9,6 +9,10 @@ export type GameOptions = {
 
   allow_riichi: boolean;
 
+  allow_rob_added_kan: boolean;
+  allow_thirteen_orphans_rob_closed_kan: boolean;
+  allow_rob_closed_kan: boolean;
+
   use_temporary_furiten: boolean;
   use_riichi_furiten: boolean;
   use_own_discard_furiten: boolean;

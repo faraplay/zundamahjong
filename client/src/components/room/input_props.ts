@@ -81,6 +81,21 @@ export const inputPropsList: GameOptionsInputProps[] = [
     type: "checkbox",
   },
   {
+    name: "allow_rob_added_kan",
+    labelText: "Allow robbing an added kan",
+    type: "checkbox",
+  },
+  {
+    name: "allow_thirteen_orphans_rob_closed_kan",
+    labelText: "Allow robbing a closed kan to form thirteen orphans",
+    type: "checkbox",
+  },
+  {
+    name: "allow_rob_closed_kan",
+    labelText: "Allow robbing a closed kan",
+    type: "checkbox",
+  },
+  {
     name: "use_temporary_furiten",
     labelText: "Use temporary furiten",
     type: "checkbox",

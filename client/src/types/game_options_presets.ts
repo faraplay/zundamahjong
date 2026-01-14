@@ -383,8 +383,7 @@ const default_pattern_data = {
   },
 };
 
-export const default_4player_preset: GameOptions = {
-  player_count: 4,
+const default_preset = {
   game_length_wind_rounds: 1,
   game_length_sub_rounds: 0,
   use_flowers: true,
@@ -392,17 +391,15 @@ export const default_4player_preset: GameOptions = {
   end_wall_count: 14,
   min_han: 0,
   allow_riichi: false,
+  allow_rob_added_kan: true,
+  allow_thirteen_orphans_rob_closed_kan: true,
+  allow_rob_closed_kan: false,
   use_temporary_furiten: true,
   use_riichi_furiten: true,
   use_own_discard_furiten: true,
   show_waits: true,
   show_shanten_info: false,
   start_score: 0,
-  score_dealer_ron_multiplier: 6,
-  score_dealer_tsumo_multiplier: 2,
-  score_nondealer_ron_multiplier: 4,
-  score_nondealer_tsumo_nondealer_multiplier: 1,
-  score_nondealer_tsumo_dealer_multiplier: 2,
   calculate_fu: false,
   base_fu: 25,
   round_up_fu: false,
@@ -411,32 +408,24 @@ export const default_4player_preset: GameOptions = {
   pattern_data: default_pattern_data,
 };
 
+export const default_4player_preset: GameOptions = {
+  ...default_preset,
+  player_count: 4,
+  score_dealer_ron_multiplier: 6,
+  score_dealer_tsumo_multiplier: 2,
+  score_nondealer_ron_multiplier: 4,
+  score_nondealer_tsumo_nondealer_multiplier: 1,
+  score_nondealer_tsumo_dealer_multiplier: 2,
+};
+
 export const default_3player_preset: GameOptions = {
+  ...default_preset,
   player_count: 3,
-  game_length_wind_rounds: 1,
-  game_length_sub_rounds: 0,
-  use_flowers: true,
-  auto_replace_flowers: true,
-  end_wall_count: 14,
-  min_han: 0,
-  allow_riichi: false,
-  use_temporary_furiten: true,
-  use_riichi_furiten: true,
-  use_own_discard_furiten: true,
-  show_waits: true,
-  show_shanten_info: false,
-  start_score: 0,
   score_dealer_ron_multiplier: 6,
   score_dealer_tsumo_multiplier: 3,
   score_nondealer_ron_multiplier: 4,
   score_nondealer_tsumo_nondealer_multiplier: 1.5,
   score_nondealer_tsumo_dealer_multiplier: 2.5,
-  calculate_fu: false,
-  base_fu: 25,
-  round_up_fu: false,
-  round_up_points: false,
-  base_score_limits: [{ han: 6, score: 6400 }],
-  pattern_data: default_pattern_data,
 };
 
 const riichi_pattern_data = {
@@ -822,8 +811,7 @@ const riichi_pattern_data = {
   },
 };
 
-export const riichi_4player_preset: GameOptions = {
-  player_count: 4,
+const riichi_preset = {
   game_length_wind_rounds: 1,
   game_length_sub_rounds: 0,
   use_flowers: false,
@@ -831,16 +819,13 @@ export const riichi_4player_preset: GameOptions = {
   end_wall_count: 14,
   min_han: 1,
   allow_riichi: true,
+  allow_rob_added_kan: true,
+  allow_thirteen_orphans_rob_closed_kan: true,
+  allow_rob_closed_kan: false,
   use_temporary_furiten: true,
   use_riichi_furiten: true,
   use_own_discard_furiten: true,
   show_waits: true,
-  start_score: 25000,
-  score_dealer_ron_multiplier: 6,
-  score_dealer_tsumo_multiplier: 2,
-  score_nondealer_ron_multiplier: 4,
-  score_nondealer_tsumo_nondealer_multiplier: 1,
-  score_nondealer_tsumo_dealer_multiplier: 2,
   calculate_fu: true,
   base_fu: 20,
   round_up_fu: true,
@@ -856,36 +841,24 @@ export const riichi_4player_preset: GameOptions = {
   pattern_data: riichi_pattern_data,
 };
 
+export const riichi_4player_preset: GameOptions = {
+  ...riichi_preset,
+  player_count: 4,
+  start_score: 25000,
+  score_dealer_ron_multiplier: 6,
+  score_dealer_tsumo_multiplier: 2,
+  score_nondealer_ron_multiplier: 4,
+  score_nondealer_tsumo_nondealer_multiplier: 1,
+  score_nondealer_tsumo_dealer_multiplier: 2,
+};
+
 export const riichi_3player_preset: GameOptions = {
+  ...riichi_preset,
   player_count: 3,
-  game_length_wind_rounds: 1,
-  game_length_sub_rounds: 0,
-  use_flowers: false,
-  auto_replace_flowers: true,
-  end_wall_count: 14,
-  min_han: 1,
-  allow_riichi: true,
-  use_temporary_furiten: true,
-  use_riichi_furiten: true,
-  use_own_discard_furiten: true,
-  show_waits: true,
   start_score: 35000,
   score_dealer_ron_multiplier: 6,
   score_dealer_tsumo_multiplier: 3,
   score_nondealer_ron_multiplier: 4,
   score_nondealer_tsumo_nondealer_multiplier: 1.5,
   score_nondealer_tsumo_dealer_multiplier: 2.5,
-  calculate_fu: true,
-  base_fu: 20,
-  round_up_fu: true,
-  round_up_points: true,
-  show_shanten_info: false,
-  base_score_limits: [
-    { han: 5, score: 2000 },
-    { han: 6, score: 3000 },
-    { han: 8, score: 4000 },
-    { han: 11, score: 6000 },
-    { han: 13, score: 8000 },
-  ],
-  pattern_data: riichi_pattern_data,
 };

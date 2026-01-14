@@ -2,7 +2,7 @@
 
 import unittest
 
-from tests.decks import test_deck1, test_deck2, test_deck3
+from tests.decks import test_deck1, test_deck2, test_deck3, test_deck_chankan
 from zundamahjong.mahjong.action import (
     ActionType,
     AddKanAction,
@@ -314,8 +314,8 @@ class AllowedActionTest(unittest.TestCase):
             [SimpleAction(action_type=ActionType.PASS)],
         )
 
-    def test_can_chankan(self) -> None:
-        round = Round(tiles=test_deck2)
+    def test_can_added_chankan(self) -> None:
+        round = Round(tiles=test_deck2, options=GameOptions(allow_rob_added_kan=True))
         round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
         round.do_action(
             1, OpenCallAction(action_type=ActionType.PON, other_tiles=(131, 132))
@@ -345,6 +345,91 @@ class AllowedActionTest(unittest.TestCase):
             [
                 SimpleAction(action_type=ActionType.PASS),
                 SimpleAction(action_type=ActionType.RON),
+            ],
+        )
+
+    def test_cannot_added_chankan(self) -> None:
+        round = Round(tiles=test_deck2, options=GameOptions(allow_rob_added_kan=False))
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=130))
+        round.do_action(
+            1, OpenCallAction(action_type=ActionType.PON, other_tiles=(131, 132))
+        )
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=73))
+        round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=92))
+        round.do_action(3, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(3, HandTileAction(action_type=ActionType.DISCARD, tile=30))
+        round.do_action(0, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(0, HandTileAction(action_type=ActionType.DISCARD, tile=10))
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(
+            1,
+            AddKanAction(
+                tile=133,
+                pon_call=OpenCall(
+                    call_type=CallType.PON,
+                    called_player_index=0,
+                    called_tile=130,
+                    other_tiles=(131, 132),
+                ),
+            ),
+        )
+        self.assertSequenceEqual(
+            round.allowed_actions[2].actions,
+            [
+                SimpleAction(action_type=ActionType.PASS),
+            ],
+        )
+
+    def test_can_closed_chankan(self) -> None:
+        round = Round(
+            tiles=test_deck_chankan, options=GameOptions(allow_rob_closed_kan=True)
+        )
+        round.do_action(0, ClosedKanAction(tiles=(10, 11, 12, 13)))
+        self.assertSequenceEqual(
+            round.allowed_actions[2].actions,
+            [
+                SimpleAction(action_type=ActionType.PASS),
+                SimpleAction(action_type=ActionType.RON),
+            ],
+        )
+
+    def test_cannot_closed_chankan(self) -> None:
+        round = Round(
+            tiles=test_deck_chankan, options=GameOptions(allow_rob_closed_kan=False)
+        )
+        round.do_action(0, ClosedKanAction(tiles=(10, 11, 12, 13)))
+        self.assertSequenceEqual(
+            round.allowed_actions[2].actions,
+            [
+                SimpleAction(action_type=ActionType.PASS),
+            ],
+        )
+
+    def test_can_thirteen_orphans_closed_chankan(self) -> None:
+        round = Round(
+            tiles=test_deck_chankan,
+            options=GameOptions(allow_thirteen_orphans_rob_closed_kan=True),
+        )
+        round.do_action(0, ClosedKanAction(tiles=(10, 11, 12, 13)))
+        self.assertSequenceEqual(
+            round.allowed_actions[1].actions,
+            [
+                SimpleAction(action_type=ActionType.PASS),
+                SimpleAction(action_type=ActionType.RON),
+            ],
+        )
+
+    def test_cannot_thirteen_orphans_closed_chankan(self) -> None:
+        round = Round(
+            tiles=test_deck_chankan,
+            options=GameOptions(allow_thirteen_orphans_rob_closed_kan=False),
+        )
+        round.do_action(0, ClosedKanAction(tiles=(10, 11, 12, 13)))
+        self.assertSequenceEqual(
+            round.allowed_actions[1].actions,
+            [
+                SimpleAction(action_type=ActionType.PASS),
             ],
         )
 
