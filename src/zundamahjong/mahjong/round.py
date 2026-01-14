@@ -450,8 +450,9 @@ class Round:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
         else:
             actions = ActionList()
-            if self._can_ron(player):
-                actions.add_simple_action(ActionType.RON)
+            if self._options.allow_rob_added_kan:
+                if self._can_ron(player):
+                    actions.add_simple_action(ActionType.RON)
         return actions
 
     @_register_allowed_actions(RoundStatus.CLOSED_KAN_AFTER)
@@ -460,8 +461,12 @@ class Round:
             actions = ActionList(SimpleAction(action_type=ActionType.CONTINUE))
         else:
             actions = ActionList()
-            if self._can_ron(player):
-                actions.add_simple_action(ActionType.RON)
+            if self._options.allow_rob_closed_kan:
+                if self._can_ron(player):
+                    actions.add_simple_action(ActionType.RON)
+            elif self._options.allow_thirteen_orphans_rob_closed_kan:
+                if self._is_thirteen_orphans_win(self._get_win_ron(player)):
+                    actions.add_simple_action(ActionType.RON)
         return actions
 
     @_register_allowed_actions(RoundStatus.DISCARDED)
@@ -703,6 +708,13 @@ class Round:
             return False
         scoring = Scorer.score(win, self._options)
         return scoring.han >= self._options.min_han
+
+    def _is_thirteen_orphans_win(self, win: Win | None) -> bool:
+        # only checks if it's a thirteen orphans with a one-sided wait
+        if win is None:
+            return False
+        scoring = Scorer.score(win, self._options)
+        return "THIRTEEN_ORPHANS" in scoring.patterns
 
     def _can_ron(self, player: int) -> bool:
         if self.is_furiten(player):

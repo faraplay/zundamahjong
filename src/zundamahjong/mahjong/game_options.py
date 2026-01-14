@@ -33,6 +33,15 @@ class GameOptions(BaseModel):
     allow_riichi: bool = False
     "Whether to allow riichi."
 
+    allow_rob_added_kan: bool = True
+    "Whether to allow robbing added kans."
+
+    allow_thirteen_orphans_rob_closed_kan: bool = True
+    "Whether to allow robbing closed kans to form thirteen orphans."
+
+    allow_rob_closed_kan: bool = False
+    "Whether to allow robbing closed kans."
+
     use_temporary_furiten: bool = True
     """
     Whether to use temporary furiten.
