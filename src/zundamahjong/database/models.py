@@ -7,16 +7,22 @@ from ..types.avatar import Avatar
 
 
 class Base(DeclarativeBase):
-    """TODO"""
+    """Inherits from :py:class:`sqlalchemy.orm.DeclarativeBase`. Refer to
+    `the upstream docs
+    <https://docs.sqlalchemy.org/en/20/orm/mapping_api.html#sqlalchemy.orm.DeclarativeBase>`__
+    for more details.
+    """
 
     metadata: ClassVar[MetaData]
-    """TODO
+    """`Holds information
+    <https://docs.sqlalchemy.org/en/20/orm/declarative_tables.html#orm-declarative-metadata>`__
+    about the tables that are used in the database (e.g. column data types).
 
-    Example usage::
+    ::
 
         from ..database import Base, engine
 
-        # Populate database with tables.
+        # Create all needed tables in the database.
         Base.metadata.create_all(engine)
 
     """
@@ -24,7 +30,7 @@ class Base(DeclarativeBase):
 
 @final
 class User(Base):
-    """TODO"""
+    """Database model used to hold registered user account information."""
 
     __tablename__ = "user_account"
 
@@ -32,10 +38,10 @@ class User(Base):
     """Unique id value used as primary key."""
 
     name: Mapped[str] = mapped_column(unique=True)
-    """User's chosen login name."""
+    """Account login username."""
 
     password: Mapped[str] = mapped_column()
-    """User's hashed password."""
+    """Hashed login password."""
 
     avatar: Mapped[Avatar] = mapped_column(server_default=("zundamon"))
-    """User's chosen avatar."""
+    """User's last chosen :py:class:`.Avatar`."""
