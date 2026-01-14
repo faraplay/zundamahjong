@@ -9,6 +9,7 @@ zundamahjong.types.avatar
 
 .. automodule:: zundamahjong.types.avatar
    :members:
+   :member-order: bysource
 
 zundamahjong.types.player
 ^^^^^^^^^^^^^^^^^^^^^^^^^
