@@ -1,9 +1,6 @@
 zundamahjong.mahjong.pattern
 ----------------------------
 
-.. contents:: Table of Contents
-   :local:
-
 .. automodule:: zundamahjong.mahjong.pattern
    :members:
 
@@ -13,6 +10,7 @@ zundamahjong.mahjong.pattern.wait_pattern
 
 .. automodule:: zundamahjong.mahjong.pattern.wait_pattern
     :members:
+    :member-order: bysource
 
 zundamahjong.mahjong.pattern.pattern_calculator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

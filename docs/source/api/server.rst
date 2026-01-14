@@ -4,9 +4,6 @@ zundamahjong.server
 .. automodule:: zundamahjong.server
    :members:
 
-.. contents:: Table of Contents
-   :local:
-
 zundamahjong.server.flask
 ^^^^^^^^^^^^^^^^^^^^^^^^^
 

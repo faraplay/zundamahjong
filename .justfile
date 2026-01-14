@@ -48,7 +48,7 @@ check-all: check-client check-server
 
 [doc("Clean existing doc builds")]
 docs-clean:
-    rm -r docs/build
+    ! [[ -d docs/build ]] || rm -r docs/build
 
 [doc("Build developer documentation")]
 docs: docs-clean
