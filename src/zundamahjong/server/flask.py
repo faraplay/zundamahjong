@@ -100,7 +100,7 @@ def login_route() -> ResponseReturnValue:
     """Page users go through to set their name/login to their account.
 
     If there is a valid player Id stored in the client's session, send
-    client to the main `zundamahjong` page where a Socket.IO connection
+    client to the main :py:mod:`zundamahjong` page where a Socket.IO connection
     is established.
 
     Under a `POST` request, validate user input and try to log in. If not

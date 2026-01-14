@@ -7,7 +7,8 @@ class Player(BaseModel, frozen=True):
     """Pydantic model representing a player as seen by the server."""
 
     name: str
-    """The player's chosen login name."""
+    """The player's login username (possibly not tied to a permanent
+    account)."""
 
     has_account: bool = False
     """Whether the player has an account on the server.
