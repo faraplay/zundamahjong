@@ -39,3 +39,9 @@ html_sidebars = {
         "donate.html",
     ]
 }
+
+mathjax4_config = {
+    "output": {
+        "font": "mathjax-fira",
+    }
+}
