@@ -2,9 +2,12 @@ from collections.abc import Sequence
 
 from .meld import Meld, MeldType, TileValueMeld
 from .tile import (
+    N,
     TileId,
     TileValue,
+    all_tiles,
     get_tile_value,
+    get_tile_value_buckets,
     get_tile_values,
     orphans,
     remove_tile_value,
@@ -18,6 +21,27 @@ def is_winning(tiles: list[TileId]) -> bool:
     :param tiles: A list of :py:class:`TileId` s of the tiles in the hand.
     """
     return len(formed_hand_possibilities(tiles)) > 0
+
+
+def get_waits(tiles: list[TileId]) -> frozenset[TileValue]:
+    """
+    Calculate all tiles that can be added to the hand to form a winning hand.
+
+    :param tiles: A list of the :py:class:`TileId` s of the tiles in the hand.
+    :return: A frozenset containing all the tiles that can complete the hand.
+    """
+    if len(tiles) % 3 != 1:
+        return frozenset()
+    tile_value_counts = dict(
+        (tile_value, len(bucket))
+        for (tile_value, bucket) in get_tile_value_buckets(tiles).items()
+    )
+    return frozenset(
+        tile_value
+        for tile_value in all_tiles
+        if tile_value_counts.get(tile_value, 0) < 4
+        and is_winning(tiles + [tile_value * N])
+    )
 
 
 def formed_hand_possibilities(tiles: list[TileId]) -> list[list[Meld]]:

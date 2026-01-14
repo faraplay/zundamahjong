@@ -21,8 +21,7 @@ from .call import (
 )
 from .deck import Deck
 from .discard_pool import DiscardPool
-from .form_hand import is_winning
-from .shanten import get_waits
+from .form_hand import get_waits, is_winning
 from .tile import (
     TileId,
     TileValue,
@@ -174,12 +173,7 @@ class Hand:
         return [
             HandTileAction(action_type=ActionType.RIICHI, tile=tile)
             for index, tile in enumerate(self._tiles)
-            if len(
-                get_waits(
-                    get_tile_values(self._tiles[:index] + self._tiles[index + 1 :])
-                )
-            )
-            > 0
+            if len(get_waits(self._tiles[:index] + self._tiles[index + 1 :])) > 0
         ]
 
     def riichi(self, tile: TileId) -> None:
@@ -516,7 +510,7 @@ class Hand:
             for (tileValue, tiles) in all_tiles_buckets.items()
             if len(tiles) >= 4
         }
-        waits = get_waits(get_tile_values(hand_tiles))
+        waits = get_waits(hand_tiles)
         return waits - unusable_tile_values
 
     @property
