@@ -25,10 +25,25 @@ def _app_ctx_id() -> int:
 
 @final
 class SQLAlchemy:
+    """Helper class to manage SQLAlchemy ORM sessions for the server.
+
+    :param engine: Instance of :py:class:`sqlalchemy.Engine` used to start new
+                   connections to the application database. Will typically
+                   refer to a local SQLite file or to a remote PostgreSQL
+                   database server.
+    """
+
     def __init__(self, engine: sa.Engine) -> None:
         self._session = scoped_session(sessionmaker(engine), _app_ctx_id)
 
     def init_app(self, app: Flask) -> None:
+        """Tie :py:class:`SQLAlchemy` instance to a particular
+        :py:class:`flask.Flask` application object. You should call this before
+        using :py:obj:`SQLAlchemy.session`.
+
+        :param app: Instance of :py:class:`flask.Flask` to register with.
+        """
+
         if "sqlalchemy" in app.extensions:
             raise Exception("SQLAlchemy extension has already been initialized!")
         app.extensions["sqlalchemy"] = self
@@ -37,6 +52,14 @@ class SQLAlchemy:
 
     @property
     def session(self) -> Session:
+        """Handle to an ORM session open for the current Flask application
+        context.
+
+        When set up using :py:func:`SQLAlchemy.init_app`, the underlying ORM
+        session lifetime is correctly tied to that of the invoking Flask
+        application context.
+        """
+
         if not self._session.registry.has():
             logger.info(
                 f"Opening database session within Flask application context {_app_ctx_id()}"
@@ -44,6 +67,9 @@ class SQLAlchemy:
         return self._session()
 
     def _close(self, exc: BaseException | None) -> None:
+        """Close open ORM session (if any) for the current Flask application
+        context."""
+
         if self._session.registry.has():
             logger.info(
                 f"Closing database session within Flask application context {_app_ctx_id()}"
@@ -52,6 +78,19 @@ class SQLAlchemy:
 
 
 db = SQLAlchemy(engine)
+""" Global instance of :py:class:`SQLAlchemy` for use in other modules.
+    Built using :py:obj:`engine`.
+
+    ::
+
+        from ..database import db
+        from ..database.models import User
+
+        with db.session.begin():
+            db.session.add(User(name="Zundamon", password=password))
+        # commits the transaction
+
+"""
 
 
-__all__ = ["Base", "db", "engine"]
+__all__ = ["Base", "db", "engine", "SQLAlchemy"]

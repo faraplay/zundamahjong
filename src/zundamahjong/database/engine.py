@@ -1,10 +1,17 @@
 import os
 
-from sqlalchemy import create_engine
+from sqlalchemy import Engine, create_engine
 
 from .models import Base
 
 db_host = os.getenv("DB_HOST")
+
+engine: Engine
+"""Global instance of :py:class:`sqlalchemy.Engine` used to communicate
+with the database. The value of :py:obj:`engine.url` is as configured by
+the end consumer of :py:mod:`zundamahjong` and refers either to a SQLite
+on-disk database or to a database in a PostgreSQL server."""
+
 
 if db_host:
     db_name = os.getenv("DB_NAME", "zundamahjong")
