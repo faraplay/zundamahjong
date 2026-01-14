@@ -1,4 +1,4 @@
-from .tile import TileId, TileValue, all_tiles, get_tile_values, orphans, tile_value_top
+from .tile import TileValue, all_tiles, orphans, tile_value_top
 
 
 def honours_shanten_data(tile_freqs: list[int]) -> list[list[int]]:
@@ -407,22 +407,3 @@ def calculate_shanten(
         meld_count * 3 + 1 - datum[0],
         datum[1],
     )
-
-
-def get_waits(tiles: list[TileId]) -> frozenset[TileValue]:
-    """
-    Calculate all tiles that can be added to the hand to form a winning hand.
-
-    :param tiles: A list of the :py:class:`TileId` s of the tiles in the hand.
-    :return: A frozenset containing all the tiles that can complete the hand.
-    """
-    tile_values = get_tile_values(tiles)
-    if len(tile_values) % 3 != 1:
-        return frozenset()
-    if any(tile >= tile_value_top for tile in tile_values):
-        return frozenset()
-    shanten, waits = calculate_shanten(tile_values)
-    if shanten == 0:
-        return waits
-    else:
-        return frozenset()

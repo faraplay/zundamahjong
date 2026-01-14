@@ -21,8 +21,7 @@ from .call import (
 )
 from .deck import Deck
 from .discard_pool import DiscardPool
-from .form_hand import is_winning
-from .shanten import get_waits
+from .form_hand import get_waits, is_winning
 from .tile import (
     TileId,
     TileValue,

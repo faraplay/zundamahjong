@@ -1,6 +1,6 @@
 import unittest
 
-from zundamahjong.mahjong.shanten import get_waits
+from zundamahjong.mahjong.form_hand import get_waits
 from zundamahjong.mahjong.tile import N, TileValue
 
 
@@ -17,7 +17,7 @@ class TenpaiTest(unittest.TestCase):
     def test_four_of_a_kind(self) -> None:
         self.assertSetEqual(
             self.get_values_waits([2, 2, 2, 2]),
-            {2},
+            set(),
         )
 
     def test_ryanmen(self) -> None:
