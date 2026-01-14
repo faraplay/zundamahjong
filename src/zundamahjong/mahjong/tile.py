@@ -16,7 +16,7 @@ N = 10
 """
 Constant used to calculate the value of a mahjong tile.
 
-Mahjong tiles with tile id :math:`N a, N a + 1, ..., N a + (a - 1)`
+Mahjong tiles with tile id :math:`N a, N a + 1, \\dotsc, N a + (a - 1)`
 all have tile value :math:`a`.
 """
 

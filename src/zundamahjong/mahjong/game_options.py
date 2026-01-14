@@ -114,8 +114,10 @@ class GameOptions(BaseModel):
     A list of limit hans and their corresponding base scores.
 
     The base score of a hand is calculated by the formula
-        :math:`\\text{base score} = (\\text{total fu}) \\times 4
-        \\times 2^{(\\text{total han})}` .
+
+    .. math::
+       \\text{base score} = (\\text{total fu}) \\times 4
+       \\times 2^{(\\text{total han})} .
 
     If this list is empty, then no base score caps will be applied.
 
