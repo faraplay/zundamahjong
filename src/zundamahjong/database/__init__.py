@@ -23,11 +23,6 @@ def _app_ctx_id() -> int:
     return id(app_ctx._get_current_object())  # type: ignore  # pyright: ignore
 
 
-"""Global instance of :py:class:`sqlalchemy.Engine` used to communicate
-with the database. The actual value of :py:obj:`engine.url` is as configured by
-the end consumer of `zundamahjong`."""
-
-
 @final
 class SQLAlchemy:
     """Helper class to manage SQLAlchemy ORM sessions for the server.

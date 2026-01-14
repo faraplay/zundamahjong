@@ -14,6 +14,13 @@ zundamahjong.database.avatars
    :members:
 
 
+zundamahjong.database.engine
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. automodule:: zundamahjong.database.engine
+   :members:
+
+
 zundamahjong.database.models
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
