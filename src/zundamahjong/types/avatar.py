@@ -7,29 +7,29 @@ class Avatar(IntEnum):
     zundamon = 0
     """
     .. image:: /../../client/src/assets/avatars/zundamon.png
-       :height: 50vh
+       :height: 22em
     """
 
     metan = 1
     """
     .. image:: /../../client/src/assets/avatars/metan.png
-       :height: 50vh
+       :height: 22em
     """
 
     tsumugi = 2
     """
     .. image:: /../../client/src/assets/avatars/tsumugi.png
-       :height: 50vh
+       :height: 22em
     """
 
     kiritan = 3
     """
     .. image:: /../../client/src/assets/avatars/kiritan.png
-       :height: 35vh
+       :height: 16em
     """
 
     hau = 4
     """
     .. image:: /../../client/src/assets/avatars/hau.png
-       :height: 50vh
+       :height: 22em
     """
