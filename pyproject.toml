@@ -69,6 +69,7 @@ test = [
 docs = [
   "sphinx",
   "sphinx-autobuild",
+  "sphinx-rtd-theme",
 ]
 
 production = [
