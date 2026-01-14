@@ -54,71 +54,83 @@ export const inputPropsList: GameOptionsInputProps[] = [
     max: 3,
   },
   {
-    name: "use_flowers",
-    labelText: "Use flowers",
-    type: "checkbox",
+    type: "collection",
+    name: "Rules options",
+    children: [
+      {
+        name: "use_flowers",
+        labelText: "Use flowers",
+        type: "checkbox",
+      },
+      {
+        name: "end_wall_count",
+        labelText: "Number of tiles in dead wall",
+        type: "number",
+        min: 0,
+      },
+      {
+        name: "min_han",
+        labelText: "Minimum han to win",
+        type: "number",
+        min: 0,
+      },
+      {
+        name: "allow_riichi",
+        labelText: "Allow riichi",
+        type: "checkbox",
+      },
+      {
+        name: "allow_rob_added_kan",
+        labelText: "Allow robbing an added kan",
+        type: "checkbox",
+      },
+      {
+        name: "allow_thirteen_orphans_rob_closed_kan",
+        labelText: "Allow robbing a closed kan to form thirteen orphans",
+        type: "checkbox",
+      },
+      {
+        name: "allow_rob_closed_kan",
+        labelText: "Allow robbing a closed kan",
+        type: "checkbox",
+      },
+      {
+        name: "use_temporary_furiten",
+        labelText: "Use temporary furiten",
+        type: "checkbox",
+      },
+      {
+        name: "use_riichi_furiten",
+        labelText: "Use riichi furiten",
+        type: "checkbox",
+      },
+      {
+        name: "use_own_discard_furiten",
+        labelText: "Use own-discard furiten",
+        type: "checkbox",
+      },
+    ],
   },
   {
-    name: "auto_replace_flowers",
-    labelText: "Auto flowers",
-    type: "checkbox",
-  },
-  {
-    name: "end_wall_count",
-    labelText: "Number of tiles in dead wall",
-    type: "number",
-    min: 0,
-  },
-  {
-    name: "min_han",
-    labelText: "Minimum han to win",
-    type: "number",
-    min: 0,
-  },
-  {
-    name: "allow_riichi",
-    labelText: "Allow riichi",
-    type: "checkbox",
-  },
-  {
-    name: "allow_rob_added_kan",
-    labelText: "Allow robbing an added kan",
-    type: "checkbox",
-  },
-  {
-    name: "allow_thirteen_orphans_rob_closed_kan",
-    labelText: "Allow robbing a closed kan to form thirteen orphans",
-    type: "checkbox",
-  },
-  {
-    name: "allow_rob_closed_kan",
-    labelText: "Allow robbing a closed kan",
-    type: "checkbox",
-  },
-  {
-    name: "use_temporary_furiten",
-    labelText: "Use temporary furiten",
-    type: "checkbox",
-  },
-  {
-    name: "use_riichi_furiten",
-    labelText: "Use riichi furiten",
-    type: "checkbox",
-  },
-  {
-    name: "use_own_discard_furiten",
-    labelText: "Use own-discard furiten",
-    type: "checkbox",
-  },
-  {
-    name: "show_waits",
-    labelText: "Show waits",
-    type: "checkbox",
-  },
-  {
-    name: "show_shanten_info",
-    labelText: "Show shanten info",
-    type: "checkbox",
+    type: "collection",
+    name: "Quality-of-life options",
+    children: [
+      {
+        name: "auto_replace_flowers",
+        labelText: "Automatically replace flowers",
+        type: "checkbox",
+      },
+      {
+        name: "show_waits",
+        labelText: "Show waits",
+        type: "checkbox",
+      },
+      {
+        name: "show_shanten_info",
+        labelText: "Show shanten info",
+        type: "checkbox",
+      },
+    ],
   },
   {
     type: "collection",
