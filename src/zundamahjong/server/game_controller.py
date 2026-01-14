@@ -3,14 +3,18 @@ from random import sample
 from threading import Lock
 from typing import final
 
-from pydantic import BaseModel
+from pydantic import BaseModel, TypeAdapter
 
+from ..database import db
+from ..database.models import Round as RoundSchema
+from ..database.models import Win as WinSchema
+from ..database.users import get_user
 from ..mahjong.action import Action
 from ..mahjong.call import Call
 from ..mahjong.discard_pool import Discard
 from ..mahjong.game import Game
 from ..mahjong.game_options import GameOptions
-from ..mahjong.round import RoundStatus
+from ..mahjong.round import Round, RoundStatus
 from ..mahjong.scoring import Scoring
 from ..mahjong.tile import TileId
 from ..mahjong.win import Win
@@ -95,7 +99,7 @@ class GameController:
 
     def __init__(self, players: list[Player], options: GameOptions) -> None:
         self._players = sample(players, len(players))
-        self._game = Game(options=options)
+        self._game = Game(options=options, round_end_callback=self._dump_round_data)
         self._lock = Lock()
         with self._lock:
             self._emit_info_all_inner(self._game.round.history)
@@ -147,6 +151,40 @@ class GameController:
                 raise Exception("Cannot start next round!")
             self._game.start_next_round()
             self._emit_info_all_inner(self._game.round.history)
+
+    def _dump_round_data(self, round: Round, win: Win | None) -> None:
+        with db.session.begin():
+            db.session.add(
+                RoundSchema(
+                    id=round.uuid,
+                    start_time=round.start_time,
+                )
+            )
+        if win is None:
+            return
+        else:
+            win_player = self._players[win.win_player]
+        if not win_player.has_account:
+            return
+        with db.session.begin():
+            win_player_id = get_user(win_player.name).id
+            db.session.add(
+                WinSchema(
+                    round=round.uuid,
+                    win_player=win_player_id,
+                    is_tsumo=win.lose_player is None,
+                    hand=win.hand,
+                    calls=TypeAdapter(list[Call]).dump_python(win.calls),
+                    flowers=win.flowers,
+                    after_flower_count=win.after_flower_count,
+                    after_kan_count=win.after_kan_count,
+                    is_chankan=win.is_chankan,
+                    is_haitei=win.is_haitei,
+                    is_houtei=win.is_houtei,
+                    is_tenhou=win.is_tenhou,
+                    is_chiihou=win.is_chiihou,
+                )
+            )
 
     def _get_player_index(self, player: Player) -> int:
         try:

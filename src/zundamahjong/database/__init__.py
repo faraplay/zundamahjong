@@ -26,7 +26,9 @@ def _app_ctx_id() -> int:
 @final
 class SQLAlchemy:
     def __init__(self, engine: sa.Engine) -> None:
-        self._session = scoped_session(sessionmaker(engine), _app_ctx_id)
+        self._session = scoped_session(
+            sessionmaker(engine, autobegin=False), _app_ctx_id
+        )
 
     def init_app(self, app: Flask) -> None:
         if "sqlalchemy" in app.extensions:
