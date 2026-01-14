@@ -10,6 +10,7 @@ zundamahjong.mahjong.pattern.wait_pattern
 
 .. automodule:: zundamahjong.mahjong.pattern.wait_pattern
     :members:
+    :member-order: bysource
 
 zundamahjong.mahjong.pattern.pattern_calculator
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

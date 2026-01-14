@@ -10,6 +10,7 @@ zundamahjong.mahjong.action
 .. automodule:: zundamahjong.mahjong.action
    :members:
    :exclude-members: model_config
+   :member-order: bysource
 
 zundamahjong.mahjong.action_selector
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -80,6 +81,7 @@ zundamahjong.mahjong.round
 
 .. automodule:: zundamahjong.mahjong.round
    :members:
+   :member-order: bysource
 
 zundamahjong.mahjong.scoring
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
