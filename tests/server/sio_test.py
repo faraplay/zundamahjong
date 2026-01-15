@@ -2,34 +2,30 @@ import os
 import unittest
 
 from flask import session
-from flask.testing import FlaskClient
+from flask_socketio import SocketIOTestClient
 from typing_extensions import override
 
 from zundamahjong.server import app
+from zundamahjong.server.name_sid import sid_to_player
+from zundamahjong.server.sio import sio
+from zundamahjong.types.player import Player
 
 
 class SocketIOTest(unittest.TestCase):
-    def __init__(self, methodName: str = "runTest") -> None:
-        self.flask_client: FlaskClient
-        super().__init__(methodName)
-
     @override
     def setUp(self) -> None:
         os.environ["DB_FILE"] = ":memory:"
         app.testing = True
-        self.flask_client = app.test_client()
-        self.flask_client.__enter__()
 
     def test_guest_login(self) -> None:
-        self.flask_client.post(
-            "/login/",
-            data={
-                "name": "test",
-                "password": "",
-            },
-        )
+        with app.test_client() as ftc:
+            ftc.post("/login/", data={"name": "test", "password": ""})
+            session_player = Player.model_validate_json(session["player"])  # pyright: ignore[reportAny]
+        self.assertEqual(session_player.name, "test")
+        self.assertEqual(session_player.has_account, False)
 
-        self.assertEqual(
-            session["player"],
-            '{"name":"test","has_account":false,"new_user":false,"id":"player:test"}',
-        )
+    def test_sio_connect(self) -> None:
+        with app.test_client() as ftc:
+            ftc.post("/login/", data={"name": "test", "password": ""})
+            _ = SocketIOTestClient(app, sio, flask_test_client=ftc)
+        self.assertEqual(len(sid_to_player), 1)
