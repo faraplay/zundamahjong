@@ -5,7 +5,7 @@ from werkzeug.serving import is_running_from_reloader
 from ..database import db
 from ..database.security import UserLimitException, WrongPasswordException, login
 from ..templates import manifest
-from .name_sid import PlayerStatus, check_player, name_sid
+from .player_store import PlayerStatus, player_store
 from .sio import sio
 
 BAD_SECRET_KEY_ERROR_MESSAGE = """\
@@ -37,9 +37,9 @@ def create_app(test_config: dict[str, str | bool | None] | None = None) -> Flask
         app.config.from_mapping(test_config)
 
     db.init_app(app)
-    manifest.init_app(app)
-    name_sid.init_app(app)
+    player_store.init_app(app)
     sio.init_app(app)
+    manifest.init_app(app)
 
     if app.config["SECRET_KEY"] == "dev" and not is_running_from_reloader():
         print(BAD_SECRET_KEY_ERROR_MESSAGE)
@@ -48,7 +48,7 @@ def create_app(test_config: dict[str, str | bool | None] | None = None) -> Flask
     def index() -> ResponseReturnValue:
         """Main route where a Socket.IO connection is established."""
 
-        if check_player() != PlayerStatus.OK_PLAYER:
+        if player_store.check_player() != PlayerStatus.OK_PLAYER:
             return redirect(url_for("login_route"))
 
         session["first"] = False if "first" in session else True
@@ -67,7 +67,7 @@ def create_app(test_config: dict[str, str | bool | None] | None = None) -> Flask
         in use elsewhere, store resulting player Id to the client session.
         """
 
-        status = check_player()
+        status = player_store.check_player()
 
         if status == PlayerStatus.OK_PLAYER:
             return redirect(url_for("index"))
@@ -89,7 +89,7 @@ def create_app(test_config: dict[str, str | bool | None] | None = None) -> Flask
                 flash("Incorrect password!")
 
             else:
-                if check_player(player) == PlayerStatus.OTHER_SESSION:
+                if player_store.check_player(player) == PlayerStatus.OTHER_SESSION:
                     flash("You are logged in on another device!")
 
                 else:
