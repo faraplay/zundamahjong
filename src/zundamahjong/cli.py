@@ -34,10 +34,10 @@ def main() -> None:
     from .server import create_app
 
     flask_app: Flask = create_app()
-    """TODO"""
+    """Underlying :py:class:`flask.Flask` application object."""
 
     app: Flask | ProxyMiddleware = flask_app
-    """Object which we eventually pass to :py:func:`werkzeug.run_simple`."""
+    """Object that we pass to :py:func:`werkzeug.run_simple`."""
 
     args = parser.parse_args()
 

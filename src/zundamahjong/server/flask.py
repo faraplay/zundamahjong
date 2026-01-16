@@ -1,5 +1,3 @@
-from enum import Enum
-
 from flask import Flask, flash, redirect, render_template, request, session, url_for
 from flask.typing import ResponseReturnValue
 from werkzeug.serving import is_running_from_reloader
@@ -7,8 +5,7 @@ from werkzeug.serving import is_running_from_reloader
 from ..database import db
 from ..database.security import UserLimitException, WrongPasswordException, login
 from ..templates import manifest
-from ..types.player import Player
-from .name_sid import id_to_sid
+from .name_sid import PlayerStatus, check_player, name_sid
 from .sio import sio
 
 BAD_SECRET_KEY_ERROR_MESSAGE = """\
@@ -41,6 +38,7 @@ def create_app(test_config: dict[str, str | bool | None] | None = None) -> Flask
 
     db.init_app(app)
     manifest.init_app(app)
+    name_sid.init_app(app)
     sio.init_app(app)
 
     if app.config["SECRET_KEY"] == "dev" and not is_running_from_reloader():
@@ -107,38 +105,3 @@ def create_app(test_config: dict[str, str | bool | None] | None = None) -> Flask
         return redirect(url_for("login_route"))
 
     return app
-
-
-class PlayerStatus(Enum):
-    NO_PLAYER = 0
-    """No player stored in browser session"""
-
-    OK_PLAYER = 1
-    """All OK to start Socket.IO connection"""
-
-    OTHER_SESSION = -1
-    """Player Id in use from another device"""
-
-    SAME_SESSION = -2
-    """Player Id in use from same device!"""
-
-
-def check_player(player: Player | None = None) -> PlayerStatus:
-    """Check if a player Id is already connected to the Socket.IO server.
-
-    :param player: Optional :py:class:`Player` instance to check against.
-                   If not given, grab the player in the client's session.
-    """
-
-    if player and player.id in id_to_sid:
-        return PlayerStatus.OTHER_SESSION
-
-    elif "player" not in session:
-        return PlayerStatus.NO_PLAYER
-
-    session_player = Player.model_validate_json(session["player"])  # pyright: ignore[reportAny]
-
-    if session_player.id in id_to_sid:
-        return PlayerStatus.SAME_SESSION
-
-    return PlayerStatus.OK_PLAYER
