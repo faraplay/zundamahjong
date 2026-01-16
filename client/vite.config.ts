@@ -10,7 +10,6 @@ export default defineConfig({
     emptyOutDir: true,
     assetsInlineLimit: (filePath) =>
       filePath.endsWith(".svg") &&
-      !filePath.includes("/bamboo/01") &&
       !filePath.includes("/flower/") &&
       !filePath.includes("/season/"),
     manifest: true,
