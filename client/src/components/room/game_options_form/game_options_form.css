@@ -1,9 +1,12 @@
-.game_controls {
-  width: 40cqw;
-  height: 46.25cqw;
+#room_screen .game_controls {
   position: absolute;
   right: 5cqw;
   top: 5cqw;
+  height: 46.25cqw;
+}
+
+.game_controls {
+  width: 40cqw;
   display: flex;
   flex-direction: column;
 

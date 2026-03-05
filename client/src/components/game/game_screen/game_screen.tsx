@@ -29,6 +29,7 @@ import {
 import { type TileId } from "../../../types/tile";
 import { VoiceCollection } from "../../audio_collection/audio_collection";
 import { CutinCollection } from "../cutin/cutin";
+import { OptionsBar } from "../options_bar/options_bar";
 
 export function GameScreen({
   playerAvatarIds,
@@ -146,7 +147,7 @@ export function GameScreen({
   return (
     <EmitAction.Provider value={emit_action}>
       <div
-        class={`game_screen me_player_${info.player_index} status_${info.round_info.status}`}
+        class={`screen game_screen me_player_${info.player_index} status_${info.round_info.status}`}
       >
         {voiceCollections}
         <CutinCollection
@@ -194,6 +195,7 @@ export function GameScreen({
         )}
         <Table info={info} />
         {winOverlay}
+        <OptionsBar />
       </div>
     </EmitAction.Provider>
   );

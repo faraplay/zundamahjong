@@ -1,0 +1,53 @@
+.options_bar {
+  position: absolute;
+  right: 0;
+  display: flex;
+  z-index: 3;
+  pointer-events: none;
+
+  * {
+    pointer-events: auto;
+    font-family: "Chiron GoRound TC", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 400;
+    font-style: normal;
+  }
+
+  button.open_close {
+    margin: 1cqw;
+    font-size: 1.3cqw;
+    width: 10cqw;
+    height: 3cqw;
+  }
+
+  .sidebar {
+    box-sizing: border-box;
+    width: 44cqw;
+    height: 56.25cqw;
+    padding-block: 2cqw;
+    overflow-y: scroll;
+    background-color: white;
+    transition: width 1s;
+
+    .game_options_title {
+      box-sizing: border-box;
+      margin-inline: 2cqw;
+      padding: 0.5cqw;
+      font-size: 2cqw;
+      width: 40cqw;
+      border-bottom: 0.1cqw solid navy;
+      margin-bottom: 0.3cqw;
+    }
+
+    .game_controls {
+      margin-inline: 2cqw;
+      .start_game {
+        display: none;
+      }
+    }
+  }
+
+  &.closed .sidebar {
+    width: 0cqw;
+  }
+}
