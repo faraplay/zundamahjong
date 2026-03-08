@@ -96,4 +96,4 @@ jobs:
       - name: Test WSGI app
         run: |
           timeout --preserve-status 20s \
-            gunicorn --bind unix://web.sock zundamahjong.server:app
+            gunicorn --bind unix://web.sock "zundamahjong.server:create_app()"

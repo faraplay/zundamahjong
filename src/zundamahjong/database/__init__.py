@@ -25,16 +25,11 @@ def _app_ctx_id() -> int:
 
 @final
 class SQLAlchemy:
-    """Helper class to manage SQLAlchemy ORM sessions for the server.
+    """Helper class to manage SQLAlchemy ORM sessions for the server."""
 
-    :param engine: Instance of :py:class:`sqlalchemy.Engine` used to start new
-                   connections to the application database. Will typically
-                   refer to a local SQLite file or to a remote PostgreSQL
-                   database server.
-    """
-
-    def __init__(self, engine: sa.Engine) -> None:
-        self._session = scoped_session(sessionmaker(engine), _app_ctx_id)
+    def __init__(self) -> None:
+        self._session: scoped_session[Session] | None
+        self.engine: sa.Engine | None
 
     def init_app(self, app: Flask) -> None:
         """Tie :py:class:`SQLAlchemy` instance to a particular
@@ -48,6 +43,10 @@ class SQLAlchemy:
             raise Exception("SQLAlchemy extension has already been initialized!")
         app.extensions["sqlalchemy"] = self
 
+        self.engine = engine(app)
+        self._session = scoped_session(sessionmaker(self.engine), _app_ctx_id)
+        logger.info("Application database URL: %s", self.engine.url)
+
         app.teardown_appcontext(self._close)
 
     @property
@@ -60,6 +59,9 @@ class SQLAlchemy:
         application context.
         """
 
+        if self._session is None:
+            raise RuntimeError("Please call `db.init_app()` before using `db.session`!")
+
         if not self._session.registry.has():
             logger.info(
                 f"Opening database session within Flask application context {_app_ctx_id()}"
@@ -70,6 +72,9 @@ class SQLAlchemy:
         """Close open ORM session (if any) for the current Flask application
         context."""
 
+        if self._session is None:
+            return
+
         if self._session.registry.has():
             logger.info(
                 f"Closing database session within Flask application context {_app_ctx_id()}"
@@ -77,7 +82,7 @@ class SQLAlchemy:
         self._session.remove()
 
 
-db = SQLAlchemy(engine)
+db = SQLAlchemy()
 """ Global instance of :py:class:`SQLAlchemy` for use in other modules.
     Built using :py:obj:`engine`.
 
