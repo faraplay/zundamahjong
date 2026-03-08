@@ -24,8 +24,12 @@ import { GameScreen } from "./components/game/game_screen/game_screen";
 
 import "./fonts.css";
 import "./app.css";
-import { GameOptionsContext } from "./components/game_options_context/game_options_context";
+import { OptionsContext } from "./components/options_context/options_context";
 import { CommonAudioCollection } from "./components/audio_collection/audio_collection";
+import {
+  type ClientOptions,
+  defaultClientOptions,
+} from "./types/client_options";
 
 export function App() {
   const [serverMessages, setServerMessages] = useState<{
@@ -41,6 +45,9 @@ export function App() {
   const [showSettings, setShowSettings] = useState<boolean>(false);
   const [actionSubmitted, setActionSubmitted] = useState<boolean>(false);
   const [seeResults, setSeeResults] = useState<boolean>(false);
+
+  const [clientOptions, setClientOptions] =
+    useState<ClientOptions>(defaultClientOptions);
 
   const socket = useRef<Socket>();
   const emit: EmitFunc = (event, ...args) =>
@@ -100,6 +107,8 @@ export function App() {
     setSeeResults,
     showSettings,
     setShowSettings,
+    clientOptions,
+    setClientOptions,
   );
   return (
     <Emitter.Provider value={emit}>
@@ -129,6 +138,8 @@ function getScreen(
   setSeeResults: (value: boolean) => void,
   showSettings: boolean,
   setShowSettings: (value: boolean) => void,
+  clientOptions: ClientOptions,
+  setClientOptions: (value: ClientOptions) => void,
 ) {
   if (!myPlayer) {
     return LoadingScreen;
@@ -169,8 +180,13 @@ function getScreen(
       </div>
     );
   }
+  const options = {
+    client_options: clientOptions,
+    set_client_options: setClientOptions,
+    game_options: myRoom.game_options,
+  };
   return (
-    <GameOptionsContext.Provider value={myRoom.game_options}>
+    <OptionsContext.Provider value={options}>
       <GameScreen
         playerAvatarIds={myRoom.avatars}
         info={info}
@@ -179,6 +195,6 @@ function getScreen(
         seeResults={seeResults}
         goToResults={() => setSeeResults(true)}
       />
-    </GameOptionsContext.Provider>
+    </OptionsContext.Provider>
   );
 }

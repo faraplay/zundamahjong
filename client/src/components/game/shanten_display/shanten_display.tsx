@@ -2,7 +2,7 @@ import { useContext, useState } from "preact/hooks";
 
 import type { TileId, TileValue } from "../../../types/tile";
 
-import { GameOptionsContext } from "../../game_options_context/game_options_context";
+import { OptionsContext } from "../../options_context/options_context";
 import { Tile2D } from "../tile_2d/tile_2d";
 
 import "./shanten_display.css";
@@ -17,13 +17,13 @@ export function ShantenDisplay({
   visible: boolean;
 }) {
   const [shanten, tileValuesSet] = shantenInfo;
-  const gameOptions = useContext(GameOptionsContext);
+  const options = useContext(OptionsContext);
 
   if (
     !(
-      gameOptions &&
-      gameOptions.show_waits &&
-      (shanten == 0 || gameOptions.show_shanten_info)
+      options &&
+      options.game_options.show_waits &&
+      (shanten == 0 || options.game_options.show_shanten_info)
     )
   )
     return <></>;
@@ -60,13 +60,13 @@ export function ShantenDisplayButton({
   remainingTileCounts: number[];
 }) {
   const [held, setHeld] = useState(false);
-  const gameOptions = useContext(GameOptionsContext);
+  const options = useContext(OptionsContext);
 
   if (
     !(
-      gameOptions &&
-      gameOptions.show_waits &&
-      (shantenInfo[0] == 0 || gameOptions.show_shanten_info)
+      options &&
+      options.game_options.show_waits &&
+      (shantenInfo[0] == 0 || options.game_options.show_shanten_info)
     )
   )
     return <></>;

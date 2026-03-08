@@ -5,10 +5,38 @@
 }
 
 .tile_image {
-  --tile-padding: calc(var(--tile-width) * 0.04);
-  box-sizing: border-box;
   width: var(--tile-width);
   height: var(--tile-height);
-  padding: var(--tile-padding);
   background-color: var(--tile-front-color);
+
+  img {
+    --tile-padding: calc(var(--tile-width) * 0.04);
+    position: absolute;
+    left: 0;
+    top: 0;
+    box-sizing: border-box;
+    width: var(--tile-width);
+    height: var(--tile-height);
+    padding: var(--tile-padding);
+  }
+}
+
+.show_tile_names_true {
+  .tile_image {
+    img {
+      --tile-padding: calc(var(--tile-width) * 0.08);
+    }
+
+    &::after {
+      content: attr(data-shortname);
+      position: absolute;
+      right: 0.2cqw;
+      top: 0;
+      font-family: "Chiron GoRound TC", sans-serif;
+      font-optical-sizing: auto;
+      font-weight: 400;
+      font-style: normal;
+      font-size: calc(var(--tile-width) * 0.3);
+    }
+  }
 }
