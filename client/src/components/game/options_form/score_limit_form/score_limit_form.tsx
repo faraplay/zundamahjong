@@ -1,4 +1,4 @@
-import type { ScoreLimit } from "../../../types/game_options";
+import type { ScoreLimit } from "../../../../types/game_options";
 import { GameOptionsScoreLimitInput } from "./score_limit_input";
 
 import "./score_limit_form.css";

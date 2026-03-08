@@ -1,11 +1,12 @@
-import type { GameOptions } from "../../types/game_options";
+import type { ClientOptions } from "../../../types/client_options";
+import type { GameOptions } from "../../../types/game_options";
 
-type GameOptionsOfValueType<T> = {
-  [key in keyof GameOptions as GameOptions[key] extends T ? key : never]: T;
+type OptionsOfValueType<Options, Value> = {
+  [key in keyof Options as Options[key] extends Value ? key : never]: Value;
 };
 
-export type NumberInputProps = {
-  name: keyof GameOptionsOfValueType<number>;
+export type NumberInputProps<Options> = {
+  name: keyof OptionsOfValueType<Options, number>;
   labelText: string;
   type: "number";
   min?: number;
@@ -14,25 +15,33 @@ export type NumberInputProps = {
   readonly?: boolean;
 };
 
-export type CheckboxInputProps = {
-  name: keyof GameOptionsOfValueType<boolean>;
+export type CheckboxInputProps<Options> = {
+  name: keyof OptionsOfValueType<Options, boolean>;
   labelText: string;
   type: "checkbox";
   disabled?: boolean;
 };
 
-export type InputExpanderProps = {
+export type InputExpanderProps<Options> = {
   type: "collection";
   name: string;
-  children: GameOptionsInputProps[];
+  children: OptionsInputProps<Options>[];
 };
 
-export type GameOptionsInputProps =
-  | NumberInputProps
-  | CheckboxInputProps
-  | InputExpanderProps;
+export type OptionsInputProps<Options> =
+  | NumberInputProps<Options>
+  | CheckboxInputProps<Options>
+  | InputExpanderProps<Options>;
 
-export const inputPropsList: GameOptionsInputProps[] = [
+export const clientInputPropsList: OptionsInputProps<ClientOptions>[] = [
+  {
+    name: "show_tile_numbers",
+    labelText: "Show tile numbers",
+    type: "checkbox",
+  },
+];
+
+export const inputPropsList: OptionsInputProps<GameOptions>[] = [
   {
     name: "player_count",
     labelText: "Number of players",

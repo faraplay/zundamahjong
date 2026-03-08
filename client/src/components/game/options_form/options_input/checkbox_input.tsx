@@ -1,23 +1,23 @@
 import { useId } from "preact/hooks";
 import type { CheckboxInputProps } from "../input_props";
 
-export function GameOptionsCheckboxInput({
+export function OptionsCheckboxInput<Options>({
   isEditable,
   inputProps,
   value,
   formId,
-  sendGameOptions,
+  setOptions,
 }: {
   isEditable: boolean;
-  inputProps: CheckboxInputProps;
+  inputProps: CheckboxInputProps<Options>;
   value: boolean;
   formId: string;
-  sendGameOptions: () => void;
+  setOptions: () => void;
 }) {
   const inputId = useId();
   const onChange = (e: Event) => {
     e.preventDefault();
-    sendGameOptions();
+    setOptions();
   };
   const editableProps = isEditable ? { onChange } : { disabled: true };
   return (

@@ -1,4 +1,4 @@
-import type { ScoreLimit } from "../../../types/game_options";
+import type { ScoreLimit } from "../../../../types/game_options";
 
 export function GameOptionsScoreLimitInput({
   isEditable,
