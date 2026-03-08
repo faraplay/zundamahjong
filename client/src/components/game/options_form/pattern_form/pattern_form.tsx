@@ -2,7 +2,7 @@ import {
   type PatternDataDict,
   patternDisplayNames,
   patterns,
-} from "../../../types/game_options";
+} from "../../../../types/game_options";
 import { GameOptionsPatternInput } from "./pattern_input";
 
 import "./pattern_form.css";

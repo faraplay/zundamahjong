@@ -5,7 +5,7 @@
   height: 46.25cqw;
 }
 
-.game_controls {
+.option_controls {
   width: 40cqw;
   display: flex;
   flex-direction: column;
@@ -17,15 +17,7 @@
     font-style: normal;
   }
 
-  .presets {
-    margin: 0cqw 0.5cqw 0.5cqw 0.5cqw;
-
-    button {
-      font-size: 1.5cqw;
-    }
-  }
-
-  .game_options {
+  .options {
     flex-grow: 1;
     display: grid;
     grid-template-columns: auto 10cqw;
@@ -53,9 +45,19 @@
       }
     }
 
-    .game_options_expander::details-content {
+    .options_expander::details-content {
       display: grid;
       grid-template-columns: auto 10cqw;
+    }
+  }
+}
+
+.game_option_controls {
+  .presets {
+    margin: 0cqw 0.5cqw 0.5cqw 0.5cqw;
+
+    button {
+      font-size: 1.5cqw;
     }
   }
 

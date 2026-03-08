@@ -1,4 +1,4 @@
-import type { Pattern, PatternData } from "../../../types/game_options";
+import type { Pattern, PatternData } from "../../../../types/game_options";
 
 export function GameOptionsPatternInput({
   isEditable,

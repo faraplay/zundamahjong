@@ -30,6 +30,7 @@ import { type TileId } from "../../../types/tile";
 import { VoiceCollection } from "../../audio_collection/audio_collection";
 import { CutinCollection } from "../cutin/cutin";
 import { OptionsBar } from "../options_bar/options_bar";
+import { OptionsContext } from "../../options_context/options_context";
 
 export function GameScreen({
   playerAvatarIds,
@@ -56,6 +57,8 @@ export function GameScreen({
     setActionSubmitted();
     emit("action", action, info.round_info.history.length);
   };
+
+  const options = useContext(OptionsContext)!;
 
   useEffect(() => {
     if (info.round_info.current_player == info.player_index) {
@@ -147,7 +150,7 @@ export function GameScreen({
   return (
     <EmitAction.Provider value={emit_action}>
       <div
-        class={`screen game_screen me_player_${info.player_index} status_${info.round_info.status}`}
+        class={`screen game_screen me_player_${info.player_index} status_${info.round_info.status} show_tile_names_${options.client_options.show_tile_numbers ? "true" : "false"}`}
       >
         {voiceCollections}
         <CutinCollection

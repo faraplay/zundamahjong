@@ -1,23 +1,23 @@
 import { useId } from "preact/hooks";
 import type { NumberInputProps } from "../input_props";
 
-export function GameOptionsNumberInput({
+export function OptionsNumberInput<Options>({
   isEditable,
   inputProps,
   value,
   formId,
-  sendGameOptions,
+  setOptions,
 }: {
   isEditable: boolean;
-  inputProps: NumberInputProps;
+  inputProps: NumberInputProps<Options>;
   value: number;
   formId: string;
-  sendGameOptions: () => void;
+  setOptions: () => void;
 }) {
   const inputId = useId();
   const onChange = (e: Event) => {
     e.preventDefault();
-    sendGameOptions();
+    setOptions();
   };
   const editableProps = isEditable ? { onChange } : { readonly: true };
   return (

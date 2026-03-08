@@ -1,15 +1,13 @@
 import { useContext, useId } from "preact/hooks";
 
-import { type GameOptions } from "../../../types/game_options";
+import { type GameOptions } from "../../../../types/game_options";
 
-import { Emitter } from "../../emitter/emitter";
+import { Emitter } from "../../../emitter/emitter";
+import { inputPropsList } from "../input_props";
 import {
-  inputPropsList,
-  type CheckboxInputProps,
-  type GameOptionsInputProps,
-  type NumberInputProps,
-} from "../input_props";
-import { GameOptionsInputList } from "../game_options_input/game_options_input";
+  flattenInputPropsList,
+  OptionsInputList,
+} from "../options_input/options_input";
 import { getPatternDataDict, PatternForm } from "../pattern_form/pattern_form";
 
 import "./game_options_form.css";
@@ -18,23 +16,11 @@ import {
   default_4player_preset,
   riichi_3player_preset,
   riichi_4player_preset,
-} from "../../../types/game_options_presets";
+} from "../../../../types/game_options_presets";
 import {
   getScoreLimits,
   ScoreLimitForm,
 } from "../score_limit_form/score_limit_form";
-
-function flattenInputPropsList(propsList: GameOptionsInputProps[]) {
-  const newPropsList: (NumberInputProps | CheckboxInputProps)[] = [];
-  for (const props of propsList) {
-    if (props.type == "collection") {
-      newPropsList.push(...flattenInputPropsList(props.children));
-    } else {
-      newPropsList.push(props);
-    }
-  }
-  return newPropsList;
-}
 
 function getGameOptions(
   formId: string,
@@ -111,7 +97,7 @@ export function GameOptionsForm({
   };
 
   return (
-    <div class="game_controls">
+    <div class="option_controls game_option_controls">
       {isEditable ? (
         <div class="presets">
           <button type="button" onClick={sendDefaultPresetGameOptions}>
@@ -126,13 +112,13 @@ export function GameOptionsForm({
       )}
       <form id={formId} onSubmit={onSubmit} hidden />
       <form id={patternFormId} onSubmit={onSubmit} hidden />
-      <div class="game_options">
-        <GameOptionsInputList
+      <div class="options game_options">
+        <OptionsInputList
           inputPropsList={inputPropsList}
-          gameOptions={gameOptions}
+          options={gameOptions}
           isEditable={isEditable}
           formId={formId}
-          sendGameOptions={sendGameOptions}
+          setOptions={sendGameOptions}
         />
         <ScoreLimitForm
           scoreLimits={gameOptions.base_score_limits}
