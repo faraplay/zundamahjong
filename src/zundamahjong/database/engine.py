@@ -25,7 +25,10 @@ if db_host:
 else:
     db_file = os.getenv("DB_FILE", "debug.db")
 
-    engine = create_engine(f"sqlite:///{db_file}")
+    if db_file != ":memory:":
+        engine = create_engine(f"sqlite:///{db_file}")
+    else:
+        engine = create_engine("sqlite://")
 
     if not os.path.isfile(db_file):
         Base.metadata.create_all(engine)
