@@ -1,5 +1,6 @@
 import { useId } from "preact/hooks";
 import type { CheckboxInputProps } from "../input_props";
+import { InputLabel } from "./input_label";
 
 export function OptionsCheckboxInput<Options>({
   isEditable,
@@ -22,7 +23,7 @@ export function OptionsCheckboxInput<Options>({
   const editableProps = isEditable ? { onChange } : { disabled: true };
   return (
     <>
-      <label for={inputId}>{inputProps.labelText}</label>
+      <InputLabel inputId={inputId} inputProps={inputProps} />
       <input
         form={formId}
         id={inputId}

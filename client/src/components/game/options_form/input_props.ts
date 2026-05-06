@@ -5,6 +5,12 @@ type OptionsOfValueType<Options, Value> = {
   [key in keyof Options as Options[key] extends Value ? key : never]: Value;
 };
 
+export type InputLabelProps = {
+  labelText: string;
+  description: string;
+  subDescription?: string;
+}
+
 export type NumberInputProps<Options> = {
   name: keyof OptionsOfValueType<Options, number>;
   labelText: string;
@@ -15,9 +21,8 @@ export type NumberInputProps<Options> = {
   readonly?: boolean;
 };
 
-export type CheckboxInputProps<Options> = {
+export type CheckboxInputProps<Options> = InputLabelProps & {
   name: keyof OptionsOfValueType<Options, boolean>;
-  labelText: string;
   type: "checkbox";
   disabled?: boolean;
 };
@@ -37,6 +42,7 @@ export const clientInputPropsList: OptionsInputProps<ClientOptions>[] = [
   {
     name: "show_tile_numbers",
     labelText: "Show tile numbers",
+    description: "Show tile numbers in the corners of tiles",
     type: "checkbox",
   },
 ];
@@ -69,6 +75,7 @@ export const inputPropsList: OptionsInputProps<GameOptions>[] = [
       {
         name: "use_flowers",
         labelText: "Use flowers",
+        description: "Include flower tiles in the mahjong deck.",
         type: "checkbox",
       },
       {
@@ -86,36 +93,67 @@ export const inputPropsList: OptionsInputProps<GameOptions>[] = [
       {
         name: "allow_riichi",
         labelText: "Allow riichi",
+        description: `Allow players to call riichi if they are one tile away
+          from a winning hand.`,
+        subDescription:
+          "A player in riichi cannot change their hand, but wins more points.",
         type: "checkbox",
       },
       {
         name: "allow_rob_added_kan",
         labelText: "Allow robbing an added kan",
+        description: "Allow players to rob an added kan.",
+        subDescription: `If a player calls an added kan and the tile they are
+          adding is another player's winning tile, then that player can rob the
+          kan and win off of that tile as if it was a discard.`,
         type: "checkbox",
       },
       {
         name: "allow_thirteen_orphans_rob_closed_kan",
         labelText: "Allow robbing a closed kan to form thirteen orphans",
+        description: "Allow players to rob a closed kan for thirteen orphans.",
+        subDescription: `If a player calls a closed kan and the tile in the kan
+          is the winning tile another player needs to form a thirteen orphans
+          hand, then that player can rob the kan and win off of that tile as if
+          it was a discard.`,
         type: "checkbox",
       },
       {
         name: "allow_rob_closed_kan",
         labelText: "Allow robbing a closed kan",
+        description: "Allow players to rob a closed kan.",
+        subDescription: `If a player calls a closed kan and the tile in the kan
+          is another player's winning tile, then that player can rob the kan and
+          win off of that tile as if it was a discard.`,
         type: "checkbox",
       },
       {
         name: "use_temporary_furiten",
         labelText: "Use temporary furiten",
+        description: `Prevents a player's ron (winning off another player's
+          discard) if they are in temporary furiten.`,
+        subDescription: `A player is in temporary furiten if they can form a
+          winning hand from any tile previously discarded since their last
+          discard.`,
         type: "checkbox",
       },
       {
         name: "use_riichi_furiten",
         labelText: "Use riichi furiten",
+        description: `Prevents a player's ron (winning off another player's
+          discard) if they are in riichi furiten.`,
+        subDescription: `A player is in riichi furiten if they are in riichi
+          and can form a winning hand from any tile previously discarded
+          since they called riichi.`,
         type: "checkbox",
       },
       {
         name: "use_own_discard_furiten",
         labelText: "Use own-discard furiten",
+        description: `Prevents a player's ron (winning off another player's
+          discard) if they are in own-discard furiten.`,
+        subDescription: `A player is in own-discard furiten if they can form a
+          winning hand from any of their own discards.`,
         type: "checkbox",
       },
     ],
@@ -127,16 +165,26 @@ export const inputPropsList: OptionsInputProps<GameOptions>[] = [
       {
         name: "auto_replace_flowers",
         labelText: "Automatically replace flowers",
+        description: "Automatically performs flower calls for all players.",
         type: "checkbox",
       },
       {
         name: "show_waits",
         labelText: "Show waits",
+        description: "Show each player their own waits if they are in tenpai.",
+        subDescription: `A player is in tenpai if they are one tile away from
+          a winning hand. The player's waits are the tiles they can take to
+          form a winning hand.`,
         type: "checkbox",
       },
       {
         name: "show_shanten_info",
         labelText: "Show shanten info",
+        description: `Show each player their shanten, and which tiles decrease
+          their shanten.`,
+        subDescription: `A player's shanten is the minimum number of tiles they
+          need to replace in their hand to reach tenpai (one tile away from
+          winning).`,
         type: "checkbox",
       },
     ],
@@ -189,6 +237,9 @@ export const inputPropsList: OptionsInputProps<GameOptions>[] = [
       {
         name: "calculate_fu",
         labelText: "Calculate fu",
+        description: "Add fu to a player's scoring calculation when they win.",
+        subDescription: `If unset, the fu value used in score calculation will
+          always be the base fu value.`,
         type: "checkbox",
       },
       {
@@ -200,11 +251,15 @@ export const inputPropsList: OptionsInputProps<GameOptions>[] = [
       {
         name: "round_up_fu",
         labelText: "Round up fu",
+        description:
+          "Round up a winning player's fu to the next multiple of 10.",
         type: "checkbox",
       },
       {
         name: "round_up_points",
         labelText: "Round up points",
+        description: `Round up a winning player's point gain from each player to
+          the next multiple of 100.`,
         type: "checkbox",
       },
     ],
