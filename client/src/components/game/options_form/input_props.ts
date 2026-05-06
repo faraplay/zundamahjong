@@ -9,11 +9,10 @@ export type InputLabelProps = {
   labelText: string;
   description: string;
   subDescription?: string;
-}
+};
 
-export type NumberInputProps<Options> = {
+export type NumberInputProps<Options> = InputLabelProps & {
   name: keyof OptionsOfValueType<Options, number>;
-  labelText: string;
   type: "number";
   min?: number;
   max?: number;
@@ -51,12 +50,18 @@ export const inputPropsList: OptionsInputProps<GameOptions>[] = [
   {
     name: "player_count",
     labelText: "Number of players",
+    description: "The number of players in the game of mahjong.",
     type: "number",
     readonly: true,
   },
   {
     name: "game_length_wind_rounds",
     labelText: "Number of wind rounds",
+    description: "The number of wind rounds to play in the game of mahjong.",
+    subDescription: `One wind round of mahjong is the series of rounds it takes
+      for each player to play as dealer. The number of rounds in one wind round
+      is at minimum the number of players, but can be more if there are dealer
+      repeats.`,
     type: "number",
     min: 0,
     max: 4,
@@ -64,6 +69,10 @@ export const inputPropsList: OptionsInputProps<GameOptions>[] = [
   {
     name: "game_length_sub_rounds",
     labelText: "Number of sub rounds",
+    description: `The number of sub rounds to play in the game of mahjong,
+      in addition to the wind rounds.`,
+    subDescription: `One sub round of mahjong is a series of rounds under the
+      same dealer player.`,
     type: "number",
     min: 0,
     max: 3,
@@ -81,12 +90,17 @@ export const inputPropsList: OptionsInputProps<GameOptions>[] = [
       {
         name: "end_wall_count",
         labelText: "Number of tiles in dead wall",
+        description: `The number of tiles to leave in the dead wall.`,
+        subDescription: `The round of mahjong ends in a draw if there are no
+          tiles left to draw except for those in the dead wall.`,
         type: "number",
         min: 0,
       },
       {
         name: "min_han",
         labelText: "Minimum han to win",
+        description: `The minimum number of han in a winning hand for a player
+          to be able to win.`,
         type: "number",
         min: 0,
       },
@@ -196,35 +210,53 @@ export const inputPropsList: OptionsInputProps<GameOptions>[] = [
       {
         name: "start_score",
         labelText: "Starting score",
+        description: "The score each player starts with.",
         type: "number",
       },
       {
         name: "score_dealer_ron_multiplier",
-        labelText: "Dealer ron base score",
+        labelText: "Dealer ron base score multiplier",
+        description: `If the dealer wins off another player's discard, then
+          the base score is multiplied by this number to calculate the amount
+          the losing player must pay the dealer.`,
+        subDescription: `The base score is calculated using the formula
+          (base score) = 4 * (fu) * 2^(han)`,
         type: "number",
         step: 0.5,
       },
       {
         name: "score_dealer_tsumo_multiplier",
-        labelText: "Dealer tsumo base score",
+        labelText: "Dealer tsumo base score multiplier",
+        description: `If the dealer wins from their own draw, then
+          the base score is multiplied by this number to calculate the amount
+          each losing player must pay the dealer.`,
         type: "number",
         step: 0.5,
       },
       {
         name: "score_nondealer_ron_multiplier",
-        labelText: "Nondealer ron base score",
+        labelText: "Nondealer ron base score multiplier",
+        description: `If a non-dealer wins off another player's discard, then
+          the base score is multiplied by this number to calculate the amount
+          the losing player must pay the winning player.`,
         type: "number",
         step: 0.5,
       },
       {
         name: "score_nondealer_tsumo_nondealer_multiplier",
-        labelText: "Nondealer-nondealer tsumo base score",
+        labelText: "Nondealer-nondealer tsumo base score multiplier",
+        description: `If a non-dealer wins from their own draw, then
+          the base score is multiplied by this number to calculate the amount
+          a non-dealer losing player must pay the winning player.`,
         type: "number",
         step: 0.5,
       },
       {
         name: "score_nondealer_tsumo_dealer_multiplier",
-        labelText: "Nondealer-dealer tsumo base score",
+        labelText: "Nondealer-dealer tsumo base score multiplier",
+        description: `If a non-dealer wins from their own draw, then
+          the base score is multiplied by this number to calculate the amount
+          the dealer must pay the winning player.`,
         type: "number",
         step: 0.5,
       },
@@ -245,6 +277,9 @@ export const inputPropsList: OptionsInputProps<GameOptions>[] = [
       {
         name: "base_fu",
         labelText: "Base fu",
+        description: "The base fu value every winning hand starts with.",
+        subDescription: `Any additional fu in a winning hand is added to this
+          base fu value.`,
         type: "number",
         step: 1,
       },
