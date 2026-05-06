@@ -1,5 +1,5 @@
 import type { JSX } from "preact/jsx-runtime";
-import type { PatternData } from "../../../types/game_options";
+import type { PatternData } from "../../../types/pattern";
 import "./pattern_info.css";
 
 export function PatternInfo({ data }: { data: PatternData }) {

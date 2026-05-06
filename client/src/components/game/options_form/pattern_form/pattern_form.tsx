@@ -1,8 +1,8 @@
 import {
   type PatternDataDict,
-  patternDisplayNames,
+  patternDescs,
   patterns,
-} from "../../../../types/game_options";
+} from "../../../../types/pattern";
 import { GameOptionsPatternInput } from "./pattern_input";
 
 import "./pattern_form.css";
@@ -48,7 +48,7 @@ export function getPatternDataDict(patternFormId: string): PatternDataDict {
     patterns.map((pattern) => [
       pattern,
       {
-        display_name: patternDisplayNames[pattern],
+        display_name: patternDescs[pattern].displayName,
         han: Number(patternFormData.get(`${pattern}___han`)),
         fu: Number(patternFormData.get(`${pattern}___fu`)),
       },

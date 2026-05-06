@@ -18,12 +18,30 @@
   }
 
   .options {
+    position: relative;
     flex-grow: 1;
     display: grid;
     grid-template-columns: auto 10cqw;
     align-content: start;
     overflow: scroll;
     padding-inline: 1cqw;
+
+    label > .description {
+      position: absolute;
+      max-width: 25cqw;
+      padding: 0.3cqw;
+      background-color: rgb(233, 255, 227);
+      border: 0.02cqw black solid;
+      font-size: 1.2cqw;
+
+      > p {
+        margin: 0;
+
+        &:not(:first-child) {
+          margin-top: 1cqw;
+        }
+      }
+    }
 
     input[type="number"]:read-only {
       color: rgb(170, 170, 170);
@@ -48,6 +66,11 @@
     .options_expander::details-content {
       display: grid;
       grid-template-columns: auto 10cqw;
+    }
+
+    &::after {
+      content: "";
+      height: 5cqw;
     }
   }
 }

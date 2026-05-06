@@ -1,5 +1,6 @@
 import { useId } from "preact/hooks";
 import type { NumberInputProps } from "../input_props";
+import { InputLabel } from "./input_label";
 
 export function OptionsNumberInput<Options>({
   isEditable,
@@ -22,7 +23,7 @@ export function OptionsNumberInput<Options>({
   const editableProps = isEditable ? { onChange } : { readonly: true };
   return (
     <>
-      <label for={inputId}>{inputProps.labelText}</label>
+      <InputLabel inputId={inputId} inputProps={inputProps} />
       <input
         form={formId}
         id={inputId}
