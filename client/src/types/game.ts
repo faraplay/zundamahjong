@@ -2,7 +2,7 @@ import type { TileId } from "./tile.ts";
 import type { Call } from "./call.ts";
 import type { Action } from "./action.ts";
 import type { Player } from "./player.ts";
-import type { PatternData } from "./game_options.ts";
+import type { PatternData } from "./pattern.ts";
 
 export type Discard = {
   player: number;
