@@ -291,6 +291,20 @@ export const inputPropsList: OptionsInputProps<GameOptions>[] = [
         type: "checkbox",
       },
       {
+        name: "seven_pairs_use_fixed_fu",
+        labelText: "Use fixed fu value for Seven Pairs",
+        description: `Use a fixed fu value for hands that win with the
+          Seven Pairs pattern.`,
+        type: "checkbox",
+      },
+      {
+        name: "seven_pairs_fixed_fu",
+        labelText: "Fu value for Seven Pairs",
+        description: `The fixed fu value for hands with the Seven Pairs pattern,
+          if the "Use fixed fu value for Seven Pairs" option is enabled.`,
+        type: "number",
+      },
+      {
         name: "round_up_points",
         labelText: "Round up points",
         description: `Round up a winning player's point gain from each player to

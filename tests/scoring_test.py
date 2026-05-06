@@ -212,6 +212,36 @@ class ScoringTest(unittest.TestCase):
         self.assertEqual(scoring.fu, 28)
         self.assertSequenceEqual(scoring.player_scores, [672.0, -672.0, 0.0, 0.0])
 
+    def test_seven_pairs_fu(self) -> None:
+        win = Win(
+            win_player=0,
+            lose_player=1,
+            hand=[31, 40, 41, 90, 91, 150, 151, 210, 211, 220, 221, 310, 311, 30],
+            calls=[],
+            flowers=[420],
+            player_count=4,
+            wind_round=0,
+            sub_round=0,
+        )
+        scoring = Scorer.score(
+            win,
+            GameOptions(
+                calculate_fu=True,
+                base_fu=20,
+                round_up_fu=True,
+                seven_pairs_use_fixed_fu=True,
+            ),
+        )
+        self.assertDictEqual(
+            scoring.patterns,
+            {
+                "SEVEN_PAIRS": PatternData(display_name="Seven Pairs", han=3, fu=0),
+            },
+        )
+        self.assertEqual(scoring.han, 3)
+        self.assertEqual(scoring.fu, 25)
+        self.assertSequenceEqual(scoring.player_scores, [4800.0, -4800.0, 0.0, 0.0])
+
     def test_fu_rounding(self) -> None:
         win = Win(
             win_player=0,

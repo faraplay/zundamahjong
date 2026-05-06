@@ -32,6 +32,8 @@ export type GameOptions = {
   calculate_fu: boolean;
   base_fu: number;
   round_up_fu: boolean;
+  seven_pairs_use_fixed_fu: boolean;
+  seven_pairs_fixed_fu: number;
   round_up_points: boolean;
 
   base_score_limits: ScoreLimit[];
