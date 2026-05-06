@@ -145,10 +145,15 @@ class Scorer:
             fu = self._options.base_fu + sum(
                 pattern_data.fu for (_, pattern_data) in patterns
             )
+            if self._options.round_up_fu:
+                fu = _round_up_int(fu, 10)
+            if (
+                "SEVEN_PAIRS" in pattern_mults
+                and self._options.seven_pairs_use_fixed_fu
+            ):
+                fu = self._options.seven_pairs_fixed_fu
         else:
             fu = self._options.base_fu
-        if self._options.round_up_fu:
-            fu = _round_up_int(fu, 10)
         player_scores = self._get_player_scores(han, fu)
         if self._options.calculate_fu:
             patterns_dict = dict(

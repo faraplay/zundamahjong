@@ -112,6 +112,15 @@ class GameOptions(BaseModel):
     """
     Whether to round up the total fu to the next multiple of 10.
     """
+    seven_pairs_use_fixed_fu: bool = True
+    """
+    Whether a seven-pairs hand should score a fixed amount of fu.
+    """
+    seven_pairs_fixed_fu: int = 25
+    """
+    The amount of fu a seven-pairs hand will score, if the option to score
+    a fixed amount of fu for a seven-pairs hand is enabled.
+    """
     round_up_points: bool = False
     """
     Whether to round up the total points each losing player plays to the next

@@ -402,6 +402,8 @@ const default_preset = {
   start_score: 0,
   calculate_fu: false,
   base_fu: 25,
+  seven_pairs_use_fixed_fu: true,
+  seven_pairs_fixed_fu: 25,
   round_up_fu: false,
   round_up_points: false,
   base_score_limits: [{ han: 6, score: 6400 }],
@@ -829,6 +831,8 @@ const riichi_preset = {
   calculate_fu: true,
   base_fu: 20,
   round_up_fu: true,
+  seven_pairs_use_fixed_fu: true,
+  seven_pairs_fixed_fu: 25,
   round_up_points: true,
   show_shanten_info: false,
   base_score_limits: [
