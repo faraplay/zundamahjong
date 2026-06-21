@@ -54,7 +54,7 @@ Once you've figured out how to do that, tell Gunicorn to start `zundamahjong`
 up by running
 
 ```sh
-gunicorn --threads 100 --bind 127.0.0.1:5000 zundamahjong.server:app
+gunicorn --threads 100 --bind 127.0.0.1:5000 "zundamahjong.server:create_app()"
 ```
 
 > [!NOTE]

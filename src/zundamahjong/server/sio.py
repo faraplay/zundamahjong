@@ -5,11 +5,9 @@ from collections.abc import Callable
 from functools import wraps
 from typing import TypeVar
 
-from flask import request
+from flask import current_app, request
 from flask_socketio import SocketIO as _SocketIO
 from typing_extensions import Concatenate, ParamSpec
-
-from .flask import app
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -26,7 +24,7 @@ class SocketIO(_SocketIO):  # type: ignore[misc]
         self.emit("server_message", {"message": message, "severity": "INFO"}, to=to)
 
 
-sio = SocketIO(app, logger=logger, async_mode="threading")
+sio = SocketIO(logger=logger, async_mode="threading")
 
 P = ParamSpec("P")
 T = TypeVar("T")
@@ -39,7 +37,7 @@ def sio_on(event: str) -> Callable[[Handler[P, T]], Callable[P, T | None]]:
     ) -> Callable[P, T | None]:
         @wraps(handler)
         def wrapped_handler(*args: P.args, **kwargs: P.kwargs) -> T | None:
-            with app.app_context():
+            with current_app.app_context():
                 sid: str = request.sid  # type: ignore  # pyright: ignore
                 assert isinstance(sid, str)
                 try:
