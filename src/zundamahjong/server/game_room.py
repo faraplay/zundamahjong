@@ -50,11 +50,11 @@ class GameRoom:
         self,
         creator: UserPlayer,
         room_name: str,
-        player_count: int,
+        game_options: GameOptions,
     ) -> None:
         self.room_name = room_name
-        self.player_count = player_count
-        self.game_options = GameOptions(player_count=player_count)
+        self.player_count = game_options.player_count
+        self.game_options = game_options
         self.game_controller: GameController | None = None
         self.joined_player_connections: list[PlayerConnection] = [
             PlayerConnection(player=creator)
@@ -144,7 +144,7 @@ class GameRoom:
 
     @classmethod
     def create_room(
-        cls, creator: UserPlayer, room_name: str, player_count: int
+        cls, creator: UserPlayer, room_name: str, game_options: GameOptions
     ) -> GameRoom:
         """
         Create a game room.
@@ -158,7 +158,7 @@ class GameRoom:
                 raise Exception(f"Player {creator.id} is already in a room!")
             if room_name in rooms:
                 raise Exception(f"Room {room_name} name already exists!")
-            game_room = cls(creator, room_name, player_count)
+            game_room = cls(creator, room_name, game_options)
             user_player_rooms[creator.id] = game_room
             rooms[room_name] = game_room
         logger.info(f"Player {creator.id} has created room {room_name}")
