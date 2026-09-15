@@ -194,7 +194,7 @@ class TestDora:
                 ),
             ],
             flowers=[420, 430],
-            dora=[410],
+            dora=[450],
         )
         assert pattern_mults == {
             "OPEN_WAIT": 1,
@@ -222,7 +222,7 @@ class TestDora:
                 ),
             ],
             flowers=[420, 430],
-            dora=[450],
+            dora=[410],
         )
         assert pattern_mults == {
             "OPEN_WAIT": 1,
