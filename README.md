@@ -36,6 +36,12 @@ to your virtual environment with
 pip install gunicorn
 ```
 
+If you've cloned the repository, you can also install gunicorn in the virtual environment by using
+
+```sh
+uv sync --group production
+```
+
 You'll need to generate a secret key for Flask to sign sessions. For example,
 you can run
 
