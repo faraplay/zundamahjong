@@ -107,6 +107,8 @@ class Round:
         tiles: list[TileId] | None = None,
         options: GameOptions | None = None,
         round_end_callback: Callable[[], None] = lambda: None,
+        can_riichi_callback: Callable[[int], bool] = lambda player: True,
+        riichi_callback: Callable[[int], None] = lambda player: None,
     ):
         if options is not None:
             _options = options
@@ -118,6 +120,8 @@ class Round:
         self._player_count = _options.player_count
         self._options = _options
         self._end_callback = round_end_callback
+        self._can_riichi_callback = can_riichi_callback
+        self._riichi_callback = riichi_callback
 
         self._max_back_draw = self._options.max_kan_count
         if self._options.use_flowers:
@@ -443,7 +447,7 @@ class Round:
                 discard_actions = hand.get_discards()
                 actions = ActionList(discard_actions[-1])
                 actions.add_actions(discard_actions[:-1])
-                if self._options.allow_riichi:
+                if self._options.allow_riichi and self._can_riichi_callback(player):
                     actions.add_actions(hand.get_riichis())
                 if self.kan_count < self._options.max_kan_count:
                     actions.add_actions(hand.get_add_kans())
@@ -578,6 +582,7 @@ class Round:
             self._status = RoundStatus.DISCARDED
         else:
             self._status = RoundStatus.LAST_DISCARDED
+        self._riichi_callback(player)
 
     @_register_do_action(ActionType.CHII)
     def _chii(self, player: int, action: Action) -> None:

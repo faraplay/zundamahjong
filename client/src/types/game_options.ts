@@ -9,6 +9,8 @@ export type GameOptions = {
   min_yaku: number;
 
   allow_riichi: boolean;
+  riichi_cost: number;
+  can_riichi_negative_score: boolean;
 
   allow_rob_added_kan: boolean;
   allow_thirteen_orphans_rob_closed_kan: boolean;

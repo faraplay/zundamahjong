@@ -89,21 +89,20 @@ def on_get_rooms(sid: str) -> None:
 
 
 @sio_on("create_room")
-def on_create_room(sid: str, room_name: object, player_count: object) -> None:
+def on_create_room(sid: str, room_name: object, game_options_data: object) -> None:
     """
     Create a new game room and add the creating player to it.
 
     :param sid: The Socket.IO session id of the connection.
     :param room_name: The name of the game room.
-    :param player_count: The number of players the game room can hold.
+    :param game_options_data: A game options JSON object containing the initial game options for the game room.
     """
     if not isinstance(room_name, str):
         raise Exception("Argument room_name is not a string!")
-    if not isinstance(player_count, int):
-        raise Exception("Argument player_count is not an int!")
-    GameRoom.verify_player_count(player_count)
+    game_options = GameOptions.model_validate(game_options_data)
+    GameRoom.verify_player_count(game_options.player_count)
     GameRoom.verify_room_name(room_name)
-    GameRoom.create_room(get_player(sid), room_name, player_count)
+    GameRoom.create_room(get_player(sid), room_name, game_options)
 
 
 @sio_on("join_room")

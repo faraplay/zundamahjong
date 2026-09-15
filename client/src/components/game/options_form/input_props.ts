@@ -105,6 +105,20 @@ export const inputPropsList: OptionsInputProps<GameOptions>[] = [
         type: "checkbox",
       },
       {
+        name: "riichi_cost",
+        labelText: "Riichi cost",
+        description: "The amount of points a player must pay to call riichi.",
+        type: "number",
+        min: 0,
+      },
+      {
+        name: "can_riichi_negative_score",
+        labelText: "Can riichi into debt",
+        description:
+          "Allow a player to call riichi even if they would end up with a negative score.",
+        type: "checkbox",
+      },
+      {
         name: "allow_rob_added_kan",
         labelText: "Allow robbing an added kan",
         description: "Allow players to rob an added kan.",

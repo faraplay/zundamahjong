@@ -40,6 +40,7 @@ class Game:
         self._win: Win | None = None
         self._scoring: Scoring | None = None
         self._draw_count: int = 0
+        self._riichi_pot: float = 0.0
         self._create_round(first_deck_tiles)
 
     @property
@@ -262,6 +263,16 @@ class Game:
         def on_round_end() -> None:
             self._calculate_win_score()
 
+        def can_riichi_callback(player: int) -> bool:
+            return (
+                self._options.can_riichi_negative_score
+                or self._player_scores[player] > self._options.riichi_cost
+            )
+
+        def riichi_callback(player: int) -> None:
+            self._player_scores[player] -= self._options.riichi_cost
+            self._riichi_pot += self._options.riichi_cost
+
         self._round = Round(
             wind_round=self._wind_round % 4,
             sub_round=self._sub_round,
@@ -269,6 +280,8 @@ class Game:
             tiles=deck_tiles,
             options=self._options,
             round_end_callback=on_round_end,
+            can_riichi_callback=can_riichi_callback,
+            riichi_callback=riichi_callback,
         )
         self._win = None
         self._scoring = None
@@ -281,5 +294,7 @@ class Game:
         else:
             self._scoring = Scorer.score(self._win, self._options)
         if self._scoring is not None:
+            self._player_scores[self._scoring.win_player] += self._riichi_pot
+            self._riichi_pot = 0.0
             for player in range(self._player_count):
                 self._player_scores[player] += self._scoring.player_scores[player]

@@ -1,6 +1,10 @@
 import { useContext } from "preact/hooks";
 import "./create_room_form.css";
 import { Emitter } from "../emitter/emitter";
+import {
+  default_3player_preset,
+  default_4player_preset,
+} from "../../types/game_options_presets.ts";
 
 export function CreateRoomForm() {
   const emit = useContext(Emitter);
@@ -11,7 +15,9 @@ export function CreateRoomForm() {
     const player_count = Number(formData.get("player_count"));
     if (!room_name) return;
     if (!(player_count == 3 || player_count == 4)) return;
-    emit("create_room", room_name, player_count);
+    const game_options =
+      player_count == 3 ? default_3player_preset : default_4player_preset;
+    emit("create_room", room_name, game_options);
   };
   return (
     <form id="create_room_form" action="" onSubmit={onSubmit}>
