@@ -14,9 +14,28 @@ class ManifestChunk(BaseModel, frozen=True):
     imports: tuple[str, ...] | None = None
 
 
-vite_manifest = TypeAdapter(dict[str, ManifestChunk]).validate_json(
-    files("zundamahjong.client").joinpath(".vite/manifest.json").read_bytes()
-)
+NO_CLIENT_FILES_ERROR_MESSAGE = """\
+*****************************************************
+Could not find the needed Zundamahjong client files.
+Most likely nothing user-facing will work.
+Please run `npm build` inside the `client` directory.
+*****************************************************
+"""
+
+
+try:
+    vite_manifest = TypeAdapter(dict[str, ManifestChunk]).validate_json(
+        files("zundamahjong.client").joinpath(".vite/manifest.json").read_bytes()
+    )
+except ModuleNotFoundError:
+    print(NO_CLIENT_FILES_ERROR_MESSAGE)
+    vite_manifest = TypeAdapter(dict[str, ManifestChunk]).validate_python(
+        {
+            "src/assets/icon.png": {"file": "assets/icon-AAAAAAAA.png"},
+            "src/login.tsx": {"file": "assets/login-AAAAAAAA.js", "css": []},
+            "src/main.tsx": {"file": "assets/main-AAAAAAAA.js", "css": []},
+        }
+    )
 
 
 def imported_chunks(
