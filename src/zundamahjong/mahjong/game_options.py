@@ -31,6 +31,12 @@ class GameOptions(BaseModel):
     allow_riichi: bool = True
     "Whether to allow riichi."
 
+    riichi_cost: float = 1000.0
+    "The amount of points it costs to riichi."
+
+    can_riichi_negative_score: bool = True
+    "Allow riichi even if it the player would have a negative score."
+
     allow_rob_added_kan: bool = True
     "Whether to allow robbing added kans."
 
