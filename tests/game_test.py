@@ -279,3 +279,59 @@ class TestGame:
             HandTileAction(action_type=ActionType.RIICHI, tile=230),
             ClosedKanAction(tiles=(150, 151, 152, 153)),
         ]
+
+    def test_riichi_carryover_if_draw(self) -> None:
+        game = Game(
+            options=GameOptions(
+                start_score=500.0, riichi_cost=100.0, can_riichi_negative_score=False
+            ),
+            first_deck_tiles=test_deck_riichi,
+        )
+        assert game.player_scores == (500.0, 500.0, 500.0, 500.0)
+        game.round.do_action(0, HandTileAction(action_type=ActionType.RIICHI, tile=160))
+        assert game.player_scores == (400.0, 500.0, 500.0, 500.0)
+        while game.round.status != RoundStatus.END:
+            actions = [action_set.default for action_set in game.round.allowed_actions]
+            playeraction = game.round.get_priority_action(actions)
+            assert playeraction is not None
+            player, action = playeraction
+            game.round.do_action(player, action)
+
+        game.start_next_round(test_deck_riichi)
+        game.round.do_action(0, HandTileAction(action_type=ActionType.RIICHI, tile=160))
+        assert game.player_scores == (300.0, 500.0, 500.0, 500.0)
+
+    def test_riichi_no_carryover_if_not_draw(self) -> None:
+        game = Game(
+            options=GameOptions(
+                start_score=500.0, riichi_cost=100.0, can_riichi_negative_score=False
+            ),
+            first_deck_tiles=test_deck_riichi,
+        )
+        round = game.round
+        assert game.player_scores == (500.0, 500.0, 500.0, 500.0)
+        round.do_action(0, HandTileAction(action_type=ActionType.RIICHI, tile=160))
+        assert game.player_scores == (400.0, 500.0, 500.0, 500.0)
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=350))
+        round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=13))
+        round.do_action(3, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(3, HandTileAction(action_type=ActionType.DISCARD, tile=223))
+        round.do_action(0, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(0, SimpleAction(action_type=ActionType.TSUMO))
+
+        game.start_next_round(test_deck_riichi)
+        round = game.round
+        assert game.player_scores == (38900.0, -12300.0, -12300.0, -12300.0)
+        round.do_action(0, HandTileAction(action_type=ActionType.RIICHI, tile=160))
+        assert game.player_scores == (38800.0, -12300.0, -12300.0, -12300.0)
+        round.do_action(1, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(1, HandTileAction(action_type=ActionType.DISCARD, tile=350))
+        round.do_action(2, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(2, HandTileAction(action_type=ActionType.DISCARD, tile=13))
+        round.do_action(3, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(3, HandTileAction(action_type=ActionType.DISCARD, tile=223))
+        round.do_action(0, SimpleAction(action_type=ActionType.DRAW))
+        round.do_action(0, SimpleAction(action_type=ActionType.TSUMO))
+        assert game.player_scores == (77300.0, -25100.0, -25100.0, -25100.0)
